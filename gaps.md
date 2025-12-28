@@ -1,10 +1,10 @@
 Gaps in the formal proof relative to the paper’s causal identification and consistency claims
 ==========================================================================================
 
-1) Conjoint identification now derived from a design schema but not yet tied to the actual survey (ConjointIdentification.lean, PaperWrappers.lean)  
+1) Conjoint identification now derived from a design schema and tied to the status survey (ConjointIdentification.lean, StatusConjointDesign.lean, PaperWrappers.lean)  
    - Added `ConjointSingleShotDesign`: gives a law `ν` for `X` with positive singleton mass, bounded/measurable outcomes, consistency, and ignorability. Lemmas `integrable_of_bounded`, `ConjointIdRandomized.of_singleShot`, and `rand_from_randomized` derive the factorization and `ConjointIdAssumptions` from these design facts. `paper_identifies_*` now hinges on this derived path.  
-   - Remaining gap: the real survey design is not instantiated—no proof that the conjoint’s randomization law satisfies `ν_pos`, that the implemented randomizer makes `X` independent of the potential outcomes, or that outcome boundedness holds.  
-   - To fix: encode the actual conjoint assignment (attributes, task structure, random seed), prove it satisfies `ConjointSingleShotDesign` (positivity/ignorability/measurability/boundedness), and instantiate `ConjointIdRandomized` with the concrete `ν` used in the experiment.
+   - Instantiated the fielded status conjoint: 8,500-persona uniform assignment over four task slots, measurability/ignorability/boundedness proofs, and `status_id_randomized` producing the concrete `ConjointIdRandomized` assumptions.  
+   - Remaining work (if needed for other surveys): replicate this instantiation for any other conjoint designs (e.g., non-status arms) and thread them through the paper-facing wrappers.
 
 2) Population process for attributes is assumed i.i.d. without justification (SDDecompositionFromConjoint.lean, SampleSplitting.lean)  
    - PopIID requires pairwise independence and identical distribution of the attribute draws A i, but the conjoint has respondent-level clustering and finite attribute pools. No proof that survey design or resampling yields these properties.  
