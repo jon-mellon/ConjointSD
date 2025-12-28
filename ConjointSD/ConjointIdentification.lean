@@ -13,7 +13,7 @@ namespace ConjointSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μ : Measure Ω)
-variable {Attr : Type*}
+variable {Attr : Type*} [MeasurableSpace Attr]
 
 /-- Event that the shown profile equals `x`. -/
 def eventX (X : Ω → Attr) (x : Attr) : Set Ω := {ω | X ω = x}
@@ -61,6 +61,28 @@ structure ConjointIdRandomized
   consistency : ∀ ω, Yobs ω = Y (X ω) ω
   positivity : ∀ x, μ (eventX (X := X) x) ≠ 0
   integrableY : ∀ x, Integrable (fun ω => Y x ω) μ
+  bounded :
+    ∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C
+  ignorability : ∀ x, (fun ω => X ω) ⟂ᵢ[μ] (fun ω => Y x ω)
+
+/--
+Single-shot assignment design:
+- `ν` is the assignment law for `X` (every singleton has positive mass),
+- `X` is measurable with `Measure.map X μ = ν`,
+- outcomes are measurable/consistent and uniformly bounded,
+- strong ignorability holds by design (independence of `X` and each potential outcome).
+
+These hypotheses are enough to derive `ConjointIdRandomized`.
+-/
+structure ConjointSingleShotDesign
+    (ν : Measure Attr)
+    (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ) : Prop where
+  measX : Measurable X
+  lawX : Measure.map X μ = ν
+  ν_pos : ∀ x, ν {x} ≠ 0
+  measYobs : Measurable Yobs
+  measY : ∀ x, Measurable (Y x)
+  consistency : ∀ ω, Yobs ω = Y (X ω) ω
   bounded :
     ∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C
   ignorability : ∀ x, (fun ω => X ω) ⟂ᵢ[μ] (fun ω => Y x ω)
@@ -162,6 +184,57 @@ lemma ConjointIdAssumptions.of_randomized
   refine ⟨h.measYobs, h.measY, h.consistency, (by intro x; exact h.positivity x), ?_⟩
   · intro x x0
     exact rand_from_randomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x x0
+
+/-- Bounded measurable real functions are integrable under a finite measure. -/
+lemma integrable_of_bounded
+    (μ : Measure Ω) [IsFiniteMeasure μ] {f : Ω → ℝ}
+    (hmeas : Measurable f) (hbound : ∃ C, 0 ≤ C ∧ ∀ ω, |f ω| ≤ C) :
+    Integrable f μ := by
+  obtain ⟨C, hC0, hC⟩ := hbound
+  refine Integrable.of_bound (hf := hmeas.aestronglyMeasurable) C ?_
+  refine ae_of_all μ ?_
+  intro ω
+  have hC' := hC ω
+  simpa [Real.norm_eq_abs] using hC'
+
+/--
+Instantiate `ConjointIdRandomized` from a single-shot assignment design (`ν` gives the law of `X`
+with positive mass on each profile) plus bounded outcomes and ignorability.
+-/
+lemma ConjointIdRandomized.of_singleShot
+    [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    {ν : Measure Attr} {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
+    (h : ConjointSingleShotDesign (μ := μ) (ν := ν) (X := X) (Y := Y) (Yobs := Yobs)) :
+    ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) := by
+  classical
+  refine
+    { measX := h.measX
+      measYobs := h.measYobs
+      measY := h.measY
+      consistency := h.consistency
+      positivity := ?_
+      integrableY := ?_
+      bounded := h.bounded
+      ignorability := h.ignorability } 
+  · intro x
+    have hmap := congrArg (fun m => m {x}) h.lawX
+    have hset : MeasurableSet ({x} : Set Attr) := measurableSet_singleton x
+    have hmap_pre : Measure.map X μ {x} = μ (X ⁻¹' {x}) :=
+      Measure.map_apply h.measX hset
+    have hpreimage :
+        μ (eventX (X := X) x) = ν {x} := by
+      calc
+        μ (eventX (X := X) x) = μ (X ⁻¹' {x}) := by rfl
+        _ = Measure.map X μ {x} := by simpa using hmap_pre.symm
+        _ = ν {x} := hmap
+    simpa [hpreimage] using h.ν_pos x
+  · intro x
+    have hbound := h.bounded x
+    have hmeas := h.measY x
+    -- Probability measure ⇒ finite measure, so bounded measurable implies integrable.
+    have hfin : IsFiniteMeasure μ := by infer_instance
+    simpa using
+      (integrable_of_bounded (μ := μ) (hmeas := hmeas) (hbound := hbound))
 
 section
 /-- If the factorization holds, the event-conditional mean equals the unconditional mean. -/

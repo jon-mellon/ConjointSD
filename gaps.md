@@ -1,10 +1,10 @@
 Gaps in the formal proof relative to the paper’s causal identification and consistency claims
 ==========================================================================================
 
-1) Conjoint identification now has a derived rand lemma but still lacks a design proof (ConjointIdentification.lean, PaperWrappers.lean)  
-   - `ConjointIdRandomized` now collects measurability, positivity, integrability, boundedness, and strong ignorability, and `rand_from_randomized` derives the factorization used by `ConjointIdAssumptions`. `paper_identifies_*` consumes the derived factorization via `ConjointIdAssumptions.of_randomized`.  
-   - Remaining gap: the randomized/ignorability assumptions are still taken as axioms about the assignment; there is no formal single-shot assignment mechanism or proof that the survey design implies positivity/ignorability/boundedness.  
-   - To fix: formalize the assignment mechanism for profiles, prove strong ignorability and positivity from that mechanism (and boundedness/integrability of outcomes), and instantiate `ConjointIdRandomized` from those design facts so the factorization is justified rather than assumed.
+1) Conjoint identification now derived from a design schema but not yet tied to the actual survey (ConjointIdentification.lean, PaperWrappers.lean)  
+   - Added `ConjointSingleShotDesign`: gives a law `ν` for `X` with positive singleton mass, bounded/measurable outcomes, consistency, and ignorability. Lemmas `integrable_of_bounded`, `ConjointIdRandomized.of_singleShot`, and `rand_from_randomized` derive the factorization and `ConjointIdAssumptions` from these design facts. `paper_identifies_*` now hinges on this derived path.  
+   - Remaining gap: the real survey design is not instantiated—no proof that the conjoint’s randomization law satisfies `ν_pos`, that the implemented randomizer makes `X` independent of the potential outcomes, or that outcome boundedness holds.  
+   - To fix: encode the actual conjoint assignment (attributes, task structure, random seed), prove it satisfies `ConjointSingleShotDesign` (positivity/ignorability/measurability/boundedness), and instantiate `ConjointIdRandomized` with the concrete `ν` used in the experiment.
 
 2) Population process for attributes is assumed i.i.d. without justification (SDDecompositionFromConjoint.lean, SampleSplitting.lean)  
    - PopIID requires pairwise independence and identical distribution of the attribute draws A i, but the conjoint has respondent-level clustering and finite attribute pools. No proof that survey design or resampling yields these properties.  
