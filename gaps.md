@@ -1,9 +1,10 @@
 Gaps in the formal proof relative to the paper’s causal identification and consistency claims
 ==========================================================================================
 
-1) Conjoint identification not linked to the actual experiment (ConjointIdentification.lean, PaperWrappers.lean)  
-   - The key “rand” assumption simply asserts conditional means equal unconditional means on each `{X = x0}` event. No derivation from the randomized conjoint design (multiple profiles per respondent, blocking, attribute-level randomization, exclusion restrictions, or SUTVA). Positivity is also assumed, not shown from the design or the realized support.  
-   - To fix: Formalize the experimental assignment mechanism (per-task attribute randomization, respondent-level clustering, potential outcomes), prove that mechanism implies the “rand” factorization and positivity for all presented profiles, and include SUTVA/no-interference statements.
+1) Conjoint identification now has a derived rand lemma but still lacks a design proof (ConjointIdentification.lean, PaperWrappers.lean)  
+   - `ConjointIdRandomized` now collects measurability, positivity, integrability, boundedness, and strong ignorability, and `rand_from_randomized` derives the factorization used by `ConjointIdAssumptions`. `paper_identifies_*` consumes the derived factorization via `ConjointIdAssumptions.of_randomized`.  
+   - Remaining gap: the randomized/ignorability assumptions are still taken as axioms about the assignment; there is no formal single-shot assignment mechanism or proof that the survey design implies positivity/ignorability/boundedness.  
+   - To fix: formalize the assignment mechanism for profiles, prove strong ignorability and positivity from that mechanism (and boundedness/integrability of outcomes), and instantiate `ConjointIdRandomized` from those design facts so the factorization is justified rather than assumed.
 
 2) Population process for attributes is assumed i.i.d. without justification (SDDecompositionFromConjoint.lean, SampleSplitting.lean)  
    - PopIID requires pairwise independence and identical distribution of the attribute draws A i, but the conjoint has respondent-level clustering and finite attribute pools. No proof that survey design or resampling yields these properties.  

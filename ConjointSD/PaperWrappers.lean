@@ -42,7 +42,7 @@ section Identification
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μ : Measure Ω) [IsProbabilityMeasure μ]
-variable {Attr : Type*}
+variable {Attr : Type*} [MeasurableSpace Attr]
 variable (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
 
 /-- Identification: observed conditional mean among `X = x0` equals the potential-outcome mean. -/
