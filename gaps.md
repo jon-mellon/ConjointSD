@@ -27,5 +27,5 @@ Gaps in the formal proof relative to the paper’s causal identification and con
    - To fix: Define weighted estimators and show identification/consistency under the survey design and weighting scheme, or add finite-population sampling lemmas.
 
 7) No final theorem tying everything to the reported main SD estimate  
-   - Paper-facing wrappers stop at abstract convergence to popSDAttr ν (g θ0). There is no instantiation with the actual attributes, blocks, or SD quantity reported in the paper, nor a theorem that “the estimator used in the paper converges to the causal SD estimand.”  
-   - To fix: Define the paper’s main SD estimator in Lean, map the paper’s blocks/terms to the abstract g/blk, and prove the end-to-end consistency/identification statement under the proved design assumptions.
+   - Even after adding the randomized-design bridge, the paper-facing wrappers still stop at abstract convergence to `popSDAttr ν (g θ0)`. There is no instantiation with the actual attributes, blocks, or the SD quantity reported in the paper, nor a theorem that “the estimator used in the paper converges to the causal SD estimand.”  
+   - To fix: Define the paper’s main SD estimator in Lean, map the paper’s blocks/terms to the abstract `g`/`blk` under the (now formalized) assignment assumptions, and prove the end-to-end consistency/identification statement for that estimator and target.

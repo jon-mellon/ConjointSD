@@ -236,6 +236,7 @@ lemma ConjointIdRandomized.of_singleShot
     simpa using
       (integrable_of_bounded (μ := μ) (hmeas := hmeas) (hbound := hbound))
 
+
 section
 /-- If the factorization holds, the event-conditional mean equals the unconditional mean. -/
 theorem condMean_eq_potMean_of_rand
