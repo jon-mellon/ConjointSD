@@ -18,3 +18,4 @@ import ConjointSD.RegressionConsistencyBridge
 import ConjointSD.FunctionalContinuityAssumptions
 import ConjointSD.PaperCoreEstimand
 import ConjointSD.WellSpecifiedFromNoInteractions
+import ConjointSD.StatusConjointDesign
