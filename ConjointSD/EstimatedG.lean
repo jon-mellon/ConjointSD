@@ -81,21 +81,18 @@ theorem popVarAttr_tendsto_of_GEstimationAssumptions
       (nhds (popVarAttr ν (g θ0))) := by
   have hmean := h.mean_tendsto
   have hm2 := h.m2_tendsto
-
   have hmean2 :
       Tendsto
         (fun n => (popMeanAttr ν (gHat g θhat n)) ^ 2)
         atTop
         (nhds ((popMeanAttr ν (g θ0)) ^ 2)) := by
     simpa [pow_two] using (hmean.mul hmean)
-
   have hvar :
       Tendsto
         (fun n => popM2Attr ν (gHat g θhat n) - (popMeanAttr ν (gHat g θhat n)) ^ 2)
         atTop
         (nhds (popM2Attr ν (g θ0) - (popMeanAttr ν (g θ0)) ^ 2)) :=
     hm2.sub hmean2
-
   simpa [popVarAttr] using hvar
 
 /-- Derived: population SD convergence under ν for the plug-in score. -/
@@ -110,12 +107,10 @@ theorem popSDAttr_tendsto_of_GEstimationAssumptions
   have hvar :=
     popVarAttr_tendsto_of_GEstimationAssumptions
       (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) h
-
   have hsqrt :
       Tendsto Real.sqrt (nhds (popVarAttr ν (g θ0)))
         (nhds (Real.sqrt (popVarAttr ν (g θ0)))) :=
     (Real.continuous_sqrt.continuousAt).tendsto
-
   -- popSDAttr is defined as sqrt(popVarAttr)
   simpa [popSDAttr] using (hsqrt.comp hvar)
 

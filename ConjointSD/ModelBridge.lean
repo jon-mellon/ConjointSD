@@ -39,7 +39,6 @@ theorem gLin_eq_gTotal_blocks
     gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) := by
   classical
   funext a
-
   -- Prove RHS = LHS pointwise, then flip.
   have h :
       gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) a
@@ -64,7 +63,6 @@ theorem gLin_eq_gTotal_blocks
               simp [eq_comm]
       _   = gLin (β := β) (φ := φ) a := by
               simp [gLin]
-
   simpa using h.symm
 
 /-!
@@ -104,7 +102,6 @@ theorem gStar_eq_sum_blocks_of_WellSpecified
         =
       gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
     gLin_eq_gTotal_blocks (B := B) (Term := Term) (blk := blk) (β := β) (φ := φ)
-
   calc
     gStar (μ := μ) (Y := Y) x
         = gLin (β := β) (φ := φ) x := by

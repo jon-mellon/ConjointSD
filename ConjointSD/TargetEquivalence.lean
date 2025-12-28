@@ -18,7 +18,7 @@ namespace ConjointSD
 section
 
 variable {Attr : Type*} [MeasurableSpace Attr]
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (ν : Measure Attr)
 variable {s t : Attr → ℝ}
 
 /-- If s = t ν-a.e., then their population means are equal. -/

@@ -25,26 +25,28 @@ section
 variable {Attr : Type u} [MeasurableSpace Attr]
 variable {Θ : Type v} [TopologicalSpace Θ]
 
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (ν : Measure Attr)
 variable (g : Θ → Attr → ℝ) (θ0 : Θ)
 
-/-- Extract mean-continuity at `θ0` from `FunctionalContinuityAssumptions` (field-name free). -/
+/--
+Extract mean-continuity at `θ0` from `FunctionalContinuityAssumptions`
+(field-name free).
+-/
 theorem meanContinuousAt_of_FunctionalContinuityAssumptions
     (hC : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
     ContinuousAt (fun θ => popMeanAttr ν (g θ)) θ0 := by
   rcases hC with ⟨h1, h2⟩
-  first
-  | simpa using h1
-  | simpa using h2
+  simpa using h1
 
-/-- Extract second-moment continuity at `θ0` from `FunctionalContinuityAssumptions` (field-name free). -/
+/--
+Extract second-moment continuity at `θ0` from `FunctionalContinuityAssumptions`
+(field-name free).
+-/
 theorem m2ContinuousAt_of_FunctionalContinuityAssumptions
     (hC : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
     ContinuousAt (fun θ => popM2Attr ν (g θ)) θ0 := by
-  rcases hC with ⟨h1, h2⟩
-  first
-  | simpa using h1
-  | simpa using h2
+  rcases hC with ⟨_, h2⟩
+  simpa using h2
 
 /-- If `θhat → θ0`, then the population mean plug-in converges by continuity. -/
 theorem popMeanAttr_tendsto_of_theta_tendsto
@@ -89,29 +91,26 @@ theorem popVarAttr_tendsto_of_theta_tendsto
         atTop
         (nhds (popMeanAttr ν (g θ0))) :=
     popMeanAttr_tendsto_of_theta_tendsto (ν := ν) (g := g) (θ0 := θ0) hθ hC
-
   have hM2 :
       Tendsto
         (fun n => popM2Attr ν (g (θhat n)))
         atTop
         (nhds (popM2Attr ν (g θ0))) :=
     popM2Attr_tendsto_of_theta_tendsto (ν := ν) (g := g) (θ0 := θ0) hθ hC
-
   have hMeanSq :
       Tendsto
         (fun n => (popMeanAttr ν (g (θhat n))) ^ 2)
         atTop
         (nhds ((popMeanAttr ν (g θ0)) ^ 2)) := by
     simpa [pow_two] using (hMean.mul hMean)
-
   have hVar :
       Tendsto
         (fun n =>
-          popM2Attr ν (g (θhat n)) - (popMeanAttr ν (g (θhat n))) ^ 2)
+          popM2Attr ν (g (θhat n))
+            - (popMeanAttr ν (g (θhat n))) ^ 2)
         atTop
         (nhds (popM2Attr ν (g θ0) - (popMeanAttr ν (g θ0)) ^ 2)) :=
     hM2.sub hMeanSq
-
   simpa [popVarAttr] using hVar
 
 /-- If `θhat → θ0`, then the population SD plug-in converges (sqrt ∘ var). -/
@@ -129,12 +128,10 @@ theorem popSDAttr_tendsto_of_theta_tendsto
         atTop
         (nhds (popVarAttr ν (g θ0))) :=
     popVarAttr_tendsto_of_theta_tendsto (ν := ν) (g := g) (θ0 := θ0) hθ hC
-
   have hsqrt :
       Tendsto Real.sqrt (nhds (popVarAttr ν (g θ0)))
         (nhds (Real.sqrt (popVarAttr ν (g θ0)))) :=
     (Real.continuous_sqrt.continuousAt).tendsto
-
   simpa [popSDAttr] using (hsqrt.comp hVar)
 
 end

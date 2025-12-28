@@ -38,7 +38,9 @@ def sdEst
     (μ : Measure Ω) (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m n : ℕ) (ω : Ω) : ℝ :=
-  sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω
+  by
+    let _ := μ
+    exact sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω
 
 /-- Oracle target SD under `ν` using the oracle score `g θ0`. -/
 def sdOracle
@@ -85,7 +87,6 @@ theorem totalErr_tendsto_trainErr_fixed_m
           atTop
           (nhds (popSDAttr (Measure.map (A 0) μ) (gHat g θhat m))) :=
     sdHat_fixed_m_tendsto_ae_popSDAttr (μ := μ) (A := A) (g := g) (θhat := θhat) m h
-
   -- Rewrite the limit using `hLaw`.
   have hBase :
       ∀ᵐ ω ∂μ,
@@ -94,22 +95,18 @@ theorem totalErr_tendsto_trainErr_fixed_m
           atTop
           (nhds (popSDAttr ν (gHat g θhat m))) := by
     simpa [hLaw] using hBase_map
-
   -- Continuous mapping: x ↦ abs (x - sdOracle ν g θ0)
   have hcont :
       Continuous (fun x : ℝ => abs (x - sdOracle ν g θ0)) := by
     simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
-
   refine hBase.mono ?_
   intro ω hω
-
   have ht :
       Tendsto
         (fun x : ℝ => abs (x - sdOracle ν g θ0))
         (nhds (popSDAttr ν (gHat g θhat m)))
         (nhds (abs (popSDAttr ν (gHat g θhat m) - sdOracle ν g θ0))) :=
     (hcont.continuousAt.tendsto)
-
   simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
 
 /--
@@ -125,7 +122,6 @@ theorem trainErr_tendsto_zero
       atTop
       (nhds 0) := by
   let c : ℝ := popSDAttr ν (g θ0)
-
   have hBase :
       Tendsto
         (fun m : ℕ => popSDAttr ν (gHat g θhat m))
@@ -134,18 +130,15 @@ theorem trainErr_tendsto_zero
     simpa [c] using
       (popSDAttr_tendsto_of_GEstimationAssumptions
         (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hG)
-
   have hcont :
       Continuous (fun x : ℝ => abs (x - c)) := by
     simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
-
   have h1 :
       Tendsto
         (fun m : ℕ => abs (popSDAttr ν (gHat g θhat m) - c))
         atTop
         (nhds (abs (c - c))) :=
     (hcont.continuousAt.tendsto).comp hBase
-
   -- abs (c - c) = 0
   simpa [trainErr, sdOracle, c] using (h1.trans (by simp))
 
@@ -175,7 +168,6 @@ theorem sequential_consistency_ae
   -- training-error convergence
   have hTrain : Tendsto (fun m : ℕ => trainErr ν g θ0 θhat m) atTop (nhds 0) :=
     trainErr_tendsto_zero (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hG
-
   -- pick M so that for all m≥M, trainErr m < ε/2
   have hEv :
       ∀ᶠ m : ℕ in atTop, trainErr ν g θ0 θhat m < ε / 2 := by
@@ -183,15 +175,12 @@ theorem sequential_consistency_ae
     have : (0 : ℝ) < ε / 2 := by
       nlinarith
     exact (tendsto_order.1 hTrain).2 (ε / 2) this
-
   rcases (eventually_atTop.1 hEv) with ⟨M, hM⟩
   refine ⟨M, ?_⟩
   intro m hm
-
   have hmTrain : trainErr ν g θ0 θhat m < ε / 2 := hM m hm
   have hSum : trainErr ν g θ0 θhat m + ε / 2 < ε := by
     nlinarith
-
   -- Step (1) for this m: totalErr(m,n,ω) → trainErr(m) a.e.
   have hTend :
       ∀ᵐ ω ∂μ,
@@ -202,16 +191,16 @@ theorem sequential_consistency_ae
     totalErr_tendsto_trainErr_fixed_m
       (μ := μ) (A := A) (ν := ν) (hLaw := hLaw) (g := g) (θ0 := θ0) (θhat := θhat)
       (m := m) (h := hSplit m)
-
   -- Convert pointwise Tendsto into an eventually upper bound trainErr(m) + ε/2, a.e. in ω
   have hEvN :
-      ∀ᵐ ω ∂μ, ∀ᶠ n : ℕ in atTop, totalErr μ A ν g θ0 θhat m n ω < trainErr ν g θ0 θhat m + ε / 2 := by
+      ∀ᵐ ω ∂μ,
+        ∀ᶠ n : ℕ in atTop,
+          totalErr μ A ν g θ0 θhat m n ω < trainErr ν g θ0 θhat m + ε / 2 := by
     refine hTend.mono ?_
     intro ω ht
     have hlt : trainErr ν g θ0 θhat m < trainErr ν g θ0 θhat m + ε / 2 := by
       nlinarith [hε]
     exact (tendsto_order.1 ht).2 (trainErr ν g θ0 θhat m + ε / 2) hlt
-
   -- Strengthen to < ε using trainErr(m) + ε/2 < ε
   refine hEvN.mono ?_
   intro ω hω

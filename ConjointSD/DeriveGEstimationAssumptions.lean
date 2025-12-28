@@ -19,7 +19,10 @@ open scoped Topology
 noncomputable section
 namespace ConjointSD
 
-/-- Route-2: derive `GEstimationAssumptions` (single score) from `θhat → θ0` and functional continuity. -/
+/--
+Route-2: derive `GEstimationAssumptions` (single score) from `θhat → θ0`
+and functional continuity.
+-/
 theorem derive_hG
     {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
     (ν : Measure Attr) [IsProbabilityMeasure ν]
@@ -30,7 +33,10 @@ theorem derive_hG
   GEstimationAssumptions_of_theta_tendsto
     (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hθ hcont
 
-/-- Route-2: derive `∀ b, GEstimationAssumptions …` for block scores from `θhat → θ0` and block continuity. -/
+/--
+Route-2: derive `∀ b, GEstimationAssumptions …` for block scores from
+`θhat → θ0` and block continuity.
+-/
 theorem derive_hG_blocks
     {Attr Θ B : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ] [Fintype B]
     (ν : Measure Attr) [IsProbabilityMeasure ν]

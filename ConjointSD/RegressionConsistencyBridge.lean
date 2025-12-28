@@ -81,14 +81,12 @@ theorem popVarAttr_tendsto_of_GEstimationAssumptions_bridge
         atTop
         (nhds (popMeanAttr ν (g θ0))) :=
     hG.mean_tendsto
-
   have hm2 :
       Tendsto
         (fun n => popM2Attr ν (gHat g θhat n))
         atTop
         (nhds (popM2Attr ν (g θ0))) :=
     hG.m2_tendsto
-
   have hmean_sq :
       Tendsto
         (fun n => (popMeanAttr ν (gHat g θhat n)) ^ 2)
@@ -96,15 +94,14 @@ theorem popVarAttr_tendsto_of_GEstimationAssumptions_bridge
         (nhds ((popMeanAttr ν (g θ0)) ^ 2)) := by
     -- use continuity of x ↦ x^2
     simpa [pow_two] using (hmean.mul hmean)
-
   have hsub :
       Tendsto
         (fun n =>
-          popM2Attr ν (gHat g θhat n) - (popMeanAttr ν (gHat g θhat n)) ^ 2)
+          popM2Attr ν (gHat g θhat n)
+            - (popMeanAttr ν (gHat g θhat n)) ^ 2)
         atTop
         (nhds (popM2Attr ν (g θ0) - (popMeanAttr ν (g θ0)) ^ 2)) :=
     hm2.sub hmean_sq
-
   simpa [popVarAttr] using hsub
 
 /-!
@@ -121,7 +118,8 @@ structure BlockFunctionalContinuityAssumptions
   cont : ∀ b : B,
     FunctionalContinuityAssumptions (ν := ν) (blockScoreΘ (gB := gB) b) θ0
 
-/-- Route-2 bridge for blocks: θhat → θ0 plus continuity per block gives `GEstimationAssumptions` per block. -/
+/-- Route-2 bridge for blocks: θhat → θ0 plus continuity per block gives
+`GEstimationAssumptions` per block. -/
 theorem block_GEstimationAssumptions_of_theta_tendsto
     {Attr Θ B : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ] [Fintype B]
     (ν : Measure Attr) [IsProbabilityMeasure ν]

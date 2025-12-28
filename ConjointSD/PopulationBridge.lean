@@ -30,7 +30,7 @@ namespace ConjointSD
 section
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (μ : Measure Ω)
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 variable (A : ℕ → Ω → Attr)
@@ -50,22 +50,20 @@ theorem popMeanZ_Zcomp_eq_popMeanAttr
     popMeanAttr ν g := by
   have hg_str : AEStronglyMeasurable g (Measure.map (A 0) μ) :=
     hg.aemeasurable.aestronglyMeasurable
-
   have hmap :
       (∫ a, g a ∂Measure.map (A 0) μ) = (∫ ω, g (A 0 ω) ∂μ) := by
     -- change-of-variables for pushforward measures
     simpa using
       (MeasureTheory.integral_map (μ := μ) (f := g) (φ := A 0)
         hA0.aemeasurable hg_str)
-
   calc
     popMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g))
         = (∫ ω, g (A 0 ω) ∂μ) := by
             simp [popMeanZ, Zcomp]
     _   = (∫ a, g a ∂Measure.map (A 0) μ) := by
-            simpa using hmap.symm
+            simp [hmap]
     _   = (∫ a, g a ∂ν) := by
-            simpa [hLaw]
+            simp [hLaw]
     _   = popMeanAttr ν g := by
             simp [popMeanAttr]
 
@@ -85,16 +83,13 @@ theorem popM2Z_Zcomp_eq_popM2Attr
   let g2 : Attr → ℝ := fun a => g a * g a
   have hg2 : Measurable g2 := by
     simpa [g2] using (hg.mul hg)
-
   have hg2_str : AEStronglyMeasurable g2 (Measure.map (A 0) μ) :=
     hg2.aemeasurable.aestronglyMeasurable
-
   have hmap :
       (∫ a, g2 a ∂Measure.map (A 0) μ) = (∫ ω, g2 (A 0 ω) ∂μ) := by
     simpa using
       (MeasureTheory.integral_map (μ := μ) (f := g2) (φ := A 0)
         hA0.aemeasurable hg2_str)
-
   calc
     popM2Z (μ := μ) (Z := Zcomp (A := A) (g := g))
         = (∫ ω, (g (A 0 ω)) ^ 2 ∂μ) := by
@@ -102,9 +97,9 @@ theorem popM2Z_Zcomp_eq_popM2Attr
     _   = (∫ ω, g2 (A 0 ω) ∂μ) := by
             simp [g2, pow_two]
     _   = (∫ a, g2 a ∂Measure.map (A 0) μ) := by
-            simpa using hmap.symm
+            simp [hmap]
     _   = (∫ a, g2 a ∂ν) := by
-            simpa [hLaw]
+            simp [hLaw]
     _   = (∫ a, (g a) ^ 2 ∂ν) := by
             simp [g2, pow_two]
     _   = popM2Attr ν g := by

@@ -18,7 +18,7 @@ namespace ConjointSD
 
 section TrueBlockScore
 
-variable {Attr : Type*} [MeasurableSpace Attr]
+variable {Attr : Type*}
 variable {B : Type*} [Fintype B]
 variable {Term : Type*} [Fintype Term] [DecidableEq B]
 
@@ -94,16 +94,13 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
             =
           popSDAttr ν (trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b) := by
   classical
-
   let gTrueB : B → Attr → ℝ :=
     fun b => trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b
-
   have hTrueB : ∀ b : B, InvarianceAE (ν := ν) (gBlock (gB := gB) b θ0) (gTrueB b) := by
     intro b
     refine ae_of_all _ ?_
     intro x
     simpa [gTrueB] using hBlockSpec b x
-
   simpa [gTrueB] using
     (paper_sd_blocks_sequential_consistency_to_true_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
@@ -148,7 +145,6 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
           popSDAttr ν
             (trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b) := by
   classical
-
   have hBlockSpec :
       ∀ b x,
         gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b θ0 x
@@ -159,7 +155,6 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
       gBTerm_blockSpec
         (blk := blk) (φ := φ) (βOf := βOf) (β0 := β0) (θ0 := θ0) hβ b x
     simpa [trueBlockScore] using h
-
   simpa using
     (paper_blocks_converge_to_trueBlockSDs_ae
       (μ := μ) (A := A) (ν := ν) (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))

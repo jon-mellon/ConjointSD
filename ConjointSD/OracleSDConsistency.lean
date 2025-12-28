@@ -50,13 +50,11 @@ theorem sd_component_consistent_to_popSDAttr
           atTop
           (nhds (popSDZ (μ := μ) (Z := Zcomp (A := A) (g := g)))) :=
     sd_component_consistent (μ := μ) (A := A) (g := g) hScore
-
   -- rewrite the limit using PopulationBridge
   have hEq :
       popSDZ (μ := μ) (Z := Zcomp (A := A) (g := g)) = popSDAttr ν g :=
     popSDZ_Zcomp_eq_popSDAttr (μ := μ) (A := A) (ν := ν)
       (g := g) (hA0 := hA0) (hg := hScore.meas_g) (hLaw := hLaw)
-
   simpa [hEq] using hSDZ
 
 end

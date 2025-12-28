@@ -54,7 +54,6 @@ theorem sequential_consistency_blocks_ae
             ∀ᶠ n : ℕ in atTop,
               totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
   classical
-
   have hEach :
       ∀ b : B,
         ∃ Mb : ℕ,
@@ -70,18 +69,13 @@ theorem sequential_consistency_blocks_ae
         (hSplit := fun m => hSplit m b)
         (hG := hG b)
         (ε := ε) (hε := hε))
-
   choose Mb hMb using hEach
-
   let M : ℕ := (Finset.univ : Finset B).sup Mb
-
   refine ⟨M, ?_⟩
   intro m hm b
-
   have hMb_le_M : Mb b ≤ M := by
     have hb : b ∈ (Finset.univ : Finset B) := by simp
     exact Finset.le_sup hb
-
   have hMb_le_m : Mb b ≤ m := le_trans hMb_le_M hm
   -- Now apply the block-specific conclusion.
   exact hMb b m hMb_le_m

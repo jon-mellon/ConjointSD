@@ -7,7 +7,7 @@ noncomputable section
 namespace ConjointSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (μ : Measure Ω)
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
@@ -29,7 +29,7 @@ structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) : Prop w
   int_g0_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μ
 
 /-- From `ScoreAssumptions`, derive `IIDAssumptions` for Z := Zcomp A g. -/
-lemma iidAssumptions_Zcomp
+lemma iidAssumptions_Zcomp [IsProbabilityMeasure μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (h : ScoreAssumptions (μ := μ) A g) :
     IIDAssumptions (μ := μ) (Zcomp (A := A) (g := g)) := by
@@ -49,7 +49,7 @@ lemma iidAssumptions_Zcomp
   · simpa [Z, Zcomp] using h.int_g0_sq
 
 /-- Consistency of the plug-in SD for a single component scoring rule g. -/
-theorem sd_component_consistent
+theorem sd_component_consistent [IsProbabilityMeasure μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (h : ScoreAssumptions (μ := μ) A g) :
     ∀ᵐ ω ∂μ,
@@ -66,7 +66,7 @@ Finite-family “decomposition”: blocks/buckets b : B each have a scoring rule
 We prove consistency of the plug-in SD for each block.
 -/
 
-variable {B : Type*} [Fintype B]
+variable {B : Type*}
 
 /-- Bundle assumptions for all blocks at once. -/
 structure DecompAssumptions (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) : Prop where
@@ -76,7 +76,7 @@ structure DecompAssumptions (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) :
   int_g0_sq : ∀ b, Integrable (fun ω => (g b (A 0 ω)) ^ 2) μ
 
 /-- SD consistency for any chosen block b. -/
-theorem sd_block_consistent
+theorem sd_block_consistent [IsProbabilityMeasure μ]
     (A : ℕ → Ω → Attr) (g : B → Attr → ℝ)
     (h : DecompAssumptions (μ := μ) (B := B) A g)
     (b : B) :

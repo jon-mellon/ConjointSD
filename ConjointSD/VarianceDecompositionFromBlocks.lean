@@ -7,9 +7,9 @@ noncomputable section
 namespace ConjointSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (μ : Measure Ω)
 
-variable {Attr : Type*} [MeasurableSpace Attr]
+variable {Attr : Type*}
 variable {B : Type*} [Fintype B]
 
 /-- Total additive score. -/
@@ -40,28 +40,22 @@ theorem varProxy_sum_eq_sum_covRaw
           (fun ω => g b (A 0 ω))
           (fun ω => g c (A 0 ω)))) := by
   classical
-
   -- X b ω = block score, S ω = total score
   let X : B → Ω → ℝ := fun b ω => g b (A 0 ω)
   let S : Ω → ℝ := fun ω => Finset.sum Finset.univ (fun b => X b ω)
-
   -- pair index finset
   let pairs : Finset (B × B) :=
     (Finset.univ : Finset B).product (Finset.univ : Finset B)
-
   -- integrability facts
   have hintX : ∀ b, Integrable (X b) μ := by
     intro b
     simpa [X] using h.intX b
-
   have hintMul : ∀ b c, Integrable (fun ω => X b ω * X c ω) μ := by
     intro b c
     simpa [X] using h.intMul b c
-
   have hintF : ∀ p : B × B, Integrable (fun ω => X p.1 ω * X p.2 ω) μ := by
     intro p
     simpa using hintMul p.1 p.2
-
   -- E[S] = ∑_b E[X b]
   have hmean :
       (∫ ω, S ω ∂μ) = Finset.sum Finset.univ (fun b => ∫ ω, X b ω ∂μ) := by
@@ -69,7 +63,6 @@ theorem varProxy_sum_eq_sum_covRaw
       (integral_finset_sum (μ := μ) (s := (Finset.univ : Finset B))
         (f := fun b ω => X b ω)
         (fun b hb => hintX b))
-
   /- Helper: double-sum = product-sum pointwise (use pair-function form of `sum_product`). -/
   have hprod (ω : Ω) :
       (Finset.sum Finset.univ (fun i =>
@@ -82,7 +75,6 @@ theorem varProxy_sum_eq_sum_covRaw
         (s := (Finset.univ : Finset B))
         (t := (Finset.univ : Finset B))
         (f := fun p : B × B => X p.1 ω * X p.2 ω)).symm
-
   -- Pointwise: S(ω)^2 = ∑_{p∈pairs} X(p.1,ω)X(p.2,ω)
   have hsq_fun :
       (fun ω => (S ω) ^ 2) = (fun ω => Finset.sum pairs (fun p => X p.1 ω * X p.2 ω)) := by
@@ -97,7 +89,6 @@ theorem varProxy_sum_eq_sum_covRaw
                 simp [Finset.sum_mul_sum]
       _ = Finset.sum pairs (fun p => X p.1 ω * X p.2 ω) := by
                 simpa using hprod (ω := ω)
-
   -- E[S^2] = ∑_{p∈pairs} E[X p.1 * X p.2]
   have hm2 :
       (∫ ω, (S ω) ^ 2 ∂μ)
@@ -112,7 +103,6 @@ theorem varProxy_sum_eq_sum_covRaw
               (integral_finset_sum (μ := μ) (s := pairs)
                 (f := fun p ω => X p.1 ω * X p.2 ω)
                 (fun p hp => hintF p))
-
   -- (∑_b E[X b])^2 = ∑_{pairs} E[X p.1]E[X p.2]  (pair-function form of `sum_product`)
   have hmean_sq :
       (Finset.sum Finset.univ (fun b => ∫ ω, X b ω ∂μ)) ^ 2
@@ -139,7 +129,6 @@ theorem varProxy_sum_eq_sum_covRaw
               (t := (Finset.univ : Finset B))
               (f := fun p : B × B =>
                 (∫ ω, X p.1 ω ∂μ) * (∫ ω, X p.2 ω ∂μ))).symm
-
   -- varProxy(S) as a pairs-sum of covRaw
   have var_as_pairs :
       varProxy (μ := μ) S =
@@ -163,7 +152,6 @@ theorem varProxy_sum_eq_sum_covRaw
             refine Finset.sum_congr rfl ?_
             intro p hp
             simp [covRaw]
-
   -- pairs covariance sum = nested covariance sum (pair-function form of `sum_product`)
   have hprodCov :
       (Finset.sum pairs (fun p => covRaw (μ := μ) (X p.1) (X p.2)))
@@ -175,15 +163,13 @@ theorem varProxy_sum_eq_sum_covRaw
         (s := (Finset.univ : Finset B))
         (t := (Finset.univ : Finset B))
         (f := fun p : B × B => covRaw (μ := μ) (X p.1) (X p.2)))
-
   -- gTotal relation: gTotal g (A0 ω) = S ω
   have hS : (fun ω => gTotal (B := B) g (A 0 ω)) = S := by
     funext ω
     simp [gTotal, S, X]
-
   calc
     varProxy (μ := μ) (fun ω => gTotal (B := B) g (A 0 ω))
-        = varProxy (μ := μ) S := by simpa [hS]
+        = varProxy (μ := μ) S := by simp [hS]
     _ = Finset.sum pairs (fun p => covRaw (μ := μ) (X p.1) (X p.2)) := var_as_pairs
     _ = Finset.sum Finset.univ (fun b =>
           Finset.sum Finset.univ (fun c =>
