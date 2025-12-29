@@ -11,7 +11,7 @@ Core definitions:
 Assumption bundles:
 - `ConjointIdAssumptions` collects measurability, a condition that observed outcomes equal the potential outcomes for the assigned profile, positivity of assignment, and a factorization that expresses random assignment.
 - `ConjointIdRandomized` is a stronger, more explicit random-assignment package using [independence](jargon_independent.md).
-- `ConjointSingleShotDesign` describes the one-shot conjoint design with a specified assignment distribution, bounded outcomes, and independence.
+- `ConjointSingleShotDesign` describes the one-shot conjoint design with a specified assignment [distribution](jargon_distribution.md), bounded outcomes, and [independence](jargon_independent.md).
 
 Main logical steps:
 1) Show that `ConjointIdRandomized` implies the factorization used in `ConjointIdAssumptions`.

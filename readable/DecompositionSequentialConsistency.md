@@ -1,9 +1,9 @@
 # DecompositionSequentialConsistency.lean
 
-This file lifts the sequential consistency results to a block decomposition and to the total score.
+This file lifts the [sequential consistency](jargon_sequential_consistency.md) results to a block decomposition and to the total score.
 
 Key definitions:
-- `gBlock` is the block score as a function of the parameter.
+- `gBlock` is the block score as a function of the [parameter](jargon_parameter.md).
 - `gTotalTheta` sums block scores across all blocks to get the total score.
 
 Main results:

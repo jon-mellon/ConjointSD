@@ -1,8 +1,8 @@
 # TargetEquivalence.lean
 
 This file provides two related tools:
-1) Exact equality of targets when two score functions match almost everywhere.
-2) Approximate bounds when two score functions are close almost everywhere.
+1) Exact equality of targets when two score functions match [almost everywhere](jargon_almost_everywhere.md).
+2) Approximate bounds when two score functions are close [almost everywhere](jargon_almost_everywhere.md).
 
 Exact equality section:
 - If two score functions are equal almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)), then their population [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), and [standard deviation](jargon_standard_deviation.md) are equal.
@@ -10,7 +10,7 @@ Exact equality section:
 
 Approximate section:
 - Defines `ApproxInvarianceAE`: two score functions differ by at most epsilon almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)).
-- Defines `BoundedAE`: a uniform bound on a score function almost everywhere.
+- Defines `BoundedAE`: a uniform bound on a score function [almost everywhere](jargon_almost_everywhere.md).
 - Uses these to show that the difference in [means](jargon_mean.md) is at most epsilon.
 - Uses bounds to control the difference in second moments and [variances](jargon_variance.md).
 - Uses a square-root inequality to control the difference in [standard deviations](jargon_standard_deviation.md).

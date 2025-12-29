@@ -1,10 +1,10 @@
 # DeriveGEstimationAssumptions.lean
 
-This file gives a short route from "the parameter estimates [converge](jargon_convergence.md)" to the assumptions used later about plug-in moments.
+This file gives a short route from "the [parameter](jargon_parameter.md) estimates [converge](jargon_convergence.md)" to the assumptions used later about plug-in moments.
 
 What it does:
 - Assumes a parameter sequence `theta_hat` converges to a true value `theta0` (see [convergence](jargon_convergence.md) and [parameter](jargon_parameter.md)).
-- Assumes the population [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) as functions of the parameter are continuous at `theta0`.
+- Assumes the population [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) as functions of the [parameter](jargon_parameter.md) are continuous at `theta0`.
 - Concludes the bundled `GEstimationAssumptions` needed for plug-in [consistency](jargon_consistency.md).
 
 Key steps:

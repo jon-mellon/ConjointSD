@@ -3,7 +3,7 @@
 This file formalizes what happens when you replace a true score function `g theta0` with an estimated one `g (theta_hat n)`.
 
 Key definitions:
-- `gHat` is the plug-in score: it takes the parameter estimate at step `n` and applies `g`.
+- `gHat` is the plug-in score: it takes the [parameter](jargon_parameter.md) estimate at step `n` and applies `g`.
 - `GEstimationAssumptions` is the main assumption package. It says the population [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) of the plug-in score [converge](jargon_convergence.md) to the population values of the true score.
 
 Key results:

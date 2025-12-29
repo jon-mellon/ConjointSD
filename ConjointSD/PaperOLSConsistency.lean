@@ -80,6 +80,44 @@ theorem theta_tendsto_of_paper_ols_moments_ae
       (θ0 := θ0)
       hω)
 
+omit [IsProbabilityMeasure μ] in
+theorem GEstimationAssumptions_of_paper_ols_moments_ae
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hMom : PaperOLSMomentAssumptions
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      θ0 Aω Yobsω)
+    (hCont :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0) :
+    ∀ᵐ ω ∂μ,
+      GEstimationAssumptions
+        (ν := ν)
+        (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0
+        (fun n =>
+          olsThetaHat
+            (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n) := by
+  refine (theta_tendsto_of_paper_ols_moments_ae
+    (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+    (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω) hMom).mono ?_
+  intro ω hθ
+  exact
+    GEstimationAssumptions_of_theta_tendsto
+      (ν := ν)
+      (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+      (θ0 := θ0)
+      (θhat := fun n =>
+        olsThetaHat
+          (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          n)
+      hθ
+      hCont
+
 omit [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] in
 theorem theta_tendsto_of_paper_ols_moments
     (θ0 : PaperTerm Main Inter → ℝ)

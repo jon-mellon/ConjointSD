@@ -8,13 +8,13 @@ Section 1: identification
 Section 2: model to blocks
 - Wraps the result that a well-specified linear model implies the causal score equals the sum of block scores (see [linear model](jargon_linear_model.md) and [block](jargon_block.md)).
 
-Section 3: sequential [standard deviation](jargon_standard_deviation.md) consistency
+Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md)
 - Provides paper-facing statements that block [standard deviations](jargon_standard_deviation.md) and total standard deviation are sequentially consistent (see [sequential consistency](jargon_sequential_consistency.md) and [consistency](jargon_consistency.md)).
-- Uses the "Route 2" bridge: parameter [convergence](jargon_convergence.md) plus continuity implies the plug-in moment assumptions.
+- Uses the "Route 2" bridge: [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) plus continuity implies the plug-in moment assumptions.
 - Includes bounded variants.
 
 Section 4: targeting the true estimand
-- Adds a separate assumption that the model score equals the true target almost everywhere, then concludes the population [standard deviations](jargon_standard_deviation.md) are equal.
+- Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the population [standard deviations](jargon_standard_deviation.md) are equal.
 - Provides an approximate version where the scores are within epsilon, giving an explicit [standard deviation](jargon_standard_deviation.md) error bound.
 
 Section 4c: link to the causal estimand

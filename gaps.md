@@ -1,31 +1,27 @@
-Gaps in the formal proof relative to the paper’s causal identification and consistency claims
+Gaps in the formal proof relative to the paper’s causal identification and [consistency](readable/jargon_consistency.md) claims
 ==========================================================================================
 
 1) Conjoint identification now derived from a design schema and tied to the status survey (ConjointIdentification.lean, StatusConjointDesign.lean, PaperWrappers.lean)  
-   - Added `ConjointSingleShotDesign`: gives a law `ν` for `X` with positive singleton mass, bounded/measurable outcomes, consistency, and ignorability. Lemmas `integrable_of_bounded`, `ConjointIdRandomized.of_singleShot`, and `rand_from_randomized` derive the factorization and `ConjointIdAssumptions` from these design facts. `paper_identifies_*` now hinges on this derived path.  
-   - Instantiated the fielded status conjoint: 8,500-persona uniform assignment over four task slots, measurability/ignorability/boundedness proofs, and `status_id_randomized` producing the concrete `ConjointIdRandomized` assumptions.  
+   - Added `ConjointSingleShotDesign`: gives a law `ν` for `X` with positive singleton mass, bounded/[measurable](readable/jargon_measurable.md) outcomes, [consistency](readable/jargon_consistency.md), and ignorability. Lemmas `integrable_of_bounded`, `ConjointIdRandomized.of_singleShot`, and `rand_from_randomized` derive the factorization and `ConjointIdAssumptions` from these design facts. `paper_identifies_*` now hinges on this derived path.  
+   - Instantiated the fielded status conjoint: 8,500-persona uniform assignment over four task slots, [measurability](readable/jargon_measurable.md)/ignorability/boundedness proofs, and `status_id_randomized` producing the concrete `ConjointIdRandomized` assumptions.  
    - Remaining work (if needed for other surveys): replicate this instantiation for any other conjoint designs (e.g., non-status arms) and thread them through the paper-facing wrappers.
 
-2) Population process for attributes is assumed i.i.d. without justification (SDDecompositionFromConjoint.lean, SampleSplitting.lean)  
-   - PopIID requires pairwise independence and identical distribution of the attribute draws A i, but the conjoint has respondent-level clustering and finite attribute pools. No proof that survey design or resampling yields these properties.  
-   - To fix: Model respondent/task structure, show exchangeability/independence under the actual sampling and randomization, or replace with a dependence-aware convergence result (e.g., triangular arrays, martingale SLLN).
+2) [Population](readable/jargon_population.md) process for attributes is assumed [i.i.d.](readable/jargon_iid.md) without justification (SDDecompositionFromConjoint.lean, SampleSplitting.lean)  
+   - PopIID requires pairwise [independence](readable/jargon_independent.md) and [identical distribution](readable/jargon_identically_distributed.md) of the attribute draws A i, but the conjoint has respondent-level clustering and finite attribute pools. No proof that survey design or resampling yields these properties.  
+   - To fix: Model respondent/task structure, show exchangeability/[independence](readable/jargon_independent.md) under the actual sampling and randomization, or replace with a dependence-aware [convergence](readable/jargon_convergence.md) result (e.g., triangular arrays, martingale SLLN).
 
-3) No link from the estimator used in the paper to θ̂ convergence assumptions (EstimatedG.lean, RegressionConsistencyBridge.lean, DeriveGEstimationAssumptions.lean)  
-   - GEstimationAssumptions (mean/m2 convergence of g(θ̂n)) are taken as hypotheses; there is no definition of the paper’s estimator θ̂, nor conditions (regularity, rate, sample splitting, concentration) showing θ̂ → θ0.  
-   - To fix: Define the actual estimator (e.g., OLS/GLM on the conjoint), prove its consistency and moment convergence under the design, then instantiate GEstimationAssumptions.
-   - **Plan (for full paper-specific end-to-end proof):**
-     1) Formalize the estimator used in the paper (e.g., linear model / GLM with the term set in ModelBridge) as a function producing `θhat : ℕ → Θ`.
-     2) State and prove consistency `θhat → θ0` under the conjoint design (using identifiability + regularity + sampling assumptions).
-     3) Prove continuity/regularity of the population functionals at θ0 (or reuse boundedness + continuity lemmas).
-     4) Discharge `GEstimationAssumptions` via `DeriveGEstimationAssumptions` and thread into the paper-facing consistency theorems.
+3) Link the paper [estimator](readable/jargon_estimator.md) to θ̂ [convergence](readable/jargon_convergence.md) assumptions (EstimatedG.lean, RegressionConsistencyBridge.lean, DeriveGEstimationAssumptions.lean, RegressionEstimator.lean, PaperOLSConsistency.lean)  
+   - **Now added:** an [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) (normal equations) with empirical Gram/cross moments, [population](readable/jargon_population.md) analogs, and a [consistency](readable/jargon_consistency.md) theorem showing `θhat → θ0` from entrywise Gram/cross [convergence](readable/jargon_convergence.md) (`RegressionEstimator.lean`).  
+   - **Now added:** paper-specific wrappers targeting the causal estimand `gStar` using the paper [term](readable/jargon_term.md) set (`PaperOLSConsistency.lean`), including an [a.e.](readable/jargon_almost_everywhere.md) moment package and [a.e.](readable/jargon_almost_everywhere.md) `GEstimationAssumptions` bridge.  
+   - Remaining gap: instantiate the LLN/identifiability assumptions (`PaperOLSMomentAssumptions`) from the actual status-conjoint sampling scheme (and any other arms), then supply continuity at `θ0` and thread the resulting `GEstimationAssumptions` into the paper-facing [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) results.
 
-3.5) Assumptions that drive SD consistency (map to Lean statements)  
-   - SDDecompositionFromConjoint: `PopIID` (i.i.d.-type draws of A i), `ScoreAssumptions` (measurability + integrability of g(A0), g(A0)^2).  
+3.5) Assumptions that drive [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) (map to Lean statements)  
+   - SDDecompositionFromConjoint: `PopIID` ([i.i.d.](readable/jargon_iid.md)-type draws of A i), `ScoreAssumptions` ([measurability](readable/jargon_measurable.md) + [integrability](readable/jargon_integral.md) of g(A0), g(A0)^2).  
    - OracleSDConsistency: requires `ScoreAssumptions` and `Measure.map (A 0) μ = ν` to target `popSDAttr ν g`.  
-   - SampleSplitting: `SplitEvalAssumptions` for the fixed-m plug-in score `gHat g θhat m` (reuses `ScoreAssumptions`, adds measurability of A 0).  
-   - EstimatedG: `GEstimationAssumptions` (mean and second-moment convergence for `g (θhat n)` under ν).  
+   - SampleSplitting: `SplitEvalAssumptions` for the fixed-m plug-in score `gHat g θhat m` (reuses `ScoreAssumptions`, adds [measurability](readable/jargon_measurable.md) of A 0).  
+   - EstimatedG: `GEstimationAssumptions` ([mean](readable/jargon_mean.md) and [second-moment](readable/jargon_second_moment.md) [convergence](readable/jargon_convergence.md) for `g (θhat n)` under ν).  
    - RegressionConsistencyBridge + FunctionalContinuityAssumptions: a route to discharge `GEstimationAssumptions` via `θhat → θ0` and continuity of `popMeanAttr` / `popM2Attr`.  
-   - SequentialConsistency + DecompositionSequentialConsistency: bundles the above into the sequential SD consistency statement used in `PaperWrappers`.
+   - SequentialConsistency + DecompositionSequentialConsistency: bundles the above into the [sequential consistency](readable/jargon_sequential_consistency.md) [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) statement used in `PaperWrappers`.
    - Exact Lean statements (see `Scratch.lean`):
      - `PopIID`:
        ```lean
@@ -88,19 +84,19 @@ Gaps in the formal proof relative to the paper’s causal identification and con
        `paper_sd_total_sequential_consistency_ae_of_bounded`,
        `paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded`.
 
-4) Block/term well-specification is assumed, not proved (ModelBridge.lean, WellSpecifiedFromNoInteractions.lean, TrueBlockEstimand.lean, PaperCoreEstimand.lean)  
-   - **Added:** explicit encoding of the paper’s regression: term set `PaperTerm` (intercept + main effects + listed interactions), coefficient/feature maps `βPaper`/`φPaper`, and assumptions `ParametricMainInteractions` in ModelBridge. `wellSpecified_of_parametricMainInteractions` and `gStar_eq_sum_blocks_of_parametricMainInteractions` now let us discharge well-specification and bridge to block sums once we provide the actual regression features/coefs and term→block map.  
-   - **Added:** approximation-bound variant: `ApproxWellSpecified`/`ApproxWellSpecifiedAE` in ModelBridge, plus `ApproxInvarianceAE`/`BoundedAE` and popSD error bounds in TargetEquivalence, with paper-facing wrappers for approximate block/total SD targets in PaperWrappers.  
-   - Remaining gap: instantiate `β0`, `βMain`, `βInter`, `fMain`, `fInter`, and the paper’s block map for the status conjoint (and any other arms), and supply concrete bounds (C, δ) or var nonnegativity needed to apply the approximation lemmas.
+4) [Block](readable/jargon_block.md)/[term](readable/jargon_term.md) well-specification is assumed, not proved (ModelBridge.lean, WellSpecifiedFromNoInteractions.lean, TrueBlockEstimand.lean, PaperCoreEstimand.lean)  
+   - **Added:** explicit encoding of the paper’s [regression](readable/jargon_regression.md): [term](readable/jargon_term.md) set `PaperTerm` (intercept + main effects + listed interactions), coefficient/feature maps `βPaper`/`φPaper`, and assumptions `ParametricMainInteractions` in ModelBridge. `wellSpecified_of_parametricMainInteractions` and `gStar_eq_sum_blocks_of_parametricMainInteractions` now let us discharge well-specification and bridge to [block](readable/jargon_block.md) sums once we provide the actual [regression](readable/jargon_regression.md) features/coefs and [term](readable/jargon_term.md)→[block](readable/jargon_block.md) map.  
+   - **Added:** approximation-bound variant: `ApproxWellSpecified`/`ApproxWellSpecifiedAE` in ModelBridge, plus `ApproxInvarianceAE`/`BoundedAE` and popSD error bounds in TargetEquivalence, with paper-facing wrappers for approximate [block](readable/jargon_block.md)/total [SD](readable/jargon_standard_deviation.md) targets in PaperWrappers.  
+   - Remaining gap: instantiate `β0`, `βMain`, `βInter`, `fMain`, `fInter`, and the paper’s [block](readable/jargon_block.md) map for the status conjoint (and any other arms), and supply concrete bounds (C, δ) or [variance](readable/jargon_variance.md) nonnegativity needed to apply the approximation lemmas.
 
-5) Sequential consistency proofs do not connect to the paper’s sampling/estimation workflow (SequentialConsistency.lean, DecompositionSequentialConsistency.lean, PaperWrappers.lean)  
-   - Sequential results require SplitEvalAssumptions (i.i.d. eval sample, integrability) and GEstimationAssumptions but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).  
+5) [Sequential consistency](readable/jargon_sequential_consistency.md) proofs do not connect to the paper’s sampling/estimation workflow (SequentialConsistency.lean, DecompositionSequentialConsistency.lean, PaperWrappers.lean)  
+   - Sequential results require SplitEvalAssumptions ([i.i.d.](readable/jargon_iid.md) eval sample, [integrability](readable/jargon_integral.md)) and `GEstimationAssumptions` but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).  
    - To fix: Formalize the training/evaluation split used in the paper, show the assumptions hold for that procedure, and state rates or limits for the specific m,n regimes relevant to the data size.
 
-6) Survey weights and finite-population targets were missing  
-   - **Added:** weighted population estimands (`weightMeanAttr`, `weightM2Attr`, `weightVarAttr`, `weightSDAttr`) plus finite-population targets (`finitePopMean`/`finitePopSD`) in SurveyWeights. This lets existing consistency/identification results be reused by swapping in the weighted/finite-pop targets.  
-   - Remaining gap: instantiate the actual survey weights/nonresponse model for the status study and prove the required weighting assumptions (e.g., mass positivity, integrability) or link the weighted targets to a specific sampling design.
+6) Survey weights and finite-[population](readable/jargon_population.md) targets were missing  
+   - **Added:** weighted [population](readable/jargon_population.md) estimands (`weightMeanAttr`, `weightM2Attr`, `weightVarAttr`, `weightSDAttr`) plus finite-[population](readable/jargon_population.md) targets (`finitePopMean`/`finitePopSD`) in SurveyWeights. This lets existing [consistency](readable/jargon_consistency.md)/identification results be reused by swapping in the weighted/finite-pop targets.  
+   - Remaining gap: instantiate the actual survey weights/nonresponse model for the status study and prove the required weighting assumptions (e.g., mass positivity, [integrability](readable/jargon_integral.md)) or link the weighted targets to a specific sampling design.
 
-7) Main SD estimator now defined, but not instantiated for the status conjoint  
-   - **Added:** `paperTotalSDEst` (evaluation-stage SD estimator for the term-induced total score) and an end-to-end sequential-consistency wrapper `paper_total_sd_estimator_consistency_ae_of_gBTerm` in PaperCoreEstimand. This ties the estimator to the paper’s total SD target under coefficient identification and the sequential-consistency assumptions.  
-   - Remaining gap: specialize the theorem to the status conjoint by instantiating the paper’s term set, block map, features, and coefficient map (`blk`, `φ`, `βOf`, `β0`) and by proving the SplitEvalAssumptions / continuity / convergence hypotheses from the design.
+7) Main [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md) now defined, but not instantiated for the status conjoint  
+   - **Added:** `paperTotalSDEst` (evaluation-stage [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md) for the [term](readable/jargon_term.md)-induced total score) and an end-to-end [sequential consistency](readable/jargon_sequential_consistency.md) wrapper `paper_total_sd_estimator_consistency_ae_of_gBTerm` in PaperCoreEstimand. This ties the [estimator](readable/jargon_estimator.md) to the paper’s total [SD](readable/jargon_standard_deviation.md) target under coefficient identification and the [sequential consistency](readable/jargon_sequential_consistency.md) assumptions.  
+   - Remaining gap: specialize the theorem to the status conjoint by instantiating the paper’s [term](readable/jargon_term.md) set, [block](readable/jargon_block.md) map, features, and coefficient map (`blk`, `φ`, `βOf`, `β0`) and by proving the SplitEvalAssumptions / continuity / [convergence](readable/jargon_convergence.md) hypotheses from the design.

@@ -1,6 +1,6 @@
 # PopulationBridge.lean
 
-This file connects averages computed on the population probability space to averages computed under the attribute distribution `nu`.
+This file connects averages computed on the population probability space to averages computed under the attribute [distribution](jargon_distribution.md) `nu`.
 
 Setup:
 - `A 0` is a random attribute draw on a big probability space with distribution `nu` (see [distribution](jargon_distribution.md)).

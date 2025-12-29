@@ -1,0 +1,3 @@
+# Normalization
+
+Normalization rescales something so it has a standard total, often 1. In weighted averages, you divide by the total weight so the result is on the same scale as an ordinary average.

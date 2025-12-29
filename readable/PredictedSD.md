@@ -13,4 +13,4 @@ Main results:
 - These two converge results are combined to show `varHatZ` [converges](jargon_convergence.md) to `popVarZ`.
 - By continuity of the square root, `sdHatZ` [converges](jargon_convergence.md) to `popSDZ`.
 
-In short, the file formalizes the standard "sample [standard deviation](jargon_standard_deviation.md) [converges](jargon_convergence.md) to population SD" result under IID conditions.
+In short, the file formalizes the standard "sample [standard deviation](jargon_standard_deviation.md) [converges](jargon_convergence.md) to population SD" result under [IID](jargon_iid.md) conditions.

@@ -15,6 +15,8 @@ import ConjointSD.PaperWrappers
 import ConjointSD.TrueBlockEstimand
 import ConjointSD.TermModelBlocks
 import ConjointSD.RegressionConsistencyBridge
+import ConjointSD.RegressionEstimator
+import ConjointSD.PaperOLSConsistency
 import ConjointSD.FunctionalContinuityAssumptions
 import ConjointSD.PaperCoreEstimand
 import ConjointSD.WellSpecifiedFromNoInteractions

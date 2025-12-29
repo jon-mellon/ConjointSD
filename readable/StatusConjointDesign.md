@@ -9,9 +9,9 @@ What it sets up:
 - The sample space is respondent x task slot x randomized profile.
 
 Key constructions:
-- `nuStatus`: the uniform distribution over the 8,500 profiles.
-- `muTask` and `muRT`: distributions over task slots and respondent-task pairs.
-- `muStatus`: the product distribution over respondent-task and profile.
+- `nuStatus`: the uniform [distribution](jargon_distribution.md) over the 8,500 profiles.
+- `muTask` and `muRT`: [distributions](jargon_distribution.md) over task slots and respondent-task pairs.
+- `muStatus`: the product [distribution](jargon_distribution.md) over respondent-task and profile.
 - `statusX`: the assigned profile (projection from the product space).
 - `statusY` and `statusYobs`: potential and observed outcomes on this space.
 
