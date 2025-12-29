@@ -1,3 +1,5 @@
+import ConjointSD.Defs
+import ConjointSD.Assumptions
 import ConjointSD.PredictedSD
 import ConjointSD.SDDecompositionFromConjoint
 import ConjointSD.VarianceDecompositionFromBlocks

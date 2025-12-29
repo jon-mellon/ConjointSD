@@ -10,7 +10,7 @@ Core definitions:
 - `potMean`: the [mean](jargon_mean.md) of a [potential outcome](jargon_potential_outcome.md) under profile `x`.
 - `amce`: the difference in potential [means](jargon_mean.md) between two [profiles](jargon_profile.md).
 
-Assumption bundles:
+Assumption bundles (defined in `ConjointSD/Assumptions.lean`):
 - `ConjointIdAssumptions` collects [measurability](jargon_measurable.md), a condition that observed outcomes equal the potential outcomes for the assigned profile, positivity of assignment, and a factorization that expresses random assignment.
 - `ConjointIdRandomized` is a stronger, more explicit random-assignment package using [independence](jargon_independent.md).
 - `ConjointSingleShotDesign` describes the one-shot conjoint design with a specified assignment [distribution](jargon_distribution.md), bounded outcomes, and [independence](jargon_independent.md).

@@ -118,7 +118,7 @@ private theorem abs_sqrt_sub_sqrt_le_sqrt_abs_sub
   have hsum_nonneg : 0 ≤ Real.sqrt a + Real.sqrt b := by
     nlinarith [Real.sqrt_nonneg a, Real.sqrt_nonneg b]
   have hsum_abs : |Real.sqrt a + Real.sqrt b| = Real.sqrt a + Real.sqrt b := by
-    simpa [abs_of_nonneg hsum_nonneg]
+    simp [abs_of_nonneg hsum_nonneg]
   have hfactor :
       |a - b|
         =
@@ -133,7 +133,9 @@ private theorem abs_sqrt_sub_sqrt_le_sqrt_abs_sub
                 simp [Real.sq_sqrt ha, Real.sq_sqrt hb]
         _   = (Real.sqrt a - Real.sqrt b) * (Real.sqrt a + Real.sqrt b) := by
                 ring
-    simpa [h, abs_mul] using congrArg abs h
+    have h' := congrArg abs h
+    simp [abs_mul] at h'
+    exact h'
   have hle_sum : |Real.sqrt a - Real.sqrt b| ≤ Real.sqrt a + Real.sqrt b := by
     have h := abs_add_le (Real.sqrt a) (-Real.sqrt b)
     simpa [sub_eq_add_neg, abs_neg, abs_of_nonneg (Real.sqrt_nonneg _)] using h
@@ -156,7 +158,7 @@ private theorem abs_sqrt_sub_sqrt_le_sqrt_abs_sub
               simp [pow_two]
       _   ≤ |Real.sqrt a - Real.sqrt b| * (Real.sqrt a + Real.sqrt b) := hmul
       _   = |Real.sqrt a - Real.sqrt b| * |Real.sqrt a + Real.sqrt b| := hmul'
-      _   = |a - b| := by simpa [hfactor]
+      _   = |a - b| := by simp [hfactor]
   calc
     |Real.sqrt a - Real.sqrt b|
         = Real.sqrt ((|Real.sqrt a - Real.sqrt b|) ^ 2) := by

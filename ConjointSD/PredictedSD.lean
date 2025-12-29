@@ -1,4 +1,4 @@
-import Mathlib
+import ConjointSD.Assumptions
 
 open scoped BigOperators
 open Filter MeasureTheory ProbabilityTheory
@@ -8,45 +8,6 @@ namespace ConjointSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μ : Measure Ω)
-
-/-- Empirical mean: (1/n) • ∑_{i<n} Z i ω. -/
-def meanHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  ((n : ℝ)⁻¹) • (Finset.sum (Finset.range n) fun i => Z i ω)
-
-/-- Empirical second moment: (1/n) • ∑_{i<n} (Z i ω)^2. -/
-def m2HatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  ((n : ℝ)⁻¹) • (Finset.sum (Finset.range n) fun i => (Z i ω) ^ 2)
-
-/-- Plug-in empirical variance proxy: m2Hat - (meanHat)^2. -/
-def varHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  m2HatZ (Z := Z) n ω - (meanHatZ (Z := Z) n ω) ^ 2
-
-/-- Plug-in empirical SD proxy: √(varHat). -/
-def sdHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  Real.sqrt (varHatZ (Z := Z) n ω)
-
-/-- Population mean: ∫ Z 0 dμ. -/
-def popMeanZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  ∫ ω, Z 0 ω ∂μ
-
-/-- Population second moment: ∫ (Z 0)^2 dμ. -/
-def popM2Z (Z : ℕ → Ω → ℝ) : ℝ :=
-  ∫ ω, (Z 0 ω) ^ 2 ∂μ
-
-/-- Population variance proxy: E[Z^2] - (E[Z])^2. -/
-def popVarZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  popM2Z (μ := μ) Z - (popMeanZ (μ := μ) Z) ^ 2
-
-/-- Population SD proxy: √(popVar). -/
-def popSDZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (popVarZ (μ := μ) Z)
-
-/-- IID + moment assumptions for applying the strong law to Z and Z^2. -/
-structure IIDAssumptions (Z : ℕ → Ω → ℝ) : Prop where
-  intZ  : Integrable (Z 0) μ
-  indep : Pairwise (fun i j => IndepFun (Z i) (Z j) μ)
-  ident : ∀ i, IdentDistrib (Z i) (Z 0) μ μ
-  intZ2 : Integrable (fun ω => (Z 0 ω) ^ 2) μ
 
 /-- Measurable squaring map on ℝ. -/
 lemma measurable_sq : Measurable (fun x : ℝ => x ^ 2) := by

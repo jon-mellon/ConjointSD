@@ -6,15 +6,20 @@ This map summarizes each `.lean` file and how it connects to the rest of the pro
 
 - [ConjointSD.lean](ConjointSD.lean) imports the main theory files in a single module for downstream use.
 
+## Shared definitions and assumptions
+
+- [ConjointSD/Defs.lean](ConjointSD/Defs.lean) centralizes core definitions used across the project ([population](readable/jargon_population.md)/empirical moments, plug-in scores, [OLS](readable/jargon_ols.md) helpers, and conjoint primitives).
+- [ConjointSD/Assumptions.lean](ConjointSD/Assumptions.lean) collects all assumption bundles (transport, [IID](readable/jargon_iid.md)/score, [regression](readable/jargon_regression.md)/[OLS](readable/jargon_ols.md), identification, and paper-specific packages).
+
 ## Core probability/SD machinery
 
 - [ConjointSD/PredictedSD.lean](ConjointSD/PredictedSD.lean) defines empirical/[population](readable/jargon_population.md) [mean](readable/jargon_mean.md), [second moment](readable/jargon_second_moment.md), [variance](readable/jargon_variance.md), and [SD](readable/jargon_standard_deviation.md) for a real-valued process; proves SLLN-based [consistency](readable/jargon_consistency.md) `sdHatZ -> popSDZ`.
-- [ConjointSD/SDDecompositionFromConjoint.lean](ConjointSD/SDDecompositionFromConjoint.lean) lifts `PredictedSD` to conjoint scores: defines [population](readable/jargon_population.md) [IID](readable/jargon_iid.md) assumptions for attributes, score assumptions, and [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) for single scores and [block](readable/jargon_block.md) families.
+- [ConjointSD/SDDecompositionFromConjoint.lean](ConjointSD/SDDecompositionFromConjoint.lean) lifts `PredictedSD` to conjoint scores and proves [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) for single scores and [block](readable/jargon_block.md) families using assumption bundles from `Assumptions.lean`.
 - [ConjointSD/VarianceDecompositionFromBlocks.lean](ConjointSD/VarianceDecompositionFromBlocks.lean) defines [block](readable/jargon_block.md)-total scores and proves a [variance](readable/jargon_variance.md) proxy decomposition into sums of [covariances](readable/jargon_covariance.md); relies on [block](readable/jargon_block.md) scores from `SDDecompositionFromConjoint`.
 
 ## Population targets and transport
 
-- [ConjointSD/Transport.lean](ConjointSD/Transport.lean) defines [population](readable/jargon_population.md) moment/[SD](readable/jargon_standard_deviation.md) functionals under a target [distribution](readable/jargon_distribution.md) `ν` and transport assumptions (`Overlap`, `InvarianceAE`).
+- [ConjointSD/Transport.lean](ConjointSD/Transport.lean) re-exports population functionals and transport assumptions now centralized in `Defs.lean`/`Assumptions.lean`.
 - [ConjointSD/PopulationBridge.lean](ConjointSD/PopulationBridge.lean) bridges moments under `μ` for `g(A0)` to moments under `ν` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
 - [ConjointSD/OracleSDConsistency.lean](ConjointSD/OracleSDConsistency.lean) restates [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) with the `popSDAttr ν g` target using `SDDecompositionFromConjoint` + `PopulationBridge`.
 - [ConjointSD/SurveyWeights.lean](ConjointSD/SurveyWeights.lean) adds weighted [population](readable/jargon_population.md) estimands and finite-[population](readable/jargon_population.md) targets; builds on `Transport`.
@@ -27,22 +32,22 @@ This map summarizes each `.lean` file and how it connects to the rest of the pro
 
 ## Estimation and sequential consistency
 
-- [ConjointSD/EstimatedG.lean](ConjointSD/EstimatedG.lean) defines plug-in score `gHat` and `GEstimationAssumptions` ([mean](readable/jargon_mean.md)/[second moment](readable/jargon_second_moment.md) [convergence](readable/jargon_convergence.md)); derives [variance](readable/jargon_variance.md)/[SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md); depends on `Transport`.
+- [ConjointSD/EstimatedG.lean](ConjointSD/EstimatedG.lean) derives [variance](readable/jargon_variance.md)/[SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) from `GEstimationAssumptions` (now in `Assumptions.lean`) and the plug-in score `gHat` (now in `Defs.lean`).
 - [ConjointSD/SampleSplitting.lean](ConjointSD/SampleSplitting.lean) proves evaluation-stage [SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) for fixed training index `m` using `OracleSDConsistency` and `EstimatedG`.
 - [ConjointSD/SequentialConsistency.lean](ConjointSD/SequentialConsistency.lean) defines `sdEst`, training error, and total error; proves [sequential consistency](readable/jargon_sequential_consistency.md) (m then n) using `SampleSplitting` and `EstimatedG`.
 - [ConjointSD/DecompositionSequentialConsistency.lean](ConjointSD/DecompositionSequentialConsistency.lean) lifts [sequential consistency](readable/jargon_sequential_consistency.md) to [block](readable/jargon_block.md) scores and total scores (single `M` for all blocks); uses `SequentialConsistency`, `SampleSplitting`, `EstimatedG`, and `Transport`.
 
 ## [Regression](readable/jargon_regression.md)/continuity bridge (Route 2)
 
-- [ConjointSD/RegressionConsistencyBridge.lean](ConjointSD/RegressionConsistencyBridge.lean) introduces functional continuity assumptions and derives `GEstimationAssumptions` from `θhat -> θ0`; also provides [block](readable/jargon_block.md) versions.
+- [ConjointSD/RegressionConsistencyBridge.lean](ConjointSD/RegressionConsistencyBridge.lean) derives `GEstimationAssumptions` from `θhat -> θ0` and functional continuity assumptions defined in `Assumptions.lean`; also provides [block](readable/jargon_block.md) versions.
 - [ConjointSD/FunctionalContinuityAssumptions.lean](ConjointSD/FunctionalContinuityAssumptions.lean) provides helper lemmas to extract continuity and derive moment [convergence](readable/jargon_convergence.md) without relying on field names; builds on `RegressionConsistencyBridge` and `Transport`.
 - [ConjointSD/DeriveGEstimationAssumptions.lean](ConjointSD/DeriveGEstimationAssumptions.lean) thin wrappers that produce `GEstimationAssumptions` (and block versions) from `θhat -> θ0` + continuity; depends on `RegressionConsistencyBridge`.
-- [ConjointSD/RegressionEstimator.lean](ConjointSD/RegressionEstimator.lean) formalizes the [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) sequence and bridges [estimator](readable/jargon_estimator.md) [consistency](readable/jargon_consistency.md) to `GEstimationAssumptions`; uses `ModelBridge` and `RegressionConsistencyBridge`.
+- [ConjointSD/RegressionEstimator.lean](ConjointSD/RegressionEstimator.lean) formalizes the [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) sequence and bridges [estimator](readable/jargon_estimator.md) [consistency](readable/jargon_consistency.md) to `GEstimationAssumptions`; assumption packages now live in `Assumptions.lean`.
 - [ConjointSD/PaperOLSConsistency.lean](ConjointSD/PaperOLSConsistency.lean) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to `GEstimationAssumptions`.
 
 ## Model/[term](readable/jargon_term.md)/[block](readable/jargon_block.md) bridges
 
-- [ConjointSD/ModelBridge.lean](ConjointSD/ModelBridge.lean) defines [linear-model](readable/jargon_linear_model.md)-in-[terms](readable/jargon_term.md) score `gLin`, [block](readable/jargon_block.md) allocation `gBlockTerm`, and bridges well-specification/approximation to [block](readable/jargon_block.md) sums; includes the paper’s parametric [term](readable/jargon_term.md) set.
+- [ConjointSD/ModelBridge.lean](ConjointSD/ModelBridge.lean) defines [block](readable/jargon_block.md) allocation `gBlockTerm` and bridges well-specification/approximation to [block](readable/jargon_block.md) sums; core definitions (`gLin`, paper term set) are in `Defs.lean`, while well-specification assumptions live in `Assumptions.lean`.
 - [ConjointSD/WellSpecifiedFromNoInteractions.lean](ConjointSD/WellSpecifiedFromNoInteractions.lean) shows an additive/no-interactions causal estimand implies `WellSpecified` for a [linear model](readable/jargon_linear_model.md)-in-[terms](readable/jargon_term.md) model; depends on `ModelBridge`.
 - [ConjointSD/TermModelBlocks.lean](ConjointSD/TermModelBlocks.lean) defines the [block](readable/jargon_block.md)-score model `gBTerm` induced by [term](readable/jargon_term.md) coefficients; proves a [block](readable/jargon_block.md)-specification lemma; depends on `PaperWrappers` (for the wrapper APIs).
 - [ConjointSD/TrueBlockEstimand.lean](ConjointSD/TrueBlockEstimand.lean) defines the “true [block](readable/jargon_block.md) score” from a [term](readable/jargon_term.md) model and proves [convergence](readable/jargon_convergence.md) statements to those targets; depends on `TermModelBlocks` and [sequential consistency](readable/jargon_sequential_consistency.md) wrappers.

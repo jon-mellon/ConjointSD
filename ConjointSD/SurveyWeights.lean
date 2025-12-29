@@ -1,5 +1,4 @@
-import Mathlib
-import ConjointSD.Transport
+import ConjointSD.Assumptions
 
 open Filter MeasureTheory
 open scoped BigOperators
@@ -39,14 +38,6 @@ def weightVarAttr (ν : Measure Attr) (w s : Attr → ℝ) : ℝ :=
 /-- Weighted population SD under base measure `ν` with weights `w`. -/
 def weightSDAttr (ν : Measure Attr) (w s : Attr → ℝ) : ℝ :=
   Real.sqrt (weightVarAttr (ν := ν) w s)
-
-/-- Assumptions ensuring weighted moments are well-defined and nondegenerate. -/
-structure WeightAssumptions (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
-  nonneg : ∀ᵐ a ∂ν, 0 ≤ w a
-  intW   : Integrable w ν
-  intWs  : Integrable (fun a => w a * s a) ν
-  intWs2 : Integrable (fun a => w a * (s a) ^ 2) ν
-  mass_pos : 0 < ∫ a, w a ∂ν
 
 lemma weightMeanAttr_one
     (ν : Measure Attr) [IsProbabilityMeasure ν] (s : Attr → ℝ) :

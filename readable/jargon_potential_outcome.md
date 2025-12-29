@@ -3,3 +3,7 @@
 Lean entrypoint: [ConjointSD.lean](../ConjointSD.lean)
 
 A potential outcome is the outcome a unit would have under a specific [profile](jargon_profile.md) or treatment, even if that profile was not actually assigned. The files use this to define causal targets.
+
+Back to [jargon index](jargon_index.md).
+
+Back to [Lean docs index](lean_index.md).

@@ -1,4 +1,5 @@
 import ConjointSD.PredictedSD
+import ConjointSD.Assumptions
 
 open scoped BigOperators
 open Filter MeasureTheory ProbabilityTheory
@@ -10,23 +11,6 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μ : Measure Ω)
 
 variable {Attr : Type*} [MeasurableSpace Attr]
-
-/-- i.i.d.-type assumptions on the population-record process A. -/
-structure PopIID (A : ℕ → Ω → Attr) : Prop where
-  measA : ∀ i, Measurable (A i)
-  indepA : Pairwise (fun i j => IndepFun (A i) (A j) μ)
-  identA : ∀ i, IdentDistrib (A i) (A 0) μ μ
-
-/-- Induced real-valued process from population records via a scoring function g. -/
-def Zcomp (A : ℕ → Ω → Attr) (g : Attr → ℝ) : ℕ → Ω → ℝ :=
-  fun i ω => g (A i ω)
-
-/-- Sufficient conditions to use `sdHatZ_tendsto_ae` on the induced score process. -/
-structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) : Prop where
-  popiid : PopIID (μ := μ) A
-  meas_g : Measurable g
-  int_g0 : Integrable (fun ω => g (A 0 ω)) μ
-  int_g0_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μ
 
 /-!
 Simplification: bounded scores give the integrability assumptions automatically.
@@ -130,12 +114,6 @@ discharge the integrability requirements automatically.
 -/
 
 variable {B : Type*}
-
-/-- Bundle assumptions for all blocks at once. -/
-structure DecompAssumptions (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) : Prop where
-  popiid : PopIID (μ := μ) A
-  meas_g : ∀ b, Measurable (g b)
-  bound_g : ∀ b, ∃ C, 0 ≤ C ∧ ∀ a, |g b a| ≤ C
 
 /-- SD consistency for any chosen block b. -/
 theorem sd_block_consistent [IsProbabilityMeasure μ]

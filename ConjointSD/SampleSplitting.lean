@@ -9,6 +9,7 @@ function and apply the oracle SD consistency theorem.
 
 import ConjointSD.OracleSDConsistency
 import ConjointSD.EstimatedG
+import ConjointSD.Assumptions
 
 open Filter MeasureTheory ProbabilityTheory
 open scoped BigOperators
@@ -21,25 +22,6 @@ section
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
-
-/--
-Assumptions needed to evaluate the empirical SD of the score `gHat g θhat m`
-on draws `A n` from the evaluation process.
--/
-structure SplitEvalAssumptions
-    (μ : Measure Ω) (A : ℕ → Ω → Attr)
-    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
-  hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
-  hA0 : Measurable (A 0)
-
-structure SplitEvalAssumptionsBounded
-    (μ : Measure Ω) (A : ℕ → Ω → Attr)
-    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
-  hPop : PopIID (μ := μ) A
-  hMeas : Measurable (gHat g θhat m)
-  hBound : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
 
 lemma splitEvalAssumptions_of_bounded
     (μ : Measure Ω) [IsProbabilityMeasure μ]

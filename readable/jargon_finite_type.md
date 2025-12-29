@@ -3,3 +3,7 @@
 Lean entrypoint: [ConjointSD.lean](../ConjointSD.lean)
 
 A finite type is a type with only finitely many elements. This lets the code sum over all elements explicitly.
+
+Back to [jargon index](jargon_index.md).
+
+Back to [Lean docs index](lean_index.md).

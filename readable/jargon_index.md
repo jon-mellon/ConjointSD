@@ -1,0 +1,47 @@
+# Jargon index
+
+Lean helper pages with plain-language definitions.
+
+- [Almost everywhere (a.e.)](jargon_almost_everywhere.md)
+- [Block](jargon_block.md)
+- [Bridge](jargon_bridge.md)
+- [Conditional mean](jargon_conditional_mean.md)
+- [Consistency](jargon_consistency.md)
+- [Continuity](jargon_continuity.md)
+- [Convergence ("tends to")](jargon_convergence.md)
+- [Covariance](jargon_covariance.md)
+- [Discharge](jargon_discharge.md)
+- [Distribution (also called a measure)](jargon_distribution.md)
+- [Estimator](jargon_estimator.md)
+- [Finite type (Fintype)](jargon_finite_type.md)
+- [Identically distributed](jargon_identically_distributed.md)
+- [IID](jargon_iid.md)
+- [Independent](jargon_independent.md)
+- [Integrable](jargon_integrable.md)
+- [Integral](jargon_integral.md)
+- [Interaction](jargon_interaction.md)
+- [Lemma](jargon_lemma.md)
+- [Linear model](jargon_linear_model.md)
+- [Linear-in-terms](jargon_linear_in_terms.md)
+- [Mean (average)](jargon_mean.md)
+- [Measurable](jargon_measurable.md)
+- [Normalization](jargon_normalization.md)
+- [OLS (ordinary least squares)](jargon_ols.md)
+- [Oracle](jargon_oracle.md)
+- [Parameter](jargon_parameter.md)
+- [Plug-in](jargon_plug_in.md)
+- [Population (vs sample)](jargon_population.md)
+- [Potential outcome](jargon_potential_outcome.md)
+- [Profile](jargon_profile.md)
+- [Regression](jargon_regression.md)
+- [Second moment](jargon_second_moment.md)
+- [Sequential consistency](jargon_sequential_consistency.md)
+- [Standard deviation](jargon_standard_deviation.md)
+- [Term](jargon_term.md)
+- [Theorem](jargon_theorem.md)
+- [Variance](jargon_variance.md)
+- [Well-specified](jargon_well_specified.md)
+
+Back to [Lean docs index](lean_index.md).
+
+Back to [jargon index](jargon_index.md).

@@ -9,6 +9,7 @@ import ConjointSD.ModelBridge
 import ConjointSD.RegressionEstimator
 import ConjointSD.SDDecompositionFromConjoint
 import ConjointSD.PopulationBridge
+import ConjointSD.Assumptions
 
 open Filter MeasureTheory
 open scoped BigOperators
@@ -33,69 +34,6 @@ variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
 /-- Paper regression score with coefficients `θ` on the paper term set. -/
 def gPaper (θ : PaperTerm Main Inter → ℝ) : Attr → ℝ :=
   gLin (β := θ) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-
-/-!
-## LLN / full-rank assumptions for the paper OLS moment package
--/
-
-/-- Entrywise LLN for Gram and cross moments (deterministic sequence). -/
-structure PaperOLSLLNA
-    (A : ℕ → Attr) (Yobs : ℕ → ℝ) : Prop where
-  gram_tendsto :
-    ∀ i j,
-      Tendsto
-        (fun n =>
-          gramMatrix
-            (A := A)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-            n i j)
-        atTop
-        (nhds
-          (popGram
-            (ν := ν)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j))
-  cross_tendsto :
-    ∀ i,
-      Tendsto
-        (fun n =>
-          crossVec
-            (A := A) (Y := Yobs)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-            n i)
-        atTop
-        (nhds
-          (popCross
-            (ν := ν)
-            (g := gStar (μ := μ) (Y := Y))
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))
-
-/-- Stability assumption: inverse Gram entries converge to the inverse population Gram. -/
-structure PaperOLSInverseStability
-    (A : ℕ → Attr) : Prop where
-  gramInv_tendsto :
-    ∀ i j,
-      Tendsto
-        (fun n =>
-          (gramMatrix
-            (A := A)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-            n)⁻¹ i j)
-        atTop
-        (nhds
-          ((popGram
-            (ν := ν)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j))
-
-/-- Identifiability: the population normal equations determine `θ0`. -/
-def PaperOLSIdentifiability (θ0 : PaperTerm Main Inter → ℝ) : Prop :=
-  θ0 =
-    (popGram
-      (ν := ν)
-      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-      (popCross
-        (ν := ν)
-        (g := gStar (μ := μ) (Y := Y))
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
 
 omit [DecidableEq (PaperTerm Main Inter)] [IsProbabilityMeasure ν] in
 theorem paper_ols_lln_of_score_assumptions_ae
@@ -286,26 +224,6 @@ theorem paper_ols_lln_of_score_assumptions_ae
   exact { gram_tendsto := hgramω, cross_tendsto := hcrossω }
 
 variable {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-
-/--
-Moment assumptions for the paper OLS estimator at the sample-path level.
-
-This is the LLN/identifiability package: for almost every ω, the empirical Gram
-and cross moments converge to their population targets for `gStar`.
--/
-def PaperOLSMomentAssumptions
-    (μ : Measure Ω) (ν : Measure Attr)
-    (Y : Attr → Ω → ℝ)
-    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
-    (θ0 : PaperTerm Main Inter → ℝ)
-    (Aω : ℕ → Ω → Attr) (Yobsω : ℕ → Ω → ℝ) : Prop :=
-  ∀ᵐ ω ∂μ,
-    OLSMomentAssumptionsOfPop
-      (ν := ν)
-      (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
-      (g := gStar (μ := μ) (Y := Y))
-      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-      θ0
 
 omit [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] in
 theorem paper_ols_moment_assumptions_of_lln_fullrank_ae

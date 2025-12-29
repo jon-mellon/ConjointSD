@@ -1,16 +1,33 @@
 # ConjointSD
 
-## GitHub configuration
+ConjointSD is a Lean formalization of the standard deviation (SD) decomposition and
+consistency results used in conjoint analysis. It connects the paper's causal
+estimands to plug-in SD estimators, and organizes the supporting probability,
+transport, identification, and regression machinery.
 
-To set up your new GitHub repository, follow these steps:
+## Documentation indexes
 
-* Under your repository name, click **Settings**.
-* In the **Actions** section of the sidebar, click "General".
-* Check the box **Allow GitHub Actions to create and approve pull requests**.
-* Click the **Pages** section of the settings sidebar.
-* In the **Source** dropdown menu, select "GitHub Actions".
+- [Lean docs index](readable/lean_index.md): readable summaries of each Lean file.
+- [Jargon index](readable/jargon_index.md): short definitions of technical terms.
+- [Project map](project_map.md): dependency-oriented overview of the Lean modules.
+- [Proof gaps](gaps.md): known open gaps between the paper and the formalization.
 
-After following the steps above, you can remove this section from the README file.
+## What lives where
+
+- `ConjointSD/`: Lean sources for the formal results and definitions.
+- `readable/`: human-readable summaries and the jargon glossary.
+- `project_map.md`: quick map of how the Lean files relate.
+- `gaps.md`: checklist of remaining proof/assumption gaps.
+- `paper_highlights.md`: notes connecting the formalization to the paper narrative.
+
+## Main themes in the formalization
+
+- Probability and SD machinery: empirical vs population moments, SD consistency.
+- Conjoint identification: causal targets and observed conditional means.
+- Transport and population targets: mapping design-space moments to population SDs.
+- Estimation and sequential consistency: plug-in SD estimators with sample splitting.
+- Regression bridge: OLS consistency to plug-in moment convergence.
+- Block/term models: decomposing total scores into block-level SDs.
 
 ## Building with Lake
 

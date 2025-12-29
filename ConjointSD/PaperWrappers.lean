@@ -397,7 +397,8 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
       (hVarS := hVarS b) (hVarT := hVarT b)
   exact ⟨hCons, hEq⟩
 
-/- Total-score: sequential consistency + ν-a.e. ε-approximation yields convergence with an SD bound. -/
+/- Total-score: sequential consistency + ν-a.e. ε-approximation yields convergence with
+an SD bound. -/
 theorem paper_sd_total_sequential_consistency_to_approx_target_ae
     (hLaw : Measure.map (A 0) μ = ν)
     (hSplitTotal :

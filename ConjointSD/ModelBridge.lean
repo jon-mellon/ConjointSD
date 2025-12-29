@@ -1,6 +1,5 @@
-import Mathlib
 import ConjointSD.VarianceDecompositionFromBlocks
-import ConjointSD.ConjointIdentification
+import ConjointSD.Assumptions
 
 open scoped BigOperators
 open Filter MeasureTheory ProbabilityTheory
@@ -11,11 +10,6 @@ namespace ConjointSD
 /-!
 # Model bridge: from linear score models to block/component scores
 -/
-
-/-- An additive linear-in-terms score function. -/
-def gLin {Attr Term : Type*} [Fintype Term]
-    (β : Term → ℝ) (φ : Term → Attr → ℝ) : Attr → ℝ :=
-  fun a => ∑ t, β t * φ t a
 
 /--
 Block score defined by summing the terms assigned to block `b`.
@@ -64,39 +58,6 @@ theorem gLin_eq_gTotal_blocks
       _   = gLin (β := β) (φ := φ) a := by
               simp [gLin]
   simpa using h.symm
-
-/-!
-## Optional: connect to the conjoint causal estimand
--/
-
-/-- Conjoint causal estimand as a function of profiles: `g⋆ x = E[Y(x)]`. -/
-def gStar {Ω Attr : Type*} [MeasurableSpace Ω]
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
-  fun x => potMean (μ := μ) Y x
-
-/-- Well-specification: the causal estimand lies in the linear-in-terms model class. -/
-def WellSpecified
-    {Ω Attr Term : Type*}
-    [MeasurableSpace Ω] [Fintype Term]
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
-    (β : Term → ℝ) (φ : Term → Attr → ℝ) : Prop :=
-  ∀ x, gLin (β := β) (φ := φ) x = gStar (μ := μ) (Y := Y) x
-
-/-- Approximate well-specification: the estimand is within ε of the linear-in-terms model. -/
-def ApproxWellSpecified
-    {Ω Attr Term : Type*}
-    [MeasurableSpace Ω] [Fintype Term]
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
-    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ x, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
-
-/-- Approximate well-specification on population support (ν-a.e.). -/
-def ApproxWellSpecifiedAE
-    {Ω Attr Term : Type*}
-    [MeasurableSpace Ω] [MeasurableSpace Attr] [Fintype Term]
-    (ν : Measure Attr) (μ : Measure Ω) (Y : Attr → Ω → ℝ)
-    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
 
 /--
 If the estimand is well-specified by a linear-in-terms model, then it decomposes into blocks
@@ -199,35 +160,6 @@ variable {Ω Attr : Type*} [MeasurableSpace Ω]
 
 variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
 
-/-- Term set used in the paper: intercept, one term for each main effect, and one per interaction. -/
-abbrev PaperTerm (Main Inter : Type*) := Option (Sum Main Inter)
-
-/-- Coefficient map matching the paper’s term set. -/
-def βPaper (β0 : ℝ) (βMain : Main → ℝ) (βInter : Inter → ℝ) :
-    PaperTerm Main Inter → ℝ
-  | none => β0
-  | some (Sum.inl m) => βMain m
-  | some (Sum.inr i) => βInter i
-
-/-- Feature map matching the paper’s term set. -/
-def φPaper (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) :
-    PaperTerm Main Inter → Attr → ℝ
-  | none => fun _ => 1
-  | some (Sum.inl m) => fMain m
-  | some (Sum.inr i) => fInter i
-
-/--
-Assumption: the causal estimand is exactly the paper’s parametric model
-(`β0` + main effects + listed interactions).
--/
-def ParametricMainInteractions (μ : Measure Ω) (Y : Attr → Ω → ℝ)
-    (β0 : ℝ) (βMain : Main → ℝ) (βInter : Inter → ℝ)
-    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop :=
-  ∀ x,
-    gStar (μ := μ) (Y := Y) x
-      =
-    β0 + (∑ m, βMain m * fMain m x) + (∑ i, βInter i * fInter i x)
-
 /-- Expand `gLin` with the paper term set into intercept + main + interaction sums. -/
 theorem gLin_eq_parametric
     (β0 : ℝ) (βMain : Main → ℝ) (βInter : Inter → ℝ)
@@ -239,8 +171,7 @@ theorem gLin_eq_parametric
   classical
   -- Split the finite sum over `Option (Sum Main Inter)` into the three term types.
   -- `Fintype.sum_option` peels off the intercept; `Fintype.sum_sum_type` splits the Sum.
-  simp [gLin, βPaper, φPaper, Fintype.sum_option, Fintype.sum_sum_type,
-    add_assoc, add_comm, add_left_comm, mul_comm, mul_left_comm, mul_assoc, one_mul]
+  simp [gLin, βPaper, φPaper, Fintype.sum_option, Fintype.sum_sum_type, add_assoc]
 
 /--
 Parametric equality of `gStar` with the paper’s regression model implies well-specification

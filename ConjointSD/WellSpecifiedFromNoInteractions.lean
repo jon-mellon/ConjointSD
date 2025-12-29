@@ -12,6 +12,7 @@ This file is written against ConjointSD/ModelBridge.lean as provided:
 -/
 
 import ConjointSD.ModelBridge
+import ConjointSD.Assumptions
 
 open scoped BigOperators
 open Filter MeasureTheory ProbabilityTheory
@@ -21,28 +22,9 @@ namespace ConjointSD
 
 universe u v
 
-/-- Profiles are a product of all relevant attributes: `Attr := ∀ k, V k`. -/
-abbrev Profile (K : Type u) (V : K → Type v) : Type (max u v) :=
-  ∀ k : K, V k
-
 /-!
 ## “No interactions” as exact additivity of the conjoint estimand `gStar`
 -/
-
-/-- Additive form: `gStar x = μ0 + ∑ k, main k (x k)`. -/
-def AdditiveGStar
-    {Ω : Type*} [MeasurableSpace Ω]
-    {K : Type u} {V : K → Type v} [Fintype K]
-    (μ : Measure Ω) (Y : Profile K V → Ω → ℝ)
-    (μ0 : ℝ) (main : ∀ k : K, V k → ℝ) : Prop :=
-  ∀ x : Profile K V, gStar (μ := μ) (Y := Y) x = μ0 + ∑ k : K, main k (x k)
-
-/-- “No interactions”: there exist `μ0` and main effects `main` giving exact additivity. -/
-def NoInteractions
-    {Ω : Type*} [MeasurableSpace Ω]
-    {K : Type u} {V : K → Type v} [Fintype K]
-    (μ : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
-  ∃ (μ0 : ℝ) (main : ∀ k : K, V k → ℝ), AdditiveGStar (μ := μ) (Y := Y) μ0 main
 
 /-!
 ## Construct a linear-in-terms representation using `Term := Option K`

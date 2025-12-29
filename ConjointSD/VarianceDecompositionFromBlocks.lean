@@ -1,4 +1,5 @@
 import ConjointSD.SDDecompositionFromConjoint
+import ConjointSD.Assumptions
 
 open scoped BigOperators
 open Filter MeasureTheory ProbabilityTheory
@@ -23,11 +24,6 @@ def covRaw (X Y : Ω → ℝ) : ℝ :=
 /-- Variance proxy: E[X^2] - (E[X])^2. -/
 def varProxy (X : Ω → ℝ) : ℝ :=
   (∫ ω, (X ω) ^ 2 ∂μ) - (∫ ω, X ω ∂μ) ^ 2
-
-/-- Integrability assumptions for block functions and their products. -/
-structure BlockIntegrable (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) : Prop where
-  intX : ∀ b, Integrable (fun ω => g b (A 0 ω)) μ
-  intMul : ∀ b c, Integrable (fun ω => g b (A 0 ω) * g c (A 0 ω)) μ
 
 theorem varProxy_sum_eq_sum_covRaw
     (A : ℕ → Ω → Attr) (g : B → Attr → ℝ)

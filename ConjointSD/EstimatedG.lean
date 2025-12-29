@@ -9,7 +9,7 @@ population *mean* and *second moment* under ν when we replace oracle `g θ0` by
 and we *derive* variance and SD convergence from those.
 -/
 
-import ConjointSD.Transport
+import ConjointSD.Assumptions
 import Mathlib.Topology.Basic
 
 namespace ConjointSD
@@ -24,31 +24,6 @@ open MeasureTheory
 
 variable {Attr : Type u} [MeasurableSpace Attr]
 variable {Θ : Type v}
-
-/-- Plug-in (estimated) status function on attributes. -/
-def gHat (g : Θ → Attr → ℝ) (θhat : ℕ → Θ) (n : ℕ) : Attr → ℝ :=
-  fun a => g (θhat n) a
-
-/--
-Assumptions ensuring replacing oracle `g θ0` with estimated `g (θhat n)` does not change
-target population moments (under ν) in the limit.
-
-Minimal version: assume convergence of mean and second moment; derive var and sd.
--/
-structure GEstimationAssumptions
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
-    (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
-  mean_tendsto :
-      Tendsto
-        (fun n => popMeanAttr ν (gHat g θhat n))
-        atTop
-        (nhds (popMeanAttr ν (g θ0)))
-
-  m2_tendsto :
-      Tendsto
-        (fun n => popM2Attr ν (gHat g θhat n))
-        atTop
-        (nhds (popM2Attr ν (g θ0)))
 
 theorem popMeanAttr_tendsto_of_GEstimationAssumptions
     {ν : Measure Attr} [IsProbabilityMeasure ν]
