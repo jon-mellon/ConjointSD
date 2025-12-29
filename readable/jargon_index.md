@@ -27,6 +27,7 @@ Lean helper pages with plain-language definitions.
 - [Measurable](jargon_measurable.md)
 - [Normalization](jargon_normalization.md)
 - [OLS (ordinary least squares)](jargon_ols.md)
+- [Out-of-sample (held-out) error](jargon_out_of_sample.md)
 - [Oracle](jargon_oracle.md)
 - [Parameter](jargon_parameter.md)
 - [Plug-in](jargon_plug_in.md)

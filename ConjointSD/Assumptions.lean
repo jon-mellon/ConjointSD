@@ -25,44 +25,11 @@ structure PopulationMomentAssumptions (ν : Measure Attr) (s : Attr → ℝ) : P
   int2 : Integrable (fun a => (s a) ^ 2) ν
 
 /--
-Overlap/support condition between a population distribution `ν` and a design distribution `π`.
-
-`ν ≪ π` means: any set of attribute profiles that is impossible under the design is also
-impossible in the population (support of `ν` is contained in support of `π`).
--/
-structure Overlap (ν π : Measure Attr) : Prop where
-  absCont : ν ≪ π
-
-/--
-Pointwise invariance: the experiment-identified score `gExp` equals the population score `gPop`
-for *all* attribute profiles.
--/
-def Invariance (gExp gPop : Attr → ℝ) : Prop :=
-  ∀ x, gExp x = gPop x
-
-/--
 Invariance only on population support (AE under `ν`): `gExp = gPop` holds `ν`-almost everywhere.
 This is often the right minimal transport condition.
 -/
 def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
   ∀ᵐ x ∂ν, gExp x = gPop x
-
-/--
-Transport assumptions bundling:
-- population distribution `ν` (probability measure),
-- design distribution `π` (probability measure),
-- overlap `ν ≪ π`,
-- invariance on population support.
-
-This is stated without yet connecting `gExp` to your Step (1) identification file; that comes next.
--/
-structure TransportAssumptions
-    (ν π : Measure Attr)
-    (gExp gPop : Attr → ℝ) : Prop where
-  popProb : IsProbabilityMeasure ν
-  desProb : IsProbabilityMeasure π
-  overlap : Overlap ν π
-  invariance : InvarianceAE (ν := ν) gExp gPop
 
 end Transport
 

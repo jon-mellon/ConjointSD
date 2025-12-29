@@ -8,7 +8,7 @@ each package is asserting and why it matters.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
-Recent changes: minor refactors; statements unchanged.
+Recent changes: removed unused transport bundles and a block-decomposition package.
 
 ## Transport
 
@@ -19,22 +19,9 @@ Recent changes: minor refactors; statements unchanged.
   for defining [population](jargon_population.md) [mean](jargon_mean.md),
   [variance](jargon_variance.md), and
   [standard deviation](jargon_standard_deviation.md) targets.
-- `Overlap`: absolute continuity `ν ≪ π` between
-  [population](jargon_population.md) and design
-  [distributions](jargon_distribution.md).
-  Substantively, any attribute [profile](jargon_profile.md) with zero design
-  probability also has
-  zero [population](jargon_population.md) probability, so transport from design
-  to [population](jargon_population.md) is not extrapolating outside support.
-- `Invariance`: pointwise equality `gExp = gPop` for all attribute
-  [profiles](jargon_profile.md).
-  This is the strongest transport assumption: experimental and
-  [population](jargon_population.md) scores coincide everywhere.
-- `InvarianceAE`: almost-everywhere equality under `ν`. This weakens `Invariance`
-  to a support condition: equality only needs to hold on the
+- `InvarianceAE`: almost-everywhere equality under `ν`, i.e., the experimental and
+  [population](jargon_population.md) scores agree on the
   [population](jargon_population.md) support.
-- `TransportAssumptions`: bundles probability-measure status of `ν` and `π`,
-  `Overlap`, and `InvarianceAE` into a single package for transport arguments.
 
 ## PredictedSD
 
