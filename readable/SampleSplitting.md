@@ -5,7 +5,7 @@ Lean file: [ConjointSD/SampleSplitting.lean](../ConjointSD/SampleSplitting.lean)
 This file handles the evaluation stage in a sample-splitting setup.
 
 Key definitions:
-- `SplitEvalAssumptions` bundles the assumptions needed to treat the [plug-in](jargon_plug_in.md) score at training index `m` as fixed and apply the [oracle](jargon_oracle.md) [standard deviation](jargon_standard_deviation.md) [convergence](jargon_convergence.md) result.
+- `SplitEvalAssumptions` bundles the assumptions needed to treat the [plug-in](jargon_plug_in.md) score at training index `m` as fixed and apply the [oracle](jargon_oracle.md) [standard deviation](jargon_standard_deviation.md) [convergence](jargon_convergence.md) result; measurability of `A 0` is inherited from the bundled `PopIID`.
 - `SplitEvalAssumptionsBounded` is a boundedness-based version of the same assumptions.
 
 Main results:

@@ -35,7 +35,7 @@ lemma splitEvalAssumptions_of_bounded
     scoreAssumptions_of_bounded
       (μ := μ) (A := A) (g := gHat g θhat m)
       (hPop := h.hPop) (hMeas := h.hMeas) (hBound := h.hBound)
-  exact ⟨hScore, h.hPop.measA 0⟩
+  exact ⟨hScore⟩
 
 /--
 For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converges a.s.
@@ -58,7 +58,7 @@ theorem sdHat_fixed_m_tendsto_ae_popSDAttr
       (μ := μ) (A := A) (ν := Measure.map (A 0) μ)
       (g := gHat g θhat m)
       (hScore := h.hScore)
-      (hA0 := h.hA0)
+      (hA0 := h.hScore.popiid.measA 0)
       (hLaw := rfl))
 
 theorem sdHat_fixed_m_tendsto_ae_popSDAttr_of_bounded

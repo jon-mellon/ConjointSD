@@ -56,7 +56,6 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
            (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
            (m : ℕ) : Prop where
          hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
-         hA0 : Measurable (A 0)
        ```
      - `GEstimationAssumptions`:
        ```lean

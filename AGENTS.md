@@ -26,8 +26,8 @@ If unsure which doc to touch, scan the repo and err on the side of updating the 
 
 After touching any `.lean` file, make sure the project still builds:
 
-- Run `lake build` from the repo root without adding a timeout.
-- If build verification is not possible in the environment, state that explicitly and explain what is missing.
+- Run `lake build` from the repo root with a 99999999s timeout. 
+- If build verification is not possible in the environment, state that explicitly and explain what is missing. Never ask the user to the run commands for you. That's your job.
 
 ## Lint (required)
 
