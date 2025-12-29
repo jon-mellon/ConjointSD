@@ -15,8 +15,8 @@ Gaps in the formal proof relative to the paper’s causal identification and con
    - To fix: Define the actual estimator (e.g., OLS/GLM on the conjoint), prove its consistency and moment convergence under the design, then instantiate GEstimationAssumptions.
 
 4) Block/term well-specification is assumed, not proved (ModelBridge.lean, WellSpecifiedFromNoInteractions.lean, TrueBlockEstimand.lean, PaperCoreEstimand.lean)  
-   - “WellSpecified” and “trueBlockScore” presuppose the causal estimand lies exactly in the linear-in-terms model with the chosen block map. No argument that the paper’s specification or exclusion restrictions imply this.  
-   - To fix: Encode the paper’s parametric model (main effects/interactions actually estimated) and prove the causal estimand equals that model under stated assumptions, or relax theorems to approximation bounds.
+   - **Added:** explicit encoding of the paper’s regression: term set `PaperTerm` (intercept + main effects + listed interactions), coefficient/feature maps `βPaper`/`φPaper`, and assumptions `ParametricMainInteractions` in ModelBridge. `wellSpecified_of_parametricMainInteractions` and `gStar_eq_sum_blocks_of_parametricMainInteractions` now let us discharge well-specification and bridge to block sums once we provide the actual regression features/coefs and term→block map.  
+   - Remaining gap: instantiate `β0`, `βMain`, `βInter`, `fMain`, `fInter`, and the paper’s block map for the status conjoint (and any other arms), or add approximation bounds if exact equality to the regression surface is too strong.
 
 5) Sequential consistency proofs do not connect to the paper’s sampling/estimation workflow (SequentialConsistency.lean, DecompositionSequentialConsistency.lean, PaperWrappers.lean)  
    - Sequential results require SplitEvalAssumptions (i.i.d. eval sample, integrability) and GEstimationAssumptions but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).  
