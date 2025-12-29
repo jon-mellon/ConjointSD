@@ -1,5 +1,7 @@
 # FinalCleanEstimate.lean
 
+Lean file: [ConjointSD/FinalCleanEstimate.lean](../ConjointSD/FinalCleanEstimate.lean)
+
 This file packages the [plug-in](jargon_plug_in.md) [convergence](jargon_convergence.md) statements in clean, named forms.
 
 Key definitions:

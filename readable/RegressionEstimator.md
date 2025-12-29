@@ -1,5 +1,7 @@
 # RegressionEstimator.lean
 
+Lean file: [ConjointSD/RegressionEstimator.lean](../ConjointSD/RegressionEstimator.lean)
+
 This file formalizes an [OLS](jargon_ols.md)-style [regression](jargon_regression.md) [estimator](jargon_estimator.md) and the assumptions needed for its [consistency](jargon_consistency.md).
 
 Key pieces:

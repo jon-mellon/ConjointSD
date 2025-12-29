@@ -1,5 +1,7 @@
 # DeriveGEstimationAssumptions.lean
 
+Lean file: [ConjointSD/DeriveGEstimationAssumptions.lean](../ConjointSD/DeriveGEstimationAssumptions.lean)
+
 This file gives a short route from "the [parameter](jargon_parameter.md) estimates [converge](jargon_convergence.md)" to the assumptions used later about [plug-in](jargon_plug_in.md) moments.
 
 What it does:

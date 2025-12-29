@@ -1,5 +1,7 @@
 # TermModelBlocks.lean
 
+Lean file: [ConjointSD/TermModelBlocks.lean](../ConjointSD/TermModelBlocks.lean)
+
 This file defines how a term-level [linear model](jargon_linear_model.md) induces a block-level score model.
 
 Key definition:

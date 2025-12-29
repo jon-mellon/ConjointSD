@@ -1,5 +1,7 @@
 # FunctionalContinuityAssumptions.lean
 
+Lean file: [ConjointSD/FunctionalContinuityAssumptions.lean](../ConjointSD/FunctionalContinuityAssumptions.lean)
+
 This file turns [continuity](jargon_continuity.md) of [population](jargon_population.md) functionals into [convergence](jargon_convergence.md) of [plug-in](jargon_plug_in.md) population quantities.
 
 What it assumes:

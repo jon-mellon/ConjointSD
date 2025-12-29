@@ -1,5 +1,7 @@
 # PaperWrappers.lean
 
+Lean file: [ConjointSD/PaperWrappers.lean](../ConjointSD/PaperWrappers.lean)
+
 This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript.
 
 Section 1: identification

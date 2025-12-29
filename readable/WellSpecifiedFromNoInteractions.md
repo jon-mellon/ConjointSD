@@ -1,11 +1,13 @@
 # WellSpecifiedFromNoInteractions.lean
 
+Lean file: [ConjointSD/WellSpecifiedFromNoInteractions.lean](../ConjointSD/WellSpecifiedFromNoInteractions.lean)
+
 This file shows that "no [interactions](jargon_interaction.md)" in the causal target implies the target fits a linear model with an intercept and main effects.
 
 Key ideas:
 - A [profile](jargon_profile.md) is a full list of attribute values.
 - "No [interactions](jargon_interaction.md)" [means](jargon_mean.md) the causal target can be written as
-  constant + sum of one-at-a-time effects, with no cross-terms.
+  constant + sum of one-at-a-time effects, with no cross-[terms](jargon_term.md).
 
 What is defined:
 - `AdditiveGStar` describes the exact additive form of the causal score `gStar`.

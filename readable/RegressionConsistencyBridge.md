@@ -1,5 +1,7 @@
 # RegressionConsistencyBridge.lean
 
+Lean file: [ConjointSD/RegressionConsistencyBridge.lean](../ConjointSD/RegressionConsistencyBridge.lean)
+
 This file [bridges](jargon_bridge.md) [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) to [plug-in](jargon_plug_in.md) moment convergence.
 
 Key definitions:

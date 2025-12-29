@@ -1,5 +1,7 @@
 # PopulationBridge.lean
 
+Lean file: [ConjointSD/PopulationBridge.lean](../ConjointSD/PopulationBridge.lean)
+
 This file connects averages computed on the [population](jargon_population.md) probability space to averages computed under the attribute [distribution](jargon_distribution.md) `nu`.
 
 Setup:

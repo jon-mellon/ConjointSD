@@ -1,5 +1,7 @@
 # DecompositionSequentialConsistency.lean
 
+Lean file: [ConjointSD/DecompositionSequentialConsistency.lean](../ConjointSD/DecompositionSequentialConsistency.lean)
+
 This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score.
 
 Key definitions:

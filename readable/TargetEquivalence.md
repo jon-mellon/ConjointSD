@@ -1,5 +1,7 @@
 # TargetEquivalence.lean
 
+Lean file: [ConjointSD/TargetEquivalence.lean](../ConjointSD/TargetEquivalence.lean)
+
 This file provides two related tools:
 1) Exact equality of targets when two score functions match [almost everywhere](jargon_almost_everywhere.md).
 2) Approximate bounds when two score functions are close [almost everywhere](jargon_almost_everywhere.md).

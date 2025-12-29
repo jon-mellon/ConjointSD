@@ -1,5 +1,7 @@
 # EstimatedG.lean
 
+Lean file: [ConjointSD/EstimatedG.lean](../ConjointSD/EstimatedG.lean)
+
 This file formalizes what happens when you replace a true score function `g theta0` with an estimated one `g (theta_hat n)`.
 
 Key definitions:

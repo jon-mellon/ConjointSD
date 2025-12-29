@@ -1,5 +1,7 @@
 # SurveyWeights.lean
 
+Lean file: [ConjointSD/SurveyWeights.lean](../ConjointSD/SurveyWeights.lean)
+
 This file adds weighted versions of the [population](jargon_population.md) targets and defines finite-population targets.
 
 Weighted targets:

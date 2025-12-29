@@ -1,5 +1,7 @@
 # TrueBlockEstimand.lean
 
+Lean file: [ConjointSD/TrueBlockEstimand.lean](../ConjointSD/TrueBlockEstimand.lean)
+
 This file defines the "true" [block](jargon_block.md)-level score coming from a [linear-in-terms](jargon_linear_in_terms.md) model, then shows how the block [standard deviation](jargon_standard_deviation.md) [convergence](jargon_convergence.md) results can be targeted at those true block scores.
 
 Part 1: define the true block score

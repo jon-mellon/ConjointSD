@@ -1,5 +1,7 @@
 # VarianceDecompositionFromBlocks.lean
 
+Lean file: [ConjointSD/VarianceDecompositionFromBlocks.lean](../ConjointSD/VarianceDecompositionFromBlocks.lean)
+
 This file proves a [variance](jargon_variance.md) decomposition for a sum of [block](jargon_block.md) scores.
 
 Key definitions:

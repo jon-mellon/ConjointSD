@@ -1,5 +1,7 @@
 # Transport.lean
 
+Lean file: [ConjointSD/Transport.lean](../ConjointSD/Transport.lean)
+
 This file defines the [population](jargon_population.md)-level targets and the transport assumptions linking experimental and population scores.
 
 Population targets:

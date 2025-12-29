@@ -1,5 +1,7 @@
 # PredictedSD.lean
 
+Lean file: [ConjointSD/PredictedSD.lean](../ConjointSD/PredictedSD.lean)
+
 This file defines empirical and [population](jargon_population.md) dispersion measures and proves that the empirical [standard deviation](jargon_standard_deviation.md) [converges](jargon_convergence.md) to the population [SD](jargon_standard_deviation.md) under [IID](jargon_iid.md) assumptions.
 
 Definitions:

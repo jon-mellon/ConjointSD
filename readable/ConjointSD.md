@@ -1,5 +1,7 @@
 # ConjointSD.lean
 
+Lean file: [ConjointSD.lean](../ConjointSD.lean)
+
 This is the top-level import file for the project. It does not define new theorems.
 
 What it does:

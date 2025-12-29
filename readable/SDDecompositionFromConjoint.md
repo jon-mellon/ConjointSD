@@ -1,5 +1,7 @@
 # SDDecompositionFromConjoint.lean
 
+Lean file: [ConjointSD/SDDecompositionFromConjoint.lean](../ConjointSD/SDDecompositionFromConjoint.lean)
+
 This file connects a sequence of attribute draws to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) results for any score function, and then extends that to a family of [block](jargon_block.md) scores.
 
 Key definitions:

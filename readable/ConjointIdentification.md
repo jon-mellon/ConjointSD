@@ -1,5 +1,7 @@
 # ConjointIdentification.lean
 
+Lean file: [ConjointSD/ConjointIdentification.lean](../ConjointSD/ConjointIdentification.lean)
+
 This file formalizes identification in a conjoint experiment: observed [conditional means](jargon_conditional_mean.md) recover causal [potential outcomes](jargon_potential_outcome.md) on average.
 
 Core definitions:

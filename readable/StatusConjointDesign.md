@@ -1,5 +1,7 @@
 # StatusConjointDesign.lean
 
+Lean file: [ConjointSD/StatusConjointDesign.lean](../ConjointSD/StatusConjointDesign.lean)
+
 This file instantiates the conjoint design for the specific "status" study used in the paper.
 
 What it sets up:

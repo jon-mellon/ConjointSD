@@ -1,5 +1,7 @@
 # SampleSplitting.lean
 
+Lean file: [ConjointSD/SampleSplitting.lean](../ConjointSD/SampleSplitting.lean)
+
 This file handles the evaluation stage in a sample-splitting setup.
 
 Key definitions:

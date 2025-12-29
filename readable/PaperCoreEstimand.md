@@ -1,5 +1,7 @@
 # PaperCoreEstimand.lean
 
+Lean file: [ConjointSD/PaperCoreEstimand.lean](../ConjointSD/PaperCoreEstimand.lean)
+
 This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md).
 
 Part 1: core targets

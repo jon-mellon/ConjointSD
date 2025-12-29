@@ -1,5 +1,7 @@
 # OracleSDConsistency.lean
 
+Lean file: [ConjointSD/OracleSDConsistency.lean](../ConjointSD/OracleSDConsistency.lean)
+
 This file restates the [standard deviation](jargon_standard_deviation.md) [convergence](jargon_convergence.md) result so the limit is written in [terms](jargon_term.md) of the attribute [distribution](jargon_distribution.md) `nu`.
 
 What it does:

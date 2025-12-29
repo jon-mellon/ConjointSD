@@ -32,6 +32,69 @@ variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
 def gPaper (θ : PaperTerm Main Inter → ℝ) : Attr → ℝ :=
   gLin (β := θ) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
 
+/-!
+## LLN / full-rank assumptions for the paper OLS moment package
+-/
+
+/-- Entrywise LLN for Gram and cross moments (deterministic sequence). -/
+structure PaperOLSLLNA
+    (A : ℕ → Attr) (Yobs : ℕ → ℝ) : Prop where
+  gram_tendsto :
+    ∀ i j,
+      Tendsto
+        (fun n =>
+          gramMatrix
+            (A := A)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n i j)
+        atTop
+        (nhds
+          (popGram
+            (ν := ν)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j))
+  cross_tendsto :
+    ∀ i,
+      Tendsto
+        (fun n =>
+          crossVec
+            (A := A) (Y := Yobs)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n i)
+        atTop
+        (nhds
+          (popCross
+            (ν := ν)
+            (g := gStar (μ := μ) (Y := Y))
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))
+
+/-- Stability assumption: inverse Gram entries converge to the inverse population Gram. -/
+structure PaperOLSInverseStability
+    (A : ℕ → Attr) : Prop where
+  gramInv_tendsto :
+    ∀ i j,
+      Tendsto
+        (fun n =>
+          (gramMatrix
+            (A := A)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n)⁻¹ i j)
+        atTop
+        (nhds
+          ((popGram
+            (ν := ν)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j))
+
+/-- Identifiability: the population normal equations determine `θ0`. -/
+def PaperOLSIdentifiability (θ0 : PaperTerm Main Inter → ℝ) : Prop :=
+  θ0 =
+    (popGram
+      (ν := ν)
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
+      (popCross
+        (ν := ν)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+
 variable {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
 
 /--
@@ -53,6 +116,30 @@ def PaperOLSMomentAssumptions
       (g := gStar (μ := μ) (Y := Y))
       (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
       θ0
+
+omit [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] in
+theorem paper_ols_moment_assumptions_of_lln_fullrank_ae
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hLLN : ∀ᵐ ω ∂μ,
+      PaperOLSLLNA
+        (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+        (A := fun n => Aω n ω) (Yobs := fun n => Yobsω n ω))
+    (hInv : ∀ᵐ ω ∂μ,
+      PaperOLSInverseStability
+        (ν := ν) (fMain := fMain) (fInter := fInter)
+        (A := fun n => Aω n ω))
+    (hId : PaperOLSIdentifiability
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter) θ0) :
+    PaperOLSMomentAssumptions
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      θ0 Aω Yobsω := by
+  refine (hLLN.and hInv).mono ?_
+  intro ω hω
+  rcases hω with ⟨hLLNω, hInvω⟩
+  refine
+    { gramInv_tendsto := hInvω.gramInv_tendsto
+      cross_tendsto := hLLNω.cross_tendsto
+      theta0_eq := hId }
 
 omit [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] in
 theorem theta_tendsto_of_paper_ols_moments_ae

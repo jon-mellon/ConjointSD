@@ -1,18 +1,20 @@
 Gaps in the formal proof relative to the paper’s causal identification and [consistency](readable/jargon_consistency.md) claims
 ==========================================================================================
 
-1) Conjoint identification now derived from a design schema and tied to the status survey (ConjointIdentification.lean, StatusConjointDesign.lean, PaperWrappers.lean)  
+Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
+
+1) Conjoint identification now derived from a design schema and tied to the status survey ([ConjointIdentification.lean](ConjointSD/ConjointIdentification.lean), [StatusConjointDesign.lean](ConjointSD/StatusConjointDesign.lean), [PaperWrappers.lean](ConjointSD/PaperWrappers.lean))  
    - Added `ConjointSingleShotDesign`: gives a law `ν` for `X` with positive singleton mass, bounded/[measurable](readable/jargon_measurable.md) outcomes, [consistency](readable/jargon_consistency.md), and ignorability. Lemmas `integrable_of_bounded`, `ConjointIdRandomized.of_singleShot`, and `rand_from_randomized` derive the factorization and `ConjointIdAssumptions` from these design facts. `paper_identifies_*` now hinges on this derived path.  
    - Instantiated the fielded status conjoint: 8,500-persona uniform assignment over four task slots, [measurability](readable/jargon_measurable.md)/ignorability/boundedness proofs, and `status_id_randomized` producing the concrete `ConjointIdRandomized` assumptions.  
    - Remaining work (if needed for other surveys): replicate this instantiation for any other conjoint designs (e.g., non-status arms) and thread them through the paper-facing wrappers.
 
-2) [Population](readable/jargon_population.md) process for attributes is assumed [i.i.d.](readable/jargon_iid.md) without justification (SDDecompositionFromConjoint.lean, SampleSplitting.lean)  
+2) [Population](readable/jargon_population.md) process for attributes is assumed [i.i.d.](readable/jargon_iid.md) without justification ([SDDecompositionFromConjoint.lean](ConjointSD/SDDecompositionFromConjoint.lean), [SampleSplitting.lean](ConjointSD/SampleSplitting.lean))  
    - PopIID requires pairwise [independence](readable/jargon_independent.md) and [identical distribution](readable/jargon_identically_distributed.md) of the attribute draws A i, but the conjoint has respondent-level clustering and finite attribute pools. No proof that survey design or resampling yields these properties.  
    - To fix: Model respondent/task structure, show exchangeability/[independence](readable/jargon_independent.md) under the actual sampling and randomization, or replace with a dependence-aware [convergence](readable/jargon_convergence.md) result (e.g., triangular arrays, martingale SLLN).
 
-3) Link the paper [estimator](readable/jargon_estimator.md) to θ̂ [convergence](readable/jargon_convergence.md) assumptions (EstimatedG.lean, RegressionConsistencyBridge.lean, DeriveGEstimationAssumptions.lean, RegressionEstimator.lean, PaperOLSConsistency.lean)  
-   - **Now added:** an [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) (normal equations) with empirical Gram/cross moments, [population](readable/jargon_population.md) analogs, and a [consistency](readable/jargon_consistency.md) theorem showing `θhat → θ0` from entrywise Gram/cross [convergence](readable/jargon_convergence.md) (`RegressionEstimator.lean`).  
-   - **Now added:** paper-specific wrappers targeting the causal estimand `gStar` using the paper [term](readable/jargon_term.md) set (`PaperOLSConsistency.lean`), including an [a.e.](readable/jargon_almost_everywhere.md) moment package and [a.e.](readable/jargon_almost_everywhere.md) `GEstimationAssumptions` bridge.  
+3) Link the paper [estimator](readable/jargon_estimator.md) to θ̂ [convergence](readable/jargon_convergence.md) assumptions ([EstimatedG.lean](ConjointSD/EstimatedG.lean), [RegressionConsistencyBridge.lean](ConjointSD/RegressionConsistencyBridge.lean), [DeriveGEstimationAssumptions.lean](ConjointSD/DeriveGEstimationAssumptions.lean), [RegressionEstimator.lean](ConjointSD/RegressionEstimator.lean), [PaperOLSConsistency.lean](ConjointSD/PaperOLSConsistency.lean))  
+   - **Now added:** an [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) (normal equations) with empirical Gram/cross moments, [population](readable/jargon_population.md) analogs, and a [consistency](readable/jargon_consistency.md) theorem showing `θhat → θ0` from entrywise Gram/cross [convergence](readable/jargon_convergence.md) ([RegressionEstimator.lean](ConjointSD/RegressionEstimator.lean)).  
+   - **Now added:** paper-specific wrappers targeting the causal estimand `gStar` using the paper [term](readable/jargon_term.md) set ([PaperOLSConsistency.lean](ConjointSD/PaperOLSConsistency.lean)), including an [a.e.](readable/jargon_almost_everywhere.md) moment package and [a.e.](readable/jargon_almost_everywhere.md) `GEstimationAssumptions` bridge.  
    - Remaining gap: instantiate the LLN/identifiability assumptions (`PaperOLSMomentAssumptions`) from the actual status-conjoint sampling scheme (and any other arms), then supply continuity at `θ0` and thread the resulting `GEstimationAssumptions` into the paper-facing [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) results.
    - **Plan to justify inverse-Gram convergence (the strong assumption):**
      1) Prove LLN for the Gram and cross moments under the status-conjoint sampling process (i.i.d. or exchangeable draws of profiles/attributes, plus boundedness or moment conditions on `φPaper`).
@@ -27,7 +29,7 @@ Gaps in the formal proof relative to the paper’s causal identification and [co
    - EstimatedG: `GEstimationAssumptions` ([mean](readable/jargon_mean.md) and [second-moment](readable/jargon_second_moment.md) [convergence](readable/jargon_convergence.md) for `g (θhat n)` under ν).  
    - RegressionConsistencyBridge + FunctionalContinuityAssumptions: a route to discharge `GEstimationAssumptions` via `θhat → θ0` and continuity of `popMeanAttr` / `popM2Attr`.  
    - SequentialConsistency + DecompositionSequentialConsistency: bundles the above into the [sequential consistency](readable/jargon_sequential_consistency.md) [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) statement used in `PaperWrappers`.
-   - Exact Lean statements (see `Scratch.lean`):
+   - Exact Lean statements (see [Scratch.lean](Scratch.lean)):
      - `PopIID`:
        ```lean
        structure PopIID (A : ℕ → Ω → Attr) : Prop where
@@ -89,12 +91,12 @@ Gaps in the formal proof relative to the paper’s causal identification and [co
        `paper_sd_total_sequential_consistency_ae_of_bounded`,
        `paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded`.
 
-4) [Block](readable/jargon_block.md)/[term](readable/jargon_term.md) well-specification is assumed, not proved (ModelBridge.lean, WellSpecifiedFromNoInteractions.lean, TrueBlockEstimand.lean, PaperCoreEstimand.lean)  
+4) [Block](readable/jargon_block.md)/[term](readable/jargon_term.md) well-specification is assumed, not proved ([ModelBridge.lean](ConjointSD/ModelBridge.lean), [WellSpecifiedFromNoInteractions.lean](ConjointSD/WellSpecifiedFromNoInteractions.lean), [TrueBlockEstimand.lean](ConjointSD/TrueBlockEstimand.lean), [PaperCoreEstimand.lean](ConjointSD/PaperCoreEstimand.lean))  
    - **Added:** explicit encoding of the paper’s [regression](readable/jargon_regression.md): [term](readable/jargon_term.md) set `PaperTerm` (intercept + main effects + listed interactions), coefficient/feature maps `βPaper`/`φPaper`, and assumptions `ParametricMainInteractions` in ModelBridge. `wellSpecified_of_parametricMainInteractions` and `gStar_eq_sum_blocks_of_parametricMainInteractions` now let us discharge well-specification and bridge to [block](readable/jargon_block.md) sums once we provide the actual [regression](readable/jargon_regression.md) features/coefs and [term](readable/jargon_term.md)→[block](readable/jargon_block.md) map.  
    - **Added:** approximation-bound variant: `ApproxWellSpecified`/`ApproxWellSpecifiedAE` in ModelBridge, plus `ApproxInvarianceAE`/`BoundedAE` and popSD error bounds in TargetEquivalence, with paper-facing wrappers for approximate [block](readable/jargon_block.md)/total [SD](readable/jargon_standard_deviation.md) targets in PaperWrappers.  
    - Remaining gap: instantiate `β0`, `βMain`, `βInter`, `fMain`, `fInter`, and the paper’s [block](readable/jargon_block.md) map for the status conjoint (and any other arms), and supply concrete bounds (C, δ) or [variance](readable/jargon_variance.md) nonnegativity needed to apply the approximation lemmas.
 
-5) [Sequential consistency](readable/jargon_sequential_consistency.md) proofs do not connect to the paper’s sampling/estimation workflow (SequentialConsistency.lean, DecompositionSequentialConsistency.lean, PaperWrappers.lean)  
+5) [Sequential consistency](readable/jargon_sequential_consistency.md) proofs do not connect to the paper’s sampling/estimation workflow ([SequentialConsistency.lean](ConjointSD/SequentialConsistency.lean), [DecompositionSequentialConsistency.lean](ConjointSD/DecompositionSequentialConsistency.lean), [PaperWrappers.lean](ConjointSD/PaperWrappers.lean))  
    - Sequential results require SplitEvalAssumptions ([i.i.d.](readable/jargon_iid.md) eval sample, [integrability](readable/jargon_integral.md)) and `GEstimationAssumptions` but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).  
    - To fix: Formalize the training/evaluation split used in the paper, show the assumptions hold for that procedure, and state rates or limits for the specific m,n regimes relevant to the data size.
 

@@ -1,5 +1,7 @@
 # ModelBridge.lean
 
+Lean file: [ConjointSD/ModelBridge.lean](../ConjointSD/ModelBridge.lean)
+
 This file connects linear [term](jargon_term.md) models to [block](jargon_block.md) scores and to the conjoint causal target.
 
 Core linear model pieces:
