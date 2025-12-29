@@ -3,13 +3,13 @@
 This file formalizes identification in a conjoint experiment: observed [conditional means](jargon_conditional_mean.md) recover causal [potential outcomes](jargon_potential_outcome.md) on average.
 
 Core definitions:
-- `eventX x`: the set of units whose assigned profile equals `x`.
+- `eventX x`: the set of units whose assigned [profile](jargon_profile.md) equals `x`.
 - `condMean`: the [conditional mean](jargon_conditional_mean.md) of a variable on an event.
 - `potMean`: the [mean](jargon_mean.md) of a [potential outcome](jargon_potential_outcome.md) under profile `x`.
-- `amce`: the difference in potential [means](jargon_mean.md) between two profiles.
+- `amce`: the difference in potential [means](jargon_mean.md) between two [profiles](jargon_profile.md).
 
 Assumption bundles:
-- `ConjointIdAssumptions` collects measurability, a condition that observed outcomes equal the potential outcomes for the assigned profile, positivity of assignment, and a factorization that expresses random assignment.
+- `ConjointIdAssumptions` collects [measurability](jargon_measurable.md), a condition that observed outcomes equal the potential outcomes for the assigned profile, positivity of assignment, and a factorization that expresses random assignment.
 - `ConjointIdRandomized` is a stronger, more explicit random-assignment package using [independence](jargon_independent.md).
 - `ConjointSingleShotDesign` describes the one-shot conjoint design with a specified assignment [distribution](jargon_distribution.md), bounded outcomes, and [independence](jargon_independent.md).
 
@@ -22,4 +22,4 @@ Main logical steps:
 Final result:
 - The file defines `gExp` (the observed [conditional mean](jargon_conditional_mean.md) score) and `gPot` (the causal score), and proves they are equal under the assumptions.
 
-In plain terms: under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function.
+In plain [terms](jargon_term.md): under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function.

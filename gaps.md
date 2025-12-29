@@ -14,6 +14,11 @@ Gaps in the formal proof relative to the paper’s causal identification and [co
    - **Now added:** an [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) (normal equations) with empirical Gram/cross moments, [population](readable/jargon_population.md) analogs, and a [consistency](readable/jargon_consistency.md) theorem showing `θhat → θ0` from entrywise Gram/cross [convergence](readable/jargon_convergence.md) (`RegressionEstimator.lean`).  
    - **Now added:** paper-specific wrappers targeting the causal estimand `gStar` using the paper [term](readable/jargon_term.md) set (`PaperOLSConsistency.lean`), including an [a.e.](readable/jargon_almost_everywhere.md) moment package and [a.e.](readable/jargon_almost_everywhere.md) `GEstimationAssumptions` bridge.  
    - Remaining gap: instantiate the LLN/identifiability assumptions (`PaperOLSMomentAssumptions`) from the actual status-conjoint sampling scheme (and any other arms), then supply continuity at `θ0` and thread the resulting `GEstimationAssumptions` into the paper-facing [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) results.
+   - **Plan to justify inverse-Gram convergence (the strong assumption):**
+     1) Prove LLN for the Gram and cross moments under the status-conjoint sampling process (i.i.d. or exchangeable draws of profiles/attributes, plus boundedness or moment conditions on `φPaper`).
+     2) Prove full-rank of the population Gram matrix under the target attribute law (show no linear dependence among paper features on the support of ν).
+     3) Add a stability lemma: if `Gram_n → Gram` entrywise and `Gram` is invertible with a uniform lower bound on eigenvalues, then `Gram_n` is eventually invertible and `Gram_n⁻¹ → Gram⁻¹` entrywise.
+     4) Use (1)–(3) to discharge the inverse-Gram convergence fields in `PaperOLSMomentAssumptions`.
 
 3.5) Assumptions that drive [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) (map to Lean statements)  
    - SDDecompositionFromConjoint: `PopIID` ([i.i.d.](readable/jargon_iid.md)-type draws of A i), `ScoreAssumptions` ([measurability](readable/jargon_measurable.md) + [integrability](readable/jargon_integral.md) of g(A0), g(A0)^2).  
