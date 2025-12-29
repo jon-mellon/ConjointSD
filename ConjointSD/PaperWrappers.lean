@@ -245,6 +245,111 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
     popSDAttr_congr_ae (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b) (hTrueB b)
   exact ⟨hCons, hEq⟩
 
+/-!
+## 4b) Approximate targets: carry an explicit misspecification bound
+-/
+
+/--
+Blocks: sequential consistency + ν-a.e. ε-approximation yields convergence with an SD bound.
+-/
+theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplit : ∀ m b,
+      SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hCont : ∀ b : B, FunctionalContinuityAssumptions (ν := ν) (g := gBlock (gB := gB) b) θ0)
+    (gTrueB : B → Attr → ℝ)
+    (C δ : ℝ)
+    (hApprox :
+      ∀ b : B,
+        ApproxInvarianceAE (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b) δ)
+    (hBoundS :
+      ∀ b : B, BoundedAE (ν := ν) (s := gBlock (gB := gB) b θ0) C)
+    (hBoundT :
+      ∀ b : B, BoundedAE (ν := ν) (s := gTrueB b) C)
+    (hMomS :
+      ∀ b : B, PopulationMomentAssumptions (ν := ν) (s := gBlock (gB := gB) b θ0))
+    (hMomT : ∀ b : B, PopulationMomentAssumptions (ν := ν) (s := gTrueB b))
+    (hVarS : ∀ b : B, 0 ≤ popVarAttr ν (gBlock (gB := gB) b θ0))
+    (hVarT : ∀ b : B, 0 ≤ popVarAttr ν (gTrueB b))
+    (hδ : 0 ≤ δ)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        ∀ b : B,
+          (∀ᵐ ω ∂μ,
+            ∀ᶠ n : ℕ in atTop,
+              totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
+          ∧
+          |popSDAttr ν (gBlock (gB := gB) b θ0) - popSDAttr ν (gTrueB b)|
+            ≤ Real.sqrt (4 * C * δ) := by
+  rcases paper_sd_blocks_sequential_consistency_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
+      (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm b
+  have hCons := hM m hm b
+  have hEq :
+      |popSDAttr ν (gBlock (gB := gB) b θ0) - popSDAttr ν (gTrueB b)|
+        ≤ Real.sqrt (4 * C * δ) :=
+    popSDAttr_diff_le_of_approx_ae
+      (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b)
+      (hs := hMomS b) (ht := hMomT b)
+      (hBoundS := hBoundS b) (hBoundT := hBoundT b)
+      (hApprox := hApprox b) (hε := hδ)
+      (hVarS := hVarS b) (hVarT := hVarT b)
+  exact ⟨hCons, hEq⟩
+
+/- Total-score: sequential consistency + ν-a.e. ε-approximation yields convergence with an SD bound. -/
+theorem paper_sd_total_sequential_consistency_to_approx_target_ae
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (gTrue : Attr → ℝ)
+    (C δ : ℝ)
+    (hApprox :
+      ApproxInvarianceAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) δ)
+    (hBoundS : BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
+    (hBoundT : BoundedAE (ν := ν) (s := gTrue) C)
+    (hMomS : PopulationMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
+    (hMomT : PopulationMomentAssumptions (ν := ν) (s := gTrue))
+    (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
+    (hVarT : 0 ≤ popVarAttr ν gTrue)
+    (hδ : 0 ≤ δ)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        |popSDAttr ν (gTotalΘ (gB := gB) θ0) - popSDAttr ν gTrue|
+          ≤ Real.sqrt (4 * C * δ) := by
+  rcases paper_sd_total_sequential_consistency_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hCons := hM m hm
+  have hEq :
+      |popSDAttr ν (gTotalΘ (gB := gB) θ0) - popSDAttr ν gTrue|
+        ≤ Real.sqrt (4 * C * δ) :=
+    popSDAttr_diff_le_of_approx_ae
+      (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue)
+      (hs := hMomS) (ht := hMomT)
+      (hBoundS := hBoundS) (hBoundT := hBoundT)
+      (hApprox := hApprox) (hε := hδ)
+      (hVarS := hVarS) (hVarT := hVarT)
+  exact ⟨hCons, hEq⟩
+
 /--
 Total-score: sequential consistency + ν-a.e. target equality packages convergence to the true SD.
 -/

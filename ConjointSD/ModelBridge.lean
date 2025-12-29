@@ -82,6 +82,22 @@ def WellSpecified
     (β : Term → ℝ) (φ : Term → Attr → ℝ) : Prop :=
   ∀ x, gLin (β := β) (φ := φ) x = gStar (μ := μ) (Y := Y) x
 
+/-- Approximate well-specification: the estimand is within ε of the linear-in-terms model. -/
+def ApproxWellSpecified
+    {Ω Attr Term : Type*}
+    [MeasurableSpace Ω] [Fintype Term]
+    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+  ∀ x, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
+
+/-- Approximate well-specification on population support (ν-a.e.). -/
+def ApproxWellSpecifiedAE
+    {Ω Attr Term : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace Attr] [Fintype Term]
+    (ν : Measure Attr) (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+  ∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
+
 /--
 If the estimand is well-specified by a linear-in-terms model, then it decomposes into blocks
 (using the chosen term-to-block assignment).
@@ -108,6 +124,65 @@ theorem gStar_eq_sum_blocks_of_WellSpecified
             simpa [WellSpecified] using (hspec x).symm
     _   = gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x := by
             simpa using congrArg (fun f => f x) hblocks
+
+/--
+If the estimand is within ε of a linear-in-terms model, it is within ε of the induced block sum.
+-/
+theorem gStar_approx_sum_blocks_of_ApproxWellSpecified
+    {Ω Attr B Term : Type*}
+    [MeasurableSpace Ω] [Fintype B] [Fintype Term] [DecidableEq B]
+    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ)
+    (hspec : ApproxWellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ) ε) :
+    ∀ x,
+      |gStar (μ := μ) (Y := Y) x
+        - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
+        ≤ ε := by
+  classical
+  intro x
+  have hblocks :
+      gLin (β := β) (φ := φ)
+        =
+      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
+    gLin_eq_gTotal_blocks (B := B) (Term := Term) (blk := blk) (β := β) (φ := φ)
+  have hlin :
+      gLin (β := β) (φ := φ) x
+        =
+      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x := by
+    simpa using congrArg (fun f => f x) hblocks
+  have h := hspec x
+  simpa [hlin, abs_sub_comm] using h
+
+/--
+AE version of the approximation bridge: if `gStar` is ε-close to the linear model ν-a.e.,
+then it is ε-close to the induced block sum ν-a.e.
+-/
+theorem gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
+    {Ω Attr B Term : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace Attr] [Fintype B] [Fintype Term] [DecidableEq B]
+    (ν : Measure Attr) (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ)
+    (hspec : ApproxWellSpecifiedAE (ν := ν) (μ := μ) (Y := Y) (β := β) (φ := φ) ε) :
+    ∀ᵐ x ∂ν,
+      |gStar (μ := μ) (Y := Y) x
+        - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
+        ≤ ε := by
+  classical
+  have hblocks :
+      gLin (β := β) (φ := φ)
+        =
+      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
+    gLin_eq_gTotal_blocks (B := B) (Term := Term) (blk := blk) (β := β) (φ := φ)
+  have hlin :
+      ∀ x,
+        gLin (β := β) (φ := φ) x
+          =
+        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x := by
+    intro x
+    simpa using congrArg (fun f => f x) hblocks
+  refine hspec.mono ?_
+  intro x hx
+  simpa [hlin x, abs_sub_comm] using hx
 
 /-
 ## Parametric model: intercept + main effects + selected interactions
