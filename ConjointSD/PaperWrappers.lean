@@ -27,6 +27,7 @@ import ConjointSD.Transport
 import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.TargetEquivalence
 import ConjointSD.DeriveGEstimationAssumptions
+import ConjointSD.WellSpecifiedFromNoInteractions
 
 open Filter MeasureTheory ProbabilityTheory
 open scoped Topology BigOperators
@@ -384,6 +385,167 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
     popSDAttr_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
   exact ⟨hCons, hEq⟩
 
+/-!
+## 4c) Link well-specification to the true causal estimand `gStar`
+-/
+
+/--
+If the model-based total score at `θ0` equals the block-sum from a linear model and that
+linear model is well-specified for `gStar`, then sequential consistency targets `gStar`.
+
+This is the explicit bridge from well-specification (or “no interactions” via
+`wellSpecified_of_noInteractions`) into the SD-consistency chain.
+-/
+theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
+    {Term : Type*} [Fintype Term] [DecidableEq B]
+    (Y : Attr → Ω → ℝ)
+    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
+    (hTotalModel :
+      ∀ x,
+        gTotalΘ (gB := gB) θ0 x
+          =
+        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x)
+    (hspec : WellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ))
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+  have hBlocks :
+      gStar (μ := μ) (Y := Y)
+        =
+      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
+    gStar_eq_sum_blocks_of_WellSpecified
+      (μ := μ) (Y := Y) (blk := blk) (β := β) (φ := φ) hspec
+  have hStar :
+      InvarianceAE
+        (ν := ν)
+        (gTotalΘ (gB := gB) θ0)
+        (gStar (μ := μ) (Y := Y)) := by
+    refine ae_of_all _ ?_
+    intro x
+    have hBlocksx :
+        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x
+          =
+        gStar (μ := μ) (Y := Y) x := by
+      simpa using congrArg (fun f => f x) hBlocks.symm
+    simpa [hBlocksx] using hTotalModel x
+  rcases paper_sd_total_sequential_consistency_to_true_target_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (gTrue := gStar (μ := μ) (Y := Y)) (hTrue := hStar) (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  exact ⟨M, hM⟩
+
 end SDSequentialConsistency
+
+/-!
+## 4d) No-interactions corollary (via `wellSpecified_of_noInteractions`)
+-/
+
+section NoInteractionsCorollary
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+variable {K : Type*} {V : K → Type*} [Fintype K]
+variable [∀ k : K, MeasurableSpace (V k)]
+variable {B : Type*} [Fintype B] [DecidableEq B]
+variable {Θ : Type*} [TopologicalSpace Θ]
+
+variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (A : ℕ → Ω → Profile K V)
+variable (ν : Measure (Profile K V)) [IsProbabilityMeasure ν]
+
+variable (gB : B → Θ → Profile K V → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+
+/--
+No-interactions corollary: if `gStar` is additive in attributes, then we can
+derive well-specification and plug it into the `gStar` consistency bridge.
+
+`hTotalModel` encodes how the estimation model’s total score at `θ0` matches the
+linear-in-terms total score induced by the additive structure.
+-/
+theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
+    (Y : Profile K V → Ω → ℝ)
+    (blk : Term K → B)
+    (hNoInt : NoInteractions (K := K) (V := V) (μ := μ) (Y := Y))
+    (hTotalModel :
+      ∀ (μ0 : ℝ) (main : ∀ k : K, V k → ℝ),
+        AdditiveGStar (K := K) (V := V) (μ := μ) (Y := Y) μ0 main →
+        ∀ x,
+          gTotalΘ (gB := gB) θ0 x
+            =
+          gTotal
+            (B := B)
+            (g := gBlockTerm
+              (blk := blk)
+              (β := βMain (K := K) μ0)
+              (φ := φMain (K := K) (V := V) main))
+            x)
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+  rcases hNoInt with ⟨μ0, main, hadd⟩
+  have hspec :
+      WellSpecified (Ω := Ω) (Attr := Profile K V) (Term := Term K)
+        (μ := μ) (Y := Y) (β := βMain (K := K) μ0) (φ := φMain (K := K) (V := V) main) := by
+    intro x
+    have hlin :
+        gLin (Attr := Profile K V) (Term := Term K)
+            (β := βMain (K := K) μ0)
+            (φ := φMain (K := K) (V := V) main) x
+          =
+        μ0 + ∑ k : K, main k (x k) :=
+      gLin_eq_additive (K := K) (V := V) μ0 main x
+    calc
+      gLin (Attr := Profile K V) (Term := Term K)
+          (β := βMain (K := K) μ0)
+          (φ := φMain (K := K) (V := V) main) x
+          =
+        μ0 + ∑ k : K, main k (x k) := hlin
+      _ = gStar (μ := μ) (Y := Y) x := by
+        simpa [AdditiveGStar] using (hadd x).symm
+  have hTotalModel' :
+      ∀ x,
+        gTotalΘ (gB := gB) θ0 x
+          =
+        gTotal
+          (B := B)
+          (g := gBlockTerm
+            (blk := blk)
+            (β := βMain (K := K) μ0)
+            (φ := φMain (K := K) (V := V) main))
+          x :=
+    hTotalModel μ0 main hadd
+  exact
+    paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (Y := Y) (blk := blk) (β := βMain (K := K) μ0) (φ := φMain (K := K) (V := V) main)
+      (hTotalModel := hTotalModel') (hspec := hspec)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
+
+end NoInteractionsCorollary
 
 end ConjointSD

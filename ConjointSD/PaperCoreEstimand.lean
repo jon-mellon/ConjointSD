@@ -160,6 +160,75 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
   intro n hn
   simpa [paperTotalSDEst, totalErr, sdOracle, hEqTarget] using hn
 
+/-!
+## Discharge `hTotalModel` automatically for the term model
+-/
+
+theorem gTotalΘ_eq_gTotal_gBTerm
+    {Attr B Term Θ : Type*} [MeasurableSpace Attr]
+    [Fintype B] [Fintype Term] [DecidableEq B]
+    (blk : Term → B) (βOf : Θ → Term → ℝ) (φ : Term → Attr → ℝ) (θ0 : Θ) :
+    ∀ x,
+      gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0 x
+        =
+      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := βOf θ0) (φ := φ)) x := by
+  classical
+  intro x
+  simp [gTotalΘ, gBTerm, gTotal]
+
+theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
+    (blk : Term → B) (φ : Term → Attr → ℝ)
+    (βOf : Θ → Term → ℝ) (β : Term → ℝ)
+    (θ0 : Θ) (θhat : ℕ → Θ)
+    (hβ : βOf θ0 = β)
+    (Y : Attr → Ω → ℝ)
+    (hspec : WellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ))
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions
+          (μ := μ) (A := A)
+          (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
+          (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
+        θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν
+              (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
+              θ0 θhat m n ω < ε)
+        ∧
+        popSDAttr ν
+            (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
+          =
+        popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+  have hTotalModel :
+      ∀ x,
+        gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0 x
+          =
+        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x := by
+    intro x
+    simpa [hβ] using
+      (gTotalΘ_eq_gTotal_gBTerm
+        (blk := blk) (βOf := βOf) (φ := φ) (θ0 := θ0) x)
+  exact
+    paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
+      (μ := μ) (A := A) (ν := ν)
+      (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
+      (θ0 := θ0) (θhat := θhat)
+      (Y := Y) (blk := blk) (β := β) (φ := φ)
+      (hTotalModel := hTotalModel) (hspec := hspec)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal)
+      (hθ := hθ) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
+
 end MainEstimator
 
 end ConjointSD

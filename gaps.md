@@ -14,6 +14,69 @@ Gaps in the formal proof relative to the paper’s causal identification and con
    - GEstimationAssumptions (mean/m2 convergence of g(θ̂n)) are taken as hypotheses; there is no definition of the paper’s estimator θ̂, nor conditions (regularity, rate, sample splitting, concentration) showing θ̂ → θ0.  
    - To fix: Define the actual estimator (e.g., OLS/GLM on the conjoint), prove its consistency and moment convergence under the design, then instantiate GEstimationAssumptions.
 
+3.5) Assumptions that drive SD consistency (map to Lean statements)  
+   - SDDecompositionFromConjoint: `PopIID` (i.i.d.-type draws of A i), `ScoreAssumptions` (measurability + integrability of g(A0), g(A0)^2).  
+   - OracleSDConsistency: requires `ScoreAssumptions` and `Measure.map (A 0) μ = ν` to target `popSDAttr ν g`.  
+   - SampleSplitting: `SplitEvalAssumptions` for the fixed-m plug-in score `gHat g θhat m` (reuses `ScoreAssumptions`, adds measurability of A 0).  
+   - EstimatedG: `GEstimationAssumptions` (mean and second-moment convergence for `g (θhat n)` under ν).  
+   - RegressionConsistencyBridge + FunctionalContinuityAssumptions: a route to discharge `GEstimationAssumptions` via `θhat → θ0` and continuity of `popMeanAttr` / `popM2Attr`.  
+   - SequentialConsistency + DecompositionSequentialConsistency: bundles the above into the sequential SD consistency statement used in `PaperWrappers`.
+   - Exact Lean statements (see `Scratch.lean`):
+     - `PopIID`:
+       ```lean
+       structure PopIID (A : ℕ → Ω → Attr) : Prop where
+         measA : ∀ i, Measurable (A i)
+         indepA : Pairwise (fun i j => IndepFun (A i) (A j) μ)
+         identA : ∀ i, IdentDistrib (A i) (A 0) μ μ
+       ```
+     - `ScoreAssumptions`:
+       ```lean
+       structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) : Prop where
+         popiid : PopIID (μ := μ) A
+         meas_g : Measurable g
+         int_g0 : Integrable (fun ω => g (A 0 ω)) μ
+         int_g0_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μ
+       ```
+     - `SplitEvalAssumptions`:
+       ```lean
+       structure SplitEvalAssumptions
+           (μ : Measure Ω) (A : ℕ → Ω → Attr)
+           (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+           (m : ℕ) : Prop where
+         hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
+         hA0 : Measurable (A 0)
+       ```
+     - `GEstimationAssumptions`:
+       ```lean
+       structure GEstimationAssumptions
+           (ν : Measure Attr) [IsProbabilityMeasure ν]
+           (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
+         mean_tendsto :
+             Tendsto
+               (fun n => popMeanAttr ν (gHat g θhat n))
+               atTop
+               (nhds (popMeanAttr ν (g θ0)))
+         m2_tendsto :
+             Tendsto
+               (fun n => popM2Attr ν (gHat g θhat n))
+               atTop
+               (nhds (popM2Attr ν (g θ0)))
+       ```
+     - `FunctionalContinuityAssumptions`:
+       ```lean
+       structure FunctionalContinuityAssumptions
+           {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
+           (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : Prop where
+         cont_mean : ContinuousAt (popMeanΘ (ν := ν) g) θ0
+         cont_m2   : ContinuousAt (popM2Θ   (ν := ν) g) θ0
+       ```
+     - `sequential_consistency_ae` assumptions:
+       ```lean
+       (hLaw : Measure.map (A 0) μ = ν)
+       (hSplit : ∀ m, SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
+       (hG : GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
+       ```
+
 4) Block/term well-specification is assumed, not proved (ModelBridge.lean, WellSpecifiedFromNoInteractions.lean, TrueBlockEstimand.lean, PaperCoreEstimand.lean)  
    - **Added:** explicit encoding of the paper’s regression: term set `PaperTerm` (intercept + main effects + listed interactions), coefficient/feature maps `βPaper`/`φPaper`, and assumptions `ParametricMainInteractions` in ModelBridge. `wellSpecified_of_parametricMainInteractions` and `gStar_eq_sum_blocks_of_parametricMainInteractions` now let us discharge well-specification and bridge to block sums once we provide the actual regression features/coefs and term→block map.  
    - **Added:** approximation-bound variant: `ApproxWellSpecified`/`ApproxWellSpecifiedAE` in ModelBridge, plus `ApproxInvarianceAE`/`BoundedAE` and popSD error bounds in TargetEquivalence, with paper-facing wrappers for approximate block/total SD targets in PaperWrappers.  
