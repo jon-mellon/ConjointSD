@@ -36,3 +36,8 @@ transport, identification, and regression machinery.
 3. Run `lake build` from the repo root. The first invocation downloads mathlib and can take a while, but subsequent runs reuse the cached build in `.lake/`.
 
 A successful build was started in this environment after installing `elan`, though compiling mathlib takes significant time on a fresh cache.
+
+## Linting
+
+- Run `lake lint` to execute the Batteries-based linter runner against the default targets.
+- Use `lake lint --update` to refresh `scripts/nolints.json` after intentional lint suppressions.

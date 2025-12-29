@@ -168,7 +168,6 @@ structure SplitEvalAssumptions
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
   hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
-  hA0 : Measurable (A 0)
 
 structure SplitEvalAssumptionsBounded
     (μ : Measure Ω) (A : ℕ → Ω → Attr)

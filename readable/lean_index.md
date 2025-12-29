@@ -32,3 +32,4 @@ Readable summaries of the Lean development.
 - [TrueBlockEstimand.lean](TrueBlockEstimand.md)
 - [VarianceDecompositionFromBlocks.lean](VarianceDecompositionFromBlocks.md)
 - [WellSpecifiedFromNoInteractions.lean](WellSpecifiedFromNoInteractions.md)
+- [runLinter.lean](runLinter.md)
