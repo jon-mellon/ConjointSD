@@ -1,0 +1,14 @@
+# DecompositionSequentialConsistency.lean
+
+This file lifts the sequential consistency results to a block decomposition and to the total score.
+
+Key definitions:
+- `gBlock` is the block score as a function of the parameter.
+- `gTotalTheta` sums block scores across all blocks to get the total score.
+
+Main results:
+- `sequential_consistency_blocks_ae` shows that for a finite set of blocks, there is a single `M` such that all block [standard deviation](jargon_standard_deviation.md) errors are eventually small (see [sequential consistency](jargon_sequential_consistency.md)).
+- `sequential_consistency_total_ae` gives the same for the total score.
+- Bounded versions turn boundedness assumptions into the needed evaluation assumptions.
+
+The file mainly combines the single-score [sequential consistency](jargon_sequential_consistency.md) result with a finite-union argument over blocks.
