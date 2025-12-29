@@ -41,19 +41,25 @@ def paperTrueTotalScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → A
 def paperBlockSD
     (ν : Measure Attr) [IsProbabilityMeasure ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : ℝ :=
-  popSDAttr ν (paperTrueBlockScore blk β0 φ b)
+  by
+    let _ := (inferInstance : IsProbabilityMeasure ν)
+    exact popSDAttr ν (paperTrueBlockScore blk β0 φ b)
 
 /-- Population SD of the true total score under `ν`. -/
 def paperTotalSD
     (ν : Measure Attr) [IsProbabilityMeasure ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : ℝ :=
-  popSDAttr ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
+  by
+    let _ := (inferInstance : IsProbabilityMeasure ν)
+    exact popSDAttr ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
 
 /-- Vector of paper block-SD targets. -/
 def paperBlockSDs
     (ν : Measure Attr) [IsProbabilityMeasure ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : B → ℝ :=
-  fun b => paperBlockSD (ν := ν) blk β0 φ b
+  by
+    let _ := (inferInstance : IsProbabilityMeasure ν)
+    exact fun b => paperBlockSD (ν := ν) blk β0 φ b
 
 theorem paperBlockSDs_apply
     (ν : Measure Attr) [IsProbabilityMeasure ν]

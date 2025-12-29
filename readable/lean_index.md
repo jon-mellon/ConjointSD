@@ -9,8 +9,6 @@ Readable summaries of the Lean development.
 - [DecompositionSequentialConsistency.lean](DecompositionSequentialConsistency.md)
 - [DeriveGEstimationAssumptions.lean](DeriveGEstimationAssumptions.md)
 - [EstimatedG.lean](EstimatedG.md)
-- [FinalCleanEstimate.lean](FinalCleanEstimate.md)
-- [FunctionalContinuityAssumptions.lean](FunctionalContinuityAssumptions.md)
 - [ModelBridge.lean](ModelBridge.md)
 - [OracleSDConsistency.lean](OracleSDConsistency.md)
 - [PaperCoreEstimand.lean](PaperCoreEstimand.md)
@@ -32,4 +30,3 @@ Readable summaries of the Lean development.
 - [TrueBlockEstimand.lean](TrueBlockEstimand.md)
 - [VarianceDecompositionFromBlocks.lean](VarianceDecompositionFromBlocks.md)
 - [WellSpecifiedFromNoInteractions.lean](WellSpecifiedFromNoInteractions.md)
-- [runLinter.lean](runLinter.md)

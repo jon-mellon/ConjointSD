@@ -8,6 +8,8 @@ each package is asserting and why it matters.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
+Recent changes: minor refactors; statements unchanged.
+
 ## Transport
 
 - `PopulationMomentAssumptions`: first- and [second moment](jargon_second_moment.md)

@@ -19,6 +19,7 @@ lemma meanHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => meanHatZ (Z := Z) n ω) atTop
         (nhds (popMeanZ (μ := μ) Z)) := by
+  let _ := (inferInstance : IsProbabilityMeasure μ)
   simpa [meanHatZ, popMeanZ] using
     (ProbabilityTheory.strong_law_ae (μ := μ) (X := Z) h.intZ h.indep h.ident)
 
@@ -28,6 +29,7 @@ lemma m2HatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => m2HatZ (Z := Z) n ω) atTop
         (nhds (popM2Z (μ := μ) Z)) := by
+  let _ := (inferInstance : IsProbabilityMeasure μ)
   let Zsq : ℕ → Ω → ℝ := fun i ω => (Z i ω) ^ 2
   have hInt : Integrable (Zsq 0) μ := by
     simpa [Zsq] using h.intZ2

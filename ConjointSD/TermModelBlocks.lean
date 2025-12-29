@@ -24,7 +24,9 @@ def gBTerm
     [MeasurableSpace Attr] [Fintype B] [Fintype Term] [DecidableEq B]
     (blk : Term → B) (βOf : Θ → Term → ℝ) (φ : Term → Attr → ℝ) :
     B → Θ → Attr → ℝ :=
-  fun b θ a => gBlockTerm (blk := blk) (β := βOf θ) (φ := φ) b a
+  by
+    let _ := (inferInstance : MeasurableSpace Attr)
+    exact fun b θ a => gBlockTerm (blk := blk) (β := βOf θ) (φ := φ) b a
 
 /--
 If `βOf θ0 = β0`, then the limiting block score induced by `gBTerm` at `θ0`

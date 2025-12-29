@@ -99,8 +99,6 @@ unsafe def runLinterOnModule (update : Bool) (module : Name): IO Unit := do
   Prod.fst <$> (CoreM.toIO · ctx state) do
     let decls ← getDeclsInPackage module.getRoot
     let linters ← getChecks (slow := true) (runAlways := none) (runOnly := none)
-    let disabledLinters : Array Name := #[`docBlame, `unusedArguments]
-    let linters := linters.filter fun l => !(disabledLinters.contains l.name)
     let results ← lintCore decls linters
     if update then
       writeJsonFile (α := NoLints) nolintsFile <|

@@ -76,6 +76,7 @@ theorem olsThetaHat_tendsto_of_moment_assumptions
 
 /- Definitions and assumption packages live in ConjointSD.Defs / ConjointSD.Assumptions. -/
 
+/-- Convert population moment assumptions to sample-path moment assumptions. -/
 def OLSMomentAssumptionsOfPop.to_OLSMomentAssumptions
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
     (ν : Measure Attr)

@@ -35,3 +35,4 @@ Fix any new linter errors introduced by your changes:
 
 - Run `lake lint` and resolve new issues before finishing.
 - If you cannot run lint locally, call that out clearly and leave no known new lint failures.
+- Never add skips to the linter. Actually fix problems do not hide them.

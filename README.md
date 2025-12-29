@@ -37,7 +37,7 @@ transport, identification, and regression machinery.
 
 A successful build was started in this environment after installing `elan`, though compiling mathlib takes significant time on a fresh cache.
 
-## Linting
+## R helper scripts
 
-- Run `lake lint` to execute the Batteries-based linter runner against the default targets.
-- Use `lake lint --update` to refresh `scripts/nolints.json` after intentional lint suppressions.
+- Install R packages used by `plot_proof_structure.R`: `fs`, `stringr`, `dplyr`, `purrr`, `tidyr`, `DiagrammeR`.
+- Run `Rscript scripts/check_r.R` from the repo root to validate the import-DAG script finds nodes and edges.

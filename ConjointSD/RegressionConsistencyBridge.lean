@@ -56,6 +56,7 @@ theorem popVarAttr_tendsto_of_GEstimationAssumptions_bridge
       (fun n => popVarAttr ν (gHat g θhat n))
       atTop
       (nhds (popVarAttr ν (g θ0))) := by
+  let _ := (inferInstance : TopologicalSpace Θ)
   have hmean :
       Tendsto
         (fun n => popMeanAttr ν (gHat g θhat n))
@@ -98,6 +99,7 @@ theorem block_GEstimationAssumptions_of_theta_tendsto
     (hθ : Tendsto θhat atTop (nhds θ0))
     (hcont : BlockFunctionalContinuityAssumptions (ν := ν) gB θ0) :
     ∀ b : B, GEstimationAssumptions (ν := ν) (blockScoreΘ (gB := gB) b) θ0 θhat := by
+  let _ := (inferInstance : Fintype B)
   intro b
   exact
     GEstimationAssumptions_of_theta_tendsto

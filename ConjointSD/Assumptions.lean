@@ -169,6 +169,7 @@ structure SplitEvalAssumptions
     (m : ℕ) : Prop where
   hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
 
+/-- Boundedness-based assumptions for evaluation at a fixed training index `m`. -/
 structure SplitEvalAssumptionsBounded
     (μ : Measure Ω) (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
@@ -194,6 +195,7 @@ structure FunctionalContinuityAssumptions
   cont_mean : ContinuousAt (popMeanΘ (ν := ν) g) θ0
   cont_m2   : ContinuousAt (popM2Θ   (ν := ν) g) θ0
 
+/-- Continuity assumptions for each block score at `θ0`. -/
 structure BlockFunctionalContinuityAssumptions
     {B : Type*}
     (ν : Measure Attr) (gB : B → Θ → Attr → ℝ) (θ0 : Θ) : Prop where
@@ -216,11 +218,14 @@ structure OLSConsistencyAssumptions {Attr : Type u} {Term : Type v} [Fintype Ter
     (θ0 : Term → ℝ) (ols : OLSSequence (A := A) (Y := Y) (φ := φ)) : Prop where
   tendsto_theta : Tendsto ols.θhat atTop (nhds θ0)
 
+/-- OLS moment assumptions with explicit limits for the inverse Gram and cross moments. -/
 structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
     [Fintype Term] [DecidableEq Term]
     (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ)
     (θ0 : Term → ℝ) : Type (max u v) where
+  /-- Limit of the inverse Gram matrix entries. -/
   gramInvLimit : Matrix Term Term ℝ
+  /-- Limit of the cross-moment vector entries. -/
   crossLimit : Term → ℝ
   gramInv_tendsto :
     ∀ i j,

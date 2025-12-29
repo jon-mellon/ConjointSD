@@ -63,6 +63,7 @@ lemma iidAssumptions_Zcomp [IsProbabilityMeasure μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (h : ScoreAssumptions (μ := μ) A g) :
     IIDAssumptions (μ := μ) (Zcomp (A := A) (g := g)) := by
+  let _ := (inferInstance : IsProbabilityMeasure μ)
   let Z : ℕ → Ω → ℝ := Zcomp (A := A) (g := g)
   refine ⟨?intZ, ?indepZ, ?identZ, ?intZ2⟩
   · simpa [Z, Zcomp] using h.int_g0

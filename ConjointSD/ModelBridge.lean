@@ -18,7 +18,10 @@ We use an `if` formulation so the additivity proof is just sum-swapping + `simp`
 -/
 def gBlockTerm {Attr B Term : Type*} [Fintype B] [Fintype Term] [DecidableEq B]
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ) : B → Attr → ℝ :=
-  fun b a => ∑ t, (if blk t = b then (β t * φ t a) else 0)
+  by
+    classical
+    let _ := (inferInstance : Fintype B)
+    exact fun b a => ∑ t, (if blk t = b then (β t * φ t a) else 0)
 
 /--
 **Additivity bridge:** allocating each model term to exactly one block implies the total score

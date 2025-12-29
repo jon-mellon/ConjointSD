@@ -148,6 +148,7 @@ def popMeanΘ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
 def popM2Θ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
   fun θ => popM2Attr ν (g θ)
 
+/-- Block score at parameter θ for a fixed block index `b`. -/
 def blockScoreΘ {B : Type*}
     (gB : B → Θ → Attr → ℝ) (b : B) : Θ → Attr → ℝ :=
   fun θ => gB b θ
@@ -173,6 +174,7 @@ the empirical risk based on the first `n` samples.
 -/
 structure OLSSequence {Attr : Type u} {Term : Type v} [Fintype Term]
     (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ) : Type (max u v) where
+  /-- The coefficient estimate at sample size `n`. -/
   θhat : ℕ → Term → ℝ
   is_minimizer :
     ∀ n β, empiricalRisk (A := A) (Y := Y) (φ := φ) n (θhat n)
@@ -183,28 +185,40 @@ Empirical Gram matrix of the feature map for the first `n` samples.
 -/
 def gramMatrix {Attr : Type u} {Term : Type v} [Fintype Term]
     (A : ℕ → Attr) (φ : Term → Attr → ℝ) (n : ℕ) : Matrix Term Term ℝ :=
-  fun i j => (1 / (n : ℝ)) * ∑ k : Fin n, φ i (A k) * φ j (A k)
+  by
+    classical
+    let _ := (inferInstance : Fintype Term)
+    exact fun i j => (1 / (n : ℝ)) * ∑ k : Fin n, φ i (A k) * φ j (A k)
 
 /--
 Empirical cross-moment between features and outcomes for the first `n` samples.
 -/
 def crossVec {Attr : Type u} {Term : Type v} [Fintype Term]
     (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ) (n : ℕ) : Term → ℝ :=
-  fun i => (1 / (n : ℝ)) * ∑ k : Fin n, φ i (A k) * Y k
+  by
+    classical
+    let _ := (inferInstance : Fintype Term)
+    exact fun i => (1 / (n : ℝ)) * ∑ k : Fin n, φ i (A k) * Y k
 
 /--
 Population Gram matrix of the feature map under a target attribute distribution `ν`.
 -/
 def popGram {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
     (ν : Measure Attr) (φ : Term → Attr → ℝ) : Matrix Term Term ℝ :=
-  fun i j => popMeanAttr ν (fun a => φ i a * φ j a)
+  by
+    classical
+    let _ := (inferInstance : Fintype Term)
+    exact fun i j => popMeanAttr ν (fun a => φ i a * φ j a)
 
 /--
 Population cross moment between features and a true outcome score `g` under `ν`.
 -/
 def popCross {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
     (ν : Measure Attr) (g : Attr → ℝ) (φ : Term → Attr → ℝ) : Term → ℝ :=
-  fun i => popMeanAttr ν (fun a => φ i a * g a)
+  by
+    classical
+    let _ := (inferInstance : Fintype Term)
+    exact fun i => popMeanAttr ν (fun a => φ i a * g a)
 
 end RegressionEstimator
 

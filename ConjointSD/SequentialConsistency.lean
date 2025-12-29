@@ -79,6 +79,7 @@ theorem totalErr_tendsto_trainErr_fixed_m
         (fun n : ℕ => totalErr μ A ν g θ0 θhat m n ω)
         atTop
         (nhds (trainErr ν g θ0 θhat m)) := by
+  let _ := (inferInstance : IsProbabilityMeasure ν)
   -- Base convergence from SampleSplitting:
   have hBase_map :
       ∀ᵐ ω ∂μ,

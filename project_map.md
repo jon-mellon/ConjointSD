@@ -40,7 +40,6 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## [Regression](readable/jargon_regression.md)/continuity bridge (Route 2)
 
 - [ConjointSD/RegressionConsistencyBridge.lean](readable/RegressionConsistencyBridge.md) derives `GEstimationAssumptions` from `θhat -> θ0` and functional continuity assumptions defined in `Assumptions.lean`; also provides [block](readable/jargon_block.md) versions.
-- [ConjointSD/FunctionalContinuityAssumptions.lean](readable/FunctionalContinuityAssumptions.md) provides helper lemmas to extract continuity and derive moment [convergence](readable/jargon_convergence.md) without relying on field names; builds on `RegressionConsistencyBridge` and `Transport`.
 - [ConjointSD/DeriveGEstimationAssumptions.lean](readable/DeriveGEstimationAssumptions.md) thin wrappers that produce `GEstimationAssumptions` (and block versions) from `θhat -> θ0` + continuity; depends on `RegressionConsistencyBridge`.
 - [ConjointSD/RegressionEstimator.lean](readable/RegressionEstimator.md) formalizes the [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) sequence and bridges [estimator](readable/jargon_estimator.md) [consistency](readable/jargon_consistency.md) to `GEstimationAssumptions`; assumption packages now live in `Assumptions.lean`.
 - [ConjointSD/PaperOLSConsistency.lean](readable/PaperOLSConsistency.md) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to `GEstimationAssumptions`.
@@ -56,11 +55,9 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 - [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), and target-equivalence wrappers; central hub for exported statements.
 - [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core estimands ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
-- [ConjointSD/FinalCleanEstimate.lean](readable/FinalCleanEstimate.md) collects clean plug-in [convergence](readable/jargon_convergence.md) statements for [population](readable/jargon_population.md) moments/[SD](readable/jargon_standard_deviation.md) under `ν`; uses `EstimatedG` and `Transport`.
 
 ## Tooling
 
-- [scripts/runLinter.lean](readable/runLinter.md) provides the `lake lint` entrypoint using Batteries' linter runner.
 
 ## Scratchpad
 

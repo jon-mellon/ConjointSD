@@ -28,6 +28,7 @@ abbrev StatusProfile : Type := Fin statusProfileCount
 
 /-- Four rating tasks per respondent (two choice-sets of two personas). -/
 def statusTaskCount : ℕ := 4
+/-- Task slots per respondent (finite index set). -/
 abbrev TaskSlot : Type := Fin statusTaskCount
 
 private lemma statusProfileCount_pos : 0 < statusProfileCount := by decide

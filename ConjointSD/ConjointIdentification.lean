@@ -198,7 +198,7 @@ Important: in mathlib v4.26, `ae_restrict_iff` expects measurability of the *pre
 `{ω | p ω}`, not measurability of the event `s`. So we prove measurability of
 `{ω | Yobs ω = Y x0 ω}` from measurability of `Yobs` and `Y x0`.
 -/
-theorem ae_restrict_consistency [IsProbabilityMeasure μ]
+theorem ae_restrict_consistency
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (x0 : Attr)
     (hmeasYobs : Measurable Yobs)

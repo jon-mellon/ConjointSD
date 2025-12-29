@@ -6,7 +6,6 @@ import ConjointSD.VarianceDecompositionFromBlocks
 import ConjointSD.ConjointIdentification
 import ConjointSD.Transport
 import ConjointSD.EstimatedG
-import ConjointSD.FinalCleanEstimate
 import ConjointSD.SampleSplitting
 import ConjointSD.ModelBridge
 import ConjointSD.PopulationBridge
@@ -19,7 +18,6 @@ import ConjointSD.TermModelBlocks
 import ConjointSD.RegressionConsistencyBridge
 import ConjointSD.RegressionEstimator
 import ConjointSD.PaperOLSConsistency
-import ConjointSD.FunctionalContinuityAssumptions
 import ConjointSD.PaperCoreEstimand
 import ConjointSD.WellSpecifiedFromNoInteractions
 import ConjointSD.SurveyWeights
