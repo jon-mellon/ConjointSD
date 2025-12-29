@@ -18,3 +18,5 @@ Approximate section:
 - Uses a square-root inequality to control the difference in [standard deviations](jargon_standard_deviation.md).
 
 The main idea: if two scores are the same (or nearly the same) on the population support, then their population dispersion targets are the same (or nearly the same).
+
+Recent changes: minor proof refactors; statements unchanged.

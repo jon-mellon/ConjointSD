@@ -23,3 +23,5 @@ Main theorem:
   bounded outcomes (0 to 100), and [independence](jargon_independent.md) between assignment and [potential outcomes](jargon_potential_outcome.md).
 
 The file ends with a corollary `status_id_randomized` that packages this into the randomized identification assumptions.
+
+Recent changes: minor proof refactors; statements unchanged.

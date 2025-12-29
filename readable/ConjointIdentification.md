@@ -25,3 +25,5 @@ Final result:
 - The file defines `gExp` (the observed [conditional mean](jargon_conditional_mean.md) score) and `gPot` (the causal score), and proves they are equal under the assumptions.
 
 In plain [terms](jargon_term.md): under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function.
+
+Recent changes: minor proof refactors; statements unchanged.

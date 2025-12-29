@@ -16,7 +16,7 @@ When you change Lean sources, update the corresponding documentation:
 
 - `project_map.md`: keep the map accurate for any new/removed/renamed `.lean` files or dependency shifts.
 - `readable/lean_index.md`: add/remove entries when Lean files are added/removed/renamed.
-- `readable/*.md`: update the readable summary for any `.lean` file you modify (e.g., `ConjointSD/PredictedSD.lean` -> `readable/PredictedSD.md`). You may not need to change the file if your change does not make meaningful changes to functionality or mathematical content (e.g. if you're just fixing linter errors). 
+- `readable/*.md`: update the readable summary for any `.lean` file you modify (e.g., `ConjointSD/PredictedSD.lean` -> `readable/PredictedSD.md`). You may not need to change the file if your change does not make meaningful changes to functionality or mathematical content (e.g. if you're just fixing linter errors). It is fine to skip updating a file if you have nothing meaningful to say
 - `gaps.md`: update if your changes add/close proof gaps or alter the state of assumptions called out there.
 - `README.md`: update if build instructions or repo layout change.
 

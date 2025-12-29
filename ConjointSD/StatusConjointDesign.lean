@@ -139,7 +139,8 @@ theorem status_singleShot_design
   let μ := μStatus (μResp := μResp)
   -- Measurability of `X` and the potential-outcome lift.
   have hXmeas : Measurable (statusX : StatusΩ Respondent → StatusProfile) := by
-    simp [StatusΩ, statusX]
+    simpa [StatusΩ, statusX] using
+      (measurable_snd : Measurable (fun ω : (Respondent × TaskSlot) × StatusProfile => ω.snd))
   have hYmeas :
       ∀ p, Measurable (statusY (Yresp := Yresp) p) := fun p =>
         (hmeas p).comp (by fun_prop)
@@ -150,9 +151,7 @@ theorem status_singleShot_design
     have hmap := Measure.map_snd_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
     have hμrt : (μRT (μResp := μResp)) Set.univ = 1 := measure_univ
     ext s hs
-    have hmap' := congrArg (fun m => m s) hmap
-    simp [μ, μStatus, μRT, statusX, hμrt] at hmap'
-    exact hmap'
+    simp [μ, μStatus, μRT, statusX]
   -- Positivity: uniform measure on `Fin 8500` gives each singleton mass `1 / 8500`.
   have hpos : ∀ p, νStatus {p} ≠ 0 := by
     intro p
@@ -166,11 +165,10 @@ theorem status_singleShot_design
     have hsupport :
         (PMF.uniformOfFintype (α := StatusProfile)) p ≠ 0 := by
       -- Every point is in the support of the uniform PMF.
-      have hsupport' :=
-        (PMF.mem_support_uniformOfFintype (α := StatusProfile) p)
-      simp [PMF.mem_support_iff] at hsupport'
-      exact hsupport'
-    simp [hmass] at hsupport
+      have hsupport' := PMF.mem_support_uniformOfFintype (α := StatusProfile) p
+      exact (PMF.mem_support_iff
+        (p := PMF.uniformOfFintype (α := StatusProfile)) (a := p)).1 hsupport'
+    rw [hmass]
     exact hsupport
   -- Boundedness: responses live on a 0–100 scale.
   have hbounded :
@@ -234,8 +232,7 @@ theorem status_singleShot_design
                 have hprod :=
                   (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
                     ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t}) s)
-                simp [μ, μStatus, μRT, hrect] at hprod
-                exact hprod
+                simp [μ, μStatus, μRT, hrect]
       _ = μ ((statusX (Respondent := Respondent)) ⁻¹' s)
               * μ ((statusY (Yresp := Yresp) p) ⁻¹' t) := by
                 -- Marginals: X depends only on the persona coordinate;
@@ -245,8 +242,7 @@ theorem status_singleShot_design
                     (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
                       (Set.univ : Set (Respondent × TaskSlot)) s)
                   have hμrt : (μRT (μResp := μResp)) Set.univ = 1 := measure_univ
-                  simp [μ, μStatus, μRT, hpreX, hμrt] at hprod
-                  exact hprod
+                  simp [μ, μStatus, μRT, hpreX]
                 have hYmass :
                     μ ((statusY (Yresp := Yresp) p) ⁻¹' t)
                       = μRT (μResp := μResp)
@@ -256,8 +252,7 @@ theorem status_singleShot_design
                       ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t})
                       (Set.univ : Set StatusProfile))
                   have hν : νStatus Set.univ = 1 := measure_univ
-                  simp [μ, μStatus, μRT, hpreY, hsRT, hν] at hprod
-                  exact hprod
+                  simp [μ, μStatus, μRT, hpreY, hν]
                 simp [hXmass, hYmass, mul_comm]
   -- Assemble the design structure.
   refine

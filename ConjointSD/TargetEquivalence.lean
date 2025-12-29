@@ -134,7 +134,7 @@ private theorem abs_sqrt_sub_sqrt_le_sqrt_abs_sub
         _   = (Real.sqrt a - Real.sqrt b) * (Real.sqrt a + Real.sqrt b) := by
                 ring
     have h' := congrArg abs h
-    simp [abs_mul] at h'
+    simp only [abs_mul] at h'
     exact h'
   have hle_sum : |Real.sqrt a - Real.sqrt b| ≤ Real.sqrt a + Real.sqrt b := by
     have h := abs_add_le (Real.sqrt a) (-Real.sqrt b)

@@ -11,7 +11,7 @@ namespace ConjointSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μ : Measure Ω)
-variable {Attr : Type*} [MeasurableSpace Attr]
+variable {Attr : Type*}
 
 variable {μ}
 
@@ -22,7 +22,6 @@ lemma toReal_ne_zero_of_ne_zero (μ : Measure Ω) [IsFiniteMeasure μ]
   refine ⟨h, ?_⟩
   simp
 
-omit [MeasurableSpace Attr]
 /-- Derive the `rand` factorization from randomized strong ignorability. -/
 lemma rand_from_randomized
     [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
@@ -103,9 +102,6 @@ lemma rand_from_randomized
             _ = (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ) := by
               simp [hs]
 
-unomit [MeasurableSpace Attr]
-
-omit [MeasurableSpace Attr]
 lemma ConjointIdAssumptions.of_randomized
     [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
@@ -114,8 +110,6 @@ lemma ConjointIdAssumptions.of_randomized
   refine ⟨h.measYobs, h.measY, h.consistency, (by intro x; exact h.positivity x), ?_⟩
   · intro x x0
     exact rand_from_randomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x x0
-
-unomit [MeasurableSpace Attr]
 
 /-- Bounded measurable real functions are integrable under a finite measure. -/
 lemma integrable_of_bounded
@@ -133,7 +127,6 @@ lemma integrable_of_bounded
 Instantiate `ConjointIdRandomized` from a single-shot assignment design (`ν` gives the law of `X`
 with positive mass on each profile) plus bounded outcomes and ignorability.
 -/
-omit [MeasurableSpace Attr]
 lemma ConjointIdRandomized.of_singleShot
     [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     {ν : Measure Attr} {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
@@ -166,14 +159,11 @@ lemma ConjointIdRandomized.of_singleShot
     have hmeas := h.measY x
     -- Probability measure ⇒ finite measure, so bounded measurable implies integrable.
     have hfin : IsFiniteMeasure μ := by infer_instance
-  simpa using
+    simpa using
       (integrable_of_bounded (μ := μ) (hmeas := hmeas) (hbound := hbound))
-
-unomit [MeasurableSpace Attr]
 
 
 section
-omit [MeasurableSpace Attr]
 /-- If the factorization holds, the event-conditional mean equals the unconditional mean. -/
 theorem condMean_eq_potMean_of_rand
     [IsProbabilityMeasure μ]
@@ -201,8 +191,6 @@ theorem condMean_eq_potMean_of_rand
             ring
     _ = ∫ ω, Y x ω ∂μ := by field_simp [hμ]
 
-unomit [MeasurableSpace Attr]
-
 /--
 Consistency implies: on the event `{X=x0}`, `Yobs = Y x0` holds a.e. under `μ.restrict`.
 
@@ -210,7 +198,6 @@ Important: in mathlib v4.26, `ae_restrict_iff` expects measurability of the *pre
 `{ω | p ω}`, not measurability of the event `s`. So we prove measurability of
 `{ω | Yobs ω = Y x0 ω}` from measurability of `Yobs` and `Y x0`.
 -/
-omit [MeasurableSpace Attr]
 theorem ae_restrict_consistency [IsProbabilityMeasure μ]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (x0 : Attr)
@@ -240,11 +227,8 @@ theorem ae_restrict_consistency [IsProbabilityMeasure μ]
   have hx : X ω = x0 := hω
   simp [hcons ω, hx]
 
-unomit [MeasurableSpace Attr]
-
 end
 
-omit [MeasurableSpace Attr]
 /-- Identification: observed conditional mean among `X=x0` equals `E[Y(x0)]`. -/
 theorem identified_potMean_from_condMean [IsProbabilityMeasure μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
@@ -274,9 +258,6 @@ theorem identified_potMean_from_condMean [IsProbabilityMeasure μ] [MeasurableSp
     _   = potMean (μ := μ) Y x0 := by
           exact condMean_eq_potMean_of_rand (μ := μ) (X := X) (Y := Y) x0 x0 hpos hrand
 
-unomit [MeasurableSpace Attr]
-
-omit [MeasurableSpace Attr]
 /-- Identification of AMCE as a difference of observed conditional means. -/
 theorem identified_amce_from_condMeans [IsProbabilityMeasure μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
@@ -295,8 +276,6 @@ theorem identified_amce_from_condMeans [IsProbabilityMeasure μ] [MeasurableSpac
     identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x
   simp [hx', hx]
 
-unomit [MeasurableSpace Attr]
-
 /-!
 ## Identified score function (design-mean) equals causal score function (potential mean)
 -/
@@ -309,7 +288,6 @@ def gExp (μ : Measure Ω) (X : Ω → Attr) (Yobs : Ω → ℝ) : Attr → ℝ 
 def gPot (μ : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
   fun x => potMean (μ := μ) Y x
 
-omit [MeasurableSpace Attr]
 /--
 Under the conjoint identification assumptions, the observed conditional-mean score function
 equals the causal potential-mean score function (pointwise, hence as functions).
@@ -321,7 +299,5 @@ theorem gExp_eq_gPot [IsProbabilityMeasure μ] [MeasurableSpace Attr]
   funext x
   simpa [gExp, gPot] using
     identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x
-
-unomit [MeasurableSpace Attr]
 
 end ConjointSD
