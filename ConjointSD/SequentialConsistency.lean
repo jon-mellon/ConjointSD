@@ -109,6 +109,28 @@ theorem totalErr_tendsto_trainErr_fixed_m
     (hcont.continuousAt.tendsto)
   simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
 
+theorem totalErr_tendsto_trainErr_fixed_m_of_bounded
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (A : ℕ → Ω → Attr)
+    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (hLaw : Measure.map (A 0) μ = ν)
+    (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+    (m : ℕ)
+    (h :
+      SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ => totalErr μ A ν g θ0 θhat m n ω)
+        atTop
+        (nhds (trainErr ν g θ0 θhat m)) := by
+  have h' :
+      SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m :=
+    splitEvalAssumptions_of_bounded
+      (μ := μ) (A := A) (g := g) (θhat := θhat) (m := m) h
+  simpa using
+    totalErr_tendsto_trainErr_fixed_m
+      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw) (g := g) (θ0 := θ0) (θhat := θhat)
+      (m := m) (h := h')
 /--
 Step (2): training error → 0 as `m → ∞` under `GEstimationAssumptions` for `ν`.
 -/
@@ -205,6 +227,28 @@ theorem sequential_consistency_ae
   refine hEvN.mono ?_
   intro ω hω
   exact hω.mono (fun n hn => lt_trans hn hSum)
+
+theorem sequential_consistency_ae_of_bounded
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (A : ℕ → Ω → Attr)
+    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (hLaw : Measure.map (A 0) μ = ν)
+    (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+    (hSplit : ∀ m, SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m)
+    (hG : GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ, ∀ᶠ n : ℕ in atTop, totalErr μ A ν g θ0 θhat m n ω < ε) := by
+  have hSplit' :
+      ∀ m, SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m :=
+    fun m =>
+      splitEvalAssumptions_of_bounded
+        (μ := μ) (A := A) (g := g) (θhat := θhat) (m := m) (hSplit m)
+  exact
+    sequential_consistency_ae
+      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw) (g := g) (θ0 := θ0) (θhat := θhat)
+      (hSplit := hSplit') (hG := hG) (ε := ε) (hε := hε)
 
 end
 

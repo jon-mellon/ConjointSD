@@ -33,6 +33,28 @@ structure SplitEvalAssumptions
   hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
   hA0 : Measurable (A 0)
 
+structure SplitEvalAssumptionsBounded
+    (μ : Measure Ω) (A : ℕ → Ω → Attr)
+    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ) : Prop where
+  hPop : PopIID (μ := μ) A
+  hMeas : Measurable (gHat g θhat m)
+  hBound : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
+
+lemma splitEvalAssumptions_of_bounded
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (A : ℕ → Ω → Attr)
+    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ)
+    (h : SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
+    SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m := by
+  have hScore :
+      ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m) :=
+    scoreAssumptions_of_bounded
+      (μ := μ) (A := A) (g := gHat g θhat m)
+      (hPop := h.hPop) (hMeas := h.hMeas) (hBound := h.hBound)
+  exact ⟨hScore, h.hPop.measA 0⟩
+
 /--
 For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converges a.s.
 to the population SD under the evaluation attribute law `law(A 0)`.
@@ -56,6 +78,26 @@ theorem sdHat_fixed_m_tendsto_ae_popSDAttr
       (hScore := h.hScore)
       (hA0 := h.hA0)
       (hLaw := rfl))
+
+theorem sdHat_fixed_m_tendsto_ae_popSDAttr_of_bounded
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (A : ℕ → Ω → Attr)
+    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ)
+    (h : SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
+        atTop
+        (nhds (popSDAttr (Measure.map (A 0) μ) (gHat g θhat m))) := by
+  have h' :
+      SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m :=
+    splitEvalAssumptions_of_bounded
+      (μ := μ) (A := A) (g := g) (θhat := θhat) (m := m) h
+  simpa using
+    sdHat_fixed_m_tendsto_ae_popSDAttr
+      (μ := μ) (A := A) (g := g) (θhat := θhat) (m := m) h'
 
 end
 

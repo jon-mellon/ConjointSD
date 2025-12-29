@@ -13,6 +13,11 @@ Gaps in the formal proof relative to the paper’s causal identification and con
 3) No link from the estimator used in the paper to θ̂ convergence assumptions (EstimatedG.lean, RegressionConsistencyBridge.lean, DeriveGEstimationAssumptions.lean)  
    - GEstimationAssumptions (mean/m2 convergence of g(θ̂n)) are taken as hypotheses; there is no definition of the paper’s estimator θ̂, nor conditions (regularity, rate, sample splitting, concentration) showing θ̂ → θ0.  
    - To fix: Define the actual estimator (e.g., OLS/GLM on the conjoint), prove its consistency and moment convergence under the design, then instantiate GEstimationAssumptions.
+   - **Plan (for full paper-specific end-to-end proof):**
+     1) Formalize the estimator used in the paper (e.g., linear model / GLM with the term set in ModelBridge) as a function producing `θhat : ℕ → Θ`.
+     2) State and prove consistency `θhat → θ0` under the conjoint design (using identifiability + regularity + sampling assumptions).
+     3) Prove continuity/regularity of the population functionals at θ0 (or reuse boundedness + continuity lemmas).
+     4) Discharge `GEstimationAssumptions` via `DeriveGEstimationAssumptions` and thread into the paper-facing consistency theorems.
 
 3.5) Assumptions that drive SD consistency (map to Lean statements)  
    - SDDecompositionFromConjoint: `PopIID` (i.i.d.-type draws of A i), `ScoreAssumptions` (measurability + integrability of g(A0), g(A0)^2).  
@@ -72,10 +77,16 @@ Gaps in the formal proof relative to the paper’s causal identification and con
        ```
      - `sequential_consistency_ae` assumptions:
        ```lean
-       (hLaw : Measure.map (A 0) μ = ν)
-       (hSplit : ∀ m, SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
-       (hG : GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
-       ```
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplit : ∀ m, SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
+    (hG : GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
+      ```
+   - Boundedness simplifications (new wrappers):
+     - `scoreAssumptions_of_bounded` lets you replace integrability hypotheses with measurability + uniform bounds.
+     - `SplitEvalAssumptionsBounded` + `splitEvalAssumptions_of_bounded` do the same for the evaluation stage.
+     - Paper-facing bounded variants: `paper_sd_blocks_sequential_consistency_ae_of_bounded`,
+       `paper_sd_total_sequential_consistency_ae_of_bounded`,
+       `paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded`.
 
 4) Block/term well-specification is assumed, not proved (ModelBridge.lean, WellSpecifiedFromNoInteractions.lean, TrueBlockEstimand.lean, PaperCoreEstimand.lean)  
    - **Added:** explicit encoding of the paper’s regression: term set `PaperTerm` (intercept + main effects + listed interactions), coefficient/feature maps `βPaper`/`φPaper`, and assumptions `ParametricMainInteractions` in ModelBridge. `wellSpecified_of_parametricMainInteractions` and `gStar_eq_sum_blocks_of_parametricMainInteractions` now let us discharge well-specification and bridge to block sums once we provide the actual regression features/coefs and term→block map.  

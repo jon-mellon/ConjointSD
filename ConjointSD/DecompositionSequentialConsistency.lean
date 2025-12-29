@@ -106,6 +106,64 @@ theorem sequential_consistency_total_ae
       (hG := hGTotal)
       (ε := ε) (hε := hε))
 
+theorem sequential_consistency_blocks_ae_of_bounded
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (A : ℕ → Ω → Attr)
+    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (hLaw : Measure.map (A 0) μ = ν)
+    (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+    (hSplit : ∀ m b,
+      SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
+    (hG : ∀ b,
+      GEstimationAssumptions (ν := ν) (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        ∀ b : B,
+          (∀ᵐ ω ∂μ,
+            ∀ᶠ n : ℕ in atTop,
+              totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
+  have hSplit' :
+      ∀ m b,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m :=
+    fun m b =>
+      splitEvalAssumptions_of_bounded
+        (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) (m := m) (hSplit m b)
+  exact
+    sequential_consistency_blocks_ae
+      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+      (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hSplit := hSplit') (hG := hG) (ε := ε) (hε := hε)
+
+theorem sequential_consistency_total_ae_of_bounded
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (A : ℕ → Ω → Attr)
+    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (hLaw : Measure.map (A 0) μ = ν)
+    (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hGTotal :
+      GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
+  have hSplitTotal' :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m :=
+    fun m =>
+      splitEvalAssumptions_of_bounded
+        (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) (m := m) (hSplitTotal m)
+  exact
+    sequential_consistency_total_ae
+      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+      (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hSplitTotal := hSplitTotal') (hGTotal := hGTotal) (ε := ε) (hε := hε)
+
 end
 
 end ConjointSD

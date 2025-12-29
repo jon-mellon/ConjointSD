@@ -138,6 +138,32 @@ theorem paper_sd_blocks_sequential_consistency_ae
       (hSplit := hSplit) (hG := hG)
       (ε := ε) (hε := hε)
 
+theorem paper_sd_blocks_sequential_consistency_ae_of_bounded
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplit : ∀ m b,
+      SplitEvalAssumptionsBounded
+        (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hCont : ∀ b : B, FunctionalContinuityAssumptions (ν := ν) (g := gBlock (gB := gB) b) θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        ∀ b : B,
+          (∀ᵐ ω ∂μ,
+            ∀ᶠ n : ℕ in atTop,
+              totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
+  have hG :
+      ∀ b : B,
+        GEstimationAssumptions (ν := ν) (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) :=
+    fun b =>
+      derive_hG (ν := ν) (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) hθ (hCont b)
+  exact
+    sequential_consistency_blocks_ae_of_bounded
+      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+      (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hSplit := hSplit) (hG := hG)
+      (ε := ε) (hε := hε)
+
 /-- Paper-facing: total-score SD is sequentially consistent. -/
 theorem paper_sd_total_sequential_consistency_ae
     (hLaw : Measure.map (A 0) μ = ν)
@@ -158,6 +184,31 @@ theorem paper_sd_total_sequential_consistency_ae
     derive_hG (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) hθ hContTotal
   exact
     sequential_consistency_total_ae
+      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+      (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+      (ε := ε) (hε := hε)
+
+theorem paper_sd_total_sequential_consistency_ae_of_bounded
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptionsBounded
+          (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
+  have hGTotal :
+      GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) :=
+    derive_hG (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) hθ hContTotal
+  exact
+    sequential_consistency_total_ae_of_bounded
       (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
@@ -195,6 +246,49 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae
       (hLaw := hLaw) (hSplit := hSplit) (hθ := hθ) (hCont := hCont) (ε := ε) (hε := hε)
       with ⟨Mb, hMb⟩
   rcases paper_sd_total_sequential_consistency_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
+      with ⟨Mt, hMt⟩
+  let M : ℕ := Nat.max Mb Mt
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hmb : m ≥ Mb := le_trans (Nat.le_max_left Mb Mt) hm
+  have hmt : m ≥ Mt := le_trans (Nat.le_max_right Mb Mt) hm
+  refine ⟨?_, ?_⟩
+  · intro b
+    exact hMb m hmb b
+  · exact hMt m hmt
+
+theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplit : ∀ m b,
+      SplitEvalAssumptionsBounded
+        (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptionsBounded
+          (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hCont : ∀ b : B, FunctionalContinuityAssumptions (ν := ν) (g := gBlock (gB := gB) b) θ0)
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ b : B,
+          (∀ᵐ ω ∂μ,
+            ∀ᶠ n : ℕ in atTop,
+              totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε))
+        ∧
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
+  rcases paper_sd_blocks_sequential_consistency_ae_of_bounded
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplit := hSplit) (hθ := hθ) (hCont := hCont) (ε := ε) (hε := hε)
+      with ⟨Mb, hMb⟩
+  rcases paper_sd_total_sequential_consistency_ae_of_bounded
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
