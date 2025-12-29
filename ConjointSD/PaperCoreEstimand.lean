@@ -69,4 +69,97 @@ theorem paperTotalSD_def
 
 end CoreEstimand
 
+/-!
+## Main paper estimator: evaluation-stage SD for the term-induced total score
+-/
+
+section MainEstimator
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+variable {Attr : Type*} [MeasurableSpace Attr]
+variable {B : Type*} [Fintype B] [DecidableEq B]
+variable {Term : Type*} [Fintype Term]
+variable {Θ : Type*} [TopologicalSpace Θ]
+
+variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (A : ℕ → Ω → Attr)
+
+variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+
+/-- Paper’s main SD estimator: evaluation-stage SD for the term-induced total score. -/
+def paperTotalSDEst
+    (blk : Term → B) (βOf : Θ → Term → ℝ) (φ : Term → Attr → ℝ)
+    (θhat : ℕ → Θ) (m n : ℕ) (ω : Ω) : ℝ :=
+  sdEst μ A
+    (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
+    θhat m n ω
+
+/--
+End-to-end wrapper: under coefficient identification and the sequential-consistency
+assumptions, the paper’s main SD estimator converges (sequentially) to the paper’s
+total SD target.
+-/
+theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
+    (blk : Term → B) (φ : Term → Attr → ℝ)
+    (βOf : Θ → Term → ℝ) (β0 : Term → ℝ)
+    (θ0 : Θ) (θhat : ℕ → Θ)
+    (hβ : βOf θ0 = β0)
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions
+          (μ := μ) (A := A)
+          (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
+          (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
+        θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            abs
+              (paperTotalSDEst (μ := μ) (A := A)
+                (blk := blk) (βOf := βOf) (φ := φ)
+                (θhat := θhat) m n ω
+                - paperTotalSD (ν := ν) (blk := blk) (β0 := β0) (φ := φ))
+              < ε) := by
+  classical
+  have hTrue :
+      InvarianceAE
+        (ν := ν)
+        (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
+        (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := by
+    refine ae_of_all _ ?_
+    intro a
+    simp [paperTrueTotalScore, paperTrueBlockScore, trueBlockScore, gTotalΘ, gBTerm, hβ]
+  rcases paper_sd_total_sequential_consistency_to_true_target_ae
+      (μ := μ) (A := A) (ν := ν)
+      (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
+      (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (gTrue := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
+      (hTrue := hTrue) (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hCons := hM m hm
+  have hEqTarget :
+      popSDAttr ν
+          (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
+        =
+      paperTotalSD (ν := ν) (blk := blk) (β0 := β0) (φ := φ) := by
+    simpa [paperTotalSD_def] using hCons.2
+  refine hCons.1.mono ?_
+  intro ω hω
+  refine hω.mono ?_
+  intro n hn
+  simpa [paperTotalSDEst, totalErr, sdOracle, hEqTarget] using hn
+
+end MainEstimator
+
 end ConjointSD

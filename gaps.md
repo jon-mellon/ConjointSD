@@ -27,6 +27,6 @@ Gaps in the formal proof relative to the paper’s causal identification and con
    - All measures are population probability measures with no link to weighting or finite sampling; the paper’s estimates likely use survey weights and a finite target population.  
    - To fix: Define weighted estimators and show identification/consistency under the survey design and weighting scheme, or add finite-population sampling lemmas.
 
-7) No final theorem tying everything to the reported main SD estimate  
-   - Even after adding the randomized-design bridge, the paper-facing wrappers still stop at abstract convergence to `popSDAttr ν (g θ0)`. There is no instantiation with the actual attributes, blocks, or the SD quantity reported in the paper, nor a theorem that “the estimator used in the paper converges to the causal SD estimand.”  
-   - To fix: Define the paper’s main SD estimator in Lean, map the paper’s blocks/terms to the abstract `g`/`blk` under the (now formalized) assignment assumptions, and prove the end-to-end consistency/identification statement for that estimator and target.
+7) Main SD estimator now defined, but not instantiated for the status conjoint  
+   - **Added:** `paperTotalSDEst` (evaluation-stage SD estimator for the term-induced total score) and an end-to-end sequential-consistency wrapper `paper_total_sd_estimator_consistency_ae_of_gBTerm` in PaperCoreEstimand. This ties the estimator to the paper’s total SD target under coefficient identification and the sequential-consistency assumptions.  
+   - Remaining gap: specialize the theorem to the status conjoint by instantiating the paper’s term set, block map, features, and coefficient map (`blk`, `φ`, `βOf`, `β0`) and by proving the SplitEvalAssumptions / continuity / convergence hypotheses from the design.
