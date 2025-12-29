@@ -1,6 +1,7 @@
 # Simple Lean import DAG plotter.
 
-# install.packages(c("fs", "stringr", "dplyr", "purrr", "tidyr", "DiagrammeR"))
+# install.packages(c("fs", "stringr", "dplyr", "purrr", "tidyr", "DiagrammeR",
+#                    "DiagrammeRsvg", "rsvg"))
 
 library(fs)
 library(stringr)
@@ -15,6 +16,7 @@ src_dirs <- c(project_root)
 lean_glob <- "\\.lean$"
 include_external <- FALSE  # FALSE: keep only modules that exist in repo
 excluded_modules <- c("ConjointSD", "Scratch")
+output_png <- path(project_root, "readable", "lean_import_dag.png")
 
 # ---- helpers ----
 read_lines_safe <- function(path) {
@@ -124,6 +126,19 @@ plot_import_dag <- function(title = "Lean import DAG") {
   grViz(dot_from_edges(dag$nodes, dag$edges, title = title))
 }
 
+write_import_dag_png <- function(output_path = output_png, title = "Lean import DAG") {
+  if (!requireNamespace("DiagrammeRsvg", quietly = TRUE) ||
+      !requireNamespace("rsvg", quietly = TRUE)) {
+    stop("Missing packages DiagrammeRsvg/rsvg. Install them to export PNG.")
+  }
+  dir_create(path_dir(output_path))
+  graph <- plot_import_dag(title = title)
+  svg <- DiagrammeRsvg::export_svg(graph)
+  rsvg::rsvg_png(charToRaw(svg), file = output_path)
+  message("Wrote DAG PNG to: ", output_path)
+  invisible(output_path)
+}
+
 if (sys.nframe() == 0) {
-  plot_import_dag()
+  write_import_dag_png()
 }

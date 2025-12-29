@@ -37,7 +37,11 @@ transport, identification, and regression machinery.
 
 A successful build was started in this environment after installing `elan`, though compiling mathlib takes significant time on a fresh cache.
 
+## Lean import DAG
+
+![Lean import DAG](readable/lean_import_dag.png)
+
 ## R helper scripts
 
-- Install R packages used by `plot_proof_structure.R`: `fs`, `stringr`, `dplyr`, `purrr`, `tidyr`, `DiagrammeR`.
+- Install R packages used by `plot_proof_structure.R`: `fs`, `stringr`, `dplyr`, `purrr`, `tidyr`, `DiagrammeR`, `DiagrammeRsvg`, `rsvg`.
 - Run `Rscript scripts/check_r.R` from the repo root to validate the import-DAG script finds nodes and edges.
