@@ -2,4 +2,4 @@
 
 Lean entrypoint: [ConjointSD.lean](../ConjointSD.lean)
 
-Variance measures spread. It is defined as the second moment minus the square of the mean.
+Variance measures spread. It is defined as the [second moment](jargon_second_moment.md) minus the square of the [mean](jargon_mean.md).

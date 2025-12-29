@@ -10,6 +10,7 @@ Key definition:
 Assumption package:
 - `PaperOLSMomentAssumptions` says that for almost every sample path, the empirical Gram matrix and cross moments [converge](jargon_convergence.md) to their [population](jargon_population.md) versions for the causal target. This is the key input for OLS [consistency](jargon_consistency.md).
 - `PaperOLSLLNA`, `PaperOLSInverseStability`, and `PaperOLSIdentifiability` break the moment package into LLN for Gram/cross, inverse stability, and the population normal-equation identity for `theta0`.
+- `paper_ols_lln_of_score_assumptions_ae` derives the LLN part from existing `ScoreAssumptions`, plus a law-of-attributes condition and a (strong) noiseless link `Yobs = gStar ∘ A` on sample paths.
 
 Main results:
 - `theta_tendsto_of_paper_ols_moments_ae` gives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0`.
