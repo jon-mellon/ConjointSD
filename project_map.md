@@ -9,7 +9,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Shared definitions and assumptions
 
 - [ConjointSD/Defs.lean](readable/Defs.md) centralizes core definitions used across the project ([population](readable/jargon_population.md)/empirical moments, plug-in scores, [OLS](readable/jargon_ols.md) helpers, and conjoint primitives).
-- [ConjointSD/Assumptions.lean](readable/Assumptions.md) collects all assumption bundles (transport, [IID](readable/jargon_iid.md)/score, [regression](readable/jargon_regression.md)/[OLS](readable/jargon_ols.md), identification, and paper-specific packages).
+- [ConjointSD/Assumptions.lean](readable/Assumptions.md) collects all assumption bundles (transport, [IID](readable/jargon_iid.md)/score, [regression](readable/jargon_regression.md)/[OLS](readable/jargon_ols.md), identification, paper-specific packages, plus the additive-projection oracle definition for component targets).
 
 ## Core probability/SD machinery
 
@@ -23,7 +23,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 - [ConjointSD/PopulationBridge.lean](readable/PopulationBridge.md) bridges moments under `μ` for `g(A0)` to moments under `ν` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
 - [ConjointSD/OracleSDConsistency.lean](readable/OracleSDConsistency.md) restates [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) with the `popSDAttr ν g` target using `SDDecompositionFromConjoint` + `PopulationBridge`.
 - [ConjointSD/SurveyWeights.lean](readable/SurveyWeights.md) adds weighted [population](readable/jargon_population.md) estimands and finite-[population](readable/jargon_population.md) targets; builds on `Transport`.
-- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds, an L2/RMSE mean-difference lemma, and a triangle-inequality lemma for chaining approximations; uses `Transport`.
+- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds, L2/RMSE mean and SD bounds, and a triangle-inequality lemma for chaining approximations; uses `Transport`.
 
 ## Identification and design
 
@@ -53,8 +53,8 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Paper-facing wrappers and estimands
 
-- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), target-equivalence wrappers (exact and approximate, including two-stage oracle bounds), and `hGTotal`-based total-score variants; central hub for exported statements.
-- [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core estimands ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
+- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), target-equivalence wrappers (exact and approximate, including two-stage oracle bounds), weighted-target transfer lemmas, `hGTotal`-based total-score variants, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; central hub for exported statements.
+- [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core estimands ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, `SurveyWeights`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery (including weighted population SD targets).
 
 ## Tooling
 
@@ -62,4 +62,3 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Scratchpad
 
 - [Scratch.lean](readable/Scratch.md) is a local scratch file that prints key structures/theorems for inspection; no production dependencies.
-- [ConjointSD/L2SDDraft.lean](readable/L2SDDraft.md) is a temporary scratchpad for L2-based SD bounds; not imported by the main development.

@@ -8,6 +8,8 @@ Part 1: core targets
 - `paperTrueBlockScore` and `paperTrueTotalScore` are the true [block](jargon_block.md) and total scores induced by the [term](jargon_term.md) model.
 - `paperBlockSD` and `paperTotalSD` are the [population](jargon_population.md) [standard deviation](jargon_standard_deviation.md) targets for those scores.
 - `paperBlockSDs` collects block [standard deviation](jargon_standard_deviation.md) targets into a function over [blocks](jargon_block.md).
+- `paperBlockSD_weighted`, `paperTotalSD_weighted`, and `paperBlockSDs_weighted` define survey-weighted population SD targets using `weightSDAttr` from [SurveyWeights](SurveyWeights.md).
+- `paperBlockSD_weighted_eq_pop`, `paperTotalSD_weighted_eq_pop`, and `paperBlockSDs_weighted_eq_pop` state that if the survey weights match the population moments, the weighted targets equal the population SD targets.
 
 Part 2: the main estimator
 - `paperTotalSDEst` is the evaluation-stage [standard deviation](jargon_standard_deviation.md) estimator for the total score induced by the term model.

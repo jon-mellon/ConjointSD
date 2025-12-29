@@ -142,6 +142,403 @@ theorem popMeanAttr_diff_le_of_L2Approx
     exact le_trans (by simpa [hdiff] using habs) hcs
   exact le_trans hle hBound
 
+section L2Centering
+
+lemma popVarAttr_eq_integral_centered
+    (hs : Integrable s ν)
+    (hs2 : Integrable (fun a => (s a) ^ 2) ν) :
+    popVarAttr ν s = ∫ a, (s a - popMeanAttr ν s) ^ 2 ∂ν := by
+  set μs : ℝ := popMeanAttr ν s
+  have hmul : Integrable (fun a => (2 * μs) * s a) ν := by
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hs.mul_const (2 * μs)
+  have hconst : Integrable (fun _ : Attr => μs ^ 2) ν := integrable_const _
+  have hsum :
+      Integrable (fun a => (s a) ^ 2 - (2 * μs) * s a + μs ^ 2) ν := by
+    exact (hs2.sub hmul).add hconst
+  have hpoint :
+      ∀ᵐ a ∂ν, (s a - μs) ^ 2 = (s a) ^ 2 - (2 * μs) * s a + μs ^ 2 := by
+    refine Eventually.of_forall ?_
+    intro a
+    ring
+  have hcenter :
+      ∫ a, (s a - μs) ^ 2 ∂ν
+        = ∫ a, (s a) ^ 2 - (2 * μs) * s a + μs ^ 2 ∂ν := by
+    exact integral_congr_ae hpoint
+  have hsub :
+      ∫ a, (s a) ^ 2 - (2 * μs) * s a ∂ν
+        =
+      ∫ a, (s a) ^ 2 ∂ν - ∫ a, (2 * μs) * s a ∂ν := by
+    simpa [sub_eq_add_neg] using
+      (integral_sub (μ := ν)
+        (f := fun a => (s a) ^ 2) (g := fun a => (2 * μs) * s a) hs2 hmul)
+  have hmul_int :
+      ∫ a, (2 * μs) * s a ∂ν = 2 * μs * ∫ a, s a ∂ν := by
+    simpa [mul_comm, mul_left_comm, mul_assoc] using
+      (integral_const_mul (μ := ν) (2 * μs) (fun a => s a))
+  have hsum_int :
+      ∫ a, (s a) ^ 2 - (2 * μs) * s a + μs ^ 2 ∂ν
+        =
+      ∫ a, (s a) ^ 2 - (2 * μs) * s a ∂ν + ∫ a, μs ^ 2 ∂ν := by
+    have hleft : Integrable (fun a => (s a) ^ 2 - (2 * μs) * s a) ν := hs2.sub hmul
+    simpa [add_assoc] using
+      (integral_add (μ := ν)
+        (f := fun a => (s a) ^ 2 - (2 * μs) * s a)
+        (g := fun _ : Attr => μs ^ 2) hleft hconst)
+  have hmean : ∫ a, s a ∂ν = μs := by
+    simp [μs, popMeanAttr]
+  have hconst_int : ∫ a, μs ^ 2 ∂ν = μs ^ 2 := by
+    simp
+  have hcalc :
+      ∫ a, (s a - μs) ^ 2 ∂ν = ∫ a, (s a) ^ 2 ∂ν - μs ^ 2 := by
+    calc
+      ∫ a, (s a - μs) ^ 2 ∂ν
+          = ∫ a, (s a) ^ 2 - (2 * μs) * s a + μs ^ 2 ∂ν := by
+              exact hcenter
+      _ = (∫ a, (s a) ^ 2 - (2 * μs) * s a ∂ν) + ∫ a, μs ^ 2 ∂ν := by
+              exact hsum_int
+      _ = (∫ a, (s a) ^ 2 ∂ν - ∫ a, (2 * μs) * s a ∂ν) + μs ^ 2 := by
+              simp [hconst_int, hsub]
+      _ = (∫ a, (s a) ^ 2 ∂ν - 2 * μs * ∫ a, s a ∂ν) + μs ^ 2 := by
+              simpa [hmul_int]
+      _ = ∫ a, (s a) ^ 2 ∂ν - 2 * μs * ∫ a, s a ∂ν + μs ^ 2 := by
+              ring
+      _ = ∫ a, (s a) ^ 2 ∂ν - μs ^ 2 := by
+              have hring :
+                  ∫ a, (s a) ^ 2 ∂ν - 2 * μs * μs + μs ^ 2
+                    = ∫ a, (s a) ^ 2 ∂ν - μs ^ 2 := by
+                ring
+              simpa [hmean] using hring
+  have hmean_sq : (∫ a, s a ∂ν) ^ 2 = μs ^ 2 := by
+    simp [μs, popMeanAttr]
+  calc
+    popVarAttr ν s = ∫ a, (s a) ^ 2 ∂ν - μs ^ 2 := by
+      simp [popVarAttr, popM2Attr, popMeanAttr, hmean_sq, μs]
+    _ = ∫ a, (s a - μs) ^ 2 ∂ν := by
+      symm
+      exact hcalc
+
+lemma popSDAttr_eq_l2_centered
+    (hs : Integrable s ν)
+    (hs2 : Integrable (fun a => (s a) ^ 2) ν) :
+    popSDAttr ν s = Real.sqrt (∫ a, |s a - popMeanAttr ν s| ^ 2 ∂ν) := by
+  have hvar :
+      popVarAttr ν s = ∫ a, (s a - popMeanAttr ν s) ^ 2 ∂ν :=
+    popVarAttr_eq_integral_centered (ν := ν) (s := s) hs hs2
+  have habs :
+      (∫ a, |s a - popMeanAttr ν s| ^ 2 ∂ν)
+        = ∫ a, (s a - popMeanAttr ν s) ^ 2 ∂ν := by
+    simp [abs_sq]
+  simp [popSDAttr, hvar, habs]
+
+end L2Centering
+
+section L2Triangle
+
+lemma l2_centered_triangle_eLpNorm
+    (hMem : MemLp (fun a => s a - t a) (2 : ENNReal) ν) :
+    ENNReal.toReal
+        (eLpNorm (fun a => (s a - popMeanAttr ν s) - (t a - popMeanAttr ν t)) 2 ν)
+      ≤
+    ENNReal.toReal (eLpNorm (fun a => s a - t a) 2 ν)
+      + ENNReal.toReal (eLpNorm (fun _ : Attr => popMeanAttr ν s - popMeanAttr ν t) 2 ν) := by
+  set c : ℝ := popMeanAttr ν s - popMeanAttr ν t
+  have hconst : MemLp (fun _ : Attr => c) (2 : ENNReal) ν := by
+    simpa using (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := c))
+  have htri :
+      eLpNorm (fun a => (s a - t a) - c) 2 ν
+        ≤
+      eLpNorm (fun a => s a - t a) 2 ν + eLpNorm (fun _ : Attr => c) 2 ν := by
+    have h :=
+      eLpNorm_sub_le (μ := ν) (p := (2 : ENNReal))
+        (f := fun a => s a - t a)
+        (g := fun _ : Attr => c)
+        (hf := hMem.aestronglyMeasurable)
+        (hg := hconst.aestronglyMeasurable)
+        (hp := by norm_num)
+    simpa using h
+  have hsum_ne_top :
+      eLpNorm (fun a => s a - t a) 2 ν
+        + eLpNorm (fun _ : Attr => c) 2 ν ≠ (⊤ : ENNReal) := by
+    exact ne_of_lt (ENNReal.add_lt_top.2 ⟨hMem.2, hconst.2⟩)
+  have hmono :
+      ENNReal.toReal (eLpNorm (fun a => (s a - t a) - c) 2 ν)
+        ≤
+      ENNReal.toReal
+        (eLpNorm (fun a => s a - t a) 2 ν + eLpNorm (fun _ : Attr => c) 2 ν) := by
+    exact ENNReal.toReal_mono hsum_ne_top htri
+  have hsum :
+      ENNReal.toReal
+          (eLpNorm (fun a => s a - t a) 2 ν + eLpNorm (fun _ : Attr => c) 2 ν)
+        =
+      ENNReal.toReal (eLpNorm (fun a => s a - t a) 2 ν)
+        + ENNReal.toReal (eLpNorm (fun _ : Attr => c) 2 ν) := by
+    exact ENNReal.toReal_add (ne_of_lt hMem.2) (ne_of_lt hconst.2)
+  have hrewrite :
+      (fun a => (s a - t a) - c) =
+        fun a => (s a - popMeanAttr ν s) - (t a - popMeanAttr ν t) := by
+    funext a
+    simp [c, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+  simpa [hsum, hrewrite, c] using hmono
+
+end L2Triangle
+
+end ApproximateMoments
+
+section L2IntegralBridge
+
+lemma sqrt_integral_sq_eq_eLpNorm
+    (hs : MemLp s (2 : ENNReal) ν) :
+    Real.sqrt (∫ a, |s a| ^ 2 ∂ν)
+      =
+    ENNReal.toReal (eLpNorm s (2 : ENNReal) ν) := by
+  have h0 : (2 : ENNReal) ≠ 0 := by norm_num
+  have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp
+  have hnorm :
+      eLpNorm s (2 : ENNReal) ν
+        =
+      ENNReal.ofReal ((∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ))) := by
+    simpa using
+      (MemLp.eLpNorm_eq_integral_rpow_norm (μ := ν) (f := s) (p := (2 : ENNReal)) h0 htop hs)
+  have htoReal :
+      ENNReal.toReal (eLpNorm s (2 : ENNReal) ν)
+        =
+      (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
+    have hnonneg_int : 0 ≤ ∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν := by
+      refine integral_nonneg_of_ae ?_
+      refine Eventually.of_forall ?_
+      intro a
+      exact by positivity
+    have hnonneg : 0 ≤ (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
+      exact Real.rpow_nonneg hnonneg_int _
+    calc
+      ENNReal.toReal (eLpNorm s (2 : ENNReal) ν)
+          = ENNReal.toReal (ENNReal.ofReal ((∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)))) := by
+              simpa [hnorm]
+      _ = (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
+              exact ENNReal.toReal_ofReal hnonneg
+  have hnorm_abs :
+      (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ))
+        =
+      (∫ a, |s a| ^ 2 ∂ν) ^ (1 / (2 : ℝ)) := by
+    simp [Real.norm_eq_abs]
+  have hsqrt :
+      Real.sqrt (∫ a, |s a| ^ 2 ∂ν) = (∫ a, |s a| ^ 2 ∂ν) ^ (1 / (2 : ℝ)) := by
+    simp [Real.sqrt_eq_rpow]
+  calc
+    Real.sqrt (∫ a, |s a| ^ 2 ∂ν)
+        = (∫ a, |s a| ^ 2 ∂ν) ^ (1 / (2 : ℝ)) := hsqrt
+    _ = (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
+          simpa [hnorm_abs] using rfl
+    _ = ENNReal.toReal (eLpNorm s (2 : ENNReal) ν) := by
+          symm
+          exact htoReal
+
+end L2IntegralBridge
+
+section ApproximateMoments
+
+variable [IsProbabilityMeasure ν]
+
+theorem popSDAttr_diff_le_of_L2Approx
+    (hs : PopulationMomentAssumptions (ν := ν) s)
+    (ht : PopulationMomentAssumptions (ν := ν) t)
+    (hL2 : L2Approx (ν := ν) (gModel := s) (gTarget := t) δ) :
+    |popSDAttr ν s - popSDAttr ν t| ≤ 2 * δ := by
+  set μs : ℝ := popMeanAttr ν s
+  set μt : ℝ := popMeanAttr ν t
+  have hs_mem : MemLp s (2 : ENNReal) ν := by
+    have hs_meas : AEStronglyMeasurable s ν := hs.int1.aestronglyMeasurable
+    have hs_mem' : MemLp s (2 : ENNReal) ν :=
+      (memLp_two_iff_integrable_sq hs_meas).2 hs.int2
+    simpa using hs_mem'
+  have ht_mem : MemLp t (2 : ENNReal) ν := by
+    have ht_meas : AEStronglyMeasurable t ν := ht.int1.aestronglyMeasurable
+    have ht_mem' : MemLp t (2 : ENNReal) ν :=
+      (memLp_two_iff_integrable_sq ht_meas).2 ht.int2
+    simpa using ht_mem'
+  have hcenter_s : MemLp (fun a => s a - μs) (2 : ENNReal) ν := by
+    simpa using hs_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := μs))
+  have hcenter_t : MemLp (fun a => t a - μt) (2 : ENNReal) ν := by
+    simpa using ht_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := μt))
+  have hcenter_diff : MemLp (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν := by
+    simpa using hcenter_s.sub hcenter_t
+  have hs_center :
+      popSDAttr ν s =
+        ENNReal.toReal (eLpNorm (fun a => s a - μs) (2 : ENNReal) ν) := by
+    have hsd :=
+      popSDAttr_eq_l2_centered (ν := ν) (s := s) hs.int1 hs.int2
+    have hsd' :
+        popSDAttr ν s = Real.sqrt (∫ a, |s a - μs| ^ 2 ∂ν) := by
+      simpa [μs] using hsd
+    have hbridge :=
+      sqrt_integral_sq_eq_eLpNorm (ν := ν) (s := fun a => s a - μs) hcenter_s
+    simpa [μs] using (hsd'.trans hbridge)
+  have ht_center :
+      popSDAttr ν t =
+        ENNReal.toReal (eLpNorm (fun a => t a - μt) (2 : ENNReal) ν) := by
+    have hsd :=
+      popSDAttr_eq_l2_centered (ν := ν) (s := t) ht.int1 ht.int2
+    have hsd' :
+        popSDAttr ν t = Real.sqrt (∫ a, |t a - μt| ^ 2 ∂ν) := by
+      simpa [μt] using hsd
+    have hbridge :=
+      sqrt_integral_sq_eq_eLpNorm (ν := ν) (s := fun a => t a - μt) hcenter_t
+    simpa [μt] using (hsd'.trans hbridge)
+  have htri1 :
+      ENNReal.toReal (eLpNorm (fun a => s a - μs) (2 : ENNReal) ν)
+        ≤
+      ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν)
+        + ENNReal.toReal (eLpNorm (fun a => t a - μt) (2 : ENNReal) ν) := by
+    have h :=
+      eLpNorm_add_le (μ := ν) (p := (2 : ENNReal))
+        (f := fun a => (s a - μs) - (t a - μt))
+        (g := fun a => t a - μt)
+        (hf := hcenter_diff.aestronglyMeasurable)
+        (hg := hcenter_t.aestronglyMeasurable)
+        (hp1 := by norm_num)
+    have hsum_ne_top :
+        eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν
+          + eLpNorm (fun a => t a - μt) (2 : ENNReal) ν ≠ (⊤ : ENNReal) := by
+      exact ne_of_lt (ENNReal.add_lt_top.2 ⟨hcenter_diff.2, hcenter_t.2⟩)
+    have hmono :
+        ENNReal.toReal
+            (eLpNorm (fun a => (s a - μs) - (t a - μt) + (t a - μt)) (2 : ENNReal) ν)
+          ≤
+        ENNReal.toReal
+            (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν
+              + eLpNorm (fun a => t a - μt) (2 : ENNReal) ν) := by
+      exact ENNReal.toReal_mono hsum_ne_top h
+    have hsum :
+        ENNReal.toReal
+            (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν
+              + eLpNorm (fun a => t a - μt) (2 : ENNReal) ν)
+          =
+        ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν)
+          + ENNReal.toReal (eLpNorm (fun a => t a - μt) (2 : ENNReal) ν) := by
+      exact ENNReal.toReal_add (ne_of_lt hcenter_diff.2) (ne_of_lt hcenter_t.2)
+    have hrewrite :
+        (fun a => (s a - μs) - (t a - μt) + (t a - μt)) = fun a => s a - μs := by
+      funext a
+      ring
+    simpa [hsum, hrewrite] using hmono
+  have htri2 :
+      ENNReal.toReal (eLpNorm (fun a => t a - μt) (2 : ENNReal) ν)
+        ≤
+      ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν)
+        + ENNReal.toReal (eLpNorm (fun a => s a - μs) (2 : ENNReal) ν) := by
+    have h :=
+      eLpNorm_add_le (μ := ν) (p := (2 : ENNReal))
+        (f := fun a => (t a - μt) - (s a - μs))
+        (g := fun a => s a - μs)
+        (hf := (hcenter_t.sub hcenter_s).aestronglyMeasurable)
+        (hg := hcenter_s.aestronglyMeasurable)
+        (hp1 := by norm_num)
+    have hsum_ne_top :
+        eLpNorm (fun a => (t a - μt) - (s a - μs)) (2 : ENNReal) ν
+          + eLpNorm (fun a => s a - μs) (2 : ENNReal) ν ≠ (⊤ : ENNReal) := by
+      exact ne_of_lt (ENNReal.add_lt_top.2 ⟨(hcenter_t.sub hcenter_s).2, hcenter_s.2⟩)
+    have hmono :
+        ENNReal.toReal
+            (eLpNorm (fun a => (t a - μt) - (s a - μs) + (s a - μs)) (2 : ENNReal) ν)
+          ≤
+        ENNReal.toReal
+            (eLpNorm (fun a => (t a - μt) - (s a - μs)) (2 : ENNReal) ν
+              + eLpNorm (fun a => s a - μs) (2 : ENNReal) ν) := by
+      exact ENNReal.toReal_mono hsum_ne_top h
+    have hsum :
+        ENNReal.toReal
+            (eLpNorm (fun a => (t a - μt) - (s a - μs)) (2 : ENNReal) ν
+              + eLpNorm (fun a => s a - μs) (2 : ENNReal) ν)
+          =
+        ENNReal.toReal (eLpNorm (fun a => (t a - μt) - (s a - μs)) (2 : ENNReal) ν)
+          + ENNReal.toReal (eLpNorm (fun a => s a - μs) (2 : ENNReal) ν) := by
+      exact ENNReal.toReal_add (ne_of_lt (hcenter_t.sub hcenter_s).2) (ne_of_lt hcenter_s.2)
+    have hrewrite :
+        (fun a => (t a - μt) - (s a - μs) + (s a - μs)) = fun a => t a - μt := by
+      funext a
+      ring
+    have htri2' :
+        ENNReal.toReal (eLpNorm (fun a => t a - μt) (2 : ENNReal) ν)
+          ≤
+        ENNReal.toReal (eLpNorm (fun a => (t a - μt) - (s a - μs)) (2 : ENNReal) ν)
+          + ENNReal.toReal (eLpNorm (fun a => s a - μs) (2 : ENNReal) ν) := by
+      simpa [hsum, hrewrite] using hmono
+    have hswap :
+        eLpNorm (fun a => (t a - μt) - (s a - μs)) (2 : ENNReal) ν
+          =
+        eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν := by
+      simpa [Pi.sub_apply] using
+        (eLpNorm_sub_comm
+          (f := fun a => t a - μt) (g := fun a => s a - μs) (p := (2 : ENNReal)) (μ := ν))
+    simpa [hswap] using htri2'
+  have hsd_le :
+      |popSDAttr ν s - popSDAttr ν t|
+        ≤ ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
+    have h1 :
+        popSDAttr ν s
+          ≤ popSDAttr ν t
+              + ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
+      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri1
+    have h2 :
+        popSDAttr ν t
+          ≤ popSDAttr ν s
+              + ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
+      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri2
+    have h1' : popSDAttr ν s - popSDAttr ν t
+        ≤ ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
+      linarith
+    have h2' : popSDAttr ν t - popSDAttr ν s
+        ≤ ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
+      linarith
+    exact (abs_sub_le_iff).2 ⟨h1', h2'⟩
+  have htri_centered :
+      ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν)
+        ≤
+      ENNReal.toReal (eLpNorm (fun a => s a - t a) (2 : ENNReal) ν)
+        + ENNReal.toReal (eLpNorm (fun _ : Attr => μs - μt) (2 : ENNReal) ν) := by
+    have hMem : MemLp (fun a => s a - t a) (2 : ENNReal) ν := by
+      simpa using hL2.1
+    simpa [μs, μt] using (l2_centered_triangle_eLpNorm (ν := ν) (s := s) (t := t) hMem)
+  have hconst :
+      ENNReal.toReal (eLpNorm (fun _ : Attr => μs - μt) (2 : ENNReal) ν) = |μs - μt| := by
+    have h0 : (2 : ENNReal) ≠ 0 := by norm_num
+    have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp
+    have hμ : (ν Set.univ) = 1 := by
+      simpa using (measure_univ : ν Set.univ = 1)
+    have hconst' :=
+      eLpNorm_const' (μ := ν) (p := (2 : ENNReal)) (c := μs - μt) h0 htop
+    calc
+      ENNReal.toReal (eLpNorm (fun _ : Attr => μs - μt) (2 : ENNReal) ν)
+          = ENNReal.toReal (‖μs - μt‖ₑ * ν Set.univ ^ (1 / ENNReal.toReal (2 : ENNReal))) := by
+              simpa [hconst']
+      _ = ENNReal.toReal (‖μs - μt‖ₑ) := by
+              simp [hμ]
+      _ = |μs - μt| := by
+              simp [Real.enorm_eq_ofReal_abs]
+  have hmean :
+      |μs - μt| ≤ δ :=
+    popMeanAttr_diff_le_of_L2Approx (ν := ν) (s := s) (t := t) hs.int1 ht.int1 hL2
+  have hnorm_st :
+      ENNReal.toReal (eLpNorm (fun a => s a - t a) (2 : ENNReal) ν) ≤ δ := by
+    have hMem : MemLp (fun a => s a - t a) (2 : ENNReal) ν := by
+      simpa using hL2.1
+    have hbridge :=
+      sqrt_integral_sq_eq_eLpNorm (ν := ν) (s := fun a => s a - t a) hMem
+    have hbridge' :
+        Real.sqrt (∫ a, (s a - t a) ^ 2 ∂ν)
+          = ENNReal.toReal (eLpNorm (fun a => s a - t a) (2 : ENNReal) ν) := by
+      simpa [abs_sq] using hbridge
+    have hL2' : Real.sqrt (∫ a, (s a - t a) ^ 2 ∂ν) ≤ δ := by
+      simpa [abs_sq] using hL2.2
+    simpa [hbridge'] using hL2'
+  have hle :
+      ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν)
+        ≤ 2 * δ := by
+    have hmean' : ENNReal.toReal (eLpNorm (fun _ : Attr => μs - μt) (2 : ENNReal) ν) ≤ δ := by
+      simpa [hconst] using hmean
+    nlinarith [htri_centered, hnorm_st, hmean']
+  exact le_trans hsd_le hle
+
 theorem popMeanAttr_abs_le_of_bounded_ae
     (hs : Integrable s ν)
     (hBound : BoundedAE (ν := ν) s C) :

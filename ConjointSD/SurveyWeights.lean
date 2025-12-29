@@ -59,6 +59,22 @@ lemma weightSDAttr_one
     weightSDAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = popSDAttr ν s := by
   simp [weightSDAttr, popSDAttr, weightVarAttr_one]
 
+lemma weightVarAttr_eq_popVarAttr_of_moments
+    (ν : Measure Attr) (w s : Attr → ℝ)
+    (h : WeightMatchesPopMoments (ν := ν) (w := w) (s := s)) :
+    weightVarAttr (ν := ν) w s = popVarAttr ν s := by
+  have hmean : weightMeanAttr (ν := ν) (w := w) s = popMeanAttr ν s := by
+    simpa [weightMeanAttr] using h.mean_eq
+  have hm2 : weightM2Attr (ν := ν) (w := w) s = popM2Attr ν s := by
+    simpa [weightM2Attr] using h.m2_eq
+  simp [weightVarAttr, popVarAttr, hmean, hm2]
+
+lemma weightSDAttr_eq_popSDAttr_of_moments
+    (ν : Measure Attr) (w s : Attr → ℝ)
+    (h : WeightMatchesPopMoments (ν := ν) (w := w) (s := s)) :
+    weightSDAttr (ν := ν) w s = popSDAttr ν s := by
+  simp [weightSDAttr, popSDAttr, weightVarAttr_eq_popVarAttr_of_moments (ν := ν) (w := w) (s := s) h]
+
 /-!
 ## Finite-population targets
 

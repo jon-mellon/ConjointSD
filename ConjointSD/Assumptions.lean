@@ -247,6 +247,13 @@ structure WeightAssumptions (ν : Measure Attr) (w s : Attr → ℝ) : Prop wher
   intWs2 : Integrable (fun a => w a * (s a) ^ 2) ν
   mass_pos : 0 < ∫ a, w a ∂ν
 
+/-- Moment-matching assumption: weighted mean and second moment equal population moments. -/
+structure WeightMatchesPopMoments (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+  mean_eq :
+    (∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν) = popMeanAttr ν s
+  m2_eq :
+    (∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν) = popM2Attr ν s
+
 end SurveyWeights
 
 section ConjointIdentification
@@ -359,6 +366,25 @@ def ParametricMainInteractions (μ : Measure Ω) (Y : Attr → Ω → ℝ)
 end ParametricMainInteractions
 
 end ModelBridge
+
+section AdditiveProjectionOracle
+
+variable {Attr Term : Type*} [MeasurableSpace Attr] [Fintype Term]
+
+/--
+Additive projection oracle: the oracle score decomposes into a linear-in-terms
+component plus a residual orthogonal (in L2) to each term feature.
+-/
+def AdditiveProjectionOracle
+    (ν : Measure Attr)
+    (gOracle : Attr → ℝ)
+    (β : Term → ℝ) (φ : Term → Attr → ℝ)
+    (r : Attr → ℝ) : Prop :=
+  (∀ x, gOracle x = gLin (β := β) (φ := φ) x + r x) ∧
+  (∀ t, Integrable (fun x => r x * φ t x) ν) ∧
+  (∀ t, ∫ x, r x * φ t x ∂ν = 0)
+
+end AdditiveProjectionOracle
 
 section ApproximateOracle
 

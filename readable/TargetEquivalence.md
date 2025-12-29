@@ -14,7 +14,7 @@ Approximate section:
 - Defines `ApproxInvarianceAE`: two score functions differ by at most epsilon almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)).
 - Defines `BoundedAE`: a uniform bound on a score function [almost everywhere](jargon_almost_everywhere.md).
 - Adds a triangle-inequality lemma to combine two [almost everywhere](jargon_almost_everywhere.md) approximation bounds into a single bound.
-- Adds an L2/RMSE-style lemma: an `L2Approx` bound controls the difference in population means.
+- Adds L2/RMSE-style lemmas: an `L2Approx` bound controls the difference in population means and population SDs (via centered L2 norms).
 - Uses these to show that the difference in [means](jargon_mean.md) is at most epsilon.
 - Uses bounds to control the difference in [second moments](jargon_second_moment.md) and [variances](jargon_variance.md).
 - Uses a square-root inequality to control the difference in [standard deviations](jargon_standard_deviation.md).

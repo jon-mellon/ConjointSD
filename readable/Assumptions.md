@@ -8,7 +8,7 @@ each package is asserting and why it matters.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
-Recent changes: removed unused transport bundles and a block-decomposition package.
+Recent changes: added an additive-projection oracle assumption for component SD bounds.
 
 ## Transport
 
@@ -117,6 +117,10 @@ Recent changes: removed unused transport bundles and a block-decomposition packa
   ([mean](jargon_mean.md), [variance](jargon_variance.md),
   [standard deviation](jargon_standard_deviation.md)) are well-defined and
   nondegenerate.
+- `WeightMatchesPopMoments`: the weighted [mean](jargon_mean.md) and weighted
+  [second moment](jargon_second_moment.md) match the population moments, a
+  moment-matching condition used to transfer SD targets from the population to a
+  weighted sample.
 
 ## ConjointIdentification
 
@@ -157,6 +161,9 @@ Recent changes: removed unused transport bundles and a block-decomposition packa
 - `ParametricMainInteractions`: the paper's parametric assumption that `gStar`
   is exactly an intercept plus the specified main effects and listed
   [interactions](jargon_interaction.md).
+- `AdditiveProjectionOracle`: defines the oracle as a linear-in-terms projection plus a
+  residual orthogonal to each term feature, formalizing component targets when the oracle is
+  nonlinear or interactive.
 
 ## WellSpecifiedFromNoInteractions
 

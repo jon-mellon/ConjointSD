@@ -28,7 +28,9 @@ import ConjointSD.Transport
 import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.TargetEquivalence
 import ConjointSD.DeriveGEstimationAssumptions
+import ConjointSD.PaperOLSConsistency
 import ConjointSD.WellSpecifiedFromNoInteractions
+import ConjointSD.SurveyWeights
 
 open Filter MeasureTheory ProbabilityTheory
 open scoped Topology BigOperators
@@ -162,7 +164,7 @@ variable {B : Type*} [Fintype B]
 variable (μ : Measure Ω) [IsProbabilityMeasure μ]
 variable (A : ℕ → Ω → Attr)
 
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (ν : Measure Attr) [inst : IsProbabilityMeasure ν]
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
@@ -729,6 +731,175 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
 
 end SDSequentialConsistency
 
+/-!
+## 3b) Weighted population targets (survey weights)
+-/
+
+section WeightedTargets
+
+variable {Attr : Type*} [MeasurableSpace Attr]
+variable {B : Type*}
+
+variable (ν : Measure Attr)
+variable (w : Attr → ℝ)
+
+/-- Weighted SD equals the population SD when weighted moments match population moments. -/
+theorem paper_weighted_sd_eq_pop
+    (s : Attr → ℝ)
+    (hMom : WeightMatchesPopMoments (ν := ν) (w := w) (s := s)) :
+    weightSDAttr ν w s = popSDAttr ν s :=
+by
+  exact weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w) (s := s) hMom
+
+/-- Per-block weighted SD matches population SD under moment matching. -/
+theorem paper_weighted_block_sds_eq_pop
+    (gTrueB : B → Attr → ℝ)
+    (hMom : ∀ b : B, WeightMatchesPopMoments (ν := ν) (w := w) (s := gTrueB b)) :
+    ∀ b : B, weightSDAttr ν w (gTrueB b) = popSDAttr ν (gTrueB b) :=
+by
+  exact fun b => paper_weighted_sd_eq_pop (ν := ν) (w := w) (s := gTrueB b) (hMom b)
+
+end WeightedTargets
+
+section SDSequentialConsistencyOLS
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+variable {Attr : Type*} [MeasurableSpace Attr]
+variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
+variable {B : Type*} [Fintype B] [DecidableEq B]
+variable [DecidableEq (PaperTerm Main Inter)]
+
+variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (Aeval : ℕ → Ω → Attr)
+
+variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+
+variable (Y : Attr → Ω → ℝ) (Atrain : ℕ → Attr) (Yobs : ℕ → ℝ)
+variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
+variable (blk : PaperTerm Main Inter → B)
+
+/--
+Paper-facing bridge: OLS population moments imply the combined block+total sequential
+consistency statement for the paper term model, assuming functional continuity.
+-/
+theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hLaw : Measure.map (Aeval 0) μ = ν)
+    (hSplit :
+      ∀ m b,
+        SplitEvalAssumptions
+          (μ := μ) (A := Aeval)
+          (g := gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
+          (θhat := fun n =>
+            olsThetaHat
+              (A := Atrain) (Y := Yobs)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions
+          (μ := μ) (A := Aeval)
+          (g := gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+          (θhat := fun n =>
+            olsThetaHat
+              (A := Atrain) (Y := Yobs)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hMom :
+      OLSMomentAssumptionsOfPop
+        (ν := ν)
+        (A := Atrain) (Y := Yobs)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0)
+    (hCont :
+      ∀ b : B,
+        FunctionalContinuityAssumptions
+          (ν := ν)
+          (g := gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
+          θ0)
+    (hContTotal :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+        θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ b : B,
+          (∀ᵐ ω ∂μ,
+            ∀ᶠ n : ℕ in atTop,
+              totalErr μ Aeval ν
+                (gBlock
+                  (gB := fun b θ a =>
+                    gBlockTerm (blk := blk) (β := θ)
+                      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
+                θ0
+                (fun n =>
+                  olsThetaHat
+                    (A := Atrain) (Y := Yobs)
+                    (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                    n)
+                m n ω < ε))
+        ∧
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ Aeval ν
+              (gTotalΘ
+                (gB := fun b θ a =>
+                  gBlockTerm (blk := blk) (β := θ)
+                    (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+              θ0
+              (fun n =>
+                olsThetaHat
+                  (A := Atrain) (Y := Yobs)
+                  (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                  n)
+              m n ω < ε) := by
+  have hθ :
+      Tendsto
+        (fun n =>
+          olsThetaHat
+            (A := Atrain) (Y := Yobs)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n)
+        atTop
+        (nhds θ0) :=
+    theta_tendsto_of_paper_ols_moments
+      (μ := μ) (ν := ν)
+      (Y := Y) (A := Atrain) (Yobs := Yobs)
+      (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) hMom
+  exact
+    paper_sd_blocks_and_total_sequential_consistency_ae
+      (μ := μ) (A := Aeval) (ν := ν)
+      (gB := fun b θ a =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+      (θ0 := θ0)
+      (θhat := fun n =>
+        olsThetaHat
+          (A := Atrain) (Y := Yobs)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          n)
+      (hLaw := hLaw) (hSplit := hSplit) (hSplitTotal := hSplitTotal)
+      (hθ := hθ) (hCont := hCont) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
+
+end SDSequentialConsistencyOLS
+
 section SDSequentialConsistencyNoTopo
 
 variable {Ω : Type*} [MeasurableSpace Ω]
@@ -762,6 +933,100 @@ theorem paper_sd_total_sequential_consistency_ae_of_hGTotal
     (gB := gB) (θ0 := θ0) (θhat := θhat)
     (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
     (ε := ε) (hε := hε)
+
+section PaperOLSNoTopo
+
+variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
+variable {B : Type*} [Fintype B] [DecidableEq B]
+variable [DecidableEq (PaperTerm Main Inter)]
+
+omit [TopologicalSpace Θ] in
+theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (Aeval : ℕ → Ω → Attr)
+    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (Y : Attr → Ω → ℝ) (Atrain : ℕ → Attr) (Yobs : ℕ → ℝ)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
+    (blk : PaperTerm Main Inter → B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hLaw : Measure.map (Aeval 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions
+          (μ := μ) (A := Aeval)
+          (g := gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+          (θhat := fun n =>
+            olsThetaHat
+              (A := Atrain) (Y := Yobs)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hMom :
+      OLSMomentAssumptionsOfPop
+        (ν := ν)
+        (A := Atrain) (Y := Yobs)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0)
+    (hCont :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ Aeval ν
+              (gTotalΘ
+                (gB := fun b θ a =>
+                  gBlockTerm (blk := blk) (β := θ)
+                    (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+              θ0
+              (fun n =>
+                olsThetaHat
+                  (A := Atrain) (Y := Yobs)
+                  (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                  n)
+              m n ω < ε) := by
+  have hGTotal :
+      GEstimationAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+        θ0
+        (fun n =>
+          olsThetaHat
+            (A := Atrain) (Y := Yobs)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n) :=
+    GEstimationAssumptions_of_paper_ols_gStar_total
+      (μ := μ) (ν := ν) (Y := Y)
+      (A := Atrain) (Yobs := Yobs)
+      (fMain := fMain) (fInter := fInter)
+      (blk := blk) (θ0 := θ0)
+      hMom hCont
+  exact
+    paper_sd_total_sequential_consistency_ae_of_hGTotal
+      (μ := μ) (A := Aeval) (ν := ν)
+      (gB := fun b θ a =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+      (θ0 := θ0)
+      (θhat := fun n =>
+        olsThetaHat
+          (A := Atrain) (Y := Yobs)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          n)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+      (ε := ε) (hε := hε)
+
+end PaperOLSNoTopo
 
 omit [TopologicalSpace Θ] in
 theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
