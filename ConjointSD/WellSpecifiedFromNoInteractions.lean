@@ -92,7 +92,7 @@ theorem wellSpecified_of_noInteractions
         (φ := φMain (K := K) (V := V) main) x
         = μ0 + ∑ k : K, main k (x k) := hlin
     _   = gStar (μ := μ) (Y := Y) x := by
-            simpa [AdditiveGStar] using (hadd x).symm
+            simpa using (hadd x).symm
 
 end
 

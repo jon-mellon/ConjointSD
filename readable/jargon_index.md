@@ -21,6 +21,7 @@ Lean helper pages with plain-language definitions.
 - [Integral](jargon_integral.md)
 - [Interaction](jargon_interaction.md)
 - [Lemma](jargon_lemma.md)
+- [L2 (mean-square) error](jargon_l2.md)
 - [Linear model](jargon_linear_model.md)
 - [Linear-in-terms](jargon_linear_in_terms.md)
 - [Mean (average)](jargon_mean.md)

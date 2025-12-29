@@ -9,6 +9,7 @@ Readable summaries of the Lean development.
 - [DecompositionSequentialConsistency.lean](DecompositionSequentialConsistency.md)
 - [DeriveGEstimationAssumptions.lean](DeriveGEstimationAssumptions.md)
 - [EstimatedG.lean](EstimatedG.md)
+- [L2SDDraft.lean](L2SDDraft.md)
 - [ModelBridge.lean](ModelBridge.md)
 - [OracleSDConsistency.lean](OracleSDConsistency.md)
 - [PaperCoreEstimand.lean](PaperCoreEstimand.md)

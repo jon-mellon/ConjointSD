@@ -337,6 +337,7 @@ def ApproxWellSpecifiedAE
     (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
   ∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
 
+
 section ParametricMainInteractions
 
 variable {Ω Attr : Type*} [MeasurableSpace Ω]
@@ -359,6 +360,31 @@ end ParametricMainInteractions
 
 end ModelBridge
 
+section ApproximateOracle
+
+variable {Attr : Type*} [MeasurableSpace Attr]
+
+/--
+Two-stage approximation: a flexible score `gFlex` approximates the true target,
+and the model score `gModel` approximates `gFlex`, both ν-a.e.
+-/
+def ApproxOracleAE
+    (ν : Measure Attr)
+    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
+  (∀ᵐ x ∂ν, |gModel x - gFlex x| ≤ δModel) ∧
+  (∀ᵐ x ∂ν, |gFlex x - gStar x| ≤ δOracle)
+
+/--
+L2-style approximation: the model score differs from the target by at most delta in mean-square.
+-/
+def L2Approx
+    (ν : Measure Attr)
+    (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
+  MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
+  Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ
+
+end ApproximateOracle
+
 section WellSpecifiedFromNoInteractions
 
 variable {Ω : Type*} [MeasurableSpace Ω]
@@ -368,16 +394,11 @@ variable {K : Type*} {V : K → Type*} [Fintype K]
 ## “No interactions” as exact additivity of the conjoint estimand `gStar`
 -/
 
-/-- Additive form: `gStar x = μ0 + ∑ k, main k (x k)`. -/
-def AdditiveGStar
-    (μ : Measure Ω) (Y : Profile K V → Ω → ℝ)
-    (μ0 : ℝ) (main : ∀ k : K, V k → ℝ) : Prop :=
-  ∀ x : Profile K V, gStar (μ := μ) (Y := Y) x = μ0 + ∑ k : K, main k (x k)
-
 /-- “No interactions”: there exist `μ0` and main effects `main` giving exact additivity. -/
 def NoInteractions
     (μ : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
-  ∃ (μ0 : ℝ) (main : ∀ k : K, V k → ℝ), AdditiveGStar (μ := μ) (Y := Y) μ0 main
+  ∃ (μ0 : ℝ) (main : ∀ k : K, V k → ℝ),
+    ∀ x : Profile K V, gStar (μ := μ) (Y := Y) x = μ0 + ∑ k : K, main k (x k)
 
 end WellSpecifiedFromNoInteractions
 

@@ -23,7 +23,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 - [ConjointSD/PopulationBridge.lean](readable/PopulationBridge.md) bridges moments under `μ` for `g(A0)` to moments under `ν` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
 - [ConjointSD/OracleSDConsistency.lean](readable/OracleSDConsistency.md) restates [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) with the `popSDAttr ν g` target using `SDDecompositionFromConjoint` + `PopulationBridge`.
 - [ConjointSD/SurveyWeights.lean](readable/SurveyWeights.md) adds weighted [population](readable/jargon_population.md) estimands and finite-[population](readable/jargon_population.md) targets; builds on `Transport`.
-- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds; uses `Transport`.
+- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds, an L2/RMSE mean-difference lemma, and a triangle-inequality lemma for chaining approximations; uses `Transport`.
 
 ## Identification and design
 
@@ -42,7 +42,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 - [ConjointSD/RegressionConsistencyBridge.lean](readable/RegressionConsistencyBridge.md) derives `GEstimationAssumptions` from `θhat -> θ0` and functional continuity assumptions defined in `Assumptions.lean`; also provides [block](readable/jargon_block.md) versions.
 - [ConjointSD/DeriveGEstimationAssumptions.lean](readable/DeriveGEstimationAssumptions.md) thin wrappers that produce `GEstimationAssumptions` (and block versions) from `θhat -> θ0` + continuity; depends on `RegressionConsistencyBridge`.
 - [ConjointSD/RegressionEstimator.lean](readable/RegressionEstimator.md) formalizes the [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) sequence and bridges [estimator](readable/jargon_estimator.md) [consistency](readable/jargon_consistency.md) to `GEstimationAssumptions`; assumption packages now live in `Assumptions.lean`.
-- [ConjointSD/PaperOLSConsistency.lean](readable/PaperOLSConsistency.md) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to `GEstimationAssumptions`.
+- [ConjointSD/PaperOLSConsistency.lean](readable/PaperOLSConsistency.md) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to `GEstimationAssumptions`, plus a bridge from `gPaper` to the block-sum total score (via `gTotalΘ`).
 
 ## Model/[term](readable/jargon_term.md)/[block](readable/jargon_block.md) bridges
 
@@ -53,7 +53,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Paper-facing wrappers and estimands
 
-- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), and target-equivalence wrappers; central hub for exported statements.
+- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), target-equivalence wrappers (exact and approximate, including two-stage oracle bounds), and `hGTotal`-based total-score variants; central hub for exported statements.
 - [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core estimands ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
 
 ## Tooling
@@ -62,3 +62,4 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Scratchpad
 
 - [Scratch.lean](readable/Scratch.md) is a local scratch file that prints key structures/theorems for inspection; no production dependencies.
+- [ConjointSD/L2SDDraft.lean](readable/L2SDDraft.md) is a temporary scratchpad for L2-based SD bounds; not imported by the main development.

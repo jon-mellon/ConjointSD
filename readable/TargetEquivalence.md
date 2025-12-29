@@ -13,10 +13,12 @@ Exact equality section:
 Approximate section:
 - Defines `ApproxInvarianceAE`: two score functions differ by at most epsilon almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)).
 - Defines `BoundedAE`: a uniform bound on a score function [almost everywhere](jargon_almost_everywhere.md).
+- Adds a triangle-inequality lemma to combine two [almost everywhere](jargon_almost_everywhere.md) approximation bounds into a single bound.
+- Adds an L2/RMSE-style lemma: an `L2Approx` bound controls the difference in population means.
 - Uses these to show that the difference in [means](jargon_mean.md) is at most epsilon.
 - Uses bounds to control the difference in [second moments](jargon_second_moment.md) and [variances](jargon_variance.md).
 - Uses a square-root inequality to control the difference in [standard deviations](jargon_standard_deviation.md).
 
 The main idea: if two scores are the same (or nearly the same) on the population support, then their population dispersion targets are the same (or nearly the same).
 
-Recent changes: minor proof refactors; statements unchanged.
+Recent changes: added the triangle-inequality lemma for combining approximate targets.

@@ -64,8 +64,8 @@ end
 section Approximate
 
 variable {Attr : Type*} [MeasurableSpace Attr]
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
-variable {s t : Attr → ℝ}
+variable (ν : Measure Attr)
+variable {s t u : Attr → ℝ}
 
 /-- Approximate invariance on population support: `|s - t| ≤ ε` ν-a.e. -/
 def ApproxInvarianceAE (s t : Attr → ℝ) (ε : ℝ) : Prop :=
@@ -74,6 +74,73 @@ def ApproxInvarianceAE (s t : Attr → ℝ) (ε : ℝ) : Prop :=
 /-- Uniform bound on a score function, ν-a.e. -/
 def BoundedAE (s : Attr → ℝ) (C : ℝ) : Prop :=
   ∀ᵐ a ∂ν, |s a| ≤ C
+
+/-- Combine two ν-a.e. approximation bounds by triangle inequality. -/
+theorem approxInvarianceAE_triangle
+    (ε₁ ε₂ : ℝ)
+    (h1 : ApproxInvarianceAE (ν := ν) (s := s) (t := t) ε₁)
+    (h2 : ApproxInvarianceAE (ν := ν) (s := t) (t := u) ε₂) :
+    ApproxInvarianceAE (ν := ν) (s := s) (t := u) (ε₁ + ε₂) := by
+  refine (h1.and h2).mono ?_
+  intro x hx
+  rcases hx with ⟨h1x, h2x⟩
+  have htriangle : |s x - u x| ≤ |s x - t x| + |t x - u x| := by
+    simpa using abs_sub_le (s x) (t x) (u x)
+  nlinarith [htriangle, h1x, h2x]
+
+section ApproximateMoments
+
+variable [IsProbabilityMeasure ν]
+
+theorem popMeanAttr_diff_le_of_L2Approx
+    (hs : Integrable s ν)
+    (ht : Integrable t ν)
+    (hL2 : L2Approx (ν := ν) (gModel := s) (gTarget := t) δ) :
+    |popMeanAttr ν s - popMeanAttr ν t| ≤ δ := by
+  rcases hL2 with ⟨hMem, hBound⟩
+  have hdiff :
+      |popMeanAttr ν s - popMeanAttr ν t|
+        =
+      |∫ a, (s a - t a) ∂ν| := by
+    simp [popMeanAttr, integral_sub, hs, ht]
+  have habs :
+      |∫ a, (s a - t a) ∂ν| ≤ ∫ a, |s a - t a| ∂ν := by
+    simpa using
+      (abs_integral_le_integral_abs (f := fun a => s a - t a) (μ := ν))
+  have hcs :
+      ∫ a, |s a - t a| ∂ν
+        ≤
+      Real.sqrt (∫ a, |s a - t a| ^ 2 ∂ν) := by
+    have hpq : (2 : ℝ).HolderConjugate 2 := by
+      rw [Real.holderConjugate_iff]
+      norm_num
+    have hf_nonneg : 0 ≤ᵐ[ν] fun a => |s a - t a| := by
+      refine Eventually.of_forall ?_
+      intro a
+      exact abs_nonneg _
+    have hg_nonneg : 0 ≤ᵐ[ν] (fun _ : Attr => (1 : ℝ)) := by
+      refine Eventually.of_forall ?_
+      intro _a
+      exact zero_le_one
+    have hf_mem :
+        MemLp (fun a => |s a - t a|) (ENNReal.ofReal 2) ν := hMem.norm
+    have hg_mem :
+        MemLp (fun _ : Attr => (1 : ℝ)) (ENNReal.ofReal 2) ν := by
+      simpa using (memLp_const (μ := ν) (p := ENNReal.ofReal 2) (c := (1 : ℝ)))
+    have h :=
+      integral_mul_le_Lp_mul_Lq_of_nonneg
+        (μ := ν) (p := (2 : ℝ)) (q := (2 : ℝ)) hpq
+        hf_nonneg hg_nonneg hf_mem hg_mem
+    have h1 :
+        (∫ a, |s a - t a| ∂ν)
+          ≤
+        (∫ a, |s a - t a| ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
+      simpa using h
+    simpa [Real.sqrt_eq_rpow] using h1
+  have hle : |popMeanAttr ν s - popMeanAttr ν t| ≤
+      Real.sqrt (∫ a, |s a - t a| ^ 2 ∂ν) := by
+    exact le_trans (by simpa [hdiff] using habs) hcs
+  exact le_trans hle hBound
 
 theorem popMeanAttr_abs_le_of_bounded_ae
     (hs : Integrable s ν)
@@ -325,6 +392,8 @@ theorem popSDAttr_diff_le_of_approx_ae
     apply Real.sqrt_le_sqrt
     exact hvar
   exact le_trans hsd hsqrt
+
+end ApproximateMoments
 
 end Approximate
 

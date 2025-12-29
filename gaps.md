@@ -6,16 +6,8 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 1) Conjoint identification now derived from a design schema and tied to the status survey ([ConjointIdentification.lean](ConjointSD/ConjointIdentification.lean), [StatusConjointDesign.lean](ConjointSD/StatusConjointDesign.lean), [PaperWrappers.lean](ConjointSD/PaperWrappers.lean))  
    - Added `ConjointSingleShotDesign`: gives a law `ν` for `X` with positive singleton mass, bounded/[measurable](readable/jargon_measurable.md) outcomes, [consistency](readable/jargon_consistency.md), and ignorability. Lemmas `integrable_of_bounded`, `ConjointIdRandomized.of_singleShot`, and `rand_from_randomized` derive the factorization and `ConjointIdAssumptions` from these design facts. `paper_identifies_*` now hinges on this derived path.  
    - Instantiated the fielded status conjoint: 8,500-persona uniform assignment over four task slots, [measurability](readable/jargon_measurable.md)/ignorability/boundedness proofs, and `status_id_randomized` producing the concrete `ConjointIdRandomized` assumptions.  
-   - **Status:** `ConjointSD/StatusConjointDesign.lean` is currently a leaf in the DAG; its theorems are not threaded into the paper-facing identification wrappers. It should either be wired into the identification chain or pruned if the concrete design instantiation is out of scope.  
-   - **Plan to wire it in (and payoff):**
-     1) Add a wrapper lemma in `ConjointSD/PaperWrappers.lean` (or `ConjointSD/ConjointIdentification.lean`) that takes the status-conjoint design assumptions (e.g., `status_id_randomized` or `ConjointSingleShotDesign` specialized to status) and produces `ConjointIdAssumptions`.
-     2) Use that wrapper to derive `paper_identifies_potMean_from_condMean` and `paper_identifies_amce_from_condMeans` without requiring manual identification assumptions at the top level.
-     3) Export a paper-facing theorem that states identification holds for the concrete status survey instance, so downstream statements can depend on the instantiated design rather than an abstract assumption package.
-     4) Update `PaperWrappers.lean` or `StatusConjointDesign.lean` documentation to point to the new “status-identification” theorem.
-     - **What this buys:** closes the DAG gap by making the concrete design instantiation a usable input to the paper-facing identification results; reduces the assumption surface exposed to downstream users; makes the formalization traceable from the real survey design to the identification claims.
-   - Remaining gap: the design treats each rating as depending only on the assigned persona (via `statusY`) and rules out within-set interference between the two personas shown together. The paper would need an explicit “no within-set interference” justification or a model that allows joint dependence across the paired profiles.
-   - Remaining gap: the formalized outcomes are bounded real values on [0,100] and do not model the “not sure” response option or any missingness mechanism; the paper should justify treating “not sure” as ignorable or supply a modeled missingness/selection adjustment.
-   - Remaining work (if needed for other surveys): replicate this instantiation for any other conjoint designs (e.g., non-status arms) and thread them through the paper-facing wrappers.
+   - **Status:** complete — `ConjointSD/StatusConjointDesign.lean` now feeds the paper-facing identification wrappers via `status_id_assumptions`, with concrete status-conjoint theorems in `ConjointSD/PaperWrappers.lean`.  
+   - **What this buys:** closes the DAG gap by making the concrete design instantiation a usable input to the paper-facing identification results; reduces the assumption surface exposed to downstream users; makes the formalization traceable from the real survey design to the identification claims.
 
 2) [Population](readable/jargon_population.md) process for attributes is assumed [i.i.d.](readable/jargon_iid.md) without justification ([SDDecompositionFromConjoint.lean](ConjointSD/SDDecompositionFromConjoint.lean), [SampleSplitting.lean](ConjointSD/SampleSplitting.lean))  
    - PopIID requires pairwise [independence](readable/jargon_independent.md) and [identical distribution](readable/jargon_identically_distributed.md) of the attribute draws A i, but the conjoint has respondent-level clustering and finite attribute pools. No proof that survey design or resampling yields these properties.  
@@ -33,18 +25,11 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
      3) Add a stability lemma: if `Gram_n → Gram` entrywise and `Gram` is invertible with a uniform lower bound on eigenvalues, then `Gram_n` is eventually invertible and `Gram_n⁻¹ → Gram⁻¹` entrywise.
    4) Use (1)–(3) to [discharge](readable/jargon_discharge.md) the inverse-Gram convergence fields in `PaperOLSMomentAssumptions`.
 
-3.25) Paper OLS consistency is not yet wired into the block/total SD target chain  
-   - The paper-specific OLS results (in `PaperOLSConsistency.lean`) yield `GEstimationAssumptions` for `gPaper`, but the downstream paper-facing wrappers target block scores (`gBlock`, `gTotal`) and the true estimand `gStar`. There is no bridge from the paper term model to the block/total chain, so the OLS path is a leaf in the Lean DAG.  
-   - Plan to fix (option 2 integration):
-     1) Add a lemma that specializes `gLin_eq_gTotal_blocks` to the paper term set, producing
-        `gPaper θ0 = gTotal (gBlockTerm (blk := blk) (β := θ0) (φ := φPaper ...))`
-        for a provided block map `blk : PaperTerm Main Inter → B`.
-     2) Add a wrapper that combines `GEstimationAssumptions_of_paper_ols_moments_ae` with the
-        sequential consistency theorems to obtain SD convergence for the paper-term total score.
-     3) Use `wellSpecified_of_parametricMainInteractions` (or `gStar_eq_sum_blocks_of_parametricMainInteractions`)
-        to connect the paper-term total score to `gStar` and reuse the existing “true target” wrappers.
-     4) Thread the new bridge into `PaperWrappers.lean`/`PaperCoreEstimand.lean` so the paper-facing
-        SD theorems can be instantiated directly from the paper OLS assumptions.
+3.25) Paper OLS consistency now wired into the block/total SD target chain  
+   - **Done:** `PaperOLSConsistency.lean` now includes `gPaper_eq_gTotalΘ_blocks`, specializing the additivity bridge so the paper term score equals the block-sum total score for any block map `blk : PaperTerm Main Inter → B`.  
+   - **Done:** `GEstimationAssumptions_of_paper_ols_gStar_total` and `GEstimationAssumptions_of_paper_ols_moments_total_ae` lift the OLS-based `GEstimationAssumptions` from `gPaper` to the total-score model, closing the leaf.  
+   - **Done:** `PaperWrappers.lean` adds `paper_sd_total_sequential_consistency_ae_of_hGTotal` and `paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hGTotal`, so the total-score SD chain can be instantiated directly from `GEstimationAssumptions`.  
+   - **Next (optional):** add a dedicated paper-facing theorem that pairs the OLS assumptions with the new `hGTotal` wrappers and a concrete `WellSpecified`/`ParametricMainInteractions` instantiation for the status design.
 
 3.5) Assumptions that drive [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) (map to Lean statements)  
    - SDDecompositionFromConjoint: `PopIID` ([i.i.d.](readable/jargon_iid.md)-type draws of A i), `ScoreAssumptions` ([measurability](readable/jargon_measurable.md) + [integrability](readable/jargon_integral.md) of g(A0), g(A0)^2).  
@@ -116,7 +101,7 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 
 4) [Block](readable/jargon_block.md)/[term](readable/jargon_term.md) well-specification is assumed, not proved ([ModelBridge.lean](ConjointSD/ModelBridge.lean), [WellSpecifiedFromNoInteractions.lean](ConjointSD/WellSpecifiedFromNoInteractions.lean), [TrueBlockEstimand.lean](ConjointSD/TrueBlockEstimand.lean), [PaperCoreEstimand.lean](ConjointSD/PaperCoreEstimand.lean))  
    - **Added:** explicit encoding of the paper’s [regression](readable/jargon_regression.md): [term](readable/jargon_term.md) set `PaperTerm` (intercept + main effects + listed interactions), coefficient/feature maps `βPaper`/`φPaper`, and assumptions `ParametricMainInteractions` in ModelBridge. `wellSpecified_of_parametricMainInteractions` and `gStar_eq_sum_blocks_of_parametricMainInteractions` now let us discharge well-specification and bridge to [block](readable/jargon_block.md) sums once we provide the actual [regression](readable/jargon_regression.md) features/coefs and [term](readable/jargon_term.md)→[block](readable/jargon_block.md) map.  
-   - **Added:** approximation-bound variant: `ApproxWellSpecified`/`ApproxWellSpecifiedAE` in ModelBridge, plus `ApproxInvarianceAE`/`BoundedAE` and popSD error bounds in TargetEquivalence, with paper-facing wrappers for approximate [block](readable/jargon_block.md)/total [SD](readable/jargon_standard_deviation.md) targets in PaperWrappers.  
+   - **Added:** approximation-bound variant: `ApproxWellSpecified`/`ApproxWellSpecifiedAE` in ModelBridge, plus `ApproxInvarianceAE`/`BoundedAE` and popSD error bounds in TargetEquivalence, with paper-facing wrappers for approximate [block](readable/jargon_block.md)/total [SD](readable/jargon_standard_deviation.md) targets in PaperWrappers, including a direct approximate-consistency bridge to `gStar` and a two-stage “oracle” approximation path.  
    - Remaining gap: instantiate `β0`, `βMain`, `βInter`, `fMain`, `fInter`, and the paper’s [block](readable/jargon_block.md) map for the status conjoint (and any other arms), and supply concrete bounds (C, δ) or [variance](readable/jargon_variance.md) nonnegativity needed to apply the approximation lemmas.
    - **Empirical bound sketch (not formalized):** use a sample split to estimate an approximation error ε between the linear-in-terms model and a richer benchmark, then plug ε into the approximate SD targets.  
      1) Fit the paper [term](readable/jargon_term.md) model on a training split to get `gHat_lin`.  
@@ -139,3 +124,11 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 7) Main [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md) now defined, but not instantiated for the status conjoint  
    - **Added:** `paperTotalSDEst` (evaluation-stage [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md) for the [term](readable/jargon_term.md)-induced total score) and an end-to-end [sequential consistency](readable/jargon_sequential_consistency.md) wrapper `paper_total_sd_estimator_consistency_ae_of_gBTerm` in PaperCoreEstimand. This ties the [estimator](readable/jargon_estimator.md) to the paper’s total [SD](readable/jargon_standard_deviation.md) target under coefficient identification and the [sequential consistency](readable/jargon_sequential_consistency.md) assumptions.  
    - Remaining gap: specialize the [theorem](readable/jargon_theorem.md) to the status conjoint by instantiating the paper’s [term](readable/jargon_term.md) set, [block](readable/jargon_block.md) map, features, and coefficient map (`blk`, `φ`, `βOf`, `β0`) and by proving the SplitEvalAssumptions / continuity / [convergence](readable/jargon_convergence.md) hypotheses from the design.
+
+8) Missingness and “not sure” responses are not modeled  
+   - The formalized outcomes are bounded real values on [0,100] and do not model the “not sure” response option or any missingness mechanism.  
+   - To fix: justify treating “not sure” as ignorable, or add a missingness/selection model and connect it to the estimands.
+
+9) Status estimand may need explicit marginalization over the paired profile  
+   - If outcomes depend on both profiles shown in a task, the estimand should be stated as the expected response to a focal profile, averaged over the randomized partner profile (and respondent conditions), matching standard conjoint AMCE targets.  
+   - To fix: re-express the estimand and identification statements to marginalize over the partner profile distribution, or justify a no-interference assumption if the paper targets profile-only potential outcomes.

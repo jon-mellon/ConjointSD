@@ -283,4 +283,21 @@ theorem status_id_randomized
     (h := status_singleShot_design (μResp := μResp) (Yresp := Yresp)
           hmeas hmeasObs hbound)
 
+/-- The instantiated identification assumptions for the status conjoint. -/
+theorem status_id_assumptions
+    {Respondent : Type u} [MeasurableSpace Respondent]
+    (μResp : Measure Respondent) [IsProbabilityMeasure μResp]
+    (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
+    (hmeas :
+      ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
+    (hmeasObs : Measurable (statusYobs (Yresp := Yresp)))
+    (hbound : ∀ p r t, |Yresp p r t| ≤ 100) :
+    ConjointIdAssumptions (μ := μStatus (μResp := μResp))
+      (X := statusX) (Y := statusY (Yresp := Yresp))
+      (Yobs := statusYobs (Yresp := Yresp)) :=
+  ConjointIdAssumptions.of_randomized
+    (μ := μStatus (μResp := μResp))
+    (h := status_id_randomized (μResp := μResp) (Yresp := Yresp)
+          hmeas hmeasObs hbound)
+
 end ConjointSD

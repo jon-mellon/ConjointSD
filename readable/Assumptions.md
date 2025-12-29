@@ -149,15 +149,17 @@ Recent changes: removed unused transport bundles and a block-decomposition packa
 - `ApproxWellSpecifiedAE`: the same approximation requirement, but only
   [almost everywhere](jargon_almost_everywhere.md) under a
   [population](jargon_population.md) measure.
+- `ApproxOracleAE`: a two-stage approximation assumption: a flexible score
+  approximates the true target `gStar`, and the model score approximates the
+  flexible score, both [almost everywhere](jargon_almost_everywhere.md).
+- `L2Approx`: an [L2](jargon_l2.md)/RMSE-style approximation assumption: the model score differs
+  from the target by at most `δ` in mean-square (uses the [L2](jargon_l2.md) norm under `ν`).
 - `ParametricMainInteractions`: the paper's parametric assumption that `gStar`
   is exactly an intercept plus the specified main effects and listed
   [interactions](jargon_interaction.md).
 
 ## WellSpecifiedFromNoInteractions
 
-- `AdditiveGStar`: exact additivity of `gStar` across
-  [profiles](jargon_profile.md): an intercept plus a sum of per-attribute main
-  effects.
 - `NoInteractions`: existence of an additive representation, formalizing the
   "no interactions" assumption used to justify
   [well-specification](jargon_well_specified.md).

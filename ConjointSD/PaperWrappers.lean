@@ -22,6 +22,7 @@ closest to the manuscript:
 
 import Mathlib
 import ConjointSD.ConjointIdentification
+import ConjointSD.StatusConjointDesign
 import ConjointSD.ModelBridge
 import ConjointSD.Transport
 import ConjointSD.DecompositionSequentialConsistency
@@ -64,6 +65,59 @@ theorem paper_identifies_amce_from_condMeans
   identified_amce_from_condMeans (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x x'
 
 end Identification
+
+/-!
+## 1b) Status-conjoint identification wrappers
+-/
+
+section StatusIdentification
+
+variable {Respondent : Type u} [MeasurableSpace Respondent]
+variable (μResp : Measure Respondent) [IsProbabilityMeasure μResp]
+variable (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
+
+/-- Identification for the concrete status conjoint: conditional mean equals potential mean. -/
+theorem paper_identifies_potMean_from_condMean_status
+    (hmeas :
+      ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
+    (hmeasObs : Measurable (statusYobs (Yresp := Yresp)))
+    (hbound : ∀ p r t, |Yresp p r t| ≤ 100)
+    (x0 : StatusProfile) :
+    condMean (μ := μStatus (μResp := μResp))
+      (statusYobs (Yresp := Yresp)) (eventX (X := statusX) x0)
+        =
+    potMean (μ := μStatus (μResp := μResp)) (statusY (Yresp := Yresp)) x0 := by
+  have h :=
+    status_id_assumptions (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
+  exact
+    paper_identifies_potMean_from_condMean
+      (μ := μStatus (μResp := μResp))
+      (X := statusX) (Y := statusY (Yresp := Yresp))
+      (Yobs := statusYobs (Yresp := Yresp)) h x0
+
+/-- Identification for the status conjoint: AMCE equals a difference of conditional means. -/
+theorem paper_identifies_amce_from_condMeans_status
+    (hmeas :
+      ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
+    (hmeasObs : Measurable (statusYobs (Yresp := Yresp)))
+    (hbound : ∀ p r t, |Yresp p r t| ≤ 100)
+    (x x' : StatusProfile) :
+    (condMean (μ := μStatus (μResp := μResp))
+        (statusYobs (Yresp := Yresp)) (eventX (X := statusX) x')
+      -
+      condMean (μ := μStatus (μResp := μResp))
+        (statusYobs (Yresp := Yresp)) (eventX (X := statusX) x))
+      =
+    amce (μ := μStatus (μResp := μResp)) (statusY (Yresp := Yresp)) x x' := by
+  have h :=
+    status_id_assumptions (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
+  exact
+    paper_identifies_amce_from_condMeans
+      (μ := μStatus (μResp := μResp))
+      (X := statusX) (Y := statusY (Yresp := Yresp))
+      (Yobs := statusYobs (Yresp := Yresp)) h x x'
+
+end StatusIdentification
 
 /-!
 ## 2) Regression/terms-to-block decomposition wrapper
@@ -484,6 +538,137 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
 ## 4c) Link well-specification to the true causal estimand `gStar`
 -/
 
+/-!
+Approximate link: use an ε-approximate well-specification assumption to bound the SD target
+error relative to `gStar`.
+-/
+
+theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
+    {Term : Type*} [Fintype Term] [DecidableEq B]
+    (Y : Attr → Ω → ℝ)
+    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
+    (hTotalModel :
+      ∀ x,
+        gTotalΘ (gB := gB) θ0 x
+          =
+        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x)
+    (hspec :
+      ApproxWellSpecifiedAE (ν := ν) (μ := μ) (Y := Y) (β := β) (φ := φ) δ)
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (C : ℝ)
+    (hBoundS : BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
+    (hBoundT : BoundedAE (ν := ν) (s := gStar (μ := μ) (Y := Y)) C)
+    (hMomS : PopulationMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
+    (hMomT : PopulationMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
+    (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
+    (hVarT : 0 ≤ popVarAttr ν (gStar (μ := μ) (Y := Y)))
+    (hδ : 0 ≤ δ)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        |popSDAttr ν (gTotalΘ (gB := gB) θ0)
+            - popSDAttr ν (gStar (μ := μ) (Y := Y))|
+          ≤ Real.sqrt (4 * C * δ) := by
+  have hApprox :
+      ApproxInvarianceAE
+        (ν := ν)
+        (s := gTotalΘ (gB := gB) θ0)
+        (t := gStar (μ := μ) (Y := Y))
+        δ := by
+    have hBlocks :
+        ∀ᵐ x ∂ν,
+          |gStar (μ := μ) (Y := Y) x
+            - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
+          ≤ δ :=
+      gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
+        (ν := ν) (μ := μ) (Y := Y) (blk := blk) (β := β) (φ := φ)
+        (ε := δ) hspec
+    refine hBlocks.mono ?_
+    intro x hx
+    simpa [abs_sub_comm, hTotalModel x] using hx
+  exact
+    paper_sd_total_sequential_consistency_to_approx_target_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (gTrue := gStar (μ := μ) (Y := Y))
+      (C := C) (δ := δ) (hApprox := hApprox)
+      (hBoundS := hBoundS) (hBoundT := hBoundT)
+      (hMomS := hMomS) (hMomT := hMomT)
+      (hVarS := hVarS) (hVarT := hVarT)
+      (hδ := hδ) (ε := ε) (hε := hε)
+
+/--
+Two-stage approximate link: a flexible oracle score approximates `gStar`, and the model
+approximates the oracle. The SD target error is bounded by the combined approximation.
+-/
+theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
+    (Y : Attr → Ω → ℝ)
+    (gFlex : Attr → ℝ)
+    (δModel δOracle : ℝ)
+    (hApprox :
+      ApproxOracleAE (ν := ν)
+        (gModel := gTotalΘ (gB := gB) θ0) (gFlex := gFlex) (gStar := gStar (μ := μ) (Y := Y))
+        δModel δOracle)
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (C : ℝ)
+    (hBoundS : BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
+    (hBoundT : BoundedAE (ν := ν) (s := gStar (μ := μ) (Y := Y)) C)
+    (hMomS : PopulationMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
+    (hMomT : PopulationMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
+    (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
+    (hVarT : 0 ≤ popVarAttr ν (gStar (μ := μ) (Y := Y)))
+    (hδModel : 0 ≤ δModel)
+    (hδOracle : 0 ≤ δOracle)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        |popSDAttr ν (gTotalΘ (gB := gB) θ0)
+            - popSDAttr ν (gStar (μ := μ) (Y := Y))|
+          ≤ Real.sqrt (4 * C * (δModel + δOracle)) := by
+  rcases hApprox with ⟨hApproxModel, hApproxOracle⟩
+  have hApproxCombined :
+      ApproxInvarianceAE
+        (ν := ν)
+        (s := gTotalΘ (gB := gB) θ0)
+        (t := gStar (μ := μ) (Y := Y))
+        (δModel + δOracle) := by
+    exact
+      approxInvarianceAE_triangle
+        (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gFlex) (u := gStar (μ := μ) (Y := Y))
+        (ε₁ := δModel) (ε₂ := δOracle)
+        hApproxModel hApproxOracle
+  have hδ : 0 ≤ δModel + δOracle := add_nonneg hδModel hδOracle
+  exact
+    paper_sd_total_sequential_consistency_to_approx_target_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (gTrue := gStar (μ := μ) (Y := Y))
+      (C := C) (δ := δModel + δOracle) (hApprox := hApproxCombined)
+      (hBoundS := hBoundS) (hBoundT := hBoundT)
+      (hMomS := hMomS) (hMomT := hMomT)
+      (hVarS := hVarS) (hVarT := hVarT)
+      (hδ := hδ) (ε := ε) (hε := hε)
+
 /--
 If the model-based total score at `θ0` equals the block-sum from a linear model and that
 linear model is well-specified for `gStar`, then sequential consistency targets `gStar`.
@@ -544,6 +729,125 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
 
 end SDSequentialConsistency
 
+section SDSequentialConsistencyNoTopo
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+variable {Attr : Type*} [MeasurableSpace Attr]
+variable {Θ : Type*} [TopologicalSpace Θ]
+variable {B : Type*} [Fintype B]
+
+variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (A : ℕ → Ω → Attr)
+
+variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+
+variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+
+omit [TopologicalSpace Θ] in
+theorem paper_sd_total_sequential_consistency_ae_of_hGTotal
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hGTotal :
+      GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) :=
+  sequential_consistency_total_ae
+    (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+    (gB := gB) (θ0 := θ0) (θhat := θhat)
+    (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+    (ε := ε) (hε := hε)
+
+omit [TopologicalSpace Θ] in
+theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hGTotal :
+      GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (gTrue : Attr → ℝ)
+    (hTrue : InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν gTrue := by
+  rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+      (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hCons := hM m hm
+  have hEq :
+      popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν gTrue :=
+    popSDAttr_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
+  exact ⟨hCons, hEq⟩
+
+omit [TopologicalSpace Θ] in
+theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hGTotal
+    {Term : Type*} [Fintype Term] [DecidableEq B]
+    (Y : Attr → Ω → ℝ)
+    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
+    (hTotalModel :
+      ∀ x,
+        gTotalΘ (gB := gB) θ0 x
+          =
+        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x)
+    (hspec : WellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ))
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hGTotal :
+      GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+  have hBlocks :
+      gStar (μ := μ) (Y := Y)
+        =
+      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
+    gStar_eq_sum_blocks_of_WellSpecified
+      (μ := μ) (Y := Y) (blk := blk) (β := β) (φ := φ) hspec
+  have hStar :
+      InvarianceAE
+        (ν := ν)
+        (gTotalΘ (gB := gB) θ0)
+        (gStar (μ := μ) (Y := Y)) := by
+    refine ae_of_all _ ?_
+    intro x
+    have hBlocksx :
+        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x
+          =
+        gStar (μ := μ) (Y := Y) x := by
+      simpa using congrArg (fun f => f x) hBlocks.symm
+    simpa [hBlocksx] using hTotalModel x
+  rcases paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+      (gTrue := gStar (μ := μ) (Y := Y)) (hTrue := hStar)
+      (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  exact ⟨M, hM⟩
+
+end SDSequentialConsistencyNoTopo
+
 /-!
 ## 4d) No-interactions corollary (via `wellSpecified_of_noInteractions`)
 -/
@@ -575,7 +879,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
     (hNoInt : NoInteractions (K := K) (V := V) (μ := μ) (Y := Y))
     (hTotalModel :
       ∀ (μ0 : ℝ) (main : ∀ k : K, V k → ℝ),
-        AdditiveGStar (K := K) (V := V) (μ := μ) (Y := Y) μ0 main →
+        (∀ x, gStar (μ := μ) (Y := Y) x = μ0 + ∑ k : K, main k (x k)) →
         ∀ x,
           gTotalΘ (gB := gB) θ0 x
             =
@@ -620,7 +924,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
           =
         μ0 + ∑ k : K, main k (x k) := hlin
       _ = gStar (μ := μ) (Y := Y) x := by
-        simpa [AdditiveGStar] using (hadd x).symm
+        simpa using (hadd x).symm
   have hTotalModel' :
       ∀ x,
         gTotalΘ (gB := gB) θ0 x

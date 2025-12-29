@@ -10,8 +10,7 @@ Key ideas:
   constant + sum of one-at-a-time effects, with no cross-[terms](jargon_term.md).
 
 What is defined:
-- `AdditiveGStar` describes the exact additive form of the causal score `gStar`.
-- `NoInteractions` says there exist a constant and main-effect functions that give this additive form.
+- `NoInteractions` says there exist a constant and main-effect functions giving the exact additive form of the causal score `gStar`.
 - A [term](jargon_term.md) set `Term := Option K` is used: `none` is the intercept term and `some k` is the main effect for attribute `k`.
 - `betaMain` and `phiMain` build the coefficients and features for that term set.
 

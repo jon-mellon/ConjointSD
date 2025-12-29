@@ -110,6 +110,8 @@ build_import_dag <- function() {
     edges_current <- edges_current %>%
       filter(!(from %in% excluded_modules), !(to %in% excluded_modules))
   }
+  edges_current$from <- gsub("ConjointSD\\.", "", edges_current$from)
+  edges_current$to <- gsub("ConjointSD\\.", "", edges_current$to)
   
   nodes_current <- tibble(name = sort(unique(c(edges_current$from, edges_current$to)))) %>%
     mutate(group = if_else(str_detect(name, "\\."), str_extract(name, "^[^.]+"), name))

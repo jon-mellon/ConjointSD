@@ -17,6 +17,8 @@ Main results:
 - A non-AE version is provided for deterministic sequences.
 - `GEstimationAssumptions_of_paper_ols_gStar` combines OLS [convergence](jargon_convergence.md) with functional [continuity](jargon_continuity.md) to produce `GEstimationAssumptions` for the paper's score.
 - `GEstimationAssumptions_of_paper_ols_moments_ae` provides the same [bridge](jargon_bridge.md) a.e. when the OLS moment assumptions hold along sample paths.
+- `gPaper_eq_gTotalΘ_blocks` identifies the paper score with the block-sum total score (for any `blk`), so the OLS path can feed into the block/total [standard deviation](jargon_standard_deviation.md) chain.
+- `GEstimationAssumptions_of_paper_ols_gStar_total` and `GEstimationAssumptions_of_paper_ols_moments_total_ae` lift the OLS assumptions from `gPaper` to the block-sum total score.
 - `paper_ols_moment_assumptions_of_lln_fullrank_ae` assembles the a.e. moment package from LLN-style and inverse-stability assumptions plus the population normal equations.
 
 This file is the link from [regression](jargon_regression.md) / [OLS](jargon_ols.md) [consistency](jargon_consistency.md) to the [plug-in](jargon_plug_in.md) moment assumptions used in the [standard deviation](jargon_standard_deviation.md) consistency proofs.

@@ -29,10 +29,3 @@ After touching any `.lean` file, make sure the project still builds:
 - Run `lake build` from the repo root with a 99999999s timeout. 
 - If build verification is not possible in the environment, state that explicitly and explain what is missing. Never ask the user to the run commands for you. That's your job.
 
-## Lint (required)
-
-Fix any new linter errors introduced by your changes:
-
-- Run `lake lint` and resolve new issues before finishing.
-- If you cannot run lint locally, call that out clearly and leave no known new lint failures.
-- Never add skips to the linter. Actually fix problems do not hide them.

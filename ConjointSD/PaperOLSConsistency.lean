@@ -6,6 +6,7 @@ with the paper's term set (intercept + main effects + interactions).
 -/
 
 import ConjointSD.ModelBridge
+import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.RegressionEstimator
 import ConjointSD.SDDecompositionFromConjoint
 import ConjointSD.PopulationBridge
@@ -16,6 +17,65 @@ open scoped BigOperators
 
 noncomputable section
 namespace ConjointSD
+
+section PaperTermScore
+
+variable {Attr : Type*}
+variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
+
+variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
+
+/-- Paper regression score with coefficients `θ` on the paper term set. -/
+def gPaper (θ : PaperTerm Main Inter → ℝ) : Attr → ℝ :=
+  gLin (β := θ) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+
+theorem gPaper_eq_gTotalΘ_blocks
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (blk : PaperTerm Main Inter → B) :
+    gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      =
+    (fun θ a =>
+      ∑ b : B,
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) := by
+  classical
+  funext θ a
+  have hblocks :
+      gLin (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        =
+      gTotal (B := B)
+        (g := gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
+    gLin_eq_gTotal_blocks (B := B) (Term := PaperTerm Main Inter)
+      (blk := blk) (β := θ)
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+  have hblocks' := congrArg (fun f => f a) hblocks
+  have hTotal :
+      (∑ b : B,
+          gBlockTerm (blk := blk) (β := θ)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+        =
+      gTotal (B := B)
+        (g := gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) a := by
+    simp [gTotal]
+  calc
+    gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ a
+        =
+      gLin (β := θ)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) a := by
+          simp [gPaper]
+    _ = gTotal (B := B)
+        (g := gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) a := hblocks'
+    _ = ∑ b : B,
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a := by
+        symm
+        exact hTotal
+
+end PaperTermScore
 
 section PaperOLS
 
@@ -30,10 +90,6 @@ variable (Y : Attr → Ω → ℝ)
 variable (A : ℕ → Attr) (Yobs : ℕ → ℝ)
 
 variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
-
-/-- Paper regression score with coefficients `θ` on the paper term set. -/
-def gPaper (θ : PaperTerm Main Inter → ℝ) : Attr → ℝ :=
-  gLin (β := θ) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
 
 omit [DecidableEq (PaperTerm Main Inter)] [IsProbabilityMeasure ν] in
 theorem paper_ols_lln_of_score_assumptions_ae
@@ -388,6 +444,99 @@ theorem GEstimationAssumptions_of_paper_ols_gStar
           n)
       hθ
       hCont
+
+omit [IsProbabilityMeasure μ] in
+theorem GEstimationAssumptions_of_paper_ols_gStar_total
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (blk : PaperTerm Main Inter → B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hMom :
+      OLSMomentAssumptionsOfPop
+        (ν := ν)
+        (A := A) (Y := Yobs)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0)
+    (hCont :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0) :
+    GEstimationAssumptions
+      (ν := ν)
+      (g := gTotalΘ
+      (gB := fun b θ a =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+      θ0
+      (fun n =>
+        olsThetaHat
+          (A := A) (Y := Yobs)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          n) := by
+  have hG :
+      GEstimationAssumptions
+        (ν := ν)
+        (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0
+        (fun n =>
+          olsThetaHat
+            (A := A) (Y := Yobs)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n) :=
+    GEstimationAssumptions_of_paper_ols_gStar
+      (μ := μ) (ν := ν) (Y := Y)
+      (A := A) (Yobs := Yobs)
+      (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) hMom hCont
+  simpa [gPaper_eq_gTotalΘ_blocks (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk), gTotalΘ]
+    using hG
+
+omit [IsProbabilityMeasure μ] in
+theorem GEstimationAssumptions_of_paper_ols_moments_total_ae
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (blk : PaperTerm Main Inter → B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hMom : PaperOLSMomentAssumptions
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      θ0 Aω Yobsω)
+    (hCont :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0) :
+    ∀ᵐ ω ∂μ,
+      GEstimationAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+        θ0
+        (fun n =>
+          olsThetaHat
+            (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n) := by
+  have hG :
+      ∀ᵐ ω ∂μ,
+        GEstimationAssumptions
+          (ν := ν)
+          (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          θ0
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n) :=
+    GEstimationAssumptions_of_paper_ols_moments_ae
+      (μ := μ) (ν := ν) (Y := Y)
+      (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω) hMom hCont
+  refine hG.mono ?_
+  intro ω hω
+  simpa [gPaper_eq_gTotalΘ_blocks (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk), gTotalΘ]
+    using hω
 
 end PaperOLS
 
