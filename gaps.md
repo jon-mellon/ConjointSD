@@ -23,9 +23,9 @@ Gaps in the formal proof relative to the paper’s causal identification and con
    - Sequential results require SplitEvalAssumptions (i.i.d. eval sample, integrability) and GEstimationAssumptions but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).  
    - To fix: Formalize the training/evaluation split used in the paper, show the assumptions hold for that procedure, and state rates or limits for the specific m,n regimes relevant to the data size.
 
-6) No treatment of survey weights, nonresponse, or finite-population corrections (entire project)  
-   - All measures are population probability measures with no link to weighting or finite sampling; the paper’s estimates likely use survey weights and a finite target population.  
-   - To fix: Define weighted estimators and show identification/consistency under the survey design and weighting scheme, or add finite-population sampling lemmas.
+6) Survey weights and finite-population targets were missing  
+   - **Added:** weighted population estimands (`weightMeanAttr`, `weightM2Attr`, `weightVarAttr`, `weightSDAttr`) plus finite-population targets (`finitePopMean`/`finitePopSD`) in SurveyWeights. This lets existing consistency/identification results be reused by swapping in the weighted/finite-pop targets.  
+   - Remaining gap: instantiate the actual survey weights/nonresponse model for the status study and prove the required weighting assumptions (e.g., mass positivity, integrability) or link the weighted targets to a specific sampling design.
 
 7) Main SD estimator now defined, but not instantiated for the status conjoint  
    - **Added:** `paperTotalSDEst` (evaluation-stage SD estimator for the term-induced total score) and an end-to-end sequential-consistency wrapper `paper_total_sd_estimator_consistency_ae_of_gBTerm` in PaperCoreEstimand. This ties the estimator to the paper’s total SD target under coefficient identification and the sequential-consistency assumptions.  
