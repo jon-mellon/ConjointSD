@@ -21,3 +21,4 @@ import ConjointSD.PaperCoreEstimand
 import ConjointSD.WellSpecifiedFromNoInteractions
 import ConjointSD.SurveyWeights
 import ConjointSD.StatusConjointDesign
+import ConjointSD.StatusSurveyWeights

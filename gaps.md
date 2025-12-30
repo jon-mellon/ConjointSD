@@ -22,7 +22,12 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 
 5) Survey-weighted [population](readable/jargon_population.md) targets are only partially integrated
    - Current state: weighted population SD targets are defined, but the sequential [consistency](readable/jargon_consistency.md) and identification wrappers still target unweighted `popSDAttr ν`.
-   - Remaining gap: instantiate the actual survey weights/nonresponse model for the status study and prove the required weighting assumptions (e.g., mass positivity, [integrability](readable/jargon_integral.md)), then connect the consistency chain to `weightSDAttr` (or a finite-[population](readable/jargon_population.md) target) for the paper’s population predictions.
+   - Partial fix: added a weighted-target bridge in `PaperWrappers.lean` and status-weight
+     placeholders in `StatusSurveyWeights.lean`; weighted targets can now be stated using
+     `weightSDAttr` under moment-matching assumptions.
+   - Remaining gap: instantiate the actual survey weights/nonresponse model for the status
+     study and prove the required weighting assumptions (e.g., mass positivity,
+     [integrability](readable/jargon_integral.md)) so the bridge applies with concrete weights.
 
 6) Main [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md) not instantiated for the status conjoint
    - Remaining gap: specialize the [theorem](readable/jargon_theorem.md) to the status conjoint by instantiating the paper’s [term](readable/jargon_term.md) set, [block](readable/jargon_block.md) map, features, and coefficient map (`blk`, `φ`, `βOf`, `β0`) and by proving the SplitEvalAssumptions / continuity / [convergence](readable/jargon_convergence.md) hypotheses from the design.
@@ -46,18 +51,16 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
    - The proof uses population [L2](readable/jargon_l2.md) distances under `ν`, but the R workflow computes test-set [RMSE](readable/jargon_rmse.md)s. A generalization/[LLN](readable/jargon_lln.md) step is needed to show the sample RMSE converges to the population `L2(ν)` distance (or to a weighted population target).
    - To fix: add a sample-to-population convergence lemma for the [RMSE](readable/jargon_rmse.md) estimator (possibly under the same IID/weighting assumptions as the SD consistency results), and thread it into the [L2](readable/jargon_l2.md)-approximation assumptions used in the bounds.
 
-12) Assumption 2 (no profile-order effects within a task) not formalized
-   - Current model is single-shot and has no task/profile-order structure, so Assumption 2 is not expressible.
-   - Plan to integrate properly:
-     (a) Extend `Defs.lean` (or add a new design file) with a task index and an ordered
-         profile list, e.g., `Task` and `t : Fin J → Attr`.
-     (b) Define task-indexed potential outcomes `Y : Task → (Fin J → Attr) → Ω → ℝ`.
-     (c) Add a permutation-invariance assumption in `Assumptions.lean` stating
-         `Y k t = Y k (t ∘ π)` for all permutations `π` of `Fin J`.
-     (d) Add a bridge lemma in `ConjointIdentification.lean` showing how the ordered-task
-         model induces a single-shot potential outcome, so existing identification proofs apply.
-     (e) Update `StatusConjointDesign.lean` (if desired) to instantiate the ordered-task model
-         or provide a wrapper that forgets order.
-     (f) Update `PaperWrappers.lean` signatures to accept the new assumption or use the bridge.
-     (g) Update docs (`readable/Defs.md`, `readable/Assumptions.md`,
-         `readable/ConjointIdentification.md`, and any touched design/wrapper summaries).
+12) Assumption 2 (no profile-order effects within a task) formalized
+   - Implemented: ordered profile lists and permutation action in `ConjointSD/Defs.lean`,
+     plus `NoProfileOrderEffects` in `ConjointSD/Assumptions.lean`.
+   - Bridge lemma: `potMean_invariant_of_noProfileOrder` in
+     `ConjointSD/ConjointIdentification.lean` shows the potential mean is invariant
+     under profile-order permutations, letting single-shot identification remain unchanged.
+   - Docs updated: `readable/Defs.md`, `readable/Assumptions.md`,
+     `readable/ConjointIdentification.md`.
+
+13) Standalone hypotheses should be bundled into `Assumptions.lean`
+   - Current state: the assumption table includes atomic hypotheses like `IsProbabilityMeasure μ`, `Measure.map (A 0) μ = ν`, `Measurable (A 0)`, `0 < ε`, and `Filter.Tendsto θhat ...` that are not captured by assumption structures.
+   - Remaining gap: introduce new assumption bundles (e.g., basic measure assumptions, transport/map law assumptions, positivity/epsilon assumptions, convergence-of-θhat assumptions), refactor theorem statements to use those bundles, and update the derived assumption links in the dependency tables.
+   - Docs to update: `ConjointSD/Assumptions.lean`, `readable/Assumptions.md`, `project_map.md`, `readable/lean_index.md`, `dependency_tables.Rmd`/`dependency_tables.md`, plus any affected theorem summaries in `readable/*.md` and `proven_statements.md`.

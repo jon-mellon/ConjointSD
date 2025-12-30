@@ -7,6 +7,8 @@ assumptions) builds on.
 
 Highlights:
 - Core score-model definitions: `gLin`, `gStar`, `PaperTerm`, `βPaper`, `φPaper`.
+- Ordered-task helpers: `OrderedProfiles` and `permuteProfiles` for profile-order invariance
+  assumptions.
 - [Population](jargon_population.md)/empirical moment functionals: `popMeanAttr`, `popM2Attr`,
   `popVarAttr`, `popSDAttr`, `meanHatZ`, `m2HatZ`, `varHatZ`, `sdHatZ`, `rmseHatZ`, plus
   `popMeanZ`/`popM2Z`/`popVarZ`/`popSDZ`/`popRMSEZ` (see [mean](jargon_mean.md),

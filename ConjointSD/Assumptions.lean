@@ -263,6 +263,14 @@ variable (μ : Measure Ω)
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /--
+Assumption 2 (no profile-order effects within a task): permuting the order of
+profiles within a task does not change the task-level potential outcome.
+-/
+structure NoProfileOrderEffects
+    {Task J Attr : Type*} (Y : Task → OrderedProfiles J Attr → Ω → ℝ) : Prop where
+  permute : ∀ k t (π : Equiv.Perm J), Y k (permuteProfiles π t) = Y k t
+
+/--
 Randomization mechanism for the profile assignment.
 
 We model `X` as a measurable function of a randomization variable `U` that is

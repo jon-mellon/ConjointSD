@@ -28,6 +28,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 - [ConjointSD/ConjointIdentification.lean](readable/ConjointIdentification.md) formalizes conjoint identification assumptions and derives observed-[mean](readable/jargon_mean.md) identification of [potential outcomes](readable/jargon_potential_outcome.md) and [AMCE](readable/jargon_amce.md); defines `gExp`/`gPot` equality under assumptions.
 - [ConjointSD/StatusConjointDesign.lean](readable/StatusConjointDesign.md) encodes the specific status-conjoint randomization (uniform over [profiles](readable/jargon_profile.md)/tasks) and proves it satisfies `ConjointSingleShotDesign` from `ConjointIdentification`.
+- [ConjointSD/StatusSurveyWeights.lean](readable/StatusSurveyWeights.md) introduces status-conjoint survey-weight placeholders and links weighted SD targets to population SDs under moment matching.
 
 ## Estimation and sequential consistency
 

@@ -829,6 +829,65 @@ by
 
 end WeightedTargets
 
+section WeightedConsistencyBridge
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+variable {Attr : Type*} [MeasurableSpace Attr]
+variable {B : Type*} [Fintype B]
+
+variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (A : ℕ → Ω → Attr)
+
+variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+
+variable {Θ : Type*}
+variable [TopologicalSpace Θ]
+variable (gB : B → Θ → Attr → ℝ)
+variable (θ0 : Θ) (θhat : ℕ → Θ)
+
+variable (w : Attr → ℝ)
+
+/--
+Bridge to weighted targets: if the true score's weighted moments match population moments,
+then the standard consistency target can be rewritten as a weighted SD target.
+-/
+theorem paper_sd_total_sequential_consistency_to_weighted_target_ae
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (gTrue : Attr → ℝ)
+    (hTrue : InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
+    (hMom : WeightMatchesPopMoments (ν := ν) (w := w) (s := gTrue))
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
+  rcases paper_sd_total_sequential_consistency_to_true_target_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (gTrue := gTrue) (hTrue := hTrue) (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm
+  rcases hM m hm with ⟨hCons, hEq⟩
+  have hWeight :
+      weightSDAttr ν w gTrue = popSDAttr ν gTrue :=
+    paper_weighted_sd_eq_pop (ν := ν) (w := w) (s := gTrue) hMom
+  have hEq' :
+      popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
+    simpa [hWeight] using hEq
+  exact ⟨hCons, hEq'⟩
+
+end WeightedConsistencyBridge
+
 section SDSequentialConsistencyOLS
 
 variable {Ω : Type*} [MeasurableSpace Ω]

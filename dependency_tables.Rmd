@@ -313,3 +313,38 @@ knitr::kable(cbind(Count = assump_count, assump_fmt), align = "l")
 ```{r dependency-table, echo=FALSE}
 knitr::kable(dep_fmt, align = "l")
 ```
+
+## Theorem dependency DAG
+
+```{r dependency-dag, echo=FALSE, fig.width=10, fig.height=8}
+if (!requireNamespace("igraph", quietly = TRUE)) {
+  stop("Package 'igraph' is required to plot the dependency DAG.")
+}
+
+edge_rows <- lapply(theorems, function(thm) {
+  deps <- intersect(raw_deps[[thm]], theorems)
+  if (length(deps) == 0) return(NULL)
+  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+})
+edges <- do.call(rbind, edge_rows)
+
+if (is.null(edges) || nrow(edges) == 0) {
+  plot.new()
+  text(0.5, 0.5, "No theorem dependencies found.")
+} else {
+  g <- igraph::graph_from_data_frame(edges, vertices = theorems, directed = TRUE)
+  layout <- tryCatch(
+    igraph::layout_with_sugiyama(g)$layout,
+    error = function(e) igraph::layout_with_fr(g)
+  )
+  plot(
+    g,
+    layout = layout,
+    vertex.label = pretty_name(igraph::V(g)$name),
+    vertex.size = 12,
+    vertex.label.cex = 0.7,
+    edge.arrow.size = 0.4,
+    edge.color = "grey40"
+  )
+}
+```

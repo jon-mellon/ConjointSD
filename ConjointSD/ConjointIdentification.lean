@@ -327,4 +327,29 @@ theorem gExp_eq_gPot [IsProbabilityMeasure μ] [MeasurableSpace Attr]
     identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h
       x (hpos x)
 
+section ProfileOrder
+
+variable {Task J Attr : Type*}
+
+/-!
+Bridge for Assumption 2: order-invariant task outcomes induce order-invariant
+potential means for the ordered profile lists.
+-/
+
+def taskOutcome (k : Task) (Y : Task → OrderedProfiles J Attr → Ω → ℝ) :
+    OrderedProfiles J Attr → Ω → ℝ :=
+  fun t ω => Y k t ω
+
+lemma potMean_invariant_of_noProfileOrder
+    (Y : Task → OrderedProfiles J Attr → Ω → ℝ)
+    (k : Task) (t : OrderedProfiles J Attr) (π : Equiv.Perm J)
+    (h : NoProfileOrderEffects (Y := Y)) :
+    potMean (μ := μ) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y)
+        (permuteProfiles π t)
+      =
+    potMean (μ := μ) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y) t := by
+  simp [potMean, taskOutcome, h.permute k t π]
+
+end ProfileOrder
+
 end ConjointSD

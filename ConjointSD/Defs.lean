@@ -53,6 +53,22 @@ end ParametricMainInteractions
 
 end ModelBridge
 
+section ConjointOrder
+
+universe u v
+
+variable {J : Type u} {Attr : Type v}
+
+/-- Ordered profile list for a task with `J` profile slots. -/
+abbrev OrderedProfiles (J : Type u) (Attr : Type v) : Type (max u v) := J → Attr
+
+/-- Permute an ordered profile list by a permutation of slots. -/
+def permuteProfiles (π : Equiv.Perm J) (t : OrderedProfiles J Attr) :
+    OrderedProfiles J Attr :=
+  fun j => t (π j)
+
+end ConjointOrder
+
 section PredictedSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]

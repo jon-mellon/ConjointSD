@@ -154,6 +154,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   that is [independent](jargon_independent.md) of every
   [potential outcome](jargon_potential_outcome.md). This is the mechanism-level
   assumption from which ignorability of `X` is derived later.
+- `NoProfileOrderEffects`: formalizes Assumption 2 by requiring potential outcomes
+  for a task to be invariant under permutations of the profile order.
 - `ConjointIdAssumptions`: [measurability](jargon_measurable.md) of the observed
   and [potential outcomes](jargon_potential_outcome.md),
   [consistency](jargon_consistency.md) (`Yobs = Y(X)`), and a factorization
