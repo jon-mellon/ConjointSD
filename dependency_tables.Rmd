@@ -19,10 +19,55 @@ theorem_lines <- lines[grepl("^theorem ConjointSD\\.", lines)]
 theorems <- unique(sub("^theorem ConjointSD\\.([^.{ ]+).*$", "\\1", theorem_lines))
 theorems <- theorems[theorems != ""]
 
+# Expand by printing every ConjointSD reference seen in Scratch output.
+refs <- unique(unlist(regmatches(lines, gregexpr("ConjointSD\\.[A-Za-z0-9_]+", lines))))
+refs <- unique(sub("^ConjointSD\\.", "", refs))
+
+run_prints <- function(names) {
+  tmp_lean <- tempfile(fileext = ".lean")
+  writeLines(c("import ConjointSD", paste0("#print ConjointSD.", sort(names))), tmp_lean)
+  output <- suppressWarnings(
+    system2("lake", c("env", "lean", tmp_lean), stdout = TRUE, stderr = TRUE)
+  )
+  unknown <- unique(c(
+    unlist(regmatches(output, gregexpr("unknown constant 'ConjointSD\\.[A-Za-z0-9_]+'", output))),
+    unlist(regmatches(output, gregexpr("Unknown constant `ConjointSD\\.[A-Za-z0-9_]+`", output)))
+  ))
+  unknown <- gsub("unknown constant 'ConjointSD\\.", "", unknown, ignore.case = TRUE)
+  unknown <- gsub("Unknown constant `ConjointSD\\.", "", unknown, ignore.case = TRUE)
+  unknown <- gsub("[`']$", "", unknown)
+  list(output = output, unknown = unknown)
+}
+
+refs_known <- refs
+lines_all <- character(0)
+repeat {
+  res <- run_prints(refs_known)
+  if (length(res$unknown) == 0) {
+    lines_all <- res$output
+    break
+  }
+  next_refs <- setdiff(refs_known, res$unknown)
+  if (length(next_refs) == length(refs_known)) {
+    lines_all <- res$output
+    break
+  }
+  refs_known <- next_refs
+}
+
+if (length(lines_all) == 0) {
+  lines_all <- lines
+}
+
 # Structures printed from Scratch.lean (for assumption field names).
-structure_lines <- lines[grepl("^structure ConjointSD\\.", lines)]
+structure_lines <- lines_all[grepl("^structure ConjointSD\\.", lines_all)]
 structures <- unique(sub("^structure ConjointSD\\.([^.{ ]+).*$", "\\1", structure_lines))
 structures <- structures[structures != ""]
+
+# Definitions printed from Scratch.lean (for non-structure assumptions).
+def_lines <- lines_all[grepl("^def ConjointSD\\.", lines_all)]
+defs <- unique(sub("^def ConjointSD\\.([^.{ ]+).*$", "\\1", def_lines))
+defs <- defs[defs != ""]
 
 # Extract #print blocks for each theorem.
 block_for <- function(name, lines) {
@@ -36,7 +81,8 @@ block_for <- function(name, lines) {
   lines[start:end]
 }
 
-blocks <- setNames(lapply(theorems, block_for, lines = lines), theorems)
+all_names <- unique(c(theorems, refs))
+blocks <- setNames(lapply(all_names, block_for, lines = lines_all), all_names)
 
 # Dependency graph: if a block references another theorem name, count it as a dependency.
 find_deps <- function(name, block, all_names) {
@@ -50,7 +96,7 @@ find_deps <- function(name, block, all_names) {
   all_names[all_names != name & hits]
 }
 
-raw_deps <- setNames(lapply(theorems, function(nm) find_deps(nm, blocks[[nm]], theorems)), theorems)
+raw_deps <- setNames(lapply(all_names, function(nm) find_deps(nm, blocks[[nm]], all_names)), all_names)
 
 # Transitive closure.
 all_deps <- raw_deps
@@ -78,7 +124,7 @@ structure_block_for <- function(name, lines) {
   lines[start:end]
 }
 
-structure_blocks <- setNames(lapply(structures, structure_block_for, lines = lines), structures)
+structure_blocks <- setNames(lapply(structures, structure_block_for, lines = lines_all), structures)
 
 parse_structure <- function(struct_name, block) {
   field_lines <- block[grepl("^  ConjointSD\\.", block)]
@@ -94,6 +140,25 @@ parse_structure <- function(struct_name, block) {
 }
 
 structure_info <- setNames(lapply(structures, function(s) parse_structure(s, structure_blocks[[s]])), structures)
+
+def_block_for <- function(name, lines) {
+  start_pat <- paste0("^def ConjointSD\\.", name, "([ .])")
+  idx <- grep(start_pat, lines)
+  if (length(idx) == 0) return(character(0))
+  start <- idx[1]
+  next_idx <- grep("^(theorem|structure|def) ConjointSD\\.", lines[(start + 1):length(lines)])
+  end <- if (length(next_idx) == 0) length(lines) else start + next_idx[1] - 1
+  lines[start:end]
+}
+
+def_blocks <- setNames(lapply(defs, def_block_for, lines = lines_all), defs)
+def_is_prop <- vapply(defs, function(nm) {
+  blk <- def_blocks[[nm]]
+  if (length(blk) == 0) return(FALSE)
+  header <- paste(blk[1:min(2, length(blk))], collapse = " ")
+  grepl(": Prop", header, fixed = TRUE)
+}, logical(1))
+assumption_defs <- defs[def_is_prop]
 
 structure_field_assumptions <- unique(unlist(lapply(names(structure_info), function(s) {
   fields <- structure_info[[s]]$fields
@@ -118,49 +183,75 @@ structure_closure <- function(struct_name, nested_map) {
   seen
 }
 
-extra_patterns <- c(
-  "MeasureTheory.IsProbabilityMeasure μ" = "IsProbabilityMeasure μ",
-  "MeasureTheory.IsProbabilityMeasure ν" = "IsProbabilityMeasure ν",
-  "MeasureTheory.Measure.map (A 0) μ = ν" = "Measure map (A 0) μ = ν",
-  "Measurable (A 0)" = "Measurable (A 0)",
-  "ConjointSD.InvarianceAE" = "InvarianceAE",
-  "ConjointSD.WellSpecified" = "WellSpecified",
-  "Filter.Tendsto θhat" = "Tendsto θhat -> θ0",
-  "βOf θ0 = β" = "betaOf θ0 = beta",
-  "βOf θ0 = β0" = "betaOf θ0 = beta",
-  "0 < ε" = "Epsilon > 0",
-  "∀ᵐ (a : Attr) ∂ν, s a = t a" = "AE equality s = t under ν"
-)
+extract_atomic_assumptions <- function(text) {
+  labels <- character(0)
+  text_flat <- gsub("\n", " ", text)
 
-assumptions <- unique(c(structure_field_assumptions, unname(extra_patterns)))
+  ip <- unlist(regmatches(text_flat, gregexpr("MeasureTheory.IsProbabilityMeasure [A-Za-z0-9_]+", text_flat)))
+  if (length(ip) > 0) {
+    labels <- c(labels, gsub("MeasureTheory.IsProbabilityMeasure ", "IsProbabilityMeasure ", ip))
+  }
 
-assumptions_in_block <- function(block, name) {
+  meas <- unlist(regmatches(text_flat, gregexpr("Measurable \\(A 0\\)", text_flat)))
+  if (length(meas) > 0) labels <- c(labels, meas)
+
+  maps <- unlist(regmatches(text_flat, gregexpr("MeasureTheory.Measure.map \\(A 0\\) [A-Za-z0-9_]+ = [A-Za-z0-9_]+", text_flat)))
+  if (length(maps) > 0) {
+    labels <- c(labels, gsub("MeasureTheory.Measure.map ", "Measure map ", maps))
+  }
+
+  tendsto <- unlist(regmatches(text_flat, gregexpr("Filter.Tendsto θhat[^,)]*\\(nhds [A-Za-z0-9_]+\\)", text_flat)))
+  if (length(tendsto) > 0) labels <- c(labels, tendsto)
+
+  beta_eq <- unlist(regmatches(text_flat, gregexpr("βOf θ0 = [A-Za-z0-9_]+", text_flat)))
+  if (length(beta_eq) > 0) labels <- c(labels, beta_eq)
+
+  eps <- unlist(regmatches(text_flat, gregexpr("0 < [A-Za-z0-9_]+", text_flat)))
+  if (length(eps) > 0) labels <- c(labels, eps)
+
+  ae_eq <- unlist(regmatches(text_flat, gregexpr("∀ᵐ \\(a : Attr\\) ∂ν, s a = t a", text_flat)))
+  if (length(ae_eq) > 0) labels <- c(labels, ae_eq)
+
+  labels
+}
+
+assumption_defs_in_block <- function(text) {
+  hits <- character(0)
+  for (nm in assumption_defs) {
+    if (grepl(paste0("ConjointSD.", nm), text, fixed = TRUE)) hits <- c(hits, nm)
+  }
+  hits
+}
+
+assumptions_in_block <- function(block) {
   text <- paste(block, collapse = "\n")
-  hit <- setNames(rep(FALSE, length(assumptions)), assumptions)
+  hit <- character(0)
 
   for (s in structures) {
     if (grepl(paste0("ConjointSD.", s), text, fixed = TRUE)) {
       for (s_hit in structure_closure(s, structure_nested)) {
         fields <- structure_info[[s_hit]]$fields
         if (length(fields) > 0) {
-          hit[paste(s_hit, fields)] <- TRUE
+          hit <- c(hit, paste(s_hit, fields))
         }
       }
     }
   }
 
-  for (pat in names(extra_patterns)) {
-    if (grepl(pat, text, fixed = TRUE)) hit[[extra_patterns[[pat]]]] <- TRUE
-  }
-
-  hit
+  hit <- c(hit, extract_atomic_assumptions(text))
+  hit <- c(hit, assumption_defs_in_block(text))
+  unique(hit)
 }
 
-assumption_direct <- setNames(lapply(theorems, function(nm) assumptions_in_block(blocks[[nm]], nm)), theorems)
+assumption_direct <- setNames(lapply(all_names, function(nm) assumptions_in_block(blocks[[nm]])), all_names)
+
+assumptions <- sort(unique(c(structure_field_assumptions, unlist(assumption_direct))))
 
 # Make assumptions transitive along theorem dependencies.
-assumption_all <- assumption_direct
-for (nm in theorems) {
+assumption_all <- lapply(assumption_direct, function(x) {
+  setNames(assumptions %in% x, assumptions)
+})
+for (nm in all_names) {
   deps <- all_deps[[nm]]
   if (length(deps) > 0) {
     trans <- Reduce(`|`, lapply(deps, function(d) assumption_all[[d]]), init = assumption_all[[nm]])

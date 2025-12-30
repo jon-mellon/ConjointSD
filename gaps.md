@@ -45,3 +45,19 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 11) Empirical [RMSE](readable/jargon_rmse.md)s vs population [L2](readable/jargon_l2.md) bounds are not linked
    - The proof uses population [L2](readable/jargon_l2.md) distances under `ν`, but the R workflow computes test-set [RMSE](readable/jargon_rmse.md)s. A generalization/[LLN](readable/jargon_lln.md) step is needed to show the sample RMSE converges to the population `L2(ν)` distance (or to a weighted population target).
    - To fix: add a sample-to-population convergence lemma for the [RMSE](readable/jargon_rmse.md) estimator (possibly under the same IID/weighting assumptions as the SD consistency results), and thread it into the [L2](readable/jargon_l2.md)-approximation assumptions used in the bounds.
+
+12) Assumption 2 (no profile-order effects within a task) not formalized
+   - Current model is single-shot and has no task/profile-order structure, so Assumption 2 is not expressible.
+   - Plan to integrate properly:
+     (a) Extend `Defs.lean` (or add a new design file) with a task index and an ordered
+         profile list, e.g., `Task` and `t : Fin J → Attr`.
+     (b) Define task-indexed potential outcomes `Y : Task → (Fin J → Attr) → Ω → ℝ`.
+     (c) Add a permutation-invariance assumption in `Assumptions.lean` stating
+         `Y k t = Y k (t ∘ π)` for all permutations `π` of `Fin J`.
+     (d) Add a bridge lemma in `ConjointIdentification.lean` showing how the ordered-task
+         model induces a single-shot potential outcome, so existing identification proofs apply.
+     (e) Update `StatusConjointDesign.lean` (if desired) to instantiate the ordered-task model
+         or provide a wrapper that forgets order.
+     (f) Update `PaperWrappers.lean` signatures to accept the new assumption or use the bridge.
+     (g) Update docs (`readable/Defs.md`, `readable/Assumptions.md`,
+         `readable/ConjointIdentification.md`, and any touched design/wrapper summaries).
