@@ -46,7 +46,9 @@ Recent changes: added an [additive-projection](jargon_additive_projection.md) or
 - `PopIID`: i.i.d.-style conditions for the attribute process `A n`. Requires
   [measurable](jargon_measurable.md) `A i`, pairwise
   [independence](jargon_independent.md), and
-  [identical distribution](jargon_identically_distributed.md) across `i`.
+  [identical distribution](jargon_identically_distributed.md) across `i`. This
+  is i.i.d. across the draw index (profiles/respondents/tasks), not within a
+  profile, so attributes may still be correlated inside each profile.
 - `ScoreAssumptions`: combines `PopIID` with
   [measurability](jargon_measurable.md) of the score function `g`, plus
   [integrability](jargon_integrable.md) of `g(A 0)` and `g(A 0)^2`. This is the
@@ -56,7 +58,12 @@ Recent changes: added an [additive-projection](jargon_additive_projection.md) or
   each
   [block](jargon_block.md) score `g b`, and a uniform boundedness condition for
   every block. Boundedness guarantees all required moments and simplifies
-  [variance](jargon_variance.md) decomposition arguments.
+  [variance](jargon_variance.md) decomposition arguments. Concretely, there is
+  a single constant `C` with `|g b(A i)| ≤ C` for all blocks `b` (and all draws
+  `i`), so every block score is uniformly bounded. This gives integrability of
+  each `g b` and every product `g b * g c`, ensures covariances exist, and lets
+  you apply dominated-convergence or LLN-style steps without checking separate
+  tail conditions for each block.
 
 ## VarianceDecomposition
 

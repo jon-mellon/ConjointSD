@@ -10,6 +10,7 @@ and regression machinery.
 
 - [Lean docs index](readable/lean_index.md): readable summaries of each Lean file.
 - [Jargon index](readable/jargon_index.md): short definitions of technical terms.
+- [Proven statements](proven_statements.md): key proved theorems with assumptions.
 - [Project map](project_map.md): dependency-oriented overview of the Lean modules.
 - [Proof gaps](gaps.md): known open gaps between the paper and the formalization.
 
