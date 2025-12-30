@@ -14,22 +14,15 @@ options(width = 120)
 cmd <- "lake env lean Scratch.lean"
 lines <- system(cmd, intern = TRUE)
 
-# Theorems of interest (base + paper-facing).
-theorems <- c(
-  "sdHatZ_tendsto_ae",
-  "sd_component_consistent",
-  "gExp_eq_gPot",
-  "popSDAttr_congr_ae",
-  "gStar_eq_sum_blocks_of_WellSpecified",
-  "sequential_consistency_ae",
-  "paper_identifies_potMean_from_condMean",
-  "paper_identifies_amce_from_condMeans",
-  "paper_sd_total_sequential_consistency_ae",
-  "paper_sd_total_sequential_consistency_to_true_target_ae",
-  "paper_sd_total_sequential_consistency_to_gPot_ae_of_identification",
-  "paper_total_sd_estimator_consistency_ae_of_gBTerm",
-  "paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm"
-)
+# Theorems printed from Scratch.lean.
+theorem_lines <- lines[grepl("^theorem ConjointSD\\.", lines)]
+theorems <- unique(sub("^theorem ConjointSD\\.([^.{ ]+).*$", "\\1", theorem_lines))
+theorems <- theorems[theorems != ""]
+
+# Structures printed from Scratch.lean (for assumption field names).
+structure_lines <- lines[grepl("^structure ConjointSD\\.", lines)]
+structures <- unique(sub("^structure ConjointSD\\.([^.{ ]+).*$", "\\1", structure_lines))
+structures <- structures[structures != ""]
 
 # Extract #print blocks for each theorem.
 block_for <- function(name, lines) {
@@ -74,85 +67,90 @@ while (changed) {
   }
 }
 
-# Assumption patterns (bundled and atomic).
-assumptions <- c(
-  "IsProbabilityMeasure μ",
-  "IIDAssumptions intZ",
-  "IIDAssumptions indep",
-  "IIDAssumptions ident",
-  "IIDAssumptions intZ2",
-  "PopIID measA",
-  "PopIID indepA",
-  "PopIID identA",
-  "ScoreAssumptions meas g",
-  "ScoreAssumptions int g(A0)",
-  "ScoreAssumptions int g(A0)2",
-  "Measurable (A 0)",
-  "Measure map (A 0) μ = ν",
-  "ConjointIdAssumptions measYobs",
-  "ConjointIdAssumptions measY",
-  "ConjointIdAssumptions consistency",
-  "ConjointIdAssumptions positivity",
-  "ConjointIdAssumptions rand",
-  "AE equality s = t under ν",
-  "InvarianceAE",
-  "WellSpecified",
-  "IsProbabilityMeasure ν",
-  "FunctionalContinuityAssumptions cont mean",
-  "FunctionalContinuityAssumptions cont m2",
-  "Tendsto θhat -> θ0",
-  "betaOf θ0 = beta",
-  "GEstimationAssumptions mean tendsto",
-  "GEstimationAssumptions m2 tendsto",
-  "Epsilon > 0"
+# Structure block extraction.
+structure_block_for <- function(name, lines) {
+  start_pat <- paste0("^structure ConjointSD\\.", name, "\\.")
+  idx <- grep(start_pat, lines)
+  if (length(idx) == 0) return(character(0))
+  start <- idx[1]
+  next_idx <- grep("^(theorem|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+  end <- if (length(next_idx) == 0) length(lines) else start + next_idx[1] - 1
+  lines[start:end]
+}
+
+structure_blocks <- setNames(lapply(structures, structure_block_for, lines = lines), structures)
+
+parse_structure <- function(struct_name, block) {
+  field_lines <- block[grepl("^  ConjointSD\\.", block)]
+  if (length(field_lines) == 0) {
+    return(list(fields = character(0), nested = character(0)))
+  }
+  field_name <- sub("^  ConjointSD\\.[^.]+\\.([^ ]+) :.*$", "\\1", field_lines)
+  field_type <- sub("^  ConjointSD\\.[^.]+\\.[^ ]+ : (.*)$", "\\1", field_lines)
+  nested <- unique(unlist(regmatches(field_type, gregexpr("ConjointSD\\.[A-Za-z0-9_]+", field_type))))
+  nested <- sub("^ConjointSD\\.", "", nested)
+  primitive <- !grepl("ConjointSD\\.", field_type)
+  list(fields = field_name[primitive], nested = nested)
+}
+
+structure_info <- setNames(lapply(structures, function(s) parse_structure(s, structure_blocks[[s]])), structures)
+
+structure_field_assumptions <- unique(unlist(lapply(names(structure_info), function(s) {
+  fields <- structure_info[[s]]$fields
+  if (length(fields) == 0) return(character(0))
+  paste(s, fields)
+})))
+
+structure_nested <- lapply(structure_info, function(info) info$nested)
+
+structure_closure <- function(struct_name, nested_map) {
+  seen <- character(0)
+  stack <- struct_name
+  while (length(stack) > 0) {
+    current <- stack[[1]]
+    stack <- stack[-1]
+    if (current %in% seen) next
+    seen <- c(seen, current)
+    if (!is.null(nested_map[[current]])) {
+      stack <- c(stack, nested_map[[current]])
+    }
+  }
+  seen
+}
+
+extra_patterns <- c(
+  "MeasureTheory.IsProbabilityMeasure μ" = "IsProbabilityMeasure μ",
+  "MeasureTheory.IsProbabilityMeasure ν" = "IsProbabilityMeasure ν",
+  "MeasureTheory.Measure.map (A 0) μ = ν" = "Measure map (A 0) μ = ν",
+  "Measurable (A 0)" = "Measurable (A 0)",
+  "ConjointSD.InvarianceAE" = "InvarianceAE",
+  "ConjointSD.WellSpecified" = "WellSpecified",
+  "Filter.Tendsto θhat" = "Tendsto θhat -> θ0",
+  "βOf θ0 = β" = "betaOf θ0 = beta",
+  "βOf θ0 = β0" = "betaOf θ0 = beta",
+  "0 < ε" = "Epsilon > 0",
+  "∀ᵐ (a : Attr) ∂ν, s a = t a" = "AE equality s = t under ν"
 )
 
-# Direct assumption detection in a block.
+assumptions <- unique(c(structure_field_assumptions, unname(extra_patterns)))
+
 assumptions_in_block <- function(block, name) {
   text <- paste(block, collapse = "\n")
   hit <- setNames(rep(FALSE, length(assumptions)), assumptions)
 
-  hit[["IsProbabilityMeasure μ"]] <- grepl("IsProbabilityMeasure μ", text, fixed = TRUE)
-  hit[["IsProbabilityMeasure ν"]] <- grepl("IsProbabilityMeasure ν", text, fixed = TRUE)
+  for (s in structures) {
+    if (grepl(paste0("ConjointSD.", s), text, fixed = TRUE)) {
+      for (s_hit in structure_closure(s, structure_nested)) {
+        fields <- structure_info[[s_hit]]$fields
+        if (length(fields) > 0) {
+          hit[paste(s_hit, fields)] <- TRUE
+        }
+      }
+    }
+  }
 
-  if (grepl("IIDAssumptions", text, fixed = TRUE)) {
-    hit[c("IIDAssumptions intZ", "IIDAssumptions indep", "IIDAssumptions ident", "IIDAssumptions intZ2")] <- TRUE
-  }
-  if (grepl("PopIID", text, fixed = TRUE)) {
-    hit[c("PopIID measA", "PopIID indepA", "PopIID identA")] <- TRUE
-  }
-  if (grepl("ScoreAssumptions", text, fixed = TRUE)) {
-    hit[c("ScoreAssumptions meas g", "ScoreAssumptions int g(A0)", "ScoreAssumptions int g(A0)2")] <- TRUE
-    hit[c("PopIID measA", "PopIID indepA", "PopIID identA")] <- TRUE
-  }
-  if (grepl("SplitEvalAssumptions", text, fixed = TRUE)) {
-    hit[c("ScoreAssumptions meas g", "ScoreAssumptions int g(A0)", "ScoreAssumptions int g(A0)2")] <- TRUE
-    hit[c("PopIID measA", "PopIID indepA", "PopIID identA")] <- TRUE
-    hit[c("IIDAssumptions intZ", "IIDAssumptions indep", "IIDAssumptions ident", "IIDAssumptions intZ2")] <- TRUE
-  }
-  if (grepl("ConjointIdAssumptions", text, fixed = TRUE)) {
-    hit[c("ConjointIdAssumptions measYobs", "ConjointIdAssumptions measY",
-          "ConjointIdAssumptions consistency", "ConjointIdAssumptions positivity",
-          "ConjointIdAssumptions rand")] <- TRUE
-  }
-  if (grepl("InvarianceAE", text, fixed = TRUE)) hit[["InvarianceAE"]] <- TRUE
-  if (grepl("WellSpecified", text, fixed = TRUE)) hit[["WellSpecified"]] <- TRUE
-  if (grepl("FunctionalContinuityAssumptions", text, fixed = TRUE)) {
-    hit[c("FunctionalContinuityAssumptions cont mean", "FunctionalContinuityAssumptions cont m2")] <- TRUE
-  }
-  if (grepl("GEstimationAssumptions", text, fixed = TRUE)) {
-    hit[c("GEstimationAssumptions mean tendsto", "GEstimationAssumptions m2 tendsto")] <- TRUE
-  }
-  if (grepl("Measure.map (A 0) μ = ν", text, fixed = TRUE)) hit[["Measure map (A 0) μ = ν"]] <- TRUE
-  if (grepl("Measurable (A 0)", text, fixed = TRUE)) hit[["Measurable (A 0)"]] <- TRUE
-  if (grepl("Tendsto θhat", text, fixed = TRUE)) hit[["Tendsto θhat -> θ0"]] <- TRUE
-  if (grepl("βOf θ0 = β", text, fixed = TRUE) || grepl("βOf θ0 = β0", text, fixed = TRUE)) {
-    hit[["betaOf θ0 = beta"]] <- TRUE
-  }
-  if (grepl("0 < ε", text, fixed = TRUE)) hit[["Epsilon > 0"]] <- TRUE
-
-  if (name == "popSDAttr_congr_ae") {
-    hit[["AE equality s = t under ν"]] <- TRUE
+  for (pat in names(extra_patterns)) {
+    if (grepl(pat, text, fixed = TRUE)) hit[[extra_patterns[[pat]]]] <- TRUE
   }
 
   hit

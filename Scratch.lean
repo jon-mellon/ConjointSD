@@ -3,10 +3,12 @@ import ConjointSD
 -- Scratchpad to inspect SD-consistency assumptions.
 
 #print ConjointSD.PopIID
+#print ConjointSD.IIDAssumptions
 #print ConjointSD.ScoreAssumptions
 #print ConjointSD.SplitEvalAssumptions
 #print ConjointSD.GEstimationAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
+#print ConjointSD.ConjointIdAssumptions
 #print ConjointSD.sequential_consistency_ae
 
 -- Proven statements (base layer).
