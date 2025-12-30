@@ -213,11 +213,11 @@ dep_fmt <- fmt_matrix(dep_mat, diag_omit = TRUE)
 ## Auto-generated assumption matrix
 
 ```{r assumption-table, echo=FALSE}
-knitr::kable(cbind(Assumption = rownames(assump_fmt), assump_fmt), align = "l")
+knitr::kable(assump_fmt, align = "l")
 ```
 
 ## Auto-generated theorem dependency matrix
 
 ```{r dependency-table, echo=FALSE}
-knitr::kable(cbind(Theorem = rownames(dep_fmt), dep_fmt), align = "l")
+knitr::kable(dep_fmt, align = "l")
 ```
