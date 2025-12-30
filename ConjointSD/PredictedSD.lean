@@ -18,8 +18,8 @@ lemma meanHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => meanHatZ (Z := Z) n ω) atTop
-        (nhds (popMeanZ (μ := μ) Z)) := by
-  simpa [meanHatZ, popMeanZ] using
+        (nhds (designMeanZ (μ := μ) Z)) := by
+  simpa [meanHatZ, designMeanZ] using
     (ProbabilityTheory.strong_law_ae (μ := μ) (X := Z) h.intZ h.indep h.ident)
 
 /-- SLLN for the empirical second moment. -/
@@ -27,7 +27,7 @@ lemma m2HatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => m2HatZ (Z := Z) n ω) atTop
-        (nhds (popM2Z (μ := μ) Z)) := by
+        (nhds (designM2Z (μ := μ) Z)) := by
   let Zsq : ℕ → Ω → ℝ := fun i ω => (Z i ω) ^ 2
   have hInt : Integrable (Zsq 0) μ := by
     simpa [Zsq] using h.intZ2
@@ -51,29 +51,29 @@ lemma m2HatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
           atTop
           (nhds (∫ ω, Zsq 0 ω ∂μ)) :=
     ProbabilityTheory.strong_law_ae (μ := μ) (X := Zsq) hInt hInd hId
-  simpa [m2HatZ, popM2Z, Zsq] using hslln
+  simpa [m2HatZ, designM2Z, Zsq] using hslln
 
-/-- SLLN for empirical RMSE: √(m2Hat) → √(popM2). -/
+/-- SLLN for empirical RMSE: √(m2Hat) → √(designM2). -/
 lemma rmseHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => rmseHatZ (Z := Z) n ω) atTop
-        (nhds (popRMSEZ (μ := μ) Z)) := by
+        (nhds (designRMSEZ (μ := μ) Z)) := by
   have hm2 := m2HatZ_tendsto_ae (μ := μ) (Z := Z) h
   refine hm2.mono ?_
   intro ω hm2ω
   have hsqrt :
-      Tendsto Real.sqrt (nhds (popM2Z (μ := μ) Z))
-        (nhds (Real.sqrt (popM2Z (μ := μ) Z))) :=
+      Tendsto Real.sqrt (nhds (designM2Z (μ := μ) Z))
+        (nhds (Real.sqrt (designM2Z (μ := μ) Z))) :=
     (Real.continuous_sqrt.continuousAt).tendsto
-  simpa [rmseHatZ, popRMSEZ] using (hsqrt.comp hm2ω)
+  simpa [rmseHatZ, designRMSEZ] using (hsqrt.comp hm2ω)
 
 /-- Convergence of varHat by combining mean and second-moment limits. -/
 lemma varHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => varHatZ (Z := Z) n ω) atTop
-        (nhds (popVarZ (μ := μ) Z)) := by
+        (nhds (designVarZ (μ := μ) Z)) := by
   have hmean := meanHatZ_tendsto_ae (μ := μ) (Z := Z) h
   have hm2   := m2HatZ_tendsto_ae (μ := μ) (Z := Z) h
   refine (hmean.and hm2).mono ?_
@@ -81,30 +81,30 @@ lemma varHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
   rcases hω with ⟨hmeanω, hm2ω⟩
   have hmean2 :
       Tendsto (fun n : ℕ => (meanHatZ (Z := Z) n ω) ^ 2) atTop
-        (nhds ((popMeanZ (μ := μ) Z) ^ 2)) := by
+        (nhds ((designMeanZ (μ := μ) Z) ^ 2)) := by
     simpa [pow_two] using (hmeanω.mul hmeanω)
   have :
       Tendsto
         (fun n : ℕ =>
           m2HatZ (Z := Z) n ω - (meanHatZ (Z := Z) n ω) ^ 2)
         atTop
-        (nhds (popM2Z (μ := μ) Z - (popMeanZ (μ := μ) Z) ^ 2)) :=
+        (nhds (designM2Z (μ := μ) Z - (designMeanZ (μ := μ) Z) ^ 2)) :=
     hm2ω.sub hmean2
-  simpa [varHatZ, popVarZ] using this
+  simpa [varHatZ, designVarZ] using this
 
-/-- Main theorem: sdHat → popSD almost surely. -/
+/-- Main theorem: sdHat → designSD almost surely. -/
 theorem sdHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => sdHatZ (Z := Z) n ω) atTop
-        (nhds (popSDZ (μ := μ) Z)) := by
+        (nhds (designSDZ (μ := μ) Z)) := by
   have hvar := varHatZ_tendsto_ae (μ := μ) (Z := Z) h
   refine hvar.mono ?_
   intro ω hω
   have hsqrt :
-      Tendsto Real.sqrt (nhds (popVarZ (μ := μ) Z))
-        (nhds (Real.sqrt (popVarZ (μ := μ) Z))) :=
+      Tendsto Real.sqrt (nhds (designVarZ (μ := μ) Z))
+        (nhds (Real.sqrt (designVarZ (μ := μ) Z))) :=
     (Real.continuous_sqrt.continuousAt).tendsto
-  simpa [sdHatZ, popSDZ] using (hsqrt.comp hω)
+  simpa [sdHatZ, designSDZ] using (hsqrt.comp hω)
 
 end ConjointSD

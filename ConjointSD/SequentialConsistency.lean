@@ -45,13 +45,13 @@ def sdEst
 /-- Oracle target SD under `ν` using the oracle score `g θ0`. -/
 def sdOracle
     (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : ℝ :=
-  popSDAttr ν (g θ0)
+  attrSD ν (g θ0)
 
 /-- Training error at index `m`: SD gap between `gHat m` and oracle `g θ0` under `ν`. -/
 def trainErr
     (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (m : ℕ) : ℝ :=
-  abs (popSDAttr ν (gHat g θhat m) - sdOracle ν g θ0)
+  abs (attrSD ν (gHat g θhat m) - sdOracle ν g θ0)
 
 /-- Total error at `(m,n)`: empirical SD gap to oracle SD. -/
 def totalErr
@@ -63,7 +63,7 @@ def totalErr
 /--
 Step (1): for fixed `m`, as `n → ∞`, total error → training error (a.e.).
 
-Assumes `ν` is the law of `A 0` under `μ` (so we can rewrite the population SD target).
+Assumes `ν` is the law of `A 0` under `μ` (so we can rewrite the attribute-distribution SD target).
 -/
 theorem totalErr_tendsto_trainErr_fixed_m
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
@@ -85,15 +85,15 @@ theorem totalErr_tendsto_trainErr_fixed_m
         Tendsto
           (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
           atTop
-          (nhds (popSDAttr (Measure.map (A 0) μ) (gHat g θhat m))) :=
-    sdHat_fixed_m_tendsto_ae_popSDAttr (μ := μ) (A := A) (g := g) (θhat := θhat) m h
+          (nhds (attrSD (Measure.map (A 0) μ) (gHat g θhat m))) :=
+    sdHat_fixed_m_tendsto_ae_attrSD (μ := μ) (A := A) (g := g) (θhat := θhat) m h
   -- Rewrite the limit using `hLaw`.
   have hBase :
       ∀ᵐ ω ∂μ,
         Tendsto
           (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
           atTop
-          (nhds (popSDAttr ν (gHat g θhat m))) := by
+          (nhds (attrSD ν (gHat g θhat m))) := by
     simpa [hMap.map_eq] using hBase_map
   -- Continuous mapping: x ↦ abs (x - sdOracle ν g θ0)
   have hcont :
@@ -104,8 +104,8 @@ theorem totalErr_tendsto_trainErr_fixed_m
   have ht :
       Tendsto
         (fun x : ℝ => abs (x - sdOracle ν g θ0))
-        (nhds (popSDAttr ν (gHat g θhat m)))
-        (nhds (abs (popSDAttr ν (gHat g θhat m) - sdOracle ν g θ0))) :=
+        (nhds (attrSD ν (gHat g θhat m)))
+        (nhds (abs (attrSD ν (gHat g θhat m) - sdOracle ν g θ0))) :=
     (hcont.continuousAt.tendsto)
   simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
 
@@ -121,21 +121,21 @@ theorem trainErr_tendsto_zero
       (fun m : ℕ => trainErr ν g θ0 θhat m)
       atTop
       (nhds 0) := by
-  let c : ℝ := popSDAttr ν (g θ0)
+  let c : ℝ := attrSD ν (g θ0)
   have hBase :
       Tendsto
-        (fun m : ℕ => popSDAttr ν (gHat g θhat m))
+        (fun m : ℕ => attrSD ν (gHat g θhat m))
         atTop
         (nhds c) := by
     simpa [c] using
-      (popSDAttr_tendsto_of_GEstimationAssumptions
+      (attrSD_tendsto_of_GEstimationAssumptions
         (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hG)
   have hcont :
       Continuous (fun x : ℝ => abs (x - c)) := by
     simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
   have h1 :
       Tendsto
-        (fun m : ℕ => abs (popSDAttr ν (gHat g θhat m) - c))
+        (fun m : ℕ => abs (attrSD ν (gHat g θhat m) - c))
         atTop
         (nhds (abs (c - c))) :=
     (hcont.continuousAt.tendsto).comp hBase
@@ -148,7 +148,7 @@ Step (3): sequential ε–M–eventually-in-n consistency (a.e. over ω).
 Assumptions:
 - `hSplit : ∀ m, SplitEvalAssumptions ... m` gives evaluation-stage conditions for each m.
 - `hMap : MapLawAssumptions μ A ν` identifies ν with the evaluation attribute law.
-- `hG` gives convergence of the population SD under ν for gHat → g θ0.
+- `hG` gives convergence of the attribute-distribution SD under ν for gHat → g θ0.
 
 Conclusion:
 For any ε>0, ∃ M, ∀ m≥M, (∀ᵐ ω, ∀ᶠ n, totalErr ... m n ω < ε).

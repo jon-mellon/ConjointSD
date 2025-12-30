@@ -9,71 +9,72 @@ namespace ConjointSD
 /-!
 # Survey weights and finite-population targets
 
-This file adds weighted population estimands (means/moments/SD) and basic finite-population
-targets. These can be plugged into the existing consistency/identification lemmas by
-substituting the target functional.
+This file adds weighted attribute-distribution estimands (means/moments/SD) for the
+target human population and basic finite-population targets. These can be plugged into
+the existing consistency/identification lemmas by substituting the target functional.
 -/
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /-!
-## Weighted population estimands
+## Weighted attribute-distribution estimands
 
-Given a base population measure `ν` and a nonnegative weight function `w`,
+Given an attribute distribution `ν` for the target human population and a
+nonnegative weight function `w`,
 define weighted mean/moments as normalized weighted integrals.
 -/
 
-/-- Weighted population mean under base measure `ν` with weights `w`. -/
+/-- Weighted attribute-distribution mean under `ν` with weights `w`. -/
 def weightMeanAttr (ν : Measure Attr) (w s : Attr → ℝ) : ℝ :=
   (∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν)
 
-/-- Weighted population second moment under base measure `ν` with weights `w`. -/
+/-- Weighted attribute-distribution second moment under `ν` with weights `w`. -/
 def weightM2Attr (ν : Measure Attr) (w s : Attr → ℝ) : ℝ :=
   (∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν)
 
-/-- Weighted population variance under base measure `ν` with weights `w`. -/
+/-- Weighted attribute-distribution variance under `ν` with weights `w`. -/
 def weightVarAttr (ν : Measure Attr) (w s : Attr → ℝ) : ℝ :=
   weightM2Attr (ν := ν) w s - (weightMeanAttr (ν := ν) w s) ^ 2
 
-/-- Weighted population SD under base measure `ν` with weights `w`. -/
+/-- Weighted attribute-distribution SD under `ν` with weights `w`. -/
 def weightSDAttr (ν : Measure Attr) (w s : Attr → ℝ) : ℝ :=
   Real.sqrt (weightVarAttr (ν := ν) w s)
 
 lemma weightMeanAttr_one
     (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
-    weightMeanAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = popMeanAttr ν s := by
-  simp [weightMeanAttr, popMeanAttr]
+    weightMeanAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = attrMean ν s := by
+  simp [weightMeanAttr, attrMean]
 
 lemma weightM2Attr_one
     (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
-    weightM2Attr (ν := ν) (w := fun _ => (1 : ℝ)) s = popM2Attr ν s := by
-  simp [weightM2Attr, popM2Attr]
+    weightM2Attr (ν := ν) (w := fun _ => (1 : ℝ)) s = attrM2 ν s := by
+  simp [weightM2Attr, attrM2]
 
 lemma weightVarAttr_one
     (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
-    weightVarAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = popVarAttr ν s := by
-  simp [weightVarAttr, popVarAttr, weightMeanAttr_one, weightM2Attr_one]
+    weightVarAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = attrVar ν s := by
+  simp [weightVarAttr, attrVar, weightMeanAttr_one, weightM2Attr_one]
 
 lemma weightSDAttr_one
     (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
-    weightSDAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = popSDAttr ν s := by
-  simp [weightSDAttr, popSDAttr, weightVarAttr_one]
+    weightSDAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = attrSD ν s := by
+  simp [weightSDAttr, attrSD, weightVarAttr_one]
 
-lemma weightVarAttr_eq_popVarAttr_of_moments
+lemma weightVarAttr_eq_attrVar_of_moments
     (ν : Measure Attr) (w s : Attr → ℝ)
-    (h : WeightMatchesPopMoments (ν := ν) (w := w) (s := s)) :
-    weightVarAttr (ν := ν) w s = popVarAttr ν s := by
-  have hmean : weightMeanAttr (ν := ν) (w := w) s = popMeanAttr ν s := by
+    (h : WeightMatchesAttrMoments (ν := ν) (w := w) (s := s)) :
+    weightVarAttr (ν := ν) w s = attrVar ν s := by
+  have hmean : weightMeanAttr (ν := ν) (w := w) s = attrMean ν s := by
     simpa [weightMeanAttr] using h.mean_eq
-  have hm2 : weightM2Attr (ν := ν) (w := w) s = popM2Attr ν s := by
+  have hm2 : weightM2Attr (ν := ν) (w := w) s = attrM2 ν s := by
     simpa [weightM2Attr] using h.m2_eq
-  simp [weightVarAttr, popVarAttr, hmean, hm2]
+  simp [weightVarAttr, attrVar, hmean, hm2]
 
-lemma weightSDAttr_eq_popSDAttr_of_moments
+lemma weightSDAttr_eq_attrSD_of_moments
     (ν : Measure Attr) (w s : Attr → ℝ)
-    (h : WeightMatchesPopMoments (ν := ν) (w := w) (s := s)) :
-    weightSDAttr (ν := ν) w s = popSDAttr ν s := by
-  simp [weightSDAttr, popSDAttr, weightVarAttr_eq_popVarAttr_of_moments (ν := ν) (w := w) (s := s) h]
+    (h : WeightMatchesAttrMoments (ν := ν) (w := w) (s := s)) :
+    weightSDAttr (ν := ν) w s = attrSD ν s := by
+  simp [weightSDAttr, attrSD, weightVarAttr_eq_attrVar_of_moments (ν := ν) (w := w) (s := s) h]
 
 /-!
 ## Finite-population targets

@@ -20,14 +20,14 @@ def StatusWeightAssumptions (s : StatusProfile → ℝ) : Prop :=
   WeightAssumptions (ν := νStatus) (w := wStatus) (s := s)
 
 /-- Moment-matching assumption for status weights. -/
-def StatusWeightMatchesPopMoments (s : StatusProfile → ℝ) : Prop :=
-  WeightMatchesPopMoments (ν := νStatus) (w := wStatus) (s := s)
+def StatusWeightMatchesAttrMoments (s : StatusProfile → ℝ) : Prop :=
+  WeightMatchesAttrMoments (ν := νStatus) (w := wStatus) (s := s)
 
-lemma status_weighted_sd_eq_pop
+lemma status_weighted_sd_eq_attr
     (s : StatusProfile → ℝ)
-    (h : StatusWeightMatchesPopMoments (wStatus := wStatus) s) :
-    weightSDAttr νStatus wStatus s = popSDAttr νStatus s := by
-  exact weightSDAttr_eq_popSDAttr_of_moments (ν := νStatus) (w := wStatus) (s := s) h
+    (h : StatusWeightMatchesAttrMoments (wStatus := wStatus) s) :
+    weightSDAttr νStatus wStatus s = attrSD νStatus s := by
+  exact weightSDAttr_eq_attrSD_of_moments (ν := νStatus) (w := wStatus) (s := s) h
 
 end StatusSurveyWeights
 

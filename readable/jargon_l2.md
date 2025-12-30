@@ -2,4 +2,4 @@
 
 The L2 error between two functions is the square root of the average squared difference:
 `sqrt(E[(f - g)^2])`. It matches [RMSE](jargon_rmse.md) when the average is taken
-over the population measure.
+over the attribute distribution for the target human population.

@@ -13,7 +13,7 @@ Readable summaries of the Lean development.
 - [PaperCoreEstimand.lean](PaperCoreEstimand.md)
 - [PaperOLSConsistency.lean](PaperOLSConsistency.md)
 - [PaperWrappers.lean](PaperWrappers.md)
-- [PopulationBridge.lean](PopulationBridge.md)
+- [DesignAttributeBridge.lean](DesignAttributeBridge.md)
 - [PredictedSD.lean](PredictedSD.md)
 - [RegressionConsistencyBridge.lean](RegressionConsistencyBridge.md)
 - [RegressionEstimator.lean](RegressionEstimator.md)

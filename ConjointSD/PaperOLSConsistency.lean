@@ -9,7 +9,7 @@ import ConjointSD.ModelBridge
 import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.RegressionEstimator
 import ConjointSD.SDDecompositionFromConjoint
-import ConjointSD.PopulationBridge
+import ConjointSD.DesignAttributeBridge
 import ConjointSD.Assumptions
 
 open Filter MeasureTheory
@@ -124,7 +124,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
             n i j)
         atTop
         (nhds
-          (popGram
+          (attrGram
             (ν := ν)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)) := by
     intro i j
@@ -141,15 +141,15 @@ theorem paper_ols_lln_of_score_assumptions_ae
             (fun n : ℕ =>
               meanHatZ (Z := Zcomp (A := Aω) (g := gGram)) n ω)
             atTop
-            (nhds (popMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gGram)))) :=
+            (nhds (designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gGram)))) :=
       meanHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := Aω) (g := gGram)) hIID
     have hpop :
-        popMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gGram))
+        designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gGram))
           =
-        popMeanAttr ν gGram :=
-      popMeanZ_Zcomp_eq_popMeanAttr
+        attrMean ν gGram :=
+      designMeanZ_Zcomp_eq_attrMean
         (μ := μ) (A := Aω) (ν := ν) (g := gGram)
-        (hMap := { measA0 := (hScoreGram i j).popiid.measA 0, map_eq := hMap.map_eq })
+        (hMap := { measA0 := (hScoreGram i j).designAttrIID.measA 0, map_eq := hMap.map_eq })
         (hScoreGram i j).meas_g
     refine hmean.mono ?_
     intro ω hω
@@ -158,7 +158,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           (fun n =>
             meanHatZ (Z := Zcomp (A := Aω) (g := gGram)) n ω)
           atTop
-          (nhds (popMeanAttr ν gGram)) := by
+          (nhds (attrMean ν gGram)) := by
       simpa [hpop] using hω
     have hgram_eq :
         ∀ n,
@@ -176,7 +176,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           ∑ k ∈ Finset.range n, gGram (Aω k ω) := by
         simpa using (Fin.sum_univ_eq_sum_range (n := n) (fun k => gGram (Aω k ω)))
       simp [gramMatrix, gGram, hsum]
-    simpa [meanHatZ, Zcomp, gGram, popGram, hgram_eq]
+    simpa [meanHatZ, Zcomp, gGram, attrGram, hgram_eq]
       using hω'
   have hcross : ∀ i, ∀ᵐ ω ∂μ,
       Tendsto
@@ -187,7 +187,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
             n i)
         atTop
         (nhds
-          (popCross
+          (attrCross
             (ν := ν)
             (g := gStar (μ := μ) (Y := Y))
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i)) := by
@@ -205,15 +205,15 @@ theorem paper_ols_lln_of_score_assumptions_ae
             (fun n : ℕ =>
               meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω)
             atTop
-            (nhds (popMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross)))) :=
+            (nhds (designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross)))) :=
       meanHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := Aω) (g := gCross)) hIID
     have hpop :
-        popMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross))
+        designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross))
           =
-        popMeanAttr ν gCross :=
-      popMeanZ_Zcomp_eq_popMeanAttr
+        attrMean ν gCross :=
+      designMeanZ_Zcomp_eq_attrMean
         (μ := μ) (A := Aω) (ν := ν) (g := gCross)
-        (hMap := { measA0 := (hScoreCross i).popiid.measA 0, map_eq := hMap.map_eq })
+        (hMap := { measA0 := (hScoreCross i).designAttrIID.measA 0, map_eq := hMap.map_eq })
         (hScoreCross i).meas_g
     refine hmean.mono ?_
     intro ω hω
@@ -222,7 +222,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           (fun n =>
             meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω)
           atTop
-          (nhds (popMeanAttr ν gCross)) := by
+          (nhds (attrMean ν gCross)) := by
       simpa [hpop] using hω
     have hcross_eq :
         (fun n =>
@@ -240,7 +240,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           ∑ k ∈ Finset.range n, gCross (Aω k ω) := by
         simpa using (Fin.sum_univ_eq_sum_range (n := n) (fun k => gCross (Aω k ω)))
       simp [crossVec, meanHatZ, Zcomp, gCross, smul_eq_mul, hYobs, hsum]
-    simpa [popCross, gCross, hcross_eq] using hω'
+    simpa [attrCross, gCross, hcross_eq] using hω'
   have hgram_all : ∀ᵐ ω ∂μ, ∀ i j, Tendsto
       (fun n =>
         gramMatrix
@@ -249,7 +249,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           n i j)
       atTop
       (nhds
-        (popGram
+        (attrGram
           (ν := ν)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)) := by
     refine (ae_all_iff.2 ?_)
@@ -265,7 +265,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           n i)
       atTop
       (nhds
-        (popCross
+        (attrCross
           (ν := ν)
           (g := gStar (μ := μ) (Y := Y))
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i)) := by
@@ -321,7 +321,7 @@ theorem theta_tendsto_of_paper_ols_moments_ae
   refine hMom.mono ?_
   intro ω hω
   simpa using
-    (olsThetaHat_tendsto_of_pop_moments
+    (olsThetaHat_tendsto_of_attr_moments
       (ν := ν)
       (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
       (g := gStar (μ := μ) (Y := Y))
@@ -371,7 +371,7 @@ omit [ProbMeasureAssumptions μ] [ProbMeasureAssumptions ν] in
 theorem theta_tendsto_of_paper_ols_moments
     (θ0 : PaperTerm Main Inter → ℝ)
     (hMom :
-      OLSMomentAssumptionsOfPop
+      OLSMomentAssumptionsOfAttr
         (ν := ν)
         (A := A) (Y := Yobs)
         (g := gStar (μ := μ) (Y := Y))
@@ -385,7 +385,7 @@ theorem theta_tendsto_of_paper_ols_moments
           n)
       atTop
       (nhds θ0) :=
-  olsThetaHat_tendsto_of_pop_moments
+  olsThetaHat_tendsto_of_attr_moments
     (ν := ν) (A := A) (Y := Yobs)
     (g := gStar (μ := μ) (Y := Y))
     (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
@@ -396,7 +396,7 @@ omit [ProbMeasureAssumptions μ] in
 theorem GEstimationAssumptions_of_paper_ols_gStar
     (θ0 : PaperTerm Main Inter → ℝ)
     (hMom :
-      OLSMomentAssumptionsOfPop
+      OLSMomentAssumptionsOfAttr
         (ν := ν)
         (A := A) (Y := Yobs)
         (g := gStar (μ := μ) (Y := Y))
@@ -449,7 +449,7 @@ theorem GEstimationAssumptions_of_paper_ols_gStar_total
     (blk : PaperTerm Main Inter → B)
     (θ0 : PaperTerm Main Inter → ℝ)
     (hMom :
-      OLSMomentAssumptionsOfPop
+      OLSMomentAssumptionsOfAttr
         (ν := ν)
         (A := A) (Y := Yobs)
         (g := gStar (μ := μ) (Y := Y))
@@ -487,7 +487,9 @@ theorem GEstimationAssumptions_of_paper_ols_gStar_total
       (A := A) (Yobs := Yobs)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) hMom hCont
-  simpa [gPaper_eq_gTotalΘ_blocks (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk), gTotalΘ]
+  simpa
+      [gPaper_eq_gTotalΘ_blocks (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk),
+        gTotalΘ]
     using hG
 
 omit [ProbMeasureAssumptions μ] in
@@ -533,7 +535,9 @@ theorem GEstimationAssumptions_of_paper_ols_moments_total_ae
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω) hMom hCont
   refine hG.mono ?_
   intro ω hω
-  simpa [gPaper_eq_gTotalΘ_blocks (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk), gTotalΘ]
+  simpa
+      [gPaper_eq_gTotalΘ_blocks (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk),
+        gTotalΘ]
     using hω
 
 end PaperOLS

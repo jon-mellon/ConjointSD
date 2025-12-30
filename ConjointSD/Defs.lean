@@ -94,25 +94,25 @@ def sdHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
 def rmseHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   Real.sqrt (m2HatZ (Z := Z) n ω)
 
-/-- Population mean: ∫ Z 0 dμ. -/
-def popMeanZ (Z : ℕ → Ω → ℝ) : ℝ :=
+/-- Experimental design distribution mean: ∫ Z 0 dμ. -/
+def designMeanZ (Z : ℕ → Ω → ℝ) : ℝ :=
   ∫ ω, Z 0 ω ∂μ
 
-/-- Population second moment: ∫ (Z 0)^2 dμ. -/
-def popM2Z (Z : ℕ → Ω → ℝ) : ℝ :=
+/-- Experimental design distribution second moment: ∫ (Z 0)^2 dμ. -/
+def designM2Z (Z : ℕ → Ω → ℝ) : ℝ :=
   ∫ ω, (Z 0 ω) ^ 2 ∂μ
 
-/-- Population variance proxy: E[Z^2] - (E[Z])^2. -/
-def popVarZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  popM2Z (μ := μ) Z - (popMeanZ (μ := μ) Z) ^ 2
+/-- Experimental design distribution variance proxy: E[Z^2] - (E[Z])^2. -/
+def designVarZ (Z : ℕ → Ω → ℝ) : ℝ :=
+  designM2Z (μ := μ) Z - (designMeanZ (μ := μ) Z) ^ 2
 
-/-- Population SD proxy: √(popVar). -/
-def popSDZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (popVarZ (μ := μ) Z)
+/-- Experimental design distribution SD proxy: √(designVar). -/
+def designSDZ (Z : ℕ → Ω → ℝ) : ℝ :=
+  Real.sqrt (designVarZ (μ := μ) Z)
 
-/-- Population RMSE proxy: √(popM2). -/
-def popRMSEZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (popM2Z (μ := μ) Z)
+/-- Experimental design distribution RMSE proxy: √(designM2). -/
+def designRMSEZ (Z : ℕ → Ω → ℝ) : ℝ :=
+  Real.sqrt (designM2Z (μ := μ) Z)
 
 end PredictedSD
 
@@ -120,21 +120,21 @@ section Transport
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/-- Population mean of a score function `s : Attr → ℝ` under `ν`. -/
-def popMeanAttr (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
+/-- Attribute-distribution mean for the target human population under `ν`. -/
+def attrMean (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
   ∫ a, s a ∂ν
 
-/-- Population second moment of a score function `s` under `ν`. -/
-def popM2Attr (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
+/-- Attribute-distribution second moment for the target human population under `ν`. -/
+def attrM2 (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
   ∫ a, (s a) ^ 2 ∂ν
 
-/-- Population variance via `E[s^2] - (E[s])^2` under `ν`. -/
-def popVarAttr (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
-  popM2Attr (ν := ν) s - (popMeanAttr (ν := ν) s) ^ 2
+/-- Attribute-distribution variance via `E[s^2] - (E[s])^2` under `ν`. -/
+def attrVar (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
+  attrM2 (ν := ν) s - (attrMean (ν := ν) s) ^ 2
 
-/-- Population SD under `ν` (square root of `popVarAttr`). -/
-def popSDAttr (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
-  Real.sqrt (popVarAttr (ν := ν) s)
+/-- Attribute-distribution SD under `ν` (square root of `attrVar`). -/
+def attrSD (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
+  Real.sqrt (attrVar (ν := ν) s)
 
 end Transport
 
@@ -154,7 +154,7 @@ section SDDecomposition
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/-- Induced real-valued process from population records via a scoring function g. -/
+/-- Induced real-valued process from attribute records via a scoring function `g`. -/
 def Zcomp (A : ℕ → Ω → Attr) (g : Attr → ℝ) : ℕ → Ω → ℝ :=
   fun i ω => g (A i ω)
 
@@ -164,13 +164,13 @@ section RegressionConsistencyBridge
 
 variable {Attr Θ : Type*} [MeasurableSpace Attr]
 
-/-- Θ ↦ population mean induced by a parametric score `g : Θ → Attr → ℝ` under ν. -/
-def popMeanΘ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
-  fun θ => popMeanAttr ν (g θ)
+/-- Θ ↦ attribute-distribution mean induced by a parametric score `g : Θ → Attr → ℝ` under ν. -/
+def attrMeanΘ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
+  fun θ => attrMean ν (g θ)
 
-/-- Θ ↦ population second moment induced by `g` under ν. -/
-def popM2Θ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
-  fun θ => popM2Attr ν (g θ)
+/-- Θ ↦ attribute-distribution second moment induced by `g` under ν. -/
+def attrM2Θ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
+  fun θ => attrM2 ν (g θ)
 
 /-- Block score at parameter θ for a fixed block index `b`. -/
 def blockScoreΘ {B : Type*}
@@ -224,25 +224,21 @@ def crossVec {Attr : Type u} {Term : Type v} [Fintype Term]
     let _ := (inferInstance : Fintype Term)
     exact fun i => (1 / (n : ℝ)) * ∑ k : Fin n, φ i (A k) * Y k
 
-/--
-Population Gram matrix of the feature map under a target attribute distribution `ν`.
--/
-def popGram {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
+/-- Attribute-distribution Gram matrix of the feature map under `ν`. -/
+def attrGram {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
     (ν : Measure Attr) (φ : Term → Attr → ℝ) : Matrix Term Term ℝ :=
   by
     classical
     let _ := (inferInstance : Fintype Term)
-    exact fun i j => popMeanAttr ν (fun a => φ i a * φ j a)
+    exact fun i j => attrMean ν (fun a => φ i a * φ j a)
 
-/--
-Population cross moment between features and a true outcome score `g` under `ν`.
--/
-def popCross {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
+/-- Attribute-distribution cross moment between features and a true outcome score `g` under `ν`. -/
+def attrCross {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
     (ν : Measure Attr) (g : Attr → ℝ) (φ : Term → Attr → ℝ) : Term → ℝ :=
   by
     classical
     let _ := (inferInstance : Fintype Term)
-    exact fun i => popMeanAttr ν (fun a => φ i a * g a)
+    exact fun i => attrMean ν (fun a => φ i a * g a)
 
 end RegressionEstimator
 

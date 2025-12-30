@@ -21,7 +21,7 @@ universe u v
 OLS-style estimator defined via the normal equations: `θhat n = (G n)⁻¹ * c n`.
 
 This is a definitional estimator; the consistency proof assumes entrywise convergence
-of `G n` inverse and `c n` to their population counterparts.
+of `G n` inverse and `c n` to their attribute-distribution counterparts.
 -/
 def olsThetaHat {Attr : Type u} {Term : Type v} [Fintype Term] [DecidableEq Term]
     (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ) (n : ℕ) : Term → ℝ :=
@@ -76,39 +76,39 @@ theorem olsThetaHat_tendsto_of_moment_assumptions
 
 /- Definitions and assumption packages live in ConjointSD.Defs / ConjointSD.Assumptions. -/
 
-/-- Convert population moment assumptions to sample-path moment assumptions. -/
-def OLSMomentAssumptionsOfPop.to_OLSMomentAssumptions
+/-- Convert attribute-distribution moment assumptions to sample-path moment assumptions. -/
+def OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
     (ν : Measure Attr)
     (A : ℕ → Attr) (Y : ℕ → ℝ)
     (g : Attr → ℝ) (φ : Term → Attr → ℝ)
     (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptionsOfPop (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
+    (h : OLSMomentAssumptionsOfAttr (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
     OLSMomentAssumptions (A := A) (Y := Y) (φ := φ) θ0 :=
-  { gramInvLimit := (popGram (ν := ν) (φ := φ))⁻¹
-    crossLimit := popCross (ν := ν) (g := g) (φ := φ)
+  { gramInvLimit := (attrGram (ν := ν) (φ := φ))⁻¹
+    crossLimit := attrCross (ν := ν) (g := g) (φ := φ)
     gramInv_tendsto := h.gramInv_tendsto
     cross_tendsto := h.cross_tendsto
     theta0_eq := h.theta0_eq }
 
-theorem olsThetaHat_tendsto_of_pop_moments
+theorem olsThetaHat_tendsto_of_attr_moments
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
     (ν : Measure Attr)
     (A : ℕ → Attr) (Y : ℕ → ℝ)
     (g : Attr → ℝ) (φ : Term → Attr → ℝ)
     (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptionsOfPop (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
+    (h : OLSMomentAssumptionsOfAttr (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
     Tendsto
       (fun n => olsThetaHat (A := A) (Y := Y) (φ := φ) n)
       atTop
       (nhds θ0) :=
   olsThetaHat_tendsto_of_moment_assumptions
     (A := A) (Y := Y) (φ := φ) (θ0 := θ0)
-    (h := OLSMomentAssumptionsOfPop.to_OLSMomentAssumptions
+    (h := OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions
       (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) (θ0 := θ0) h)
 
 /--
-Bridge: if the OLS estimator sequence is consistent and the induced population
+Bridge: if the OLS estimator sequence is consistent and the induced attribute-distribution
 functionals are continuous at `θ0`, then `GEstimationAssumptions` holds.
 -/
 theorem GEstimationAssumptions_of_OLSConsistency

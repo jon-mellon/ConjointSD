@@ -9,14 +9,14 @@ Highlights:
 - Core score-model definitions: `gLin`, `gStar`, `PaperTerm`, `βPaper`, `φPaper`.
 - Ordered-task helpers: `OrderedProfiles` and `permuteProfiles` for profile-order invariance
   assumptions.
-- [Population](jargon_population.md)/empirical moment functionals: `popMeanAttr`, `popM2Attr`,
-  `popVarAttr`, `popSDAttr`, `meanHatZ`, `m2HatZ`, `varHatZ`, `sdHatZ`, `rmseHatZ`, plus
-  `popMeanZ`/`popM2Z`/`popVarZ`/`popSDZ`/`popRMSEZ` (see [mean](jargon_mean.md),
-  [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md),
-  [RMSE](jargon_rmse.md)).
-- Plug-in and induced-process helpers: `gHat`, `Zcomp`, `popMeanΘ`, `popM2Θ`, `blockScoreΘ`.
+- Attribute-distribution and experimental design distribution moment functionals:
+  `attrMean`, `attrM2`, `attrVar`, `attrSD`, `meanHatZ`, `m2HatZ`, `varHatZ`,
+  `sdHatZ`, `rmseHatZ`, plus `designMeanZ`/`designM2Z`/`designVarZ`/`designSDZ`/`designRMSEZ`
+  (see [mean](jargon_mean.md), [variance](jargon_variance.md),
+  [standard deviation](jargon_standard_deviation.md), [RMSE](jargon_rmse.md)).
+- Plug-in and induced-process helpers: `gHat`, `Zcomp`, `attrMeanΘ`, `attrM2Θ`, `blockScoreΘ`.
 - [OLS](jargon_ols.md) helpers and [estimator](jargon_estimator.md) scaffolding: `empiricalRisk`,
-  `OLSSequence`, `gramMatrix`, `crossVec`, `popGram`, `popCross`.
+  `OLSSequence`, `gramMatrix`, `crossVec`, `attrGram`, `attrCross`.
 - Conjoint identification primitives: `eventX`, `condMean`, `potMean`, `amce` ([AMCE](jargon_amce.md)).
 
 Purpose:

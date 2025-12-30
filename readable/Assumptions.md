@@ -42,7 +42,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## Transport
 
-- `PopulationMomentAssumptions`: [population](jargon_population.md) moments for
+- `AttrMomentAssumptions`: [population](jargon_population.md) moments for
   a score function `s` under the attribute distribution `ν` on `Attr`
   (the attribute distribution representing the target human
   [population](jargon_population.md)). It requires
@@ -50,13 +50,13 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [integrability](jargon_integrable.md) of `s^2`. The `s` integrability needed
   for [mean](jargon_mean.md) and [variance](jargon_variance.md) targets is
   derived from these conditions using `ν univ = 1`.
-  - `PopulationMomentAssumptions.aemeas`: `s` is a.e. measurable under `ν`,
+  - `AttrMomentAssumptions.aemeas`: `s` is a.e. measurable under `ν`,
     so `s` can be integrated and is compatible with almost-everywhere
     statements used later in transport proofs. Intuition: we only need `s` to
     be well-defined except on a `ν`-null set, because
     [population](jargon_population.md) targets ignore
     measure-zero deviations. Formal: `AEMeasurable s ν`.
-  - `PopulationMomentAssumptions.int2`: `s^2` is integrable under the attribute
+  - `AttrMomentAssumptions.int2`: `s^2` is integrable under the attribute
     distribution `ν` ([population](jargon_population.md) attribute distribution). This
     supplies finite second moments, which are the input for
     [population](jargon_population.md)
@@ -154,7 +154,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## SDDecomposition
 
-- `PopIID`: i.i.d.-style conditions for the attribute process `A n`. Requires
+- `DesignAttrIID`: i.i.d.-style conditions for the attribute process `A n` under
+  the experimental design distribution `μ`. Requires
   [measurable](jargon_measurable.md) `A i`, pairwise
   [independence](jargon_independent.md), and
   [identical distribution](jargon_identically_distributed.md) across `i`. This
@@ -162,16 +163,16 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   experimental design distribution `μ` on `Ω`, not within a profile, so
   attributes may still be
   correlated inside each profile.
-  - `PopIID.measA`: measurability of each draw `A i`.
+  - `DesignAttrIID.measA`: measurability of each draw `A i`.
     Intuition: each attribute draw is a valid random variable.
     Formal: `∀ i, Measurable (A i)`.
-  - `PopIID.indepA`: pairwise independence of draws across indices.
+  - `DesignAttrIID.indepA`: pairwise independence of draws across indices.
     Intuition: different profiles are stochastically independent.
     Formal: `Pairwise (fun i j => IndepFun (A i) (A j) μ)`.
-  - `PopIID.identA`: identical distribution across indices.
+  - `DesignAttrIID.identA`: identical distribution across indices.
     Intuition: all profiles are drawn from the same distribution.
     Formal: `∀ i, IdentDistrib (A i) (A 0) μ μ`.
-- `ScoreAssumptions`: combines `PopIID` with
+- `ScoreAssumptions`: combines `DesignAttrIID` with
   [measurability](jargon_measurable.md) of the score function `g`, plus
   [integrability](jargon_integrable.md) of `g(A 0)^2` under the experimental
   design distribution `μ`. Integrability of `g(A 0)` is derived from the
@@ -186,7 +187,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     finite variance and supports LLN steps for SD consistency. Intuition: the
     score cannot have explosive tails if we want stable dispersion estimates.
     Formal: `Integrable (fun ω => (g (A 0 ω)) ^ 2) μ`.
-- `DecompAssumptions`: bundles `PopIID`, [measurability](jargon_measurable.md) of
+- `DecompAssumptions`: bundles `DesignAttrIID`, [measurability](jargon_measurable.md) of
   each
   [block](jargon_block.md) score `g b`, and a uniform boundedness condition for
   every block. Boundedness guarantees all required moments and simplifies
@@ -197,9 +198,9 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   you apply dominated-convergence or LLN-style steps without checking separate
   tail conditions for each block. These assumptions live on the sample draw
   process `A` under the experimental design distribution `μ`.
-  - `DecompAssumptions.popiid`: the attribute draws satisfy `PopIID`.
+  - `DecompAssumptions.designAttrIID`: the attribute draws satisfy `DesignAttrIID`.
     Intuition: block scores are evaluated on i.i.d. attribute draws.
-    Formal: `PopIID (μ := μ) A`.
+    Formal: `DesignAttrIID (μ := μ) A`.
   - `DecompAssumptions.meas_g`: each block score is measurable.
     Intuition: each block score is a valid observable function.
     Formal: `∀ b, Measurable (g b)`.
@@ -238,12 +239,12 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     mean converges to the oracle mean, so bias from estimation vanishes.
     Intuition: estimation error washes out in expectation even if pointwise
     predictions are noisy. Formal:
-    `Tendsto (fun n => popMeanAttr ν (gHat g θhat n)) atTop (nhds (popMeanAttr ν (g θ0)))`.
+    `Tendsto (fun n => attrMean ν (gHat g θhat n)) atTop (nhds (attrMean ν (g θ0)))`.
   - `GEstimationAssumptions.m2_tendsto`: the estimated score's [population](jargon_population.md)
     second moment converges to the oracle second moment, enabling convergence
     of variance and SD by algebra. Intuition: the scale of the estimated score
     matches the oracle in the limit, not just the mean. Formal:
-    `Tendsto (fun n => popM2Attr ν (gHat g θhat n)) atTop (nhds (popM2Attr ν (g θ0)))`.
+    `Tendsto (fun n => attrM2 ν (gHat g θhat n)) atTop (nhds (attrM2 ν (g θ0)))`.
 
 ## SampleSplitting
 
@@ -257,12 +258,12 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Intuition: the evaluation draw is i.i.d. with finite second moment for the estimated score.
     Formal: `ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)`.
 - `SplitEvalAssumptionsBounded`: alternative evaluation assumptions using
-  `PopIID`, [measurability](jargon_measurable.md) of `gHat g θhat m`, and a
+  `DesignAttrIID`, [measurability](jargon_measurable.md) of `gHat g θhat m`, and a
   global bound. This is a stronger but easier-to-check route to the same moment
-  conditions.
-  - `SplitEvalAssumptionsBounded.hPop`: evaluation draws satisfy `PopIID`.
-    Intuition: the sample is i.i.d. at the attribute level.
-    Formal: `PopIID (μ := μ) A`.
+  conditions under the experimental design distribution `μ`.
+  - `SplitEvalAssumptionsBounded.hPop`: evaluation draws satisfy `DesignAttrIID`.
+    Intuition: the sample is i.i.d. at the attribute level under `μ`.
+    Formal: `DesignAttrIID (μ := μ) A`.
   - `SplitEvalAssumptionsBounded.hMeas`: the estimated score is measurable.
     Intuition: the score is a valid observable function of attributes.
     Formal: `Measurable (gHat g θhat m)`.
@@ -283,10 +284,10 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   under the attribute distribution `ν`.
   - `FunctionalContinuityAssumptions.cont_mean`: mean functional is continuous at `θ0`.
     Intuition: small parameter perturbations do not change the mean much.
-    Formal: `ContinuousAt (popMeanΘ (ν := ν) g) θ0`.
+    Formal: `ContinuousAt (attrMeanΘ (ν := ν) g) θ0`.
   - `FunctionalContinuityAssumptions.cont_m2`: second-moment functional is continuous at `θ0`.
     Intuition: the scale of the score changes smoothly with parameters.
-    Formal: `ContinuousAt (popM2Θ (ν := ν) g) θ0`.
+    Formal: `ContinuousAt (attrM2Θ (ν := ν) g) θ0`.
 - `BlockFunctionalContinuityAssumptions`: the blockwise version of functional
   continuity, requiring the above assumptions for each block score under the
   attribute distribution `ν`.
@@ -329,7 +330,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   - `OLSMomentAssumptions.theta0_eq`: normal equations identify `θ0`.
     Intuition: the limiting moments solve for the target coefficients.
     Formal: `θ0 = gramInvLimit.mulVec crossLimit`.
-- `OLSMomentAssumptionsOfPop`: the [population](jargon_population.md) version of
+- `OLSMomentAssumptionsOfAttr`: the [population](jargon_population.md) version of
   the above, with the limits pinned to the
   [population](jargon_population.md) Gram and cross moments (under the
   attribute distribution `ν`).
@@ -337,20 +338,20 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [OLS](jargon_ols.md): sample sequences `A, Y` under the experimental design
   distribution `μ` converge to [population](jargon_population.md) targets under
   `ν`.
-  - `OLSMomentAssumptionsOfPop.gramInv_tendsto`: entries of the inverse sample
+  - `OLSMomentAssumptionsOfAttr.gramInv_tendsto`: entries of the inverse sample
     Gram matrix converge to the inverse
     [population](jargon_population.md) Gram, giving the stable
     design condition needed for OLS consistency. Intuition: the regressor
     geometry stabilizes, so the estimator does not amplify noise. Formal:
     `∀ i j, Tendsto (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j) atTop
-      (nhds ((popGram (ν := ν) (φ := φ))⁻¹ i j))`.
-  - `OLSMomentAssumptionsOfPop.cross_tendsto`: the sample cross-moment vector
+      (nhds ((attrGram (ν := ν) (φ := φ))⁻¹ i j))`.
+  - `OLSMomentAssumptionsOfAttr.cross_tendsto`: the sample cross-moment vector
     converges to the [population](jargon_population.md) cross moment, so the
     normal equations converge. Intuition: the empirical correlation between
     regressors and outcomes settles to its
     [population](jargon_population.md) value. Formal:
     `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
-      (nhds (popCross (ν := ν) (g := g) (φ := φ) i))`.
+      (nhds (attrCross (ν := ν) (g := g) (φ := φ) i))`.
 
 ## SurveyWeights
 
@@ -377,21 +378,21 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   - `WeightAssumptions.mass_pos`: total weight is strictly positive.
     Intuition: the weighted sample is nondegenerate.
     Formal: `0 < ∫ a, w a ∂ν`.
-- `WeightMatchesPopMoments`: the weighted [mean](jargon_mean.md) and weighted
+- `WeightMatchesAttrMoments`: the weighted [mean](jargon_mean.md) and weighted
   [second moment](jargon_second_moment.md) match the
   [population](jargon_population.md) moments, a
   moment-matching condition used to transfer SD targets from the
   [population](jargon_population.md) to a weighted sample. This is a
   [population](jargon_population.md)-side matching condition under the
   attribute distribution `ν`.
-  - `WeightMatchesPopMoments.mean_eq`: weighted mean equals
+  - `WeightMatchesAttrMoments.mean_eq`: weighted mean equals
     [population](jargon_population.md) mean.
     Intuition: reweighting fixes the mean target.
-    Formal: `(∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν) = popMeanAttr ν s`.
-  - `WeightMatchesPopMoments.m2_eq`: weighted second moment equals
+    Formal: `(∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν) = attrMean ν s`.
+  - `WeightMatchesAttrMoments.m2_eq`: weighted second moment equals
     [population](jargon_population.md) second moment.
     Intuition: reweighting fixes the variance scale.
-    Formal: `(∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν) = popM2Attr ν s`.
+    Formal: `(∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν) = attrM2 ν s`.
 
 ## ConjointIdentification
 
@@ -571,7 +572,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     `∀ i j, Tendsto
       (fun n => gramMatrix (A := A) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) n i j)
       atTop
-      (nhds (popGram (ν := ν) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j))`.
+      (nhds (attrGram (ν := ν) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j))`.
   - `PaperOLSLLNA.cross_tendsto`: entrywise LLN for the cross moments.
     Intuition: sample regressor-outcome correlations converge to
     [population](jargon_population.md) values.
@@ -580,7 +581,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
       (fun n => crossVec (A := A) (Y := Yobs)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) n i)
       atTop
-      (nhds (popCross (ν := ν) (g := gStar (μ := μ) (Y := Y))
+      (nhds (attrCross (ν := ν) (g := gStar (μ := μ) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))`.
 - `PaperOLSInverseStability`: stability of the inverse Gram entries, ensuring
   [convergence](jargon_convergence.md) of the sample inverse to the
@@ -592,7 +593,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
       (fun n => (gramMatrix (A := A)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) n)⁻¹ i j)
       atTop
-      (nhds ((popGram (ν := ν)
+      (nhds ((attrGram (ν := ν)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j))`.
 - `PaperOLSIdentifiability`: the normal equations with
   [population](jargon_population.md) moments identify the target
@@ -601,8 +602,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   solution equal to the target.
   Formal:
   `θ0 =
-    (popGram (ν := ν) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-      (popCross (ν := ν) (g := gStar (μ := μ) (Y := Y))
+    (attrGram (ν := ν) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
+      (attrCross (ν := ν) (g := gStar (μ := μ) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))`.
 - `PaperOLSMomentAssumptions`: almost-everywhere (over sample paths) version of
   the [population](jargon_population.md) moment assumptions, applied to the
@@ -612,7 +613,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   (under `ν`) apply to the realized sequence.
   Formal:
   `∀ᵐ ω ∂μ,
-    OLSMomentAssumptionsOfPop
+    OLSMomentAssumptionsOfAttr
       (ν := ν)
       (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
       (g := gStar (μ := μ) (Y := Y))

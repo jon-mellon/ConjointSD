@@ -8,7 +8,7 @@ import ConjointSD.Transport
 import ConjointSD.EstimatedG
 import ConjointSD.SampleSplitting
 import ConjointSD.ModelBridge
-import ConjointSD.PopulationBridge
+import ConjointSD.DesignAttributeBridge
 import ConjointSD.SequentialConsistency
 import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.PaperWrappers

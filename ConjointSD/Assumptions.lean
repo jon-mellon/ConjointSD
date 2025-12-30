@@ -31,26 +31,27 @@ section Transport
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/-- Convenient moment conditions on `s` under a population measure `ν`. -/
-structure PopulationMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
+/-- Convenient moment conditions on `s` under an attribute distribution `ν`. -/
+structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (s : Attr → ℝ) : Prop where
   aemeas : AEMeasurable s ν
   int2 : Integrable (fun a => (s a) ^ 2) ν
 
-namespace PopulationMomentAssumptions
+namespace AttrMomentAssumptions
 
 theorem int1 {ν : Measure Attr} [ProbMeasureAssumptions ν] {s : Attr → ℝ}
-    (hs : PopulationMomentAssumptions (ν := ν) s) : Integrable s ν := by
+    (hs : AttrMomentAssumptions (ν := ν) s) : Integrable s ν := by
   have hs_meas : AEStronglyMeasurable s ν := hs.aemeas.aestronglyMeasurable
   have hs_mem2 : MemLp s (2 : ENNReal) ν :=
     (memLp_two_iff_integrable_sq hs_meas).2 hs.int2
   have hs_mem1 : MemLp s (1 : ENNReal) ν := hs_mem2.mono_exponent (by norm_num)
   exact (memLp_one_iff_integrable).1 hs_mem1
 
-end PopulationMomentAssumptions
+end AttrMomentAssumptions
 
 /--
-Invariance only on population support (AE under `ν`): `gExp = gPop` holds `ν`-almost everywhere.
+Invariance only on attribute-distribution support (AE under `ν`): `gExp = gPop` holds
+`ν`-almost everywhere.
 This is often the right minimal transport condition.
 -/
 def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
@@ -121,8 +122,11 @@ variable (μ : Measure Ω)
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/-- i.i.d.-type assumptions on the population-record process A. -/
-structure PopIID (A : ℕ → Ω → Attr) : Prop where
+/--
+i.i.d.-type assumptions on the attribute-record process A under the experimental
+design distribution.
+-/
+structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
   measA : ∀ i, Measurable (A i)
   indepA : Pairwise (fun i j => IndepFun (A i) (A j) μ)
   identA : ∀ i, IdentDistrib (A i) (A 0) μ μ
@@ -130,7 +134,7 @@ structure PopIID (A : ℕ → Ω → Attr) : Prop where
 /-- Sufficient conditions to use `sdHatZ_tendsto_ae` on the induced score process. -/
 structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions μ] :
     Prop where
-  popiid : PopIID (μ := μ) A
+  designAttrIID : DesignAttrIID (μ := μ) A
   meas_g : Measurable g
   int_g0_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μ
 
@@ -139,7 +143,7 @@ namespace ScoreAssumptions
 theorem int_g0 {μ : Measure Ω} [ProbMeasureAssumptions μ] {Attr : Type*} [MeasurableSpace Attr]
     {A : ℕ → Ω → Attr} {g : Attr → ℝ} (h : ScoreAssumptions (μ := μ) (A := A) g) :
     Integrable (fun ω => g (A 0 ω)) μ := by
-  have hmeasA0 : Measurable (A 0) := h.popiid.measA 0
+  have hmeasA0 : Measurable (A 0) := h.designAttrIID.measA 0
   have hmeas : AEStronglyMeasurable (fun ω => g (A 0 ω)) μ :=
     (h.meas_g.comp hmeasA0).aestronglyMeasurable
   have hmem2 : MemLp (fun ω => g (A 0 ω)) (2 : ENNReal) μ :=
@@ -153,7 +157,7 @@ variable {B : Type*}
 
 /-- Bundle assumptions for all blocks at once. -/
 structure DecompAssumptions (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) : Prop where
-  popiid : PopIID (μ := μ) A
+  designAttrIID : DesignAttrIID (μ := μ) A
   meas_g : ∀ b, Measurable (g b)
   bound_g : ∀ b, ∃ C, 0 ≤ C ∧ ∀ a, |g b a| ≤ C
 
@@ -181,7 +185,7 @@ variable {Θ : Type*}
 
 /--
 Assumptions ensuring replacing oracle `g θ0` with estimated `g (θhat n)` does not change
-target population moments (under ν) in the limit.
+target human population moments (under the attribute distribution `ν`) in the limit.
 
 Minimal version: assume convergence of mean and second moment; derive var and sd.
 -/
@@ -190,15 +194,15 @@ structure GEstimationAssumptions
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
   mean_tendsto :
       Tendsto
-        (fun n => popMeanAttr ν (gHat g θhat n))
+        (fun n => attrMean ν (gHat g θhat n))
         atTop
-        (nhds (popMeanAttr ν (g θ0)))
+        (nhds (attrMean ν (g θ0)))
 
   m2_tendsto :
       Tendsto
-        (fun n => popM2Attr ν (gHat g θhat n))
+        (fun n => attrM2 ν (gHat g θhat n))
         atTop
-        (nhds (popM2Attr ν (g θ0)))
+        (nhds (attrM2 ν (g θ0)))
 
 end EstimatedG
 
@@ -223,7 +227,7 @@ structure SplitEvalAssumptionsBounded
     (μ : Measure Ω) (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
-  hPop : PopIID (μ := μ) A
+  hPop : DesignAttrIID (μ := μ) A
   hMeas : Measurable (gHat g θhat m)
   hBound : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
 
@@ -234,15 +238,15 @@ section RegressionConsistencyBridge
 variable {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
 
 /--
-Continuity assumptions for the induced population functionals at θ0.
+Continuity assumptions for the induced attribute-distribution functionals at θ0.
 
 These are the “plug point” for regression theory: later you discharge them using
 dominated convergence / continuity of link / bounded features / etc.
 -/
 structure FunctionalContinuityAssumptions
     (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : Prop where
-  cont_mean : ContinuousAt (popMeanΘ (ν := ν) g) θ0
-  cont_m2   : ContinuousAt (popM2Θ   (ν := ν) g) θ0
+  cont_mean : ContinuousAt (attrMeanΘ (ν := ν) g) θ0
+  cont_m2   : ContinuousAt (attrM2Θ   (ν := ν) g) θ0
 
 /-- Continuity assumptions for each block score at `θ0`. -/
 structure BlockFunctionalContinuityAssumptions
@@ -291,10 +295,10 @@ structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
   theta0_eq : θ0 = gramInvLimit.mulVec crossLimit
 
 /--
-Moment assumptions stated against the population Gram/cross moments.
+Moment assumptions stated against the attribute-distribution Gram/cross moments.
 These encode the LLN and identifiability conditions typically used for OLS consistency.
 -/
-structure OLSMomentAssumptionsOfPop {Attr : Type u} {Term : Type v}
+structure OLSMomentAssumptionsOfAttr {Attr : Type u} {Term : Type v}
     [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
     (ν : Measure Attr)
     (A : ℕ → Attr) (Y : ℕ → ℝ)
@@ -305,15 +309,15 @@ structure OLSMomentAssumptionsOfPop {Attr : Type u} {Term : Type v}
       Tendsto
         (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j)
         atTop
-        (nhds ((popGram (ν := ν) (φ := φ))⁻¹ i j))
+        (nhds ((attrGram (ν := ν) (φ := φ))⁻¹ i j))
   cross_tendsto :
     ∀ i,
       Tendsto
         (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i)
         atTop
-        (nhds (popCross (ν := ν) (g := g) (φ := φ) i))
+        (nhds (attrCross (ν := ν) (g := g) (φ := φ) i))
   theta0_eq :
-    θ0 = (popGram (ν := ν) (φ := φ))⁻¹.mulVec (popCross (ν := ν) (g := g) (φ := φ))
+    θ0 = (attrGram (ν := ν) (φ := φ))⁻¹.mulVec (attrCross (ν := ν) (g := g) (φ := φ))
 
 end RegressionEstimator
 
@@ -329,12 +333,15 @@ structure WeightAssumptions (ν : Measure Attr) (w s : Attr → ℝ) : Prop wher
   intWs2 : Integrable (fun a => w a * (s a) ^ 2) ν
   mass_pos : 0 < ∫ a, w a ∂ν
 
-/-- Moment-matching assumption: weighted mean and second moment equal population moments. -/
-structure WeightMatchesPopMoments (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+/--
+Moment-matching assumption: weighted mean and second moment equal target human
+population moments.
+-/
+structure WeightMatchesAttrMoments (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
   mean_eq :
-    (∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν) = popMeanAttr ν s
+    (∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν) = attrMean ν s
   m2_eq :
-    (∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν) = popM2Attr ν s
+    (∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν) = attrM2 ν s
 
 end SurveyWeights
 
@@ -438,7 +445,7 @@ def ApproxWellSpecified
     (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
   ∀ x, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
 
-/-- Approximate well-specification on population support (ν-a.e.). -/
+/-- Approximate well-specification on attribute-distribution support (ν-a.e.). -/
 def ApproxWellSpecifiedAE
     {Attr : Type*} [MeasurableSpace Attr]
     (ν : Measure Attr) (μ : Measure Ω) (Y : Attr → Ω → ℝ)
@@ -556,7 +563,7 @@ structure PaperOLSLLNA
             n i j)
         atTop
         (nhds
-          (popGram
+          (attrGram
             (ν := ν)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j))
   cross_tendsto :
@@ -569,12 +576,15 @@ structure PaperOLSLLNA
             n i)
         atTop
         (nhds
-          (popCross
+          (attrCross
             (ν := ν)
             (g := gStar (μ := μ) (Y := Y))
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))
 
-/-- Stability assumption: inverse Gram entries converge to the inverse population Gram. -/
+/--
+Stability assumption: inverse Gram entries converge to the inverse
+attribute-distribution Gram.
+-/
 structure PaperOLSInverseStability
     (A : ℕ → Attr) : Prop where
   gramInv_tendsto :
@@ -587,17 +597,17 @@ structure PaperOLSInverseStability
             n)⁻¹ i j)
         atTop
         (nhds
-          ((popGram
+          ((attrGram
             (ν := ν)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j))
 
-/-- Identifiability: the population normal equations determine `θ0`. -/
+/-- Identifiability: the attribute-distribution normal equations determine `θ0`. -/
 def PaperOLSIdentifiability (θ0 : PaperTerm Main Inter → ℝ) : Prop :=
   θ0 =
-    (popGram
+    (attrGram
       (ν := ν)
       (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-      (popCross
+      (attrCross
         (ν := ν)
         (g := gStar (μ := μ) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
@@ -606,7 +616,7 @@ def PaperOLSIdentifiability (θ0 : PaperTerm Main Inter → ℝ) : Prop :=
 Moment assumptions for the paper OLS estimator at the sample-path level.
 
 This is the LLN/identifiability package: for almost every ω, the empirical Gram
-and cross moments converge to their population targets for `gStar`.
+and cross moments converge to their attribute-distribution targets for `gStar`.
 -/
 def PaperOLSMomentAssumptions
     (μ : Measure Ω) (ν : Measure Attr)
@@ -615,7 +625,7 @@ def PaperOLSMomentAssumptions
     (θ0 : PaperTerm Main Inter → ℝ)
     (Aω : ℕ → Ω → Attr) (Yobsω : ℕ → Ω → ℝ) : Prop :=
   ∀ᵐ ω ∂μ,
-    OLSMomentAssumptionsOfPop
+    OLSMomentAssumptionsOfAttr
       (ν := ν)
       (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
       (g := gStar (μ := μ) (Y := Y))

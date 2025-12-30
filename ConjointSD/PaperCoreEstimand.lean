@@ -1,7 +1,8 @@
 /-
 ConjointSD/PaperCoreEstimand.lean
 
-Core estimand used in the paper: population SDs of block contributions (and of the total score),
+Core estimand used in the paper: target human population SDs of block contributions
+(and of the total score),
 expressed in terms of the “true block score” induced by the linear-in-terms model.
 -/
 
@@ -16,7 +17,7 @@ noncomputable section
 namespace ConjointSD
 
 /-!
-## Core paper target: population SDs of true block contributions
+## Core paper target: target human population SDs of true block contributions
 -/
 
 section CoreEstimand
@@ -38,21 +39,21 @@ def paperTrueTotalScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → A
   classical
   exact fun a => ∑ b : B, paperTrueBlockScore (blk := blk) (β0 := β0) (φ := φ) b a
 
-/-- Population SD of the true block score for block `b` under `ν`. -/
+/-- Target human population SD of the true block score for block `b` under `ν`. -/
 def paperBlockSD
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν)
-    exact popSDAttr ν (paperTrueBlockScore blk β0 φ b)
+    exact attrSD ν (paperTrueBlockScore blk β0 φ b)
 
-/-- Population SD of the true total score under `ν`. -/
+/-- Target human population SD of the true total score under `ν`. -/
 def paperTotalSD
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν)
-    exact popSDAttr ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
+    exact attrSD ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
 
 /-- Vector of paper block-SD targets. -/
 def paperBlockSDs
@@ -72,19 +73,25 @@ theorem paperTotalSD_def
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) :
     paperTotalSD (ν := ν) blk β0 φ
       =
-    popSDAttr ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
+    attrSD ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
 
 /-!
-## Weighted population targets (survey-weighted population SDs)
+## Weighted attribute-distribution targets (survey-weighted SDs)
 -/
 
-/-- Weighted population SD of the true block score for block `b` under `ν` with weights `w`. -/
+/--
+Weighted attribute-distribution SD of the true block score for block `b` under
+`ν` with weights `w`.
+-/
 def paperBlockSD_weighted
     (ν : Measure Attr) (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : ℝ :=
   weightSDAttr ν w (paperTrueBlockScore blk β0 φ b)
 
-/-- Weighted population SD of the true total score under `ν` with weights `w`. -/
+/--
+Weighted attribute-distribution SD of the true total score under `ν` with
+weights `w`.
+-/
 def paperTotalSD_weighted
     (ν : Measure Attr) (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : ℝ :=
@@ -96,34 +103,34 @@ def paperBlockSDs_weighted
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : B → ℝ :=
   fun b => paperBlockSD_weighted (ν := ν) (w := w) blk β0 φ b
 
-theorem paperBlockSD_weighted_eq_pop
+theorem paperBlockSD_weighted_eq_attr
     (ν : Measure Attr) [ProbMeasureAssumptions ν] (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B)
-    (hMom : WeightMatchesPopMoments (ν := ν) (w := w)
+    (hMom : WeightMatchesAttrMoments (ν := ν) (w := w)
       (s := paperTrueBlockScore blk β0 φ b)) :
     paperBlockSD_weighted (ν := ν) (w := w) blk β0 φ b
       =
     paperBlockSD (ν := ν) blk β0 φ b := by
   simpa [paperBlockSD_weighted, paperBlockSD] using
-    (weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+    (weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := paperTrueBlockScore blk β0 φ b) hMom)
 
-theorem paperTotalSD_weighted_eq_pop
+theorem paperTotalSD_weighted_eq_attr
     (ν : Measure Attr) [ProbMeasureAssumptions ν] (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
-    (hMom : WeightMatchesPopMoments (ν := ν) (w := w)
+    (hMom : WeightMatchesAttrMoments (ν := ν) (w := w)
       (s := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))) :
     paperTotalSD_weighted (ν := ν) (w := w) blk β0 φ
       =
     paperTotalSD (ν := ν) blk β0 φ := by
   simpa [paperTotalSD_weighted, paperTotalSD] using
-    (weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+    (weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) hMom)
 
-theorem paperBlockSDs_weighted_eq_pop
+theorem paperBlockSDs_weighted_eq_attr
     (ν : Measure Attr) [ProbMeasureAssumptions ν] (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
-    (hMom : ∀ b : B, WeightMatchesPopMoments (ν := ν) (w := w)
+    (hMom : ∀ b : B, WeightMatchesAttrMoments (ν := ν) (w := w)
       (s := paperTrueBlockScore blk β0 φ b)) :
     ∀ b : B,
       paperBlockSDs_weighted (ν := ν) (w := w) blk β0 φ b
@@ -131,7 +138,7 @@ theorem paperBlockSDs_weighted_eq_pop
       paperBlockSDs (ν := ν) blk β0 φ b := by
   intro b
   simpa [paperBlockSDs_weighted, paperBlockSDs, paperBlockSDs_apply] using
-    paperBlockSD_weighted_eq_pop (ν := ν) (w := w)
+    paperBlockSD_weighted_eq_attr (ν := ν) (w := w)
       (blk := blk) (β0 := β0) (φ := φ) (b := b) (hMom := hMom b)
 
 end CoreEstimand
@@ -186,7 +193,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
     (hMom :
-      WeightMatchesPopMoments (ν := ν) (w := w)
+      WeightMatchesAttrMoments (ν := ν) (w := w)
         (s := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -220,7 +227,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
   intro m hm
   have hCons := hM m hm
   have hEqTarget :
-      popSDAttr ν
+      attrSD ν
           (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
         =
       paperTotalSD_weighted (ν := ν) (w := w) (blk := blk) (β0 := β0) (φ := φ) := by
@@ -269,7 +276,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
     (hMom :
-      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -279,7 +286,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
               (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
               θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν
+        attrSD ν
             (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
           =
         weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
@@ -306,14 +313,14 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
       with ⟨M, hM⟩
   have hWeight :
       weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
-        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
-    paper_weighted_sd_eq_pop (ν := ν) (w := w)
+        attrSD ν (gStar (μ := μ) (Y := Y)) :=
+    paper_weighted_sd_eq_attr (ν := ν) (w := w)
       (s := gStar (μ := μ) (Y := Y)) hMom
   refine ⟨M, ?_⟩
   intro m hm
   rcases hM m hm with ⟨hCons, hEq⟩
   have hEq' :
-      popSDAttr ν
+      attrSD ν
           (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
         =
       weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by

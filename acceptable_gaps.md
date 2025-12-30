@@ -16,5 +16,5 @@ We cite these results to justify that the Bayesian summaries used in the paper c
    - We are not fixing this in Lean; instead we treat it as part of the transport conditions, where marginalizing over other profiles is a reasonable approximation to the true status-assigning process respondents apply when making conjoint judgments.
 
 3) Weighted population moments are assumed
-   - For weighted survey targets, we assume weighted moment matching (`WeightMatchesPopMoments`) for the relevant score.
+   - For weighted survey targets, we assume weighted moment matching (`WeightMatchesAttrMoments`) for the relevant score.
    - For the paper, we endorse the moment-matching/weighted LLN assumptions as axioms for the target population moments.

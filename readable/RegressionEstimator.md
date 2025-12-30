@@ -15,12 +15,12 @@ Moment assumptions and [consistency](jargon_consistency.md):
 - `olsThetaHat_tendsto_of_moment_assumptions` proves the estimator [converges](jargon_convergence.md) to `theta0` under those assumptions.
 
 Population versions:
-- `popGram` and `popCross` define [population](jargon_population.md) analogs of the Gram matrix and cross moments.
-- `OLSMomentAssumptionsOfPop` is the same [convergence](jargon_convergence.md) statement, but with population targets.
-- `olsThetaHat_tendsto_of_pop_moments` connects these to estimator [convergence](jargon_convergence.md).
- - `OLSMomentAssumptionsOfPop.to_OLSMomentAssumptions` is a small adapter from population assumptions to the abstract limit form.
+- `attrGram` and `attrCross` define target human [population](jargon_population.md) analogs of the Gram matrix and cross moments (under the attribute distribution).
+- `OLSMomentAssumptionsOfAttr` is the same [convergence](jargon_convergence.md) statement, but with target human population targets.
+- `olsThetaHat_tendsto_of_attr_moments` connects these to estimator [convergence](jargon_convergence.md).
+ - `OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions` is a small adapter from target human population assumptions to the abstract limit form.
 
 Final [bridge](jargon_bridge.md):
-- `GEstimationAssumptions_of_OLSConsistency` says that if an OLS sequence [converges](jargon_convergence.md) and the population functionals are [continuous](jargon_continuity.md), then the [plug-in](jargon_plug_in.md) moment assumptions hold.
+- `GEstimationAssumptions_of_OLSConsistency` says that if an OLS sequence [converges](jargon_convergence.md) and the target human population functionals are [continuous](jargon_continuity.md), then the [plug-in](jargon_plug_in.md) moment assumptions hold.
 
 This file supplies the regression backbone used by the paper-level [consistency](jargon_consistency.md) results.
