@@ -122,23 +122,14 @@ Formalization (math):
 
 Legend: `Y` = theorem relies on the assumption, `N` = does not rely on it.
 
-Columns:
-- T1 = sdHatZ_tendsto_ae
-- T2 = sd_component_consistent
-- T3 = sd_component_consistent_to_popSDAttr
-- T4 = gExp_eq_gPot
-- T5 = popSDAttr_congr_ae
-- T6 = gStar_eq_sum_blocks_of_WellSpecified
-- T7 = sequential_consistency_ae
-
-| Assumption | T1 | T2 | T3 | T4 | T5 | T6 | T7 |
+| Assumption | sdHatZ_tendsto_ae | sd_component_consistent | sd_component_consistent_to_popSDAttr | gExp_eq_gPot | popSDAttr_congr_ae | gStar_eq_sum_blocks_of_WellSpecified | sequential_consistency_ae |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| IIDAssumptions | Y | N | N | N | N | N | N |
-| ScoreAssumptions | N | Y | Y | N | N | N | N |
-| Law(A0) = nu | N | N | Y | N | N | N | N |
-| ConjointIdAssumptions | N | N | N | Y | N | N | N |
-| InvarianceAE | N | N | N | N | Y | N | N |
-| PopulationMomentAssumptions | N | N | N | N | Y | N | N |
-| WellSpecified | N | N | N | N | N | Y | N |
-| SplitEvalAssumptions | N | N | N | N | N | N | Y |
-| GEstimationAssumptions | N | N | N | N | N | N | Y |
+| IIDAssumptions | <span style="color: green">Y</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> |
+| ScoreAssumptions | <span style="color: red">N</span> | <span style="color: green">Y</span> | <span style="color: green">Y</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> |
+| Law(A0) = nu | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: green">Y</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> |
+| ConjointIdAssumptions | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: green">Y</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> |
+| InvarianceAE | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: green">Y</span> | <span style="color: red">N</span> | <span style="color: red">N</span> |
+| PopulationMomentAssumptions | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: green">Y</span> | <span style="color: red">N</span> | <span style="color: red">N</span> |
+| WellSpecified | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: green">Y</span> | <span style="color: red">N</span> |
+| SplitEvalAssumptions | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: green">Y</span> |
+| GEstimationAssumptions | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: red">N</span> | <span style="color: green">Y</span> |
