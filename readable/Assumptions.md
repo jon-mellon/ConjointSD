@@ -29,6 +29,16 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [integrability](jargon_integrable.md) of `s^2`. The `s` integrability needed
   for [mean](jargon_mean.md) and [variance](jargon_variance.md) targets is
   derived from these conditions using `ν univ = 1`.
+  - `PopulationMomentAssumptions.aemeas`: `s` is a.e. measurable under `ν`,
+    so `s` can be integrated and is compatible with almost-everywhere
+    statements used later in transport proofs. Intuition: we only need `s` to
+    be well-defined except on a `ν`-null set, because population targets ignore
+    measure-zero deviations. Formal: `AEMeasurable s ν`.
+  - `PopulationMomentAssumptions.int2`: `s^2` is integrable under `ν`. This
+    supplies finite second moments, which are the input for population
+    [variance](jargon_variance.md) and [standard deviation](jargon_standard_deviation.md).
+    Intuition: finite energy rules out heavy tails that would make SD undefined
+    or unstable. Formal: `Integrable (fun a => (s a) ^ 2) ν`.
 - `InvarianceAE`: almost-everywhere equality under `ν`, i.e., the experimental and
   [population](jargon_population.md) scores agree on the
   [population support](jargon_population_support.md). Intuitively, they may
@@ -50,11 +60,23 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 - `MapLawAssumptions`: bundles measurability of `A 0` with the pushforward law
   `Measure.map (A 0) μ = ν`, the standard transport assumption used to rewrite
   population moments from the joint space to the attribute space.
+  - `MapLawAssumptions.measA0`: `A 0` is measurable, so pushforward and
+    integrability statements about `A 0` are well-formed. Intuition: the
+    attribute draw must be observable in a measure-theoretic sense to talk about
+    its distribution. Formal: `Measurable (A 0)`.
+  - `MapLawAssumptions.map_eq`: the distribution of `A 0` under `μ` equals `ν`,
+    which justifies replacing population expectations under `ν` by expectations
+    over the sample space. Intuition: the sample-space randomization induces the
+    target population law on attributes. Formal: `Measure.map (A 0) μ = ν`.
 
 ## Convergence
 
 - `ThetaTendstoAssumptions`: bundles estimator convergence `θhat → θ0` to keep
   convergence hypotheses explicit and reusable.
+  - `ThetaTendstoAssumptions.tendsto`: the sequence `θhat` converges to `θ0`
+    in the topology of `Θ`, the raw input for continuity-based arguments.
+    Intuition: estimation noise vanishes asymptotically, so plugging in `θhat`
+    is equivalent to using the truth. Formal: `Tendsto θhat atTop (nhds θ0)`.
 
 ## Positivity
 
@@ -71,6 +93,18 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   input for a strong [LLN](jargon_lln.md) for both the [mean](jargon_mean.md)
   and [second moment](jargon_second_moment.md), which delivers SD
   [consistency](jargon_consistency.md).
+  - `IIDAssumptions.indep`: pairwise [independence](jargon_independent.md) of
+    `Z i` and `Z j`, giving the stochastic decoupling needed for LLN arguments.
+    Intuition: each draw contributes new information instead of repeating the
+    same noise. Formal: `Pairwise (fun i j => IndepFun (Z i) (Z j) μ)`.
+  - `IIDAssumptions.ident`: each `Z i` has the same law as `Z 0`, so empirical
+    averages target a single population moment. Intuition: there is one stable
+    data-generating process rather than a drifting distribution.
+    Formal: `∀ i, IdentDistrib (Z i) (Z 0) μ μ`.
+  - `IIDAssumptions.intZ2`: square-integrability of `Z 0`, ensuring finite
+    second moments and enabling LLN for variance/SD targets. Intuition: rules
+    out rare but huge observations that would dominate the SD.
+    Formal: `Integrable (fun ω => (Z 0 ω) ^ 2) μ`.
 
 ## SDDecomposition
 
@@ -87,6 +121,13 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   condition. This is the input needed to apply the
   [standard deviation](jargon_standard_deviation.md)
   [LLN](jargon_lln.md) to the induced score process.
+  - `ScoreAssumptions.meas_g`: the score `g` is measurable, so `g(A i)` is
+    measurable when composed with each `A i`. Intuition: the score must be a
+    well-defined observable function of attributes. Formal: `Measurable g`.
+  - `ScoreAssumptions.int_g0_sq`: square-integrability of `g(A 0)`, which yields
+    finite variance and supports LLN steps for SD consistency. Intuition: the
+    score cannot have explosive tails if we want stable dispersion estimates.
+    Formal: `Integrable (fun ω => (g (A 0 ω)) ^ 2) μ`.
 - `DecompAssumptions`: bundles `PopIID`, [measurability](jargon_measurable.md) of
   each
   [block](jargon_block.md) score `g b`, and a uniform boundedness condition for
@@ -117,6 +158,16 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [standard deviation](jargon_standard_deviation.md) and
   [variance](jargon_variance.md) [consistency](jargon_consistency.md) follow by
   algebra.
+  - `GEstimationAssumptions.mean_tendsto`: the estimated score's population
+    mean converges to the oracle mean, so bias from estimation vanishes.
+    Intuition: estimation error washes out in expectation even if pointwise
+    predictions are noisy. Formal:
+    `Tendsto (fun n => popMeanAttr ν (gHat g θhat n)) atTop (nhds (popMeanAttr ν (g θ0)))`.
+  - `GEstimationAssumptions.m2_tendsto`: the estimated score's population
+    second moment converges to the oracle second moment, enabling convergence
+    of variance and SD by algebra. Intuition: the scale of the estimated score
+    matches the oracle in the limit, not just the mean. Formal:
+    `Tendsto (fun n => popM2Attr ν (gHat g θhat n)) atTop (nhds (popM2Attr ν (g θ0)))`.
 
 ## SampleSplitting
 
@@ -156,6 +207,18 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   the above, with the limits pinned to the
   [population](jargon_population.md) Gram and cross moments.
   This is the standard [LLN](jargon_lln.md) + identifiability package for [OLS](jargon_ols.md).
+  - `OLSMomentAssumptionsOfPop.gramInv_tendsto`: entries of the inverse sample
+    Gram matrix converge to the inverse population Gram, giving the stable
+    design condition needed for OLS consistency. Intuition: the regressor
+    geometry stabilizes, so the estimator does not amplify noise. Formal:
+    `∀ i j, Tendsto (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j) atTop
+      (nhds ((popGram (ν := ν) (φ := φ))⁻¹ i j))`.
+  - `OLSMomentAssumptionsOfPop.cross_tendsto`: the sample cross-moment vector
+    converges to the population cross moment, so the normal equations converge.
+    Intuition: the empirical correlation between regressors and outcomes
+    settles to its population value. Formal:
+    `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
+      (nhds (popCross (ν := ν) (g := g) (φ := φ) i))`.
 
 ## SurveyWeights
 
@@ -185,6 +248,25 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   condition (`rand`) that makes the
   [mean](jargon_mean.md) of `Y x` invariant to conditioning on `X = x0`. This is
   written to avoid explicit conditional expectations.
+  - `ConjointIdAssumptions.measYobs`: the observed outcome is measurable, so it
+    can be integrated and restricted to events. Intuition: realized outcomes
+    must be genuine observables, not just abstract potential values. Formal:
+    `Measurable Yobs`.
+  - `ConjointIdAssumptions.measY`: each potential outcome `Y x` is measurable,
+    enabling conditional restriction arguments and mean comparisons. Intuition:
+    counterfactual outcomes are regular enough to integrate even if unobserved.
+    Formal: `∀ x, Measurable (Y x)`.
+  - `ConjointIdAssumptions.consistency`: observed outcomes equal the potential
+    outcome for the realized profile, the standard consistency requirement.
+    Intuition: the measurement process does not distort outcomes. Formal:
+    `∀ ω, Yobs ω = Y (X ω) ω`.
+  - `ConjointIdAssumptions.rand`: factorization of means under restriction to
+    `{X = x0}`, which encodes ignorability without conditional expectations.
+    Intuition: assignment does not systematically change potential outcomes,
+    so conditioning on treatment does not change their mean. Formal:
+    `∀ x x0,
+      (∫ ω, Y x ω ∂(μ.restrict (eventX (X := X) x0)))
+        = (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ)`.
 - `ConjointIdRandomized`: a randomized-design variant under a probability
   measure `μ`. It assumes [measurable](jargon_measurable.md) assignment,
   uniformly bounded [potential outcomes](jargon_potential_outcome.md), and
