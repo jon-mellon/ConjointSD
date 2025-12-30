@@ -52,19 +52,21 @@ variable (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
 /-- Identification: observed conditional mean among `X = x0` equals the potential-outcome mean. -/
 theorem paper_identifies_potMean_from_condMean
     (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
-    (x0 : Attr) :
+    (x0 : Attr)
+    (hpos : μ (eventX (X := X) x0) ≠ 0) :
     condMean (μ := μ) Yobs (eventX (X := X) x0) = potMean (μ := μ) Y x0 :=
-  identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x0
+  identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x0 hpos
 
 /-- Identification: AMCE equals a difference of observed conditional means. -/
 theorem paper_identifies_amce_from_condMeans
     (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0)
     (x x' : Attr) :
     (condMean (μ := μ) Yobs (eventX (X := X) x')
       - condMean (μ := μ) Yobs (eventX (X := X) x))
       =
     amce (μ := μ) Y x x' :=
-  identified_amce_from_condMeans (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x x'
+  identified_amce_from_condMeans (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h hpos x x'
 
 end Identification
 
@@ -91,11 +93,17 @@ theorem paper_identifies_potMean_from_condMean_status
     potMean (μ := μStatus (μResp := μResp)) (statusY (Yresp := Yresp)) x0 := by
   have h :=
     status_id_assumptions (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
+  have hpos :=
+    positivity_of_singleShot
+      (μ := μStatus (μResp := μResp)) (ν := νStatus)
+      (X := statusX) (Y := statusY (Yresp := Yresp)) (Yobs := statusYobs (Yresp := Yresp))
+      (h := status_singleShot_design (μResp := μResp) (Yresp := Yresp)
+            hmeas hmeasObs hbound)
   exact
     paper_identifies_potMean_from_condMean
       (μ := μStatus (μResp := μResp))
       (X := statusX) (Y := statusY (Yresp := Yresp))
-      (Yobs := statusYobs (Yresp := Yresp)) h x0
+      (Yobs := statusYobs (Yresp := Yresp)) h x0 (hpos x0)
 
 /-- Identification for the status conjoint: AMCE equals a difference of conditional means. -/
 theorem paper_identifies_amce_from_condMeans_status
@@ -113,11 +121,17 @@ theorem paper_identifies_amce_from_condMeans_status
     amce (μ := μStatus (μResp := μResp)) (statusY (Yresp := Yresp)) x x' := by
   have h :=
     status_id_assumptions (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
+  have hpos :=
+    positivity_of_singleShot
+      (μ := μStatus (μResp := μResp)) (ν := νStatus)
+      (X := statusX) (Y := statusY (Yresp := Yresp)) (Yobs := statusYobs (Yresp := Yresp))
+      (h := status_singleShot_design (μResp := μResp) (Yresp := Yresp)
+            hmeas hmeasObs hbound)
   exact
     paper_identifies_amce_from_condMeans
       (μ := μStatus (μResp := μResp))
       (X := statusX) (Y := statusY (Yresp := Yresp))
-      (Yobs := statusYobs (Yresp := Yresp)) h x x'
+      (Yobs := statusYobs (Yresp := Yresp)) h hpos x x'
 
 end StatusIdentification
 
@@ -539,6 +553,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
 theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (hId : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0)
     (hLaw : Measure.map (A 0) μ = ν)
     (hSplitTotal :
       ∀ m,
@@ -571,7 +586,7 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
   intro m hm
   rcases hM m hm with ⟨hCons, hEqExp⟩
   have hEq : gExp (μ := μ) (X := X) (Yobs := Yobs) = gPot (μ := μ) (Y := Y) :=
-    gExp_eq_gPot (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) hId
+    gExp_eq_gPot (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) hId hpos
   have hEqAE :
       ∀ᵐ a ∂ν,
         gExp (μ := μ) (X := X) (Yobs := Yobs) a

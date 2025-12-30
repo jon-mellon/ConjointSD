@@ -8,7 +8,18 @@ each package is asserting and why it matters.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
-Recent changes: added an [additive-projection](jargon_additive_projection.md) oracle assumption for component SD bounds.
+Recent changes: added an explicit randomization-mechanism assumption for conjoint designs.
+
+## Structural assumptions (by model choice)
+
+These are not formalized as Lean assumption bundles; they arise from how the model is set up.
+
+- Single-shot abstraction: each observation is treated as a standalone profile draw. This
+  sidesteps any task-indexing or within-respondent carryover structure.
+- No task-order effects: because there is no task index in the core model, the formalization
+  does not represent profile order or task sequence effects.
+- No attribute-order effects within a profile: profiles are abstract objects, so any ordering
+  of attributes inside a profile is not represented.
 
 ## Transport
 
@@ -138,23 +149,28 @@ Recent changes: added an [additive-projection](jargon_additive_projection.md) or
 
 ## ConjointIdentification
 
+- `ConjointRandomizationMechanism`: models randomization explicitly by writing
+  the assignment `X` as a measurable function of a randomization variable `U`
+  that is [independent](jargon_independent.md) of every
+  [potential outcome](jargon_potential_outcome.md). This is the mechanism-level
+  assumption from which ignorability of `X` is derived later.
 - `ConjointIdAssumptions`: [measurability](jargon_measurable.md) of the observed
   and [potential outcomes](jargon_potential_outcome.md),
-  [consistency](jargon_consistency.md) (`Yobs = Y(X)`), positivity of assignment,
-  and a factorization condition (`rand`) that makes the
+  [consistency](jargon_consistency.md) (`Yobs = Y(X)`), and a factorization
+  condition (`rand`) that makes the
   [mean](jargon_mean.md) of `Y x` invariant to conditioning on `X = x0`. This is
   written to avoid explicit conditional expectations.
 - `ConjointIdRandomized`: a randomized-design variant that assumes
   [measurable](jargon_measurable.md) assignment,
   [integrable](jargon_integrable.md) and uniformly bounded
-  [potential outcomes](jargon_potential_outcome.md), positivity, and
+  [potential outcomes](jargon_potential_outcome.md), and
   [independence](jargon_independent.md) between `X` and each `Y x`. These
   assumptions imply the `rand` factorization above.
 - `ConjointSingleShotDesign`: a single-shot assignment law `ν` with positive mass
-  on each [profile](jargon_profile.md), [measurable](jargon_measurable.md)
-  assignment `X` with `Measure.map X μ = ν`, and bounded, measurable, consistent
-  [potential outcomes](jargon_potential_outcome.md). Together with design
-  [independence](jargon_independent.md), this implies `ConjointIdRandomized`.
+  on each [profile](jargon_profile.md), an explicit randomization mechanism for
+  `X`, `Measure.map X μ = ν`, and bounded, measurable, consistent
+  [potential outcomes](jargon_potential_outcome.md). The randomization mechanism
+  is used to derive ignorability in `ConjointIdRandomized`.
 
 ## ModelBridge
 

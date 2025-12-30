@@ -263,6 +263,21 @@ variable (μ : Measure Ω)
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /--
+Randomization mechanism for the profile assignment.
+
+We model `X` as a measurable function of a randomization variable `U` that is
+independent of every potential outcome `Y x`.
+-/
+structure ConjointRandomizationMechanism
+    [MeasurableSpace Attr] (X : Ω → Attr) (Y : Attr → Ω → ℝ) : Prop where
+  exists_randomization :
+    ∃ (R : Type 0) (_ : MeasurableSpace R) (U : Ω → R) (f : R → Attr),
+      Measurable U ∧
+      Measurable f ∧
+      X = (fun ω => f (U ω)) ∧
+      ∀ x, (fun ω => U ω) ⟂ᵢ[μ] (fun ω => Y x ω)
+
+/--
 Identification assumptions for the single-profile abstraction.
 
 `rand` is written in a “factorization” form in ℝ (via `.toReal`) so we can avoid
@@ -277,7 +292,6 @@ structure ConjointIdAssumptions
   measYobs : Measurable Yobs
   measY : ∀ x, Measurable (Y x)
   consistency : ∀ ω, Yobs ω = Y (X ω) ω
-  positivity : ∀ x, μ (eventX (X := X) x) ≠ 0
   rand :
     ∀ x x0,
       (∫ ω, Y x ω ∂(μ.restrict (eventX (X := X) x0)))
@@ -291,7 +305,6 @@ structure ConjointIdRandomized
   measYobs : Measurable Yobs
   measY : ∀ x, Measurable (Y x)
   consistency : ∀ ω, Yobs ω = Y (X ω) ω
-  positivity : ∀ x, μ (eventX (X := X) x) ≠ 0
   integrableY : ∀ x, Integrable (fun ω => Y x ω) μ
   bounded :
     ∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C
@@ -309,7 +322,7 @@ These hypotheses are enough to derive `ConjointIdRandomized`.
 structure ConjointSingleShotDesign
     (ν : Measure Attr)
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ) : Prop where
-  measX : Measurable X
+  rand : ConjointRandomizationMechanism (μ := μ) (X := X) (Y := Y)
   lawX : Measure.map X μ = ν
   ν_pos : ∀ x, ν {x} ≠ 0
   measYobs : Measurable Yobs
@@ -317,7 +330,6 @@ structure ConjointSingleShotDesign
   consistency : ∀ ω, Yobs ω = Y (X ω) ω
   bounded :
     ∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C
-  ignorability : ∀ x, (fun ω => X ω) ⟂ᵢ[μ] (fun ω => Y x ω)
 
 end ConjointIdentification
 

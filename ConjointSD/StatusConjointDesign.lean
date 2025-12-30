@@ -257,14 +257,21 @@ theorem status_singleShot_design
                 simp [hXmass, hYmass, mul_comm]
   -- Assemble the design structure.
   refine
-    { measX := hXmeas
+    { rand := by
+        refine ⟨(StatusProfile : Type 0), inferInstance,
+          statusX (Respondent := Respondent),
+          (fun p => p),
+          hXmeas,
+          measurable_id,
+          ?_,
+          hign⟩
+        rfl
       lawX := hlaw
       ν_pos := hpos
       measYobs := hYobs
       measY := hYmeas
       consistency := by intro ω; rfl
-      bounded := hbounded
-      ignorability := hign }
+      bounded := hbounded }
 
 /-- The instantiated randomized-design identification assumptions for the status conjoint. -/
 theorem status_id_randomized

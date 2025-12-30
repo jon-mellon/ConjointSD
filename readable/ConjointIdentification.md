@@ -11,12 +11,14 @@ Core definitions:
 - `amce`: the difference in potential [means](jargon_mean.md) between two [profiles](jargon_profile.md) ([AMCE](jargon_amce.md)).
 
 Assumption bundles (defined in `ConjointSD/Assumptions.lean`):
-- `ConjointIdAssumptions` collects [measurability](jargon_measurable.md), a condition that observed outcomes equal the potential outcomes for the assigned profile, positivity of assignment, and a factorization that expresses random assignment.
+- `ConjointIdAssumptions` collects [measurability](jargon_measurable.md), a condition that observed outcomes equal the potential outcomes for the assigned profile, and a factorization that expresses random assignment.
 - `ConjointIdRandomized` is a stronger, more explicit random-assignment package using [independence](jargon_independent.md).
-- `ConjointSingleShotDesign` describes the one-shot conjoint design with a specified assignment [distribution](jargon_distribution.md), bounded outcomes, and [independence](jargon_independent.md).
+- `ConjointRandomizationMechanism` models the assignment as a function of a randomization variable that is [independent](jargon_independent.md) of every [potential outcome](jargon_potential_outcome.md).
+- `ConjointSingleShotDesign` describes the one-shot conjoint design with a specified assignment [distribution](jargon_distribution.md), an explicit randomization mechanism, and bounded outcomes.
 
 Main logical steps:
 1) Show that `ConjointIdRandomized` implies the factorization used in `ConjointIdAssumptions`.
+1a) Derive ignorability of `X` from the randomization mechanism in `ConjointSingleShotDesign`.
 2) Use that factorization to prove that the [conditional mean](jargon_conditional_mean.md) among `X = x0` equals the potential [mean](jargon_mean.md) for `x0`.
 3) Use the observed-equals-potential condition to replace `Yobs` with `Y x0` inside the [conditional mean](jargon_conditional_mean.md).
 4) Combine the above to identify `amce` as a difference of observed [conditional means](jargon_conditional_mean.md).
@@ -24,6 +26,8 @@ Main logical steps:
 Final result:
 - The file defines `gExp` (the observed [conditional mean](jargon_conditional_mean.md) score) and `gPot` (the causal score), and proves they are equal under the assumptions.
 
-In plain [terms](jargon_term.md): under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function.
+In plain [terms](jargon_term.md): under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function (given a separate positivity assumption for the conditioning events).
 
-Recent changes: minor proof refactors; statements unchanged.
+Note: attribute-level AMCE identification and estimation assumptions (e.g., conditional or componentwise randomization) are not formalized here; we defer to Hainmueller–Hopkins–Yamamoto for those results.
+
+Recent changes: derive assignment ignorability from an explicit randomization mechanism.

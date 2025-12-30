@@ -20,9 +20,10 @@ Key constructions:
 Main theorem:
 - `status_singleShot_design` proves that this concrete setup satisfies `ConjointSingleShotDesign`.
   The proof checks [measurability](jargon_measurable.md), the assignment law, positive probability for each profile,
-  bounded outcomes (0 to 100), and [independence](jargon_independent.md) between assignment and [potential outcomes](jargon_potential_outcome.md).
+  bounded outcomes (0 to 100), and provides an explicit randomization mechanism whose
+  independence from [potential outcomes](jargon_potential_outcome.md) yields ignorability for `X`.
 
 The file ends with corollaries `status_id_randomized` and `status_id_assumptions` that package this
 into the randomized identification assumptions and the paper's identification package.
 
-Recent changes: minor proof refactors; statements unchanged.
+Recent changes: switched to an explicit randomization mechanism in the design assumptions.

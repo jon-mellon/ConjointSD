@@ -1,0 +1,226 @@
+---
+title: "Dependency Tables"
+output: md_document
+---
+
+This document auto-generates theorem dependency tables by parsing the output of
+`Scratch.lean`.
+
+```{r setup, echo=FALSE}
+options(width = 120)
+```
+
+```{r collect, echo=FALSE}
+cmd <- "lake env lean Scratch.lean"
+lines <- system(cmd, intern = TRUE)
+
+# Theorems of interest (base + paper-facing).
+theorems <- c(
+  "sdHatZ_tendsto_ae",
+  "sd_component_consistent",
+  "sd_component_consistent_to_popSDAttr",
+  "gExp_eq_gPot",
+  "popSDAttr_congr_ae",
+  "gStar_eq_sum_blocks_of_WellSpecified",
+  "sequential_consistency_ae",
+  "paper_identifies_potMean_from_condMean",
+  "paper_identifies_amce_from_condMeans",
+  "paper_sd_total_sequential_consistency_ae",
+  "paper_sd_total_sequential_consistency_to_true_target_ae",
+  "paper_sd_total_sequential_consistency_to_gPot_ae_of_identification",
+  "paper_total_sd_estimator_consistency_ae_of_gBTerm",
+  "paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm"
+)
+
+# Extract #print blocks for each theorem.
+block_for <- function(name, lines) {
+  start_pat <- paste0("^theorem ConjointSD\\.", name, "\\.")
+  idx <- grep(start_pat, lines)
+  if (length(idx) == 0) return(character(0))
+  start <- idx[1]
+  # End at next theorem/structure print or end of file.
+  next_idx <- grep("^(theorem|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+  end <- if (length(next_idx) == 0) length(lines) else start + next_idx[1] - 1
+  lines[start:end]
+}
+
+blocks <- setNames(lapply(theorems, block_for, lines = lines), theorems)
+
+# Dependency graph: if a block references another theorem name, count it as a dependency.
+find_deps <- function(name, block, all_names) {
+  if (length(block) == 0) return(character(0))
+  text <- paste(block, collapse = "\n")
+  hits <- vapply(
+    all_names,
+    function(nm) grepl(paste0("ConjointSD.", nm), text, fixed = TRUE),
+    logical(1)
+  )
+  all_names[all_names != name & hits]
+}
+
+raw_deps <- setNames(lapply(theorems, function(nm) find_deps(nm, blocks[[nm]], theorems)), theorems)
+
+# Transitive closure.
+all_deps <- raw_deps
+changed <- TRUE
+while (changed) {
+  changed <- FALSE
+  for (nm in theorems) {
+    deps <- unique(unlist(all_deps[nm]))
+    expanded <- unique(c(deps, unlist(all_deps[deps])))
+    if (!setequal(deps, expanded)) {
+      all_deps[[nm]] <- expanded
+      changed <- TRUE
+    }
+  }
+}
+
+# Assumption patterns (bundled and atomic).
+assumptions <- c(
+  "IsProbabilityMeasure μ",
+  "IIDAssumptions intZ",
+  "IIDAssumptions indep",
+  "IIDAssumptions ident",
+  "IIDAssumptions intZ2",
+  "PopIID measA",
+  "PopIID indepA",
+  "PopIID identA",
+  "ScoreAssumptions meas g",
+  "ScoreAssumptions int g(A0)",
+  "ScoreAssumptions int g(A0)2",
+  "Measurable (A 0)",
+  "Measure map (A 0) μ = ν",
+  "ConjointIdAssumptions measYobs",
+  "ConjointIdAssumptions measY",
+  "ConjointIdAssumptions consistency",
+  "ConjointIdAssumptions positivity",
+  "ConjointIdAssumptions rand",
+  "AE equality s = t under ν",
+  "InvarianceAE",
+  "WellSpecified",
+  "IsProbabilityMeasure ν",
+  "FunctionalContinuityAssumptions cont mean",
+  "FunctionalContinuityAssumptions cont m2",
+  "Tendsto θhat -> θ0",
+  "betaOf θ0 = beta",
+  "GEstimationAssumptions mean tendsto",
+  "GEstimationAssumptions m2 tendsto",
+  "Epsilon > 0"
+)
+
+# Direct assumption detection in a block.
+assumptions_in_block <- function(block, name) {
+  text <- paste(block, collapse = "\n")
+  hit <- setNames(rep(FALSE, length(assumptions)), assumptions)
+
+  hit[["IsProbabilityMeasure μ"]] <- grepl("IsProbabilityMeasure μ", text, fixed = TRUE)
+  hit[["IsProbabilityMeasure ν"]] <- grepl("IsProbabilityMeasure ν", text, fixed = TRUE)
+
+  if (grepl("IIDAssumptions", text, fixed = TRUE)) {
+    hit[c("IIDAssumptions intZ", "IIDAssumptions indep", "IIDAssumptions ident", "IIDAssumptions intZ2")] <- TRUE
+  }
+  if (grepl("PopIID", text, fixed = TRUE)) {
+    hit[c("PopIID measA", "PopIID indepA", "PopIID identA")] <- TRUE
+  }
+  if (grepl("ScoreAssumptions", text, fixed = TRUE)) {
+    hit[c("ScoreAssumptions meas g", "ScoreAssumptions int g(A0)", "ScoreAssumptions int g(A0)2")] <- TRUE
+    hit[c("PopIID measA", "PopIID indepA", "PopIID identA")] <- TRUE
+  }
+  if (grepl("SplitEvalAssumptions", text, fixed = TRUE)) {
+    hit[c("ScoreAssumptions meas g", "ScoreAssumptions int g(A0)", "ScoreAssumptions int g(A0)2")] <- TRUE
+    hit[c("PopIID measA", "PopIID indepA", "PopIID identA")] <- TRUE
+    hit[c("IIDAssumptions intZ", "IIDAssumptions indep", "IIDAssumptions ident", "IIDAssumptions intZ2")] <- TRUE
+  }
+  if (grepl("ConjointIdAssumptions", text, fixed = TRUE)) {
+    hit[c("ConjointIdAssumptions measYobs", "ConjointIdAssumptions measY",
+          "ConjointIdAssumptions consistency", "ConjointIdAssumptions positivity",
+          "ConjointIdAssumptions rand")] <- TRUE
+  }
+  if (grepl("InvarianceAE", text, fixed = TRUE)) hit[["InvarianceAE"]] <- TRUE
+  if (grepl("WellSpecified", text, fixed = TRUE)) hit[["WellSpecified"]] <- TRUE
+  if (grepl("FunctionalContinuityAssumptions", text, fixed = TRUE)) {
+    hit[c("FunctionalContinuityAssumptions cont mean", "FunctionalContinuityAssumptions cont m2")] <- TRUE
+  }
+  if (grepl("GEstimationAssumptions", text, fixed = TRUE)) {
+    hit[c("GEstimationAssumptions mean tendsto", "GEstimationAssumptions m2 tendsto")] <- TRUE
+  }
+  if (grepl("Measure.map (A 0) μ = ν", text, fixed = TRUE)) hit[["Measure map (A 0) μ = ν"]] <- TRUE
+  if (grepl("Measurable (A 0)", text, fixed = TRUE)) hit[["Measurable (A 0)"]] <- TRUE
+  if (grepl("Tendsto θhat", text, fixed = TRUE)) hit[["Tendsto θhat -> θ0"]] <- TRUE
+  if (grepl("βOf θ0 = β", text, fixed = TRUE) || grepl("βOf θ0 = β0", text, fixed = TRUE)) {
+    hit[["betaOf θ0 = beta"]] <- TRUE
+  }
+  if (grepl("0 < ε", text, fixed = TRUE)) hit[["Epsilon > 0"]] <- TRUE
+
+  if (name == "popSDAttr_congr_ae") {
+    hit[["AE equality s = t under ν"]] <- TRUE
+  }
+
+  hit
+}
+
+assumption_direct <- setNames(lapply(theorems, function(nm) assumptions_in_block(blocks[[nm]], nm)), theorems)
+
+# Make assumptions transitive along theorem dependencies.
+assumption_all <- assumption_direct
+for (nm in theorems) {
+  deps <- all_deps[[nm]]
+  if (length(deps) > 0) {
+    trans <- Reduce(`|`, lapply(deps, function(d) assumption_all[[d]]), init = assumption_all[[nm]])
+    assumption_all[[nm]] <- trans
+  }
+}
+
+sym_yes <- "✅"
+sym_no <- "❌"
+
+pretty_name <- function(x) gsub("_", " ", x, fixed = TRUE)
+
+fmt_matrix <- function(mat, diag_omit = FALSE) {
+  out <- mat
+  for (i in seq_len(nrow(out))) {
+    for (j in seq_len(ncol(out))) {
+      if (diag_omit && i == j) {
+        out[i, j] <- "Ø"
+      } else {
+        out[i, j] <- if (out[i, j]) sym_yes else sym_no
+      }
+    }
+  }
+  out
+}
+
+# Assumption matrix (rows = assumptions, cols = theorems).
+assump_mat <- matrix(FALSE, nrow = length(assumptions), ncol = length(theorems),
+                     dimnames = list(assumptions, theorems))
+for (j in seq_along(theorems)) {
+  assump_mat[, j] <- as.logical(assumption_all[[theorems[j]]])
+}
+
+dimnames(assump_mat) <- list(pretty_name(rownames(assump_mat)), pretty_name(colnames(assump_mat)))
+assump_fmt <- fmt_matrix(assump_mat)
+
+# Theorem dependency matrix (rows = theorems, cols = theorems).
+
+dep_mat <- matrix(FALSE, nrow = length(theorems), ncol = length(theorems),
+                  dimnames = list(theorems, theorems))
+for (j in seq_along(theorems)) {
+  col_name <- theorems[j]
+  dep_mat[, j] <- theorems %in% all_deps[[col_name]]
+}
+
+dimnames(dep_mat) <- list(pretty_name(rownames(dep_mat)), pretty_name(colnames(dep_mat)))
+dep_fmt <- fmt_matrix(dep_mat, diag_omit = TRUE)
+```
+
+## Auto-generated assumption matrix
+
+```{r assumption-table, echo=FALSE}
+knitr::kable(cbind(Assumption = rownames(assump_fmt), assump_fmt), align = "l")
+```
+
+## Auto-generated theorem dependency matrix
+
+```{r dependency-table, echo=FALSE}
+knitr::kable(cbind(Theorem = rownames(dep_fmt), dep_fmt), align = "l")
+```

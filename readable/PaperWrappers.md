@@ -5,8 +5,8 @@ Lean file: [ConjointSD/PaperWrappers.lean](../ConjointSD/PaperWrappers.lean)
 This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript.
 
 Section 1: identification
-- Wraps the identification results so they read as "[conditional mean](jargon_conditional_mean.md) identifies the potential [mean](jargon_mean.md)" and "difference in [conditional [means](jargon_mean.md)](jargon_conditional_mean.md) identifies the treatment contrast."
-- Adds status-conjoint identification wrappers so the concrete survey design can instantiate these results directly.
+- Wraps the identification results so they read as "[conditional mean](jargon_conditional_mean.md) identifies the potential [mean](jargon_mean.md)" and "difference in [conditional [means](jargon_mean.md)](jargon_conditional_mean.md) identifies the treatment contrast," now with an explicit positivity assumption on the conditioning events.
+- Adds status-conjoint identification wrappers and derives positivity from the single-shot design before applying the generic identification results.
 
 Section 2: model to [blocks](jargon_block.md)
 - Wraps the result that a [well-specified](jargon_well_specified.md) linear model implies the causal score equals the sum of block scores (see [linear model](jargon_linear_model.md) and [block](jargon_block.md)).

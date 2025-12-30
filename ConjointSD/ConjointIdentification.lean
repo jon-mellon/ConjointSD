@@ -107,7 +107,7 @@ lemma ConjointIdAssumptions.of_randomized
     {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
     (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs)) :
     ConjointIdAssumptions (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) := by
-  refine ⟨h.measYobs, h.measY, h.consistency, (by intro x; exact h.positivity x), ?_⟩
+  refine ⟨h.measYobs, h.measY, h.consistency, ?_⟩
   · intro x x0
     exact rand_from_randomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x x0
 
@@ -133,27 +133,25 @@ lemma ConjointIdRandomized.of_singleShot
     (h : ConjointSingleShotDesign (μ := μ) (ν := ν) (X := X) (Y := Y) (Yobs := Yobs)) :
     ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) := by
   classical
+  -- Extract the randomization mechanism.
+  rcases h.rand.exists_randomization with
+    ⟨R, instR, U, f, measU, measf, X_eq, indepU⟩
+  letI : MeasurableSpace R := instR
+  have hXmeas : Measurable X := by
+    simpa [X_eq] using measf.comp measU
+  have hign : ∀ x, (fun ω => X ω) ⟂ᵢ[μ] (fun ω => Y x ω) := by
+    intro x
+    have hcomp : (fun ω => f (U ω)) ⟂ᵢ[μ] (fun ω => Y x ω) :=
+      (indepU x).comp measf measurable_id
+    simpa [X_eq] using hcomp
   refine
-    { measX := h.measX
+    { measX := hXmeas
       measYobs := h.measYobs
       measY := h.measY
       consistency := h.consistency
-      positivity := ?_
       integrableY := ?_
       bounded := h.bounded
-      ignorability := h.ignorability } 
-  · intro x
-    have hmap := congrArg (fun m => m {x}) h.lawX
-    have hset : MeasurableSet ({x} : Set Attr) := measurableSet_singleton x
-    have hmap_pre : Measure.map X μ {x} = μ (X ⁻¹' {x}) :=
-      Measure.map_apply h.measX hset
-    have hpreimage :
-        μ (eventX (X := X) x) = ν {x} := by
-      calc
-        μ (eventX (X := X) x) = μ (X ⁻¹' {x}) := by rfl
-        _ = Measure.map X μ {x} := by simpa using hmap_pre.symm
-        _ = ν {x} := hmap
-    simpa [hpreimage] using h.ν_pos x
+      ignorability := hign } 
   · intro x
     have hbound := h.bounded x
     have hmeas := h.measY x
@@ -161,6 +159,30 @@ lemma ConjointIdRandomized.of_singleShot
     have hfin : IsFiniteMeasure μ := by infer_instance
     simpa using
       (integrable_of_bounded (μ := μ) (hmeas := hmeas) (hbound := hbound))
+
+lemma positivity_of_singleShot
+    [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    {ν : Measure Attr} {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
+    (h : ConjointSingleShotDesign (μ := μ) (ν := ν) (X := X) (Y := Y) (Yobs := Yobs)) :
+    ∀ x, μ (eventX (X := X) x) ≠ 0 := by
+  classical
+  rcases h.rand.exists_randomization with
+    ⟨R, instR, U, f, measU, measf, X_eq, indepU⟩
+  letI : MeasurableSpace R := instR
+  have hXmeas : Measurable X := by
+    simpa [X_eq] using measf.comp measU
+  intro x
+  have hmap := congrArg (fun m => m {x}) h.lawX
+  have hset : MeasurableSet ({x} : Set Attr) := measurableSet_singleton x
+  have hmap_pre : Measure.map X μ {x} = μ (X ⁻¹' {x}) :=
+    Measure.map_apply hXmeas hset
+  have hpreimage :
+      μ (eventX (X := X) x) = ν {x} := by
+    calc
+      μ (eventX (X := X) x) = μ (X ⁻¹' {x}) := by rfl
+      _ = Measure.map X μ {x} := by simpa using hmap_pre.symm
+      _ = ν {x} := hmap
+  simpa [hpreimage] using h.ν_pos x
 
 
 section
@@ -233,7 +255,8 @@ end
 theorem identified_potMean_from_condMean [IsProbabilityMeasure μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
-    (x0 : Attr) :
+    (x0 : Attr)
+    (hpos : μ (eventX (X := X) x0) ≠ 0) :
     condMean (μ := μ) Yobs (eventX (X := X) x0) = potMean (μ := μ) Y x0 := by
   have hae :
     (∀ᵐ ω ∂(μ.restrict (eventX (X := X) x0)), Yobs ω = Y x0 ω) :=
@@ -244,7 +267,6 @@ theorem identified_potMean_from_condMean [IsProbabilityMeasure μ] [MeasurableSp
         =
       (∫ ω, Y x0 ω ∂(μ.restrict (eventX (X := X) x0))) := by
     exact integral_congr_ae hae
-  have hpos : μ (eventX (X := X) x0) ≠ 0 := h.positivity x0
   have hrand :
       (∫ ω, Y x0 ω ∂(μ.restrict (eventX (X := X) x0)))
         =
@@ -262,6 +284,7 @@ theorem identified_potMean_from_condMean [IsProbabilityMeasure μ] [MeasurableSp
 theorem identified_amce_from_condMeans [IsProbabilityMeasure μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0)
     (x x' : Attr) :
     (condMean (μ := μ) Yobs (eventX (X := X) x')
       - condMean (μ := μ) Yobs (eventX (X := X) x))
@@ -270,10 +293,12 @@ theorem identified_amce_from_condMeans [IsProbabilityMeasure μ] [MeasurableSpac
   unfold amce
   have hx' :
       condMean (μ := μ) Yobs (eventX (X := X) x') = potMean (μ := μ) Y x' :=
-    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x'
+    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h
+      x' (hpos x')
   have hx :
       condMean (μ := μ) Yobs (eventX (X := X) x) = potMean (μ := μ) Y x :=
-    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x
+    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h
+      x (hpos x)
   simp [hx', hx]
 
 /-!
@@ -294,10 +319,12 @@ equals the causal potential-mean score function (pointwise, hence as functions).
 -/
 theorem gExp_eq_gPot [IsProbabilityMeasure μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    (h : ConjointIdAssumptions (μ := μ) X Y Yobs) :
+    (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0) :
     gExp (μ := μ) (X := X) (Yobs := Yobs) = gPot (μ := μ) (Y := Y) := by
   funext x
   simpa [gExp, gPot] using
-    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x
+    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h
+      x (hpos x)
 
 end ConjointSD
