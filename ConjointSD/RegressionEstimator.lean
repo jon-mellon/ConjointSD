@@ -113,7 +113,7 @@ functionals are continuous at `θ0`, then `GEstimationAssumptions` holds.
 -/
 theorem GEstimationAssumptions_of_OLSConsistency
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
     {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
     (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
@@ -122,6 +122,6 @@ theorem GEstimationAssumptions_of_OLSConsistency
     GEstimationAssumptions (ν := ν) g θ0 ols.θhat :=
   GEstimationAssumptions_of_theta_tendsto
     (ν := ν) (g := g) (θ0 := θ0) (θhat := ols.θhat)
-    hCons.tendsto_theta hCont
+    ⟨hCons.tendsto_theta⟩ hCont
 
 end ConjointSD

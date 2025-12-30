@@ -28,18 +28,18 @@ then `GEstimationAssumptions` holds.
 -/
 theorem GEstimationAssumptions_of_theta_tendsto
     {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hcont : FunctionalContinuityAssumptions (ν := ν) g θ0) :
     GEstimationAssumptions (ν := ν) g θ0 θhat := by
   refine
     { mean_tendsto := ?_
       m2_tendsto   := ?_ }
   · -- mean_tendsto
-    simpa [gHat, popMeanΘ] using (hcont.cont_mean.tendsto.comp hθ)
+    simpa [gHat, popMeanΘ] using (hcont.cont_mean.tendsto.comp hθ.tendsto)
   · -- m2_tendsto
-    simpa [gHat, popM2Θ] using (hcont.cont_m2.tendsto.comp hθ)
+    simpa [gHat, popM2Θ] using (hcont.cont_m2.tendsto.comp hθ.tendsto)
 
 /--
 Derived variance convergence (new name to avoid collisions).
@@ -49,7 +49,7 @@ So if mean and second moment converge, variance converges.
 -/
 theorem popVarAttr_tendsto_of_GEstimationAssumptions_bridge
     {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hG : GEstimationAssumptions (ν := ν) g θ0 θhat) :
     Tendsto
@@ -94,9 +94,9 @@ theorem popVarAttr_tendsto_of_GEstimationAssumptions_bridge
 `GEstimationAssumptions` per block. -/
 theorem block_GEstimationAssumptions_of_theta_tendsto
     {Attr Θ B : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ] [Fintype B]
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hcont : BlockFunctionalContinuityAssumptions (ν := ν) gB θ0) :
     ∀ b : B, GEstimationAssumptions (ν := ν) (blockScoreΘ (gB := gB) b) θ0 θhat := by
   let _ := (inferInstance : Fintype B)

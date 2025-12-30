@@ -42,9 +42,8 @@ under `ν`.
 -/
 theorem popMeanZ_Zcomp_eq_popMeanAttr
     (g : Attr → ℝ)
-    (hA0 : Measurable (A 0))
-    (hg : Measurable g)
-    (hLaw : Measure.map (A 0) μ = ν) :
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hg : Measurable g) :
     popMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
     popMeanAttr ν g := by
@@ -55,7 +54,7 @@ theorem popMeanZ_Zcomp_eq_popMeanAttr
     -- change-of-variables for pushforward measures
     simpa using
       (MeasureTheory.integral_map (μ := μ) (f := g) (φ := A 0)
-        hA0.aemeasurable hg_str)
+        hMap.measA0.aemeasurable hg_str)
   calc
     popMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g))
         = (∫ ω, g (A 0 ω) ∂μ) := by
@@ -63,7 +62,7 @@ theorem popMeanZ_Zcomp_eq_popMeanAttr
     _   = (∫ a, g a ∂Measure.map (A 0) μ) := by
             simp [hmap]
     _   = (∫ a, g a ∂ν) := by
-            simp [hLaw]
+            simp [hMap.map_eq]
     _   = popMeanAttr ν g := by
             simp [popMeanAttr]
 
@@ -73,9 +72,8 @@ under `ν`.
 -/
 theorem popM2Z_Zcomp_eq_popM2Attr
     (g : Attr → ℝ)
-    (hA0 : Measurable (A 0))
-    (hg : Measurable g)
-    (hLaw : Measure.map (A 0) μ = ν) :
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hg : Measurable g) :
     popM2Z (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
     popM2Attr ν g := by
@@ -89,7 +87,7 @@ theorem popM2Z_Zcomp_eq_popM2Attr
       (∫ a, g2 a ∂Measure.map (A 0) μ) = (∫ ω, g2 (A 0 ω) ∂μ) := by
     simpa using
       (MeasureTheory.integral_map (μ := μ) (f := g2) (φ := A 0)
-        hA0.aemeasurable hg2_str)
+        hMap.measA0.aemeasurable hg2_str)
   calc
     popM2Z (μ := μ) (Z := Zcomp (A := A) (g := g))
         = (∫ ω, (g (A 0 ω)) ^ 2 ∂μ) := by
@@ -99,7 +97,7 @@ theorem popM2Z_Zcomp_eq_popM2Attr
     _   = (∫ a, g2 a ∂Measure.map (A 0) μ) := by
             simp [hmap]
     _   = (∫ a, g2 a ∂ν) := by
-            simp [hLaw]
+            simp [hMap.map_eq]
     _   = (∫ a, (g a) ^ 2 ∂ν) := by
             simp [g2, pow_two]
     _   = popM2Attr ν g := by
@@ -108,32 +106,30 @@ theorem popM2Z_Zcomp_eq_popM2Attr
 /-- Bridge for variances (proxy form): follows from the mean and second-moment bridges. -/
 theorem popVarZ_Zcomp_eq_popVarAttr
     (g : Attr → ℝ)
-    (hA0 : Measurable (A 0))
-    (hg : Measurable g)
-    (hLaw : Measure.map (A 0) μ = ν) :
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hg : Measurable g) :
     popVarZ (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
     popVarAttr ν g := by
   have hmean :
       popMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g)) = popMeanAttr ν g :=
-    popMeanZ_Zcomp_eq_popMeanAttr (μ := μ) (A := A) (ν := ν) (g := g) hA0 hg hLaw
+    popMeanZ_Zcomp_eq_popMeanAttr (μ := μ) (A := A) (ν := ν) (g := g) hMap hg
   have hm2 :
       popM2Z (μ := μ) (Z := Zcomp (A := A) (g := g)) = popM2Attr ν g :=
-    popM2Z_Zcomp_eq_popM2Attr (μ := μ) (A := A) (ν := ν) (g := g) hA0 hg hLaw
+    popM2Z_Zcomp_eq_popM2Attr (μ := μ) (A := A) (ν := ν) (g := g) hMap hg
   simp [popVarZ, popVarAttr, hmean, hm2]
 
 /-- Bridge for SDs: follows from the variance bridge. -/
 theorem popSDZ_Zcomp_eq_popSDAttr
     (g : Attr → ℝ)
-    (hA0 : Measurable (A 0))
-    (hg : Measurable g)
-    (hLaw : Measure.map (A 0) μ = ν) :
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hg : Measurable g) :
     popSDZ (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
     popSDAttr ν g := by
   have hvar :
       popVarZ (μ := μ) (Z := Zcomp (A := A) (g := g)) = popVarAttr ν g :=
-    popVarZ_Zcomp_eq_popVarAttr (μ := μ) (A := A) (ν := ν) (g := g) hA0 hg hLaw
+    popVarZ_Zcomp_eq_popVarAttr (μ := μ) (A := A) (ν := ν) (g := g) hMap hg
   simp [popSDZ, popSDAttr, hvar]
 
 end

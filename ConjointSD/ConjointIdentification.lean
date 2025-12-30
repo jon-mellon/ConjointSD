@@ -24,7 +24,7 @@ lemma toReal_ne_zero_of_ne_zero (μ : Measure Ω) [IsFiniteMeasure μ]
 
 /-- Derive the `rand` factorization from randomized strong ignorability. -/
 lemma rand_from_randomized
-    [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
     (x x0 : Attr) :
@@ -103,7 +103,7 @@ lemma rand_from_randomized
               simp [hs]
 
 lemma ConjointIdAssumptions.of_randomized
-    [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
     (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs)) :
     ConjointIdAssumptions (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) := by
@@ -128,7 +128,7 @@ Instantiate `ConjointIdRandomized` from a single-shot assignment design (`ν` gi
 with positive mass on each profile) plus bounded outcomes and ignorability.
 -/
 lemma ConjointIdRandomized.of_singleShot
-    [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     {ν : Measure Attr} {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
     (h : ConjointSingleShotDesign (μ := μ) (ν := ν) (X := X) (Y := Y) (Yobs := Yobs)) :
     ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) := by
@@ -161,7 +161,7 @@ lemma ConjointIdRandomized.of_singleShot
       (integrable_of_bounded (μ := μ) (hmeas := hmeas) (hbound := hbound))
 
 lemma positivity_of_singleShot
-    [IsProbabilityMeasure μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     {ν : Measure Attr} {X : Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
     (h : ConjointSingleShotDesign (μ := μ) (ν := ν) (X := X) (Y := Y) (Yobs := Yobs)) :
     ∀ x, μ (eventX (X := X) x) ≠ 0 := by
@@ -188,7 +188,7 @@ lemma positivity_of_singleShot
 section
 /-- If the factorization holds, the event-conditional mean equals the unconditional mean. -/
 theorem condMean_eq_potMean_of_rand
-    [IsProbabilityMeasure μ]
+    [ProbMeasureAssumptions μ]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ)
     (x x0 : Attr)
     (hpos : μ (eventX (X := X) x0) ≠ 0)
@@ -252,7 +252,7 @@ theorem ae_restrict_consistency
 end
 
 /-- Identification: observed conditional mean among `X=x0` equals `E[Y(x0)]`. -/
-theorem identified_potMean_from_condMean [IsProbabilityMeasure μ] [MeasurableSpace Attr]
+theorem identified_potMean_from_condMean [ProbMeasureAssumptions μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
     (x0 : Attr)
@@ -281,7 +281,7 @@ theorem identified_potMean_from_condMean [IsProbabilityMeasure μ] [MeasurableSp
           exact condMean_eq_potMean_of_rand (μ := μ) (X := X) (Y := Y) x0 x0 hpos hrand
 
 /-- Identification of AMCE as a difference of observed conditional means. -/
-theorem identified_amce_from_condMeans [IsProbabilityMeasure μ] [MeasurableSpace Attr]
+theorem identified_amce_from_condMeans [ProbMeasureAssumptions μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
     (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0)
@@ -317,7 +317,7 @@ def gPot (μ : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
 Under the conjoint identification assumptions, the observed conditional-mean score function
 equals the causal potential-mean score function (pointwise, hence as functions).
 -/
-theorem gExp_eq_gPot [IsProbabilityMeasure μ] [MeasurableSpace Attr]
+theorem gExp_eq_gPot [ProbMeasureAssumptions μ] [MeasurableSpace Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
     (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0) :

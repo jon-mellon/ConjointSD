@@ -29,7 +29,7 @@ lemma integrable_of_bounded
   simpa [Real.norm_eq_abs] using hC'
 
 lemma scoreAssumptions_of_bounded
-    [IsProbabilityMeasure μ]
+    [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hPop : PopIID (μ := μ) A)
     (hMeas : Measurable g)
@@ -59,11 +59,10 @@ lemma scoreAssumptions_of_bounded
   exact ⟨hPop, hMeas, hint_gA0, hint_sq⟩
 
 /-- From `ScoreAssumptions`, derive `IIDAssumptions` for Z := Zcomp A g. -/
-lemma iidAssumptions_Zcomp [IsProbabilityMeasure μ]
+lemma iidAssumptions_Zcomp [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (h : ScoreAssumptions (μ := μ) A g) :
     IIDAssumptions (μ := μ) (Zcomp (A := A) (g := g)) := by
-  let _ := (inferInstance : IsProbabilityMeasure μ)
   let Z : ℕ → Ω → ℝ := Zcomp (A := A) (g := g)
   refine ⟨?intZ, ?indepZ, ?identZ, ?intZ2⟩
   · simpa [Z, Zcomp] using h.int_g0
@@ -80,7 +79,7 @@ lemma iidAssumptions_Zcomp [IsProbabilityMeasure μ]
   · simpa [Z, Zcomp] using h.int_g0_sq
 
 /-- Consistency of the plug-in SD for a single component scoring rule g. -/
-theorem sd_component_consistent [IsProbabilityMeasure μ]
+theorem sd_component_consistent [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (h : ScoreAssumptions (μ := μ) A g) :
     ∀ᵐ ω ∂μ,
@@ -92,7 +91,7 @@ theorem sd_component_consistent [IsProbabilityMeasure μ]
     iidAssumptions_Zcomp (μ := μ) (A := A) (g := g) h
   simpa using (sdHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := A) (g := g)) hIID)
 
-theorem sd_component_consistent_of_bounded [IsProbabilityMeasure μ]
+theorem sd_component_consistent_of_bounded [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hPop : PopIID (μ := μ) A)
     (hMeas : Measurable g)
@@ -117,7 +116,7 @@ discharge the integrability requirements automatically.
 variable {B : Type*}
 
 /-- SD consistency for any chosen block b. -/
-theorem sd_block_consistent [IsProbabilityMeasure μ]
+theorem sd_block_consistent [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : B → Attr → ℝ)
     (h : DecompAssumptions (μ := μ) (B := B) A g)
     (b : B) :

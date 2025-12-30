@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/StatusConjointDesign.lean](../ConjointSD/StatusConjointDesign.lean)
 
-This file instantiates the conjoint design for the specific "status" study used in the paper.
+This file instantiates the conjoint design for the specific "status" study used in the paper. It now uses `ProbMeasureAssumptions` in place of standalone probability-measure hypotheses when defining the concrete distributions.
 
 What it sets up:
 - The [profile](jargon_profile.md) space is a finite set of 8,500 feasible personas.

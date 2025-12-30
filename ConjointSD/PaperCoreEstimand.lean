@@ -27,7 +27,7 @@ variable {Term : Type*} [Fintype Term]
 
 variable (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
 
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 
 /-- Paper’s “true block score”: the block contribution `Attr → ℝ` for block `b`. -/
 def paperTrueBlockScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : Attr → ℝ :=
@@ -40,7 +40,7 @@ def paperTrueTotalScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → A
 
 /-- Population SD of the true block score for block `b` under `ν`. -/
 def paperBlockSD
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν)
@@ -48,7 +48,7 @@ def paperBlockSD
 
 /-- Population SD of the true total score under `ν`. -/
 def paperTotalSD
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν)
@@ -56,19 +56,19 @@ def paperTotalSD
 
 /-- Vector of paper block-SD targets. -/
 def paperBlockSDs
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : B → ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν)
     exact fun b => paperBlockSD (ν := ν) blk β0 φ b
 
 theorem paperBlockSDs_apply
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) :
     paperBlockSDs (ν := ν) blk β0 φ b = paperBlockSD (ν := ν) blk β0 φ b := rfl
 
 theorem paperTotalSD_def
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) :
     paperTotalSD (ν := ν) blk β0 φ
       =
@@ -97,7 +97,7 @@ def paperBlockSDs_weighted
   fun b => paperBlockSD_weighted (ν := ν) (w := w) blk β0 φ b
 
 theorem paperBlockSD_weighted_eq_pop
-    (ν : Measure Attr) [IsProbabilityMeasure ν] (w : Attr → ℝ)
+    (ν : Measure Attr) [ProbMeasureAssumptions ν] (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B)
     (hMom : WeightMatchesPopMoments (ν := ν) (w := w)
       (s := paperTrueBlockScore blk β0 φ b)) :
@@ -109,7 +109,7 @@ theorem paperBlockSD_weighted_eq_pop
       (s := paperTrueBlockScore blk β0 φ b) hMom)
 
 theorem paperTotalSD_weighted_eq_pop
-    (ν : Measure Attr) [IsProbabilityMeasure ν] (w : Attr → ℝ)
+    (ν : Measure Attr) [ProbMeasureAssumptions ν] (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
     (hMom : WeightMatchesPopMoments (ν := ν) (w := w)
       (s := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))) :
@@ -121,7 +121,7 @@ theorem paperTotalSD_weighted_eq_pop
       (s := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) hMom)
 
 theorem paperBlockSDs_weighted_eq_pop
-    (ν : Measure Attr) [IsProbabilityMeasure ν] (w : Attr → ℝ)
+    (ν : Measure Attr) [ProbMeasureAssumptions ν] (w : Attr → ℝ)
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
     (hMom : ∀ b : B, WeightMatchesPopMoments (ν := ν) (w := w)
       (s := paperTrueBlockScore blk β0 φ b)) :
@@ -148,10 +148,10 @@ variable {B : Type*} [Fintype B] [DecidableEq B]
 variable {Term : Type*} [Fintype Term]
 variable {Θ : Type*} [TopologicalSpace Θ]
 
-variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
 variable (A : ℕ → Ω → Attr)
 
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 
 /-- Paper’s main SD estimator: evaluation-stage SD for the term-induced total score. -/
 def paperTotalSDEst
@@ -171,20 +171,20 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
     (βOf : Θ → Term → ℝ) (β0 : Term → ℝ)
     (θ0 : Θ) (θhat : ℕ → Θ)
     (hβ : βOf θ0 = β0)
-    (hLaw : Measure.map (A 0) μ = ν)
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptions
           (μ := μ) (A := A)
           (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
           (θhat := θhat) m)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         (∀ᵐ ω ∂μ,
@@ -208,7 +208,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
       (μ := μ) (A := A) (ν := ν)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
-      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (gTrue := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
       (hTrue := hTrue) (ε := ε) (hε := hε)
       with ⟨M, hM⟩
@@ -250,20 +250,20 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
     (hβ : βOf θ0 = β)
     (Y : Attr → Ω → ℝ)
     (hspec : WellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ))
-    (hLaw : Measure.map (A 0) μ = ν)
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptions
           (μ := μ) (A := A)
           (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
           (θhat := θhat) m)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         (∀ᵐ ω ∂μ,
@@ -292,7 +292,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
       (θ0 := θ0) (θhat := θhat)
       (Y := Y) (blk := blk) (β := β) (φ := φ)
       (hTotalModel := hTotalModel) (hspec := hspec)
-      (hLaw := hLaw) (hSplitTotal := hSplitTotal)
+      (hMap := hMap) (hSplitTotal := hSplitTotal)
       (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
 

@@ -15,14 +15,12 @@ import ConjointSD
 
 -- Sample splitting (evaluation stage).
 #print ConjointSD.sdHat_fixed_m_tendsto_ae_popSDAttr
-#print ConjointSD.sdHat_fixed_m_tendsto_ae_popSDAttr_of_bounded
 
 -- Sequential consistency (train then eval).
 #print ConjointSD.totalErr_tendsto_trainErr_fixed_m
 #print ConjointSD.totalErr_tendsto_trainErr_fixed_m_of_bounded
 #print ConjointSD.trainErr_tendsto_zero
 #print ConjointSD.sequential_consistency_ae
-#print ConjointSD.sequential_consistency_ae_of_bounded
 
 -- Decomposition sequential consistency.
 #print ConjointSD.sequential_consistency_blocks_ae

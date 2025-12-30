@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/SequentialConsistency.lean](../ConjointSD/SequentialConsistency.lean)
 
-This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting.
+This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It now uses bundled assumption records (`ProbMeasureAssumptions`, `MapLawAssumptions`, `ThetaTendstoAssumptions`, `EpsilonAssumptions`) instead of repeating the atomic hypotheses.
 It uses the notion of [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md).
 
 Definitions:

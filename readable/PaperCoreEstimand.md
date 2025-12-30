@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/PaperCoreEstimand.lean](../ConjointSD/PaperCoreEstimand.lean)
 
-This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md).
+This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md). It now takes the bundled assumption records (`ProbMeasureAssumptions`, `MapLawAssumptions`, `ThetaTendstoAssumptions`, `EpsilonAssumptions`) instead of standalone hypotheses.
 
 Part 1: core targets
 - `paperTrueBlockScore` and `paperTrueTotalScore` are the true [block](jargon_block.md) and total scores induced by the [term](jargon_term.md) model.

@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/PaperWrappers.lean](../ConjointSD/PaperWrappers.lean)
 
-This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript.
+This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript. The wrapper statements now use bundled assumptions (`ProbMeasureAssumptions`, `MapLawAssumptions`, `ThetaTendstoAssumptions`, `EpsilonAssumptions`) instead of repeating the atomic hypotheses.
 
 Section 1: identification
 - Wraps the identification results so they read as "[conditional mean](jargon_conditional_mean.md) identifies the potential [mean](jargon_mean.md)" and "difference in [conditional [means](jargon_mean.md)](jargon_conditional_mean.md) identifies the treatment contrast," now with an explicit positivity assumption on the conditioning events.

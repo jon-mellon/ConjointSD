@@ -40,22 +40,22 @@ def weightSDAttr (ν : Measure Attr) (w s : Attr → ℝ) : ℝ :=
   Real.sqrt (weightVarAttr (ν := ν) w s)
 
 lemma weightMeanAttr_one
-    (ν : Measure Attr) [IsProbabilityMeasure ν] (s : Attr → ℝ) :
+    (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
     weightMeanAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = popMeanAttr ν s := by
   simp [weightMeanAttr, popMeanAttr]
 
 lemma weightM2Attr_one
-    (ν : Measure Attr) [IsProbabilityMeasure ν] (s : Attr → ℝ) :
+    (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
     weightM2Attr (ν := ν) (w := fun _ => (1 : ℝ)) s = popM2Attr ν s := by
   simp [weightM2Attr, popM2Attr]
 
 lemma weightVarAttr_one
-    (ν : Measure Attr) [IsProbabilityMeasure ν] (s : Attr → ℝ) :
+    (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
     weightVarAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = popVarAttr ν s := by
   simp [weightVarAttr, popVarAttr, weightMeanAttr_one, weightM2Attr_one]
 
 lemma weightSDAttr_one
-    (ν : Measure Attr) [IsProbabilityMeasure ν] (s : Attr → ℝ) :
+    (ν : Measure Attr) [ProbMeasureAssumptions ν] (s : Attr → ℝ) :
     weightSDAttr (ν := ν) (w := fun _ => (1 : ℝ)) s = popSDAttr ν s := by
   simp [weightSDAttr, popSDAttr, weightVarAttr_one]
 

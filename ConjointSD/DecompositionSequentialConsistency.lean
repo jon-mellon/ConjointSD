@@ -37,16 +37,16 @@ def gTotalΘ (gB : B → Θ → Attr → ℝ) : Θ → Attr → ℝ :=
 
 /-- Per-block sequential consistency with a single `M` working for all `b : B` (finite B). -/
 theorem sequential_consistency_blocks_ae
-    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
-    (hLaw : Measure.map (A 0) μ = ν)
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
       SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hG : ∀ b,
       GEstimationAssumptions (ν := ν) (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
@@ -64,7 +64,7 @@ theorem sequential_consistency_blocks_ae
     intro b
     simpa [gBlock] using
       (sequential_consistency_ae
-        (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+        (μ := μ) (A := A) (ν := ν) (hMap := hMap)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
         (hG := hG b)
@@ -82,17 +82,17 @@ theorem sequential_consistency_blocks_ae
 
 /-- Total-score sequential consistency for the summed score `gTotalΘ`. -/
 theorem sequential_consistency_total_ae
-    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
-    (hLaw : Measure.map (A 0) μ = ν)
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hGTotal :
       GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         (∀ᵐ ω ∂μ,
@@ -100,23 +100,23 @@ theorem sequential_consistency_total_ae
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   simpa [gTotalΘ] using
     (sequential_consistency_ae
-      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+      (μ := μ) (A := A) (ν := ν) (hMap := hMap)
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
       (hG := hGTotal)
       (ε := ε) (hε := hε))
 
 theorem sequential_consistency_blocks_ae_of_bounded
-    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
-    (hLaw : Measure.map (A 0) μ = ν)
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
       SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hG : ∀ b,
       GEstimationAssumptions (ν := ν) (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
@@ -131,22 +131,22 @@ theorem sequential_consistency_blocks_ae_of_bounded
         (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) (m := m) (hSplit m b)
   exact
     sequential_consistency_blocks_ae
-      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+      (μ := μ) (A := A) (ν := ν) (hMap := hMap)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplit') (hG := hG) (ε := ε) (hε := hε)
 
 theorem sequential_consistency_total_ae_of_bounded
-    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
-    (hLaw : Measure.map (A 0) μ = ν)
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hGTotal :
       GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         (∀ᵐ ω ∂μ,
@@ -160,7 +160,7 @@ theorem sequential_consistency_total_ae_of_bounded
         (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) (m := m) (hSplitTotal m)
   exact
     sequential_consistency_total_ae
-      (μ := μ) (A := A) (ν := ν) (hLaw := hLaw)
+      (μ := μ) (A := A) (ν := ν) (hMap := hMap)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotal') (hGTotal := hGTotal) (ε := ε) (hε := hε)
 

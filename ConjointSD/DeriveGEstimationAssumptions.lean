@@ -25,9 +25,9 @@ and functional continuity.
 -/
 theorem derive_hG
     {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hcont : FunctionalContinuityAssumptions (ν := ν) g θ0) :
     GEstimationAssumptions (ν := ν) g θ0 θhat :=
   GEstimationAssumptions_of_theta_tendsto
@@ -39,9 +39,9 @@ Route-2: derive `∀ b, GEstimationAssumptions …` for block scores from
 -/
 theorem derive_hG_blocks
     {Attr Θ B : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ] [Fintype B]
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hcont : BlockFunctionalContinuityAssumptions (ν := ν) gB θ0) :
     ∀ b : B, GEstimationAssumptions (ν := ν) (blockScoreΘ (gB := gB) b) θ0 θhat :=
   block_GEstimationAssumptions_of_theta_tendsto

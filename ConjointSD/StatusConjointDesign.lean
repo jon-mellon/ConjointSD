@@ -46,6 +46,8 @@ instance : IsProbabilityMeasure νStatus := by
   simpa [νStatus] using
     (PMF.toMeasure.isProbabilityMeasure (PMF.uniformOfFintype (α := StatusProfile)))
 
+instance : ProbMeasureAssumptions νStatus := ⟨inferInstance⟩
+
 /-- Uniform distribution over the four observed task slots. -/
 noncomputable def μTask : Measure TaskSlot :=
   (PMF.uniformOfFintype (α := TaskSlot)).toMeasure
@@ -57,6 +59,8 @@ instance : IsProbabilityMeasure μTask :=
       (PMF.toMeasure.isProbabilityMeasure
         (PMF.uniformOfFintype (α := TaskSlot)))
 
+instance : ProbMeasureAssumptions μTask := ⟨inferInstance⟩
+
 /-- Sample space for one persona rating: respondent × task slot × randomized persona. -/
 abbrev StatusΩ (Respondent : Type u) : Type u := (Respondent × TaskSlot) × StatusProfile
 
@@ -66,7 +70,7 @@ noncomputable def μRT {Respondent : Type u} [MeasurableSpace Respondent]
   μResp.prod μTask
 
 instance {Respondent : Type u} [MeasurableSpace Respondent]
-    (μResp : Measure Respondent) [IsProbabilityMeasure μResp] :
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp] :
     IsProbabilityMeasure (μRT (μResp := μResp)) := by
   classical
   -- μRT univ = μResp univ * μTask univ = 1.
@@ -81,13 +85,17 @@ instance {Respondent : Type u} [MeasurableSpace Respondent]
     _ = μResp Set.univ * μTask Set.univ := hprod
     _ = 1 := by simp [hμ, htask]
 
+instance {Respondent : Type u} [MeasurableSpace Respondent]
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp] :
+    ProbMeasureAssumptions (μRT (μResp := μResp)) := ⟨inferInstance⟩
+
 /-- Full sample-space measure for one rating: (respondent × task) × randomized persona. -/
 noncomputable def μStatus {Respondent : Type u} [MeasurableSpace Respondent]
     (μResp : Measure Respondent) : Measure (StatusΩ Respondent) :=
   (μRT (μResp := μResp)).prod νStatus
 
 instance {Respondent : Type u} [MeasurableSpace Respondent]
-    (μResp : Measure Respondent) [IsProbabilityMeasure μResp] :
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp] :
     IsProbabilityMeasure (μStatus (μResp := μResp)) := by
   classical
   have hrt : (μRT (μResp := μResp)) Set.univ = 1 := measure_univ
@@ -102,6 +110,10 @@ instance {Respondent : Type u} [MeasurableSpace Respondent]
           simp [μStatus, Set.univ_prod_univ]
     _ = (μRT (μResp := μResp)) Set.univ * νStatus Set.univ := hprod
     _ = 1 := by simp [hrt, hν]
+
+instance {Respondent : Type u} [MeasurableSpace Respondent]
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp] :
+    ProbMeasureAssumptions (μStatus (μResp := μResp)) := ⟨inferInstance⟩
 
 /-- Actual randomized assignment: pick the persona coordinate from the product space. -/
 def statusX {Respondent : Type u} : StatusΩ Respondent → StatusProfile :=
@@ -127,7 +139,7 @@ and independence of `X` from each potential outcome.
 -/
 theorem status_singleShot_design
     {Respondent : Type u} [MeasurableSpace Respondent]
-    (μResp : Measure Respondent) [IsProbabilityMeasure μResp]
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp]
     (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
     (hmeas :
       ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
@@ -276,7 +288,7 @@ theorem status_singleShot_design
 /-- The instantiated randomized-design identification assumptions for the status conjoint. -/
 theorem status_id_randomized
     {Respondent : Type u} [MeasurableSpace Respondent]
-    (μResp : Measure Respondent) [IsProbabilityMeasure μResp]
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp]
     (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
     (hmeas :
       ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
@@ -293,7 +305,7 @@ theorem status_id_randomized
 /-- The instantiated identification assumptions for the status conjoint. -/
 theorem status_id_assumptions
     {Respondent : Type u} [MeasurableSpace Respondent]
-    (μResp : Measure Respondent) [IsProbabilityMeasure μResp]
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp]
     (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
     (hmeas :
       ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))

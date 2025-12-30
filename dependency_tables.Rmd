@@ -317,8 +317,10 @@ knitr::kable(dep_fmt, align = "l")
 ## Theorem dependency DAG
 
 ```{r dependency-dag, echo=FALSE, fig.width=10, fig.height=8}
-if (!requireNamespace("igraph", quietly = TRUE)) {
-  stop("Package 'igraph' is required to plot the dependency DAG.")
+if (!requireNamespace("DiagrammeR", quietly = TRUE) ||
+    !requireNamespace("DiagrammeRsvg", quietly = TRUE) ||
+    !requireNamespace("rsvg", quietly = TRUE)) {
+  stop("Packages 'DiagrammeR', 'DiagrammeRsvg', and 'rsvg' are required to plot the dependency DAG.")
 }
 
 edge_rows <- lapply(theorems, function(thm) {
@@ -332,19 +334,33 @@ if (is.null(edges) || nrow(edges) == 0) {
   plot.new()
   text(0.5, 0.5, "No theorem dependencies found.")
 } else {
-  g <- igraph::graph_from_data_frame(edges, vertices = theorems, directed = TRUE)
-  layout <- tryCatch(
-    igraph::layout_with_sugiyama(g)$layout,
-    error = function(e) igraph::layout_with_fr(g)
+  labels <- vapply(
+    theorems,
+    function(nm) paste(strwrap(pretty_name(nm), width = 18), collapse = "\\n"),
+    character(1)
   )
-  plot(
-    g,
-    layout = layout,
-    vertex.label = pretty_name(igraph::V(g)$name),
-    vertex.size = 12,
-    vertex.label.cex = 0.7,
-    edge.arrow.size = 0.4,
-    edge.color = "grey40"
+  nodes <- data.frame(name = theorems, label = labels, stringsAsFactors = FALSE)
+  node_lines <- sprintf('"%s" [label="%s"];', nodes$name, nodes$label)
+  edge_lines <- sprintf('"%s" -> "%s";', edges$from, edges$to)
+  dot <- sprintf(
+    'digraph G {
+      graph [rankdir=TB, labelloc="t", fontsize=18, nodesep=0.35, ranksep=0.5];
+      node  [shape=box, style="rounded,filled", fillcolor="#F7F7F7", color="#444444", fontname="Helvetica"];
+      edge  [color="#666666", arrowsize=0.5];
+
+      %s
+
+      %s
+    }',
+    paste(node_lines, collapse = "\n"),
+    paste(edge_lines, collapse = "\n")
   )
+  graph <- DiagrammeR::grViz(dot)
+  svg <- DiagrammeRsvg::export_svg(graph)
+  out_dir <- "dependency_tables_files"
+  if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+  out_png <- file.path(out_dir, "theorem_dependency_dag.png")
+  rsvg::rsvg_png(charToRaw(svg), file = out_png)
+  knitr::include_graphics(out_png)
 }
 ```

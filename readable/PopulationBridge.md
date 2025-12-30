@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/PopulationBridge.lean](../ConjointSD/PopulationBridge.lean)
 
-This file connects averages computed on the [population](jargon_population.md) probability space to averages computed under the attribute [distribution](jargon_distribution.md) `nu`.
+This file connects averages computed on the [population](jargon_population.md) probability space to averages computed under the attribute [distribution](jargon_distribution.md) `nu`. The law-identification and measurability assumptions are now bundled as `MapLawAssumptions`.
 
 Setup:
 - `A 0` is a random attribute draw on a big probability space with distribution `nu` (see [distribution](jargon_distribution.md)).

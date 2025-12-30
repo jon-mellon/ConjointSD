@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/RegressionEstimator.lean](../ConjointSD/RegressionEstimator.lean)
 
-This file formalizes an [OLS](jargon_ols.md)-style [regression](jargon_regression.md) [estimator](jargon_estimator.md) and the assumptions needed for its [consistency](jargon_consistency.md).
+This file formalizes an [OLS](jargon_ols.md)-style [regression](jargon_regression.md) [estimator](jargon_estimator.md) and the assumptions needed for its [consistency](jargon_consistency.md). It now uses `ProbMeasureAssumptions` in place of standalone probability-measure hypotheses.
 
 Key pieces:
 - `empiricalRisk`: the average squared error for a [linear model](jargon_linear_model.md) on the first `n` samples.

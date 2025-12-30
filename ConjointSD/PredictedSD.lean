@@ -14,22 +14,20 @@ lemma measurable_sq : Measurable (fun x : ℝ => x ^ 2) := by
   simpa [pow_two] using (measurable_id.mul measurable_id)
 
 /-- SLLN for the empirical mean. -/
-lemma meanHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
+lemma meanHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => meanHatZ (Z := Z) n ω) atTop
         (nhds (popMeanZ (μ := μ) Z)) := by
-  let _ := (inferInstance : IsProbabilityMeasure μ)
   simpa [meanHatZ, popMeanZ] using
     (ProbabilityTheory.strong_law_ae (μ := μ) (X := Z) h.intZ h.indep h.ident)
 
 /-- SLLN for the empirical second moment. -/
-lemma m2HatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
+lemma m2HatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => m2HatZ (Z := Z) n ω) atTop
         (nhds (popM2Z (μ := μ) Z)) := by
-  let _ := (inferInstance : IsProbabilityMeasure μ)
   let Zsq : ℕ → Ω → ℝ := fun i ω => (Z i ω) ^ 2
   have hInt : Integrable (Zsq 0) μ := by
     simpa [Zsq] using h.intZ2
@@ -56,7 +54,7 @@ lemma m2HatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
   simpa [m2HatZ, popM2Z, Zsq] using hslln
 
 /-- SLLN for empirical RMSE: √(m2Hat) → √(popM2). -/
-lemma rmseHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
+lemma rmseHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => rmseHatZ (Z := Z) n ω) atTop
@@ -71,7 +69,7 @@ lemma rmseHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
   simpa [rmseHatZ, popRMSEZ] using (hsqrt.comp hm2ω)
 
 /-- Convergence of varHat by combining mean and second-moment limits. -/
-lemma varHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
+lemma varHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => varHatZ (Z := Z) n ω) atTop
@@ -95,7 +93,7 @@ lemma varHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
   simpa [varHatZ, popVarZ] using this
 
 /-- Main theorem: sdHat → popSD almost surely. -/
-theorem sdHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
+theorem sdHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ]
     (h : IIDAssumptions (μ := μ) Z) :
     ∀ᵐ ω ∂μ,
       Tendsto (fun n : ℕ => sdHatZ (Z := Z) n ω) atTop

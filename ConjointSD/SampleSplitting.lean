@@ -25,7 +25,7 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
 
 lemma splitEvalAssumptions_of_bounded
-    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
@@ -43,7 +43,7 @@ For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converg
 to the population SD under the evaluation attribute law `law(A 0)`.
 -/
 theorem sdHat_fixed_m_tendsto_ae_popSDAttr
-    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
@@ -65,28 +65,10 @@ theorem sdHat_fixed_m_tendsto_ae_popSDAttr
       popSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)) =
         popSDAttr (Measure.map (A 0) μ) (gHat g θhat m) :=
     popSDZ_Zcomp_eq_popSDAttr (μ := μ) (A := A) (ν := Measure.map (A 0) μ)
-      (g := gHat g θhat m) (hA0 := h.hScore.popiid.measA 0) (hg := h.hScore.meas_g) (hLaw := rfl)
+      (g := gHat g θhat m)
+      (hMap := { measA0 := h.hScore.popiid.measA 0, map_eq := rfl })
+      (hg := h.hScore.meas_g)
   simpa [hEq] using hSDZ
-
-theorem sdHat_fixed_m_tendsto_ae_popSDAttr_of_bounded
-    (μ : Measure Ω) [IsProbabilityMeasure μ]
-    (A : ℕ → Ω → Attr)
-    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ)
-    (h : SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
-    ∀ᵐ ω ∂μ,
-      Tendsto
-        (fun n : ℕ =>
-          sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
-        atTop
-        (nhds (popSDAttr (Measure.map (A 0) μ) (gHat g θhat m))) := by
-  have h' :
-      SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m :=
-    splitEvalAssumptions_of_bounded
-      (μ := μ) (A := A) (g := g) (θhat := θhat) (m := m) h
-  simpa using
-    sdHat_fixed_m_tendsto_ae_popSDAttr
-      (μ := μ) (A := A) (g := g) (θhat := θhat) (m := m) h'
 
 end
 

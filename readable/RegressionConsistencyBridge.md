@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/RegressionConsistencyBridge.lean](../ConjointSD/RegressionConsistencyBridge.lean)
 
-This file [bridges](jargon_bridge.md) [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) to [plug-in](jargon_plug_in.md) moment convergence.
+This file [bridges](jargon_bridge.md) [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) to [plug-in](jargon_plug_in.md) moment convergence. It now packages the convergence premise as `ThetaTendstoAssumptions` and uses `ProbMeasureAssumptions` for probability-measure hypotheses.
 
 Key definitions:
 - `popMeanTheta` and `popM2Theta` treat the [population](jargon_population.md) [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) as functions of the [parameter](jargon_parameter.md).

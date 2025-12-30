@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/DeriveGEstimationAssumptions.lean](../ConjointSD/DeriveGEstimationAssumptions.lean)
 
-This file gives a short route from "the [parameter](jargon_parameter.md) estimates [converge](jargon_convergence.md)" to the assumptions used later about [plug-in](jargon_plug_in.md) moments.
+This file gives a short route from "the [parameter](jargon_parameter.md) estimates [converge](jargon_convergence.md)" to the assumptions used later about [plug-in](jargon_plug_in.md) moments. It now packages the convergence premise as `ThetaTendstoAssumptions`.
 
 What it does:
 - Assumes a parameter sequence `theta_hat` [converges](jargon_convergence.md) to a true value `theta0` (see [convergence](jargon_convergence.md) and [parameter](jargon_parameter.md)).

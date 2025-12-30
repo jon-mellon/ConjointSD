@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/PredictedSD.lean](../ConjointSD/PredictedSD.lean)
 
-This file defines empirical and [population](jargon_population.md) dispersion measures and proves that the empirical [standard deviation](jargon_standard_deviation.md) [converges](jargon_convergence.md) to the population [SD](jargon_standard_deviation.md) under [IID](jargon_iid.md) assumptions.
+This file defines empirical and [population](jargon_population.md) dispersion measures and proves that the empirical [standard deviation](jargon_standard_deviation.md) [converges](jargon_convergence.md) to the population [SD](jargon_standard_deviation.md) under [IID](jargon_iid.md) assumptions. It now uses the bundled `ProbMeasureAssumptions` in place of standalone probability-measure hypotheses.
 
 Definitions:
 - `meanHatZ`, `m2HatZ`, `varHatZ`, `sdHatZ`, `rmseHatZ` are sample-based (empirical) versions of the [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md), and [RMSE](jargon_rmse.md) for a sequence `Z i`.

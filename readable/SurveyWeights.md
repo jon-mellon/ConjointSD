@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/SurveyWeights.lean](../ConjointSD/SurveyWeights.lean)
 
-This file adds weighted versions of the [population](jargon_population.md) targets and defines finite-population targets.
+This file adds weighted versions of the [population](jargon_population.md) targets and defines finite-population targets. It now uses `ProbMeasureAssumptions` in place of standalone probability-measure hypotheses.
 
 Weighted targets:
 - `weightMeanAttr`, `weightM2Attr`, `weightVarAttr`, `weightSDAttr` compute weighted versions of the [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), and [standard deviation](jargon_standard_deviation.md).

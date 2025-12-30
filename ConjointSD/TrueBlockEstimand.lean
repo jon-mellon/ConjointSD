@@ -56,10 +56,10 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {B : Type*} [Fintype B]
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω) [IsProbabilityMeasure μ]
+variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
 variable (A : ℕ → Ω → Attr)
 
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 
 variable {Θ : Type*} [TopologicalSpace Θ]
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
@@ -71,10 +71,10 @@ assuming a pointwise block-specification hypothesis at `θ0`.
 theorem paper_blocks_converge_to_trueBlockSDs_ae
     {Term : Type*} [Fintype Term] [DecidableEq B]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
-    (hLaw : Measure.map (A 0) μ = ν)
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplit : ∀ m b,
       SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν) (g := gBlock (gB := gB) b) θ0)
     (hBlockSpec :
@@ -82,7 +82,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
         gBlock (gB := gB) b θ0 x
           =
         trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b x)
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
@@ -104,7 +104,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
   simpa [gTrueB] using
     (paper_sd_blocks_sequential_consistency_to_true_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hLaw := hLaw) (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
+      (hMap := hMap) (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
       (gTrueB := gTrueB) (hTrueB := hTrueB)
       (ε := ε) (hε := hε))
 
@@ -117,19 +117,19 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
     (blk : Term → B) (φ : Term → Attr → ℝ)
     (βOf : Θ → Term → ℝ) (β0 : Term → ℝ)
     (hβ : βOf θ0 = β0)
-    (hLaw : Measure.map (A 0) μ = ν)
+    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplit : ∀ m b,
       SplitEvalAssumptions
         (μ := μ) (A := A)
         (g := gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
         (θhat := θhat) m)
-    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions
         (ν := ν)
         (g := gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
         θ0)
-    (ε : ℝ) (hε : 0 < ε) :
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
@@ -160,7 +160,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
       (μ := μ) (A := A) (ν := ν) (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
       (blk := blk) (β0 := β0) (φ := φ)
-      (hLaw := hLaw) (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
+      (hMap := hMap) (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
       (hBlockSpec := hBlockSpec) (ε := ε) (hε := hε))
 
 end BlockSDToTrueTarget

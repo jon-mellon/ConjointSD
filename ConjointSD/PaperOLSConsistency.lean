@@ -83,18 +83,18 @@ variable {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]
 variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
 variable [DecidableEq (PaperTerm Main Inter)]
 
-variable (μ : Measure Ω) [IsProbabilityMeasure μ]
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
+variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 
 variable (Y : Attr → Ω → ℝ)
 variable (A : ℕ → Attr) (Yobs : ℕ → ℝ)
 
 variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
 
-omit [DecidableEq (PaperTerm Main Inter)] [IsProbabilityMeasure ν] in
+omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions ν] in
 theorem paper_ols_lln_of_score_assumptions_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hLaw : Measure.map (Aω 0) μ = ν)
+    (hMap : MapLawAssumptions (μ := μ) (A := Aω) (ν := ν))
     (hYobs : ∀ n ω, Yobsω n ω = gStar (μ := μ) (Y := Y) (Aω n ω))
     (hScoreGram :
       ∀ i j,
@@ -149,9 +149,8 @@ theorem paper_ols_lln_of_score_assumptions_ae
         popMeanAttr ν gGram :=
       popMeanZ_Zcomp_eq_popMeanAttr
         (μ := μ) (A := Aω) (ν := ν) (g := gGram)
-        ((hScoreGram i j).popiid.measA 0)
+        (hMap := { measA0 := (hScoreGram i j).popiid.measA 0, map_eq := hMap.map_eq })
         (hScoreGram i j).meas_g
-        hLaw
     refine hmean.mono ?_
     intro ω hω
     have hω' :
@@ -214,9 +213,8 @@ theorem paper_ols_lln_of_score_assumptions_ae
         popMeanAttr ν gCross :=
       popMeanZ_Zcomp_eq_popMeanAttr
         (μ := μ) (A := Aω) (ν := ν) (g := gCross)
-        ((hScoreCross i).popiid.measA 0)
+        (hMap := { measA0 := (hScoreCross i).popiid.measA 0, map_eq := hMap.map_eq })
         (hScoreCross i).meas_g
-        hLaw
     refine hmean.mono ?_
     intro ω hω
     have hω' :
@@ -281,7 +279,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
 
 variable {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
 
-omit [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] in
+omit [ProbMeasureAssumptions μ] [ProbMeasureAssumptions ν] in
 theorem paper_ols_moment_assumptions_of_lln_fullrank_ae
     (θ0 : PaperTerm Main Inter → ℝ)
     (hLLN : ∀ᵐ ω ∂μ,
@@ -305,7 +303,7 @@ theorem paper_ols_moment_assumptions_of_lln_fullrank_ae
       cross_tendsto := hLLNω.cross_tendsto
       theta0_eq := hId }
 
-omit [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] in
+omit [ProbMeasureAssumptions μ] [ProbMeasureAssumptions ν] in
 theorem theta_tendsto_of_paper_ols_moments_ae
     (θ0 : PaperTerm Main Inter → ℝ)
     (hMom : PaperOLSMomentAssumptions
@@ -331,7 +329,7 @@ theorem theta_tendsto_of_paper_ols_moments_ae
       (θ0 := θ0)
       hω)
 
-omit [IsProbabilityMeasure μ] in
+omit [ProbMeasureAssumptions μ] in
 theorem GEstimationAssumptions_of_paper_ols_moments_ae
     (θ0 : PaperTerm Main Inter → ℝ)
     (hMom : PaperOLSMomentAssumptions
@@ -366,10 +364,10 @@ theorem GEstimationAssumptions_of_paper_ols_moments_ae
           (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
           n)
-      hθ
+      ⟨hθ⟩
       hCont
 
-omit [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] in
+omit [ProbMeasureAssumptions μ] [ProbMeasureAssumptions ν] in
 theorem theta_tendsto_of_paper_ols_moments
     (θ0 : PaperTerm Main Inter → ℝ)
     (hMom :
@@ -394,7 +392,7 @@ theorem theta_tendsto_of_paper_ols_moments
     (θ0 := θ0)
     hMom
 
-omit [IsProbabilityMeasure μ] in
+omit [ProbMeasureAssumptions μ] in
 theorem GEstimationAssumptions_of_paper_ols_gStar
     (θ0 : PaperTerm Main Inter → ℝ)
     (hMom :
@@ -442,10 +440,10 @@ theorem GEstimationAssumptions_of_paper_ols_gStar
           (A := A) (Y := Yobs)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
           n)
-      hθ
+      ⟨hθ⟩
       hCont
 
-omit [IsProbabilityMeasure μ] in
+omit [ProbMeasureAssumptions μ] in
 theorem GEstimationAssumptions_of_paper_ols_gStar_total
     {B : Type*} [Fintype B] [DecidableEq B]
     (blk : PaperTerm Main Inter → B)
@@ -492,7 +490,7 @@ theorem GEstimationAssumptions_of_paper_ols_gStar_total
   simpa [gPaper_eq_gTotalΘ_blocks (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk), gTotalΘ]
     using hG
 
-omit [IsProbabilityMeasure μ] in
+omit [ProbMeasureAssumptions μ] in
 theorem GEstimationAssumptions_of_paper_ols_moments_total_ae
     {B : Type*} [Fintype B] [DecidableEq B]
     (blk : PaperTerm Main Inter → B)

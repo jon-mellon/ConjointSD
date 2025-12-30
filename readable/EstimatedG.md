@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/EstimatedG.lean](../ConjointSD/EstimatedG.lean)
 
-This file formalizes what happens when you replace a true score function `g theta0` with an estimated one `g (theta_hat n)`.
+This file formalizes what happens when you replace a true score function `g theta0` with an estimated one `g (theta_hat n)`. It now uses `ProbMeasureAssumptions` instead of standalone probability-measure hypotheses.
 
 Key definitions:
 - `gHat` is the [plug-in](jargon_plug_in.md) score: it takes the [parameter](jargon_parameter.md) estimate at step `n` and applies `g`.

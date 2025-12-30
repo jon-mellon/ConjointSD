@@ -26,7 +26,7 @@ variable {Attr : Type u} [MeasurableSpace Attr]
 variable {Θ : Type v}
 
 theorem popMeanAttr_tendsto_of_GEstimationAssumptions
-    {ν : Measure Attr} [IsProbabilityMeasure ν]
+    {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
     (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
     Tendsto
@@ -36,7 +36,7 @@ theorem popMeanAttr_tendsto_of_GEstimationAssumptions
   h.mean_tendsto
 
 theorem popM2Attr_tendsto_of_GEstimationAssumptions
-    {ν : Measure Attr} [IsProbabilityMeasure ν]
+    {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
     (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
     Tendsto
@@ -47,7 +47,7 @@ theorem popM2Attr_tendsto_of_GEstimationAssumptions
 
 /-- Derived: population variance convergence under ν for the plug-in score. -/
 theorem popVarAttr_tendsto_of_GEstimationAssumptions
-    {ν : Measure Attr} [IsProbabilityMeasure ν]
+    {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
     (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
     Tendsto
@@ -72,7 +72,7 @@ theorem popVarAttr_tendsto_of_GEstimationAssumptions
 
 /-- Derived: population SD convergence under ν for the plug-in score. -/
 theorem popSDAttr_tendsto_of_GEstimationAssumptions
-    {ν : Measure Attr} [IsProbabilityMeasure ν]
+    {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
     (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
     Tendsto

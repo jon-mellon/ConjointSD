@@ -33,6 +33,48 @@ def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
 
 end Transport
 
+section BasicMeasure
+
+variable {α : Type*} [MeasurableSpace α]
+
+/-- Bundled probability-measure assumption (used to avoid standalone `IsProbabilityMeasure`). -/
+class ProbMeasureAssumptions (μ : Measure α) : Prop where
+  isProb : IsProbabilityMeasure μ
+
+attribute [instance] ProbMeasureAssumptions.isProb
+
+end BasicMeasure
+
+section MapLaw
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+variable {Attr : Type*} [MeasurableSpace Attr]
+
+/-- Bundle measurability of `A 0` with its pushforward law. -/
+structure MapLawAssumptions (μ : Measure Ω) (A : ℕ → Ω → Attr) (ν : Measure Attr) : Prop where
+  measA0 : Measurable (A 0)
+  map_eq : Measure.map (A 0) μ = ν
+
+end MapLaw
+
+section Convergence
+
+variable {Θ : Type*} [TopologicalSpace Θ]
+
+/-- Bundle convergence of an estimator sequence. -/
+structure ThetaTendstoAssumptions (θhat : ℕ → Θ) (θ0 : Θ) : Prop where
+  tendsto : Tendsto θhat atTop (nhds θ0)
+
+end Convergence
+
+section Positivity
+
+/-- Bundle positivity of ε. -/
+structure EpsilonAssumptions (ε : ℝ) : Prop where
+  pos : 0 < ε
+
+end Positivity
+
 section PredictedSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
@@ -104,7 +146,7 @@ target population moments (under ν) in the limit.
 Minimal version: assume convergence of mean and second moment; derive var and sd.
 -/
 structure GEstimationAssumptions
-    (ν : Measure Attr) [IsProbabilityMeasure ν]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
   mean_tendsto :
       Tendsto
@@ -454,8 +496,8 @@ variable {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]
 variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
 variable [DecidableEq (PaperTerm Main Inter)]
 
-variable (μ : Measure Ω) [IsProbabilityMeasure μ]
-variable (ν : Measure Attr) [IsProbabilityMeasure ν]
+variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
+variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 
 variable (Y : Attr → Ω → ℝ)
 variable (A : ℕ → Attr) (Yobs : ℕ → ℝ)

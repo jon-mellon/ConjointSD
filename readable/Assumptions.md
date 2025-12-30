@@ -8,18 +8,18 @@ each package is asserting and why it matters.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
-Recent changes: added an explicit randomization-mechanism assumption for conjoint designs.
+Recent changes: added bundled measure, map-law, estimator-convergence, and epsilon-positivity assumptions.
 
 ## Structural assumptions (by model choice)
 
 These are not formalized as Lean assumption bundles; they arise from how the model is set up.
 
 - Single-shot abstraction: each observation is treated as a standalone profile draw. This
-  sidesteps any task-indexing or within-respondent carryover structure.
+  sidesteps any task-indexing or within-respondent carryover structure. (Hainmueller Assumption 1, by omission)
 - No task-order effects: because there is no task index in the core model, the formalization
-  does not represent profile order or task sequence effects.
+  does not represent profile order or task sequence effects. (Related to Hainmueller Assumption 2, by omission)
 - No attribute-order effects within a profile: profiles are abstract objects, so any ordering
-  of attributes inside a profile is not represented.
+  of attributes inside a profile is not represented. (Hainmueller footnote: attribute-order invariance)
 
 ## Transport
 
@@ -40,6 +40,27 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   matches that score; misspecification or estimation error can still break
   transfer. It also fails if the experimental setup elicits a different scoring
   rule than the real-world population process (beyond a ν-null set).
+
+## BasicMeasure
+
+- `ProbMeasureAssumptions`: bundles `IsProbabilityMeasure μ` as an explicit assumption
+  package so theorems can avoid standalone probability-measure hypotheses.
+
+## MapLaw
+
+- `MapLawAssumptions`: bundles measurability of `A 0` with the pushforward law
+  `Measure.map (A 0) μ = ν`, the standard transport assumption used to rewrite
+  population moments from the joint space to the attribute space.
+
+## Convergence
+
+- `ThetaTendstoAssumptions`: bundles estimator convergence `θhat → θ0` to keep
+  convergence hypotheses explicit and reusable.
+
+## Positivity
+
+- `EpsilonAssumptions`: bundles the positivity requirement `0 < ε` that appears
+  in sequential consistency statements.
 
 ## PredictedSD
 
@@ -153,9 +174,9 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   the assignment `X` as a measurable function of a randomization variable `U`
   that is [independent](jargon_independent.md) of every
   [potential outcome](jargon_potential_outcome.md). This is the mechanism-level
-  assumption from which ignorability of `X` is derived later.
+  assumption from which ignorability of `X` is derived later. (Hainmueller Assumption 3)
 - `NoProfileOrderEffects`: formalizes Assumption 2 by requiring potential outcomes
-  for a task to be invariant under permutations of the profile order.
+  for a task to be invariant under permutations of the profile order. (Hainmueller Assumption 2)
 - `ConjointIdAssumptions`: [measurability](jargon_measurable.md) of the observed
   and [potential outcomes](jargon_potential_outcome.md),
   [consistency](jargon_consistency.md) (`Yobs = Y(X)`), and a factorization
@@ -167,7 +188,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [integrable](jargon_integrable.md) and uniformly bounded
   [potential outcomes](jargon_potential_outcome.md), and
   [independence](jargon_independent.md) between `X` and each `Y x`. These
-  assumptions imply the `rand` factorization above.
+  assumptions imply the `rand` factorization above. (Hainmueller Assumption 3)
 - `ConjointSingleShotDesign`: a single-shot assignment law `ν` with positive mass
   on each [profile](jargon_profile.md), an explicit randomization mechanism for
   `X`, `Measure.map X μ = ν`, and bounded, measurable, consistent
