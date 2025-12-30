@@ -339,8 +339,16 @@ if (is.null(edges) || nrow(edges) == 0) {
     function(nm) paste(strwrap(pretty_name(nm), width = 18), collapse = "\\n"),
     character(1)
   )
+  sinks <- setdiff(theorems, unique(edges$from))
   nodes <- data.frame(name = theorems, label = labels, stringsAsFactors = FALSE)
-  node_lines <- sprintf('"%s" [label="%s"];', nodes$name, nodes$label)
+  node_lines <- vapply(
+    seq_len(nrow(nodes)),
+    function(i) {
+      fill <- if (nodes$name[i] %in% sinks) "#f2a5a5" else "#F7F7F7"
+      sprintf('"%s" [label="%s", fillcolor="%s"];', nodes$name[i], nodes$label[i], fill)
+    },
+    character(1)
+  )
   edge_lines <- sprintf('"%s" -> "%s";', edges$from, edges$to)
   dot <- sprintf(
     'digraph G {

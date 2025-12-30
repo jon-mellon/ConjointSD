@@ -14,3 +14,7 @@ We cite these results to justify that the Bayesian summaries used in the paper c
 2) Status estimand marginalization over paired profiles
    - If outcomes depend on both profiles shown in a task, the estimand should be stated as the expected response to a focal profile, averaged over the randomized partner profile (and respondent conditions), matching standard conjoint AMCE targets.
    - We are not fixing this in Lean; instead we treat it as part of the transport conditions, where marginalizing over other profiles is a reasonable approximation to the true status-assigning process respondents apply when making conjoint judgments.
+
+3) Weighted population moments are assumed
+   - For weighted survey targets, we assume weighted moment matching (`WeightMatchesPopMoments`) for the relevant score.
+   - For the paper, we endorse the moment-matching/weighted LLN assumptions as axioms for the target population moments.

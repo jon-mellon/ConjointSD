@@ -201,7 +201,7 @@ Sequential consistency for `gTotalΘ gB`, plus
 File: `ConjointSD/PaperCoreEstimand.lean`
 
 Statement: The paper’s total SD estimator (plugging a term model into the
-population sample) converges to the paper’s total SD target.
+population sample) converges to the paper’s total weighted SD target.
 
 Intuition: This is the paper facing version of sequential consistency, specialized
 to the term model used in the manuscript.
@@ -209,7 +209,7 @@ to the term model used in the manuscript.
 Formalization (Lean name): `paper total sd estimator consistency ae of gBTerm`
 
 Formalization (math):
-`|paperTotalSDEst μ A blk βOf φ θhat m n - paperTotalSD ν blk β0 φ| < ε` a.e. eventually.
+`|paperTotalSDEst μ A blk βOf φ θhat m n - paperTotalSD_weighted ν w blk β0 φ| < ε` a.e. eventually.
 
 ## paper sd total sequential consistency to gStar ae of gBTerm (PaperCoreEstimand)
 

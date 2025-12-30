@@ -170,6 +170,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
     (blk : Term → B) (φ : Term → Attr → ℝ)
     (βOf : Θ → Term → ℝ) (β0 : Term → ℝ)
     (θ0 : Θ) (θhat : ℕ → Θ)
+    (w : Attr → ℝ)
     (hβ : βOf θ0 = β0)
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplitTotal :
@@ -184,6 +185,9 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
         (ν := ν)
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
+    (hMom :
+      WeightMatchesPopMoments (ν := ν) (w := w)
+        (s := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -193,7 +197,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
               (paperTotalSDEst (μ := μ) (A := A)
                 (blk := blk) (βOf := βOf) (φ := φ)
                 (θhat := θhat) m n ω
-                - paperTotalSD (ν := ν) (blk := blk) (β0 := β0) (φ := φ))
+                - paperTotalSD_weighted (ν := ν) (w := w) (blk := blk) (β0 := β0) (φ := φ))
               < ε) := by
   classical
   have hTrue :
@@ -204,13 +208,13 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
     refine ae_of_all _ ?_
     intro a
     simp [paperTrueTotalScore, paperTrueBlockScore, trueBlockScore, gTotalΘ, gBTerm, hβ]
-  rcases paper_sd_total_sequential_consistency_to_true_target_ae
+  rcases paper_sd_total_sequential_consistency_to_weighted_target_ae
       (μ := μ) (A := A) (ν := ν)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (gTrue := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
-      (hTrue := hTrue) (ε := ε) (hε := hε)
+      (hTrue := hTrue) (w := w) (hMom := hMom) (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
   intro m hm
@@ -219,8 +223,8 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
       popSDAttr ν
           (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
         =
-      paperTotalSD (ν := ν) (blk := blk) (β0 := β0) (φ := φ) := by
-    simpa [paperTotalSD_def] using hCons.2
+      paperTotalSD_weighted (ν := ν) (w := w) (blk := blk) (β0 := β0) (φ := φ) := by
+    simpa [paperTotalSD_weighted] using hCons.2
   refine hCons.1.mono ?_
   intro ω hω
   refine hω.mono ?_
