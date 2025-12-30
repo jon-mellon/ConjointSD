@@ -169,7 +169,8 @@ Formalization (math):
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Adds an external validity assumption (`InvarianceAE`) so the total
-score target can be replaced by a declared true target `gTrue`.
+score target can be replaced by a declared true target `gTrue`, and then
+states the weighted SD target under moment matching.
 
 Intuition: If the model score equals the true population score on the population
 support, their population SDs are identical.
@@ -178,14 +179,15 @@ Formalization (Lean name): `paper sd total sequential consistency to true target
 
 Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
-`popSDAttr ν (gTotalΘ gB θ0) = popSDAttr ν gTrue`.
+`popSDAttr ν (gTotalΘ gB θ0) = weightSDAttr ν w gTrue`.
 
 ## paper sd total sequential consistency to gPot ae of identification (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: If the model targets the observed score and the observed score equals
-the causal score, then the sequential SD consistency target is the causal score.
+the causal score, then the sequential SD consistency target is the weighted
+causal score.
 
 Intuition: Identification turns the observed score into the causal score, so the
 population SD equality transfers to `gPot`.
@@ -194,7 +196,7 @@ Formalization (Lean name): `paper sd total sequential consistency to gPot ae of 
 
 Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
-`popSDAttr ν (gTotalΘ gB θ0) = popSDAttr ν (gPot μ Y)`.
+`popSDAttr ν (gTotalΘ gB θ0) = weightSDAttr ν w (gPot μ Y)`.
 
 ## paper total sd estimator consistency ae of gBTerm (PaperCoreEstimand)
 

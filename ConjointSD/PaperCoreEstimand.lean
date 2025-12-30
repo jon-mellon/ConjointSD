@@ -301,6 +301,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
       (hTotalModel := hTotalModel) (hspec := hspec)
       (hMap := hMap) (hSplitTotal := hSplitTotal)
       (hθ := hθ) (hContTotal := hContTotal)
+      (w := w) (hMom := hMom)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   have hWeight :

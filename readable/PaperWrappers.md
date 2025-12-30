@@ -23,15 +23,15 @@ Section 4: targeting the true [estimand](jargon_estimand.md)
 - Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.
 - Provides an approximate version where the scores are within epsilon, giving an explicit [standard deviation](jargon_standard_deviation.md) error bound.
 - Adds weighted-target transfer lemmas: if survey weights match population moments for a score, the weighted SD equals the population SD.
-- Adds an identification bridge: if the model score targets the observed score and the observed score equals the causal score, then the SD target is the causal one (using [potential outcomes](jargon_potential_outcome.md) and [conditional means](jargon_conditional_mean.md)).
+- Adds an identification bridge: if the model score targets the observed score and the observed score equals the causal score, then the SD target is the weighted causal one under moment matching (using [potential outcomes](jargon_potential_outcome.md) and [conditional means](jargon_conditional_mean.md)).
 
 Section 4c: link to the causal [estimand](jargon_estimand.md)
-- If the total model score at `theta0` matches a linear [term](jargon_term.md) model and that model is [well-specified](jargon_well_specified.md) for `gStar`, then the [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) targets `gStar`.
-- Adds an approximate counterpart: if the model is only approximately [well-specified](jargon_well_specified.md) ν-a.e., the total-score [standard deviation](jargon_standard_deviation.md) target is within an explicit bound of the `gStar` target.
-- Adds a two-stage approximation version: a flexible oracle score approximates `gStar`, and the model approximates that oracle, with the combined error driving the [standard deviation](jargon_standard_deviation.md) bound.
+- If the total model score at `theta0` matches a linear [term](jargon_term.md) model and that model is [well-specified](jargon_well_specified.md) for `gStar`, then the [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) targets the weighted `gStar` SD under moment matching.
+- Adds an approximate counterpart: if the model is only approximately [well-specified](jargon_well_specified.md) ν-a.e., the total-score [standard deviation](jargon_standard_deviation.md) target is within an explicit bound of the weighted `gStar` target.
+- Adds a two-stage approximation version: a flexible oracle score approximates `gStar`, and the model approximates that oracle, with the combined error driving the [standard deviation](jargon_standard_deviation.md) bound to the weighted target under moment matching.
 - Provides an `hGTotal` variant of the `gStar` bridge so OLS-style `GEstimationAssumptions` can drive the same conclusion.
 
 Section 4d: no-[interactions](jargon_interaction.md) corollary
-- Uses the "no [interactions](jargon_interaction.md)" assumption to produce [well-specification](jargon_well_specified.md) automatically and then applies the same [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) [bridge](jargon_bridge.md).
+- Uses the "no [interactions](jargon_interaction.md)" assumption to produce [well-specification](jargon_well_specified.md) automatically and then applies the same weighted [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) [bridge](jargon_bridge.md).
 
 In short, this file is the narrative layer: it collects the pieces into statements that match the paper's wording and flow.

@@ -109,28 +109,6 @@ theorem totalErr_tendsto_trainErr_fixed_m
     (hcont.continuousAt.tendsto)
   simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
 
-theorem totalErr_tendsto_trainErr_fixed_m_of_bounded
-    (μ : Measure Ω) [ProbMeasureAssumptions μ]
-    (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
-    (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (m : ℕ)
-    (h :
-      SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
-    ∀ᵐ ω ∂μ,
-      Tendsto
-        (fun n : ℕ => totalErr μ A ν g θ0 θhat m n ω)
-        atTop
-        (nhds (trainErr ν g θ0 θhat m)) := by
-  have h' :
-      SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m :=
-    splitEvalAssumptions_of_bounded
-      (μ := μ) (A := A) (g := g) (θhat := θhat) (m := m) h
-  simpa using
-    totalErr_tendsto_trainErr_fixed_m
-      (μ := μ) (A := A) (ν := ν) (hMap := hMap) (g := g) (θ0 := θ0) (θhat := θhat)
-      (m := m) (h := h')
 /--
 Step (2): training error → 0 as `m → ∞` under `GEstimationAssumptions` for `ν`.
 -/

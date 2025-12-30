@@ -529,6 +529,8 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
       FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
     (gTrue : Attr → ℝ)
     (hTrue : InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
+    (w : Attr → ℝ)
+    (hMom : WeightMatchesPopMoments (ν := ν) (w := w) (s := gTrue))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -536,7 +538,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν gTrue := by
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
   rcases paper_sd_total_sequential_consistency_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
@@ -548,7 +550,13 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
   have hEq :
       popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν gTrue :=
     popSDAttr_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
-  exact ⟨hCons, hEq⟩
+  have hWeight :
+      weightSDAttr ν w gTrue = popSDAttr ν gTrue :=
+    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w) (s := gTrue) hMom
+  have hEq' :
+      popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
+    simpa [hWeight] using hEq
+  exact ⟨hCons, hEq'⟩
 
 theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
@@ -566,6 +574,13 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
         (ν := ν)
         (gTotalΘ (gB := gB) θ0)
         (gExp (μ := μ) (X := X) (Yobs := Yobs)))
+    (w : Attr → ℝ)
+    (hMomExp :
+      WeightMatchesPopMoments (ν := ν) (w := w)
+        (s := gExp (μ := μ) (X := X) (Yobs := Yobs)))
+    (hMomPot :
+      WeightMatchesPopMoments (ν := ν) (w := w)
+        (s := gPot (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -575,12 +590,12 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
         ∧
         popSDAttr ν (gTotalΘ (gB := gB) θ0)
           =
-        popSDAttr ν (gPot (μ := μ) (Y := Y)) := by
+        weightSDAttr ν w (gPot (μ := μ) (Y := Y)) := by
   rcases paper_sd_total_sequential_consistency_to_true_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (gTrue := gExp (μ := μ) (X := X) (Yobs := Yobs))
-      (hTrue := hExp) (ε := ε) (hε := hε)
+      (hTrue := hExp) (w := w) (hMom := hMomExp) (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
   intro m hm
@@ -602,7 +617,31 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
     popSDAttr_congr_ae (ν := ν)
       (s := gExp (μ := μ) (X := X) (Yobs := Yobs))
       (t := gPot (μ := μ) (Y := Y)) hEqAE
-  exact ⟨hCons, hEqExp.trans hEqPot⟩
+  have hWeightExp :
+      weightSDAttr ν w (gExp (μ := μ) (X := X) (Yobs := Yobs)) =
+        popSDAttr ν (gExp (μ := μ) (X := X) (Yobs := Yobs)) :=
+    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+      (s := gExp (μ := μ) (X := X) (Yobs := Yobs)) hMomExp
+  have hWeightPot :
+      weightSDAttr ν w (gPot (μ := μ) (Y := Y)) =
+        popSDAttr ν (gPot (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+      (s := gPot (μ := μ) (Y := Y)) hMomPot
+  have hEqWeighted :
+      weightSDAttr ν w (gExp (μ := μ) (X := X) (Yobs := Yobs))
+        =
+      weightSDAttr ν w (gPot (μ := μ) (Y := Y)) := by
+    calc
+      weightSDAttr ν w (gExp (μ := μ) (X := X) (Yobs := Yobs))
+          =
+        popSDAttr ν (gExp (μ := μ) (X := X) (Yobs := Yobs)) := hWeightExp
+      _ =
+        popSDAttr ν (gPot (μ := μ) (Y := Y)) := hEqPot
+      _ =
+        weightSDAttr ν w (gPot (μ := μ) (Y := Y)) := by
+          symm
+          exact hWeightPot
+  exact ⟨hCons, hEqExp.trans hEqWeighted⟩
 
 /-!
 ## 4c) Link well-specification to the true causal estimand `gStar`
@@ -638,6 +677,9 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
     (hMomT : PopulationMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
     (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
     (hVarT : 0 ≤ popVarAttr ν (gStar (μ := μ) (Y := Y)))
+    (w : Attr → ℝ)
+    (hMom :
+      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (hδ : 0 ≤ δ)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -647,7 +689,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
         |popSDAttr ν (gTotalΘ (gB := gB) θ0)
-            - popSDAttr ν (gStar (μ := μ) (Y := Y))|
+            - weightSDAttr ν w (gStar (μ := μ) (Y := Y))|
           ≤ Real.sqrt (4 * C * δ) := by
   have hApprox :
       ApproxInvarianceAE
@@ -666,7 +708,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
     refine hBlocks.mono ?_
     intro x hx
     simpa [abs_sub_comm, hTotalModel x] using hx
-  exact
+  rcases
     paper_sd_total_sequential_consistency_to_approx_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
@@ -676,6 +718,16 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
       (hMomS := hMomS) (hMomT := hMomT)
       (hVarS := hVarS) (hVarT := hVarT)
       (hδ := hδ) (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  have hWeight :
+      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
+        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+      (s := gStar (μ := μ) (Y := Y)) hMom
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hMm := hM m hm
+  exact ⟨hMm.1, by simpa [hWeight] using hMm.2⟩
 
 /--
 Two-stage approximate link: a flexible oracle score approximates `gStar`, and the model
@@ -703,6 +755,9 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
     (hMomT : PopulationMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
     (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
     (hVarT : 0 ≤ popVarAttr ν (gStar (μ := μ) (Y := Y)))
+    (w : Attr → ℝ)
+    (hMom :
+      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (hδModel : 0 ≤ δModel)
     (hδOracle : 0 ≤ δOracle)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -713,7 +768,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
         |popSDAttr ν (gTotalΘ (gB := gB) θ0)
-            - popSDAttr ν (gStar (μ := μ) (Y := Y))|
+            - weightSDAttr ν w (gStar (μ := μ) (Y := Y))|
           ≤ Real.sqrt (4 * C * (δModel + δOracle)) := by
   rcases hApprox with ⟨hApproxModel, hApproxOracle⟩
   have hApproxCombined :
@@ -728,7 +783,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
         (ε₁ := δModel) (ε₂ := δOracle)
         hApproxModel hApproxOracle
   have hδ : 0 ≤ δModel + δOracle := add_nonneg hδModel hδOracle
-  exact
+  rcases
     paper_sd_total_sequential_consistency_to_approx_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
@@ -738,6 +793,16 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
       (hMomS := hMomS) (hMomT := hMomT)
       (hVarS := hVarS) (hVarT := hVarT)
       (hδ := hδ) (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  have hWeight :
+      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
+        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+      (s := gStar (μ := μ) (Y := Y)) hMom
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hMm := hM m hm
+  exact ⟨hMm.1, by simpa [hWeight] using hMm.2⟩
 
 /--
 If the model-based total score at `θ0` equals the block-sum from a linear model and that
@@ -763,6 +828,9 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
     (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (w : Attr → ℝ)
+    (hMom :
+      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -770,7 +838,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+          weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   have hBlocks :
       gStar (μ := μ) (Y := Y)
         =
@@ -793,9 +862,22 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
   rcases paper_sd_total_sequential_consistency_to_true_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
-      (gTrue := gStar (μ := μ) (Y := Y)) (hTrue := hStar) (ε := ε) (hε := hε)
+      (gTrue := gStar (μ := μ) (Y := Y)) (hTrue := hStar) (w := w) (hMom := hMom)
+      (ε := ε) (hε := hε)
       with ⟨M, hM⟩
-  exact ⟨M, hM⟩
+  have hWeight :
+      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
+        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+      (s := gStar (μ := μ) (Y := Y)) hMom
+  refine ⟨M, ?_⟩
+  intro m hm
+  rcases hM m hm with ⟨hCons, hEq⟩
+  have hEq' :
+      popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+        weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
+    simpa [hWeight] using hEq
+  exact ⟨hCons, hEq'⟩
 
 end SDSequentialConsistency
 
@@ -870,21 +952,11 @@ theorem paper_sd_total_sequential_consistency_to_weighted_target_ae
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
         popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
-  rcases paper_sd_total_sequential_consistency_to_true_target_ae
+  simpa using
+    paper_sd_total_sequential_consistency_to_true_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
-      (gTrue := gTrue) (hTrue := hTrue) (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm
-  rcases hM m hm with ⟨hCons, hEq⟩
-  have hWeight :
-      weightSDAttr ν w gTrue = popSDAttr ν gTrue :=
-    paper_weighted_sd_eq_pop (ν := ν) (w := w) (s := gTrue) hMom
-  have hEq' :
-      popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
-    simpa [hWeight] using hEq
-  exact ⟨hCons, hEq'⟩
+      (gTrue := gTrue) (hTrue := hTrue) (w := w) (hMom := hMom) (ε := ε) (hε := hε)
 
 end WeightedConsistencyBridge
 
@@ -1202,6 +1274,9 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
         SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hGTotal :
       GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (w : Attr → ℝ)
+    (hMom :
+      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1209,7 +1284,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+          weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   have hBlocks :
       gStar (μ := μ) (Y := Y)
         =
@@ -1235,7 +1311,19 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
       (gTrue := gStar (μ := μ) (Y := Y)) (hTrue := hStar)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
-  exact ⟨M, hM⟩
+  have hWeight :
+      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
+        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+      (s := gStar (μ := μ) (Y := Y)) hMom
+  refine ⟨M, ?_⟩
+  intro m hm
+  rcases hM m hm with ⟨hCons, hEq⟩
+  have hEq' :
+      popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+        weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
+    simpa [hWeight] using hEq
+  exact ⟨hCons, hEq'⟩
 
 end SDSequentialConsistencyNoTopo
 
@@ -1288,6 +1376,9 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
     (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (w : Profile K V → ℝ)
+    (hMom :
+      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1295,7 +1386,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+        popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+          weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   rcases hNoInt with ⟨μ0, main, hadd⟩
   have hspec :
       WellSpecified (Ω := Ω) (Attr := Profile K V) (Term := Term K)
@@ -1334,6 +1426,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
       (Y := Y) (blk := blk) (β := βMain (K := K) μ0) (φ := φMain (K := K) (V := V) main)
       (hTotalModel := hTotalModel') (hspec := hspec)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (w := w) (hMom := hMom)
       (ε := ε) (hε := hε)
 
 end NoInteractionsCorollary
