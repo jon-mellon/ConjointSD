@@ -21,7 +21,10 @@ Recent changes: added an [additive-projection](jargon_additive_projection.md) or
   [standard deviation](jargon_standard_deviation.md) targets.
 - `InvarianceAE`: almost-everywhere equality under `ν`, i.e., the experimental and
   [population](jargon_population.md) scores agree on the
-  [population](jargon_population.md) support.
+  [population support](jargon_population_support.md). Intuitively, they may
+  differ only on a set with zero probability under `ν`; this is the external
+  validity/transport assumption that lets population targets be read off from
+  the experimental score.
 
 ## PredictedSD
 

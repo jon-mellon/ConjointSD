@@ -38,6 +38,7 @@ Lean helper pages with plain-language definitions.
 - [Parameter](jargon_parameter.md)
 - [Plug-in](jargon_plug_in.md)
 - [Population (vs sample)](jargon_population.md)
+- [Population support](jargon_population_support.md)
 - [Potential outcome](jargon_potential_outcome.md)
 - [Profile](jargon_profile.md)
 - [Regression](jargon_regression.md)
