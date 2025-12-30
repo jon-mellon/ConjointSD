@@ -287,6 +287,7 @@ for (j in seq_along(theorems)) {
 
 dimnames(assump_mat) <- list(pretty_name(rownames(assump_mat)), pretty_name(colnames(assump_mat)))
 assump_fmt <- fmt_matrix(assump_mat)
+assump_count <- rowSums(assump_mat)
 
 # Theorem dependency matrix (rows = theorems, cols = theorems).
 
@@ -304,7 +305,7 @@ dep_fmt <- fmt_matrix(dep_mat, diag_omit = TRUE)
 ## Auto-generated assumption matrix
 
 ```{r assumption-table, echo=FALSE}
-knitr::kable(assump_fmt, align = "l")
+knitr::kable(cbind(Count = assump_count, assump_fmt), align = "l")
 ```
 
 ## Auto-generated theorem dependency matrix
