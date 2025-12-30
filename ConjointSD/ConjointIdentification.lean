@@ -46,7 +46,14 @@ lemma rand_from_randomized
     (h.measY x).aestronglyMeasurable
   have hIndY : (ind) ⟂ᵢ[μ] (fun ω => Y x ω) :=
     (h.ignorability x).comp hφ_meas measurable_id
-  have hintY : Integrable (fun ω => Y x ω) μ := h.integrableY x
+  have hintY : Integrable (fun ω => Y x ω) μ := by
+    have _ : IsFiniteMeasure μ := by infer_instance
+    obtain ⟨C, hC0, hC⟩ := h.bounded x
+    refine Integrable.of_bound (hf := (h.measY x).aestronglyMeasurable) C ?_
+    refine ae_of_all μ ?_
+    intro ω
+    have hCω := hC ω
+    simpa [Real.norm_eq_abs] using hCω
   have hintInd : Integrable ind μ := by
     have hconst : Integrable (fun _ : Ω => (1 : ℝ)) μ := integrable_const _
     have hident :
@@ -111,18 +118,6 @@ lemma ConjointIdAssumptions.of_randomized
   · intro x x0
     exact rand_from_randomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x x0
 
-/-- Bounded measurable real functions are integrable under a finite measure. -/
-lemma integrable_of_bounded
-    (μ : Measure Ω) [IsFiniteMeasure μ] {f : Ω → ℝ}
-    (hmeas : Measurable f) (hbound : ∃ C, 0 ≤ C ∧ ∀ ω, |f ω| ≤ C) :
-    Integrable f μ := by
-  obtain ⟨C, hC0, hC⟩ := hbound
-  refine Integrable.of_bound (hf := hmeas.aestronglyMeasurable) C ?_
-  refine ae_of_all μ ?_
-  intro ω
-  have hC' := hC ω
-  simpa [Real.norm_eq_abs] using hC'
-
 /--
 Instantiate `ConjointIdRandomized` from a single-shot assignment design (`ν` gives the law of `X`
 with positive mass on each profile) plus bounded outcomes and ignorability.
@@ -149,16 +144,8 @@ lemma ConjointIdRandomized.of_singleShot
       measYobs := h.measYobs
       measY := h.measY
       consistency := h.consistency
-      integrableY := ?_
       bounded := h.bounded
       ignorability := hign } 
-  · intro x
-    have hbound := h.bounded x
-    have hmeas := h.measY x
-    -- Probability measure ⇒ finite measure, so bounded measurable implies integrable.
-    have hfin : IsFiniteMeasure μ := by infer_instance
-    simpa using
-      (integrable_of_bounded (μ := μ) (hmeas := hmeas) (hbound := hbound))
 
 lemma positivity_of_singleShot
     [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]

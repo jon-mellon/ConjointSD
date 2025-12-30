@@ -7,7 +7,7 @@ This file defines empirical and [population](jargon_population.md) dispersion me
 Definitions:
 - `meanHatZ`, `m2HatZ`, `varHatZ`, `sdHatZ`, `rmseHatZ` are sample-based (empirical) versions of the [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md), and [RMSE](jargon_rmse.md) for a sequence `Z i`.
 - `popMeanZ`, `popM2Z`, `popVarZ`, `popSDZ`, `popRMSEZ` are the corresponding population quantities, with `popSDZ` being the population [standard deviation](jargon_standard_deviation.md).
-- `IIDAssumptions` bundles the usual IID requirements for the strong [LLN](jargon_lln.md) (see [iid](jargon_iid.md)).
+- `IIDAssumptions` bundles the usual IID requirements for the strong [LLN](jargon_lln.md) (see [iid](jargon_iid.md)), with the first-moment integrability derived from the second moment under a probability measure.
 
 Main results:
 - The strong [LLN](jargon_lln.md) implies `meanHatZ` [converges](jargon_convergence.md) to `popMeanZ` [almost everywhere](jargon_almost_everywhere.md).

@@ -15,24 +15,6 @@ All assumption structures/props are centralized here for easier auditing.
 Core definitions they depend on live in `ConjointSD.Defs`.
 -/
 
-section Transport
-
-variable {Attr : Type*} [MeasurableSpace Attr]
-
-/-- Convenient moment conditions on `s` under a population measure `ν`. -/
-structure PopulationMomentAssumptions (ν : Measure Attr) (s : Attr → ℝ) : Prop where
-  int1 : Integrable s ν
-  int2 : Integrable (fun a => (s a) ^ 2) ν
-
-/--
-Invariance only on population support (AE under `ν`): `gExp = gPop` holds `ν`-almost everywhere.
-This is often the right minimal transport condition.
--/
-def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
-  ∀ᵐ x ∂ν, gExp x = gPop x
-
-end Transport
-
 section BasicMeasure
 
 variable {α : Type*} [MeasurableSpace α]
@@ -44,6 +26,37 @@ class ProbMeasureAssumptions (μ : Measure α) : Prop where
 attribute [instance] ProbMeasureAssumptions.isProb
 
 end BasicMeasure
+
+section Transport
+
+variable {Attr : Type*} [MeasurableSpace Attr]
+
+/-- Convenient moment conditions on `s` under a population measure `ν`. -/
+structure PopulationMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (s : Attr → ℝ) : Prop where
+  aemeas : AEMeasurable s ν
+  int2 : Integrable (fun a => (s a) ^ 2) ν
+
+namespace PopulationMomentAssumptions
+
+theorem int1 {ν : Measure Attr} [ProbMeasureAssumptions ν] {s : Attr → ℝ}
+    (hs : PopulationMomentAssumptions (ν := ν) s) : Integrable s ν := by
+  have hs_meas : AEStronglyMeasurable s ν := hs.aemeas.aestronglyMeasurable
+  have hs_mem2 : MemLp s (2 : ENNReal) ν :=
+    (memLp_two_iff_integrable_sq hs_meas).2 hs.int2
+  have hs_mem1 : MemLp s (1 : ENNReal) ν := hs_mem2.mono_exponent (by norm_num)
+  exact (memLp_one_iff_integrable).1 hs_mem1
+
+end PopulationMomentAssumptions
+
+/--
+Invariance only on population support (AE under `ν`): `gExp = gPop` holds `ν`-almost everywhere.
+This is often the right minimal transport condition.
+-/
+def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
+  ∀ᵐ x ∂ν, gExp x = gPop x
+
+end Transport
 
 section MapLaw
 
@@ -81,11 +94,23 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μ : Measure Ω)
 
 /-- IID + moment assumptions for applying the strong law to Z and Z^2. -/
-structure IIDAssumptions (Z : ℕ → Ω → ℝ) : Prop where
-  intZ  : Integrable (Z 0) μ
+structure IIDAssumptions (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ] : Prop where
   indep : Pairwise (fun i j => IndepFun (Z i) (Z j) μ)
   ident : ∀ i, IdentDistrib (Z i) (Z 0) μ μ
   intZ2 : Integrable (fun ω => (Z 0 ω) ^ 2) μ
+
+namespace IIDAssumptions
+
+theorem intZ {μ : Measure Ω} [ProbMeasureAssumptions μ] {Z : ℕ → Ω → ℝ}
+    (h : IIDAssumptions (μ := μ) Z) : Integrable (Z 0) μ := by
+  have hmeas : AEStronglyMeasurable (Z 0) μ :=
+    (h.ident 0).aemeasurable_fst.aestronglyMeasurable
+  have hmem2 : MemLp (Z 0) (2 : ENNReal) μ :=
+    (memLp_two_iff_integrable_sq hmeas).2 h.intZ2
+  have hmem1 : MemLp (Z 0) (1 : ENNReal) μ := hmem2.mono_exponent (by norm_num)
+  exact (memLp_one_iff_integrable).1 hmem1
+
+end IIDAssumptions
 
 end PredictedSD
 
@@ -103,11 +128,26 @@ structure PopIID (A : ℕ → Ω → Attr) : Prop where
   identA : ∀ i, IdentDistrib (A i) (A 0) μ μ
 
 /-- Sufficient conditions to use `sdHatZ_tendsto_ae` on the induced score process. -/
-structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) : Prop where
+structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions μ] :
+    Prop where
   popiid : PopIID (μ := μ) A
   meas_g : Measurable g
-  int_g0 : Integrable (fun ω => g (A 0 ω)) μ
   int_g0_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μ
+
+namespace ScoreAssumptions
+
+theorem int_g0 {μ : Measure Ω} [ProbMeasureAssumptions μ] {Attr : Type*} [MeasurableSpace Attr]
+    {A : ℕ → Ω → Attr} {g : Attr → ℝ} (h : ScoreAssumptions (μ := μ) (A := A) g) :
+    Integrable (fun ω => g (A 0 ω)) μ := by
+  have hmeasA0 : Measurable (A 0) := h.popiid.measA 0
+  have hmeas : AEStronglyMeasurable (fun ω => g (A 0 ω)) μ :=
+    (h.meas_g.comp hmeasA0).aestronglyMeasurable
+  have hmem2 : MemLp (fun ω => g (A 0 ω)) (2 : ENNReal) μ :=
+    (memLp_two_iff_integrable_sq hmeas).2 h.int_g0_sq
+  have hmem1 : MemLp (fun ω => g (A 0 ω)) (1 : ENNReal) μ := hmem2.mono_exponent (by norm_num)
+  exact (memLp_one_iff_integrable).1 hmem1
+
+end ScoreAssumptions
 
 variable {B : Type*}
 
@@ -173,7 +213,7 @@ Assumptions needed to evaluate the empirical SD of the score `gHat g θhat m`
 on draws `A n` from the evaluation process.
 -/
 structure SplitEvalAssumptions
-    (μ : Measure Ω) (A : ℕ → Ω → Attr)
+    (μ : Measure Ω) [ProbMeasureAssumptions μ] (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
   hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
@@ -349,13 +389,12 @@ structure ConjointIdAssumptions
 
 /-- Randomized-assignment assumptions that imply the `rand` factorization. -/
 structure ConjointIdRandomized
-    [MeasurableSpace Attr] (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ) :
-    Prop where
+    [MeasurableSpace Attr] (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
+    [ProbMeasureAssumptions μ] : Prop where
   measX : Measurable X
   measYobs : Measurable Yobs
   measY : ∀ x, Measurable (Y x)
   consistency : ∀ ω, Yobs ω = Y (X ω) ω
-  integrableY : ∀ x, Integrable (fun ω => Y x ω) μ
   bounded :
     ∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C
   ignorability : ∀ x, (fun ω => X ω) ⟂ᵢ[μ] (fun ω => Y x ω)

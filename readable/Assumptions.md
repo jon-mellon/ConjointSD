@@ -8,7 +8,7 @@ each package is asserting and why it matters.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
-Recent changes: added bundled measure, map-law, estimator-convergence, and epsilon-positivity assumptions.
+Recent changes: probability-measure requirements were pushed into the moment bundles, and first-moment integrability is now derived from square-integrability where applicable.
 
 ## Structural assumptions (by model choice)
 
@@ -23,13 +23,12 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## Transport
 
-- `PopulationMomentAssumptions`: first- and [second moment](jargon_second_moment.md)
-  existence for a score
-  function `s` under a [population](jargon_population.md) measure `ν`, expressed
-  as [integrable](jargon_integrable.md) `s` and `s^2`. This is the minimal setup
-  for defining [population](jargon_population.md) [mean](jargon_mean.md),
-  [variance](jargon_variance.md), and
-  [standard deviation](jargon_standard_deviation.md) targets.
+- `PopulationMomentAssumptions`: [population](jargon_population.md) moments for
+  a score function `s` under a probability measure `ν`. It requires
+  [almost-everywhere measurability](jargon_measurable.md) of `s` and
+  [integrability](jargon_integrable.md) of `s^2`. The `s` integrability needed
+  for [mean](jargon_mean.md) and [variance](jargon_variance.md) targets is
+  derived from these conditions using `ν univ = 1`.
 - `InvarianceAE`: almost-everywhere equality under `ν`, i.e., the experimental and
   [population](jargon_population.md) scores agree on the
   [population support](jargon_population_support.md). Intuitively, they may
@@ -64,14 +63,14 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## PredictedSD
 
-- `IIDAssumptions`: [IID](jargon_iid.md) and moment assumptions for a sequence
-  `Z`. Requires [independent](jargon_independent.md) and
+- `IIDAssumptions`: [IID](jargon_iid.md) assumptions for a sequence `Z` under a
+  probability measure `μ`. Requires [independent](jargon_independent.md) and
   [identically distributed](jargon_identically_distributed.md) draws, plus
-  [integrability](jargon_integrable.md) of `Z 0` and `(Z 0)^2`. This is the
-  standard input for a strong [LLN](jargon_lln.md)
-  for both the [mean](jargon_mean.md) and
-  [second moment](jargon_second_moment.md), which
-  delivers SD [consistency](jargon_consistency.md).
+  [integrability](jargon_integrable.md) of `(Z 0)^2`. Integrability of `Z 0`
+  is derived from square-integrability when `μ univ = 1`. This is the standard
+  input for a strong [LLN](jargon_lln.md) for both the [mean](jargon_mean.md)
+  and [second moment](jargon_second_moment.md), which delivers SD
+  [consistency](jargon_consistency.md).
 
 ## SDDecomposition
 
@@ -83,8 +82,10 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   profile, so attributes may still be correlated inside each profile.
 - `ScoreAssumptions`: combines `PopIID` with
   [measurability](jargon_measurable.md) of the score function `g`, plus
-  [integrability](jargon_integrable.md) of `g(A 0)` and `g(A 0)^2`. This is the
-  input needed to apply the [standard deviation](jargon_standard_deviation.md)
+  [integrability](jargon_integrable.md) of `g(A 0)^2` under a probability
+  measure `μ`. Integrability of `g(A 0)` is derived from the second-moment
+  condition. This is the input needed to apply the
+  [standard deviation](jargon_standard_deviation.md)
   [LLN](jargon_lln.md) to the induced score process.
 - `DecompAssumptions`: bundles `PopIID`, [measurability](jargon_measurable.md) of
   each
@@ -119,7 +120,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## SampleSplitting
 
-- `SplitEvalAssumptions`: applies `ScoreAssumptions` to the evaluation score
+- `SplitEvalAssumptions`: applies `ScoreAssumptions` under a probability measure
+  `μ` to the evaluation score
   `gHat g θhat m` on the evaluation sample `A n`. This is the standard setup for
   showing the empirical [standard deviation](jargon_standard_deviation.md) of
   the estimated score [converges](jargon_convergence.md) to its
@@ -183,12 +185,12 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   condition (`rand`) that makes the
   [mean](jargon_mean.md) of `Y x` invariant to conditioning on `X = x0`. This is
   written to avoid explicit conditional expectations.
-- `ConjointIdRandomized`: a randomized-design variant that assumes
-  [measurable](jargon_measurable.md) assignment,
-  [integrable](jargon_integrable.md) and uniformly bounded
-  [potential outcomes](jargon_potential_outcome.md), and
-  [independence](jargon_independent.md) between `X` and each `Y x`. These
-  assumptions imply the `rand` factorization above. (Hainmueller Assumption 3)
+- `ConjointIdRandomized`: a randomized-design variant under a probability
+  measure `μ`. It assumes [measurable](jargon_measurable.md) assignment,
+  uniformly bounded [potential outcomes](jargon_potential_outcome.md), and
+  [independence](jargon_independent.md) between `X` and each `Y x`. Integrability
+  of outcomes is derived from boundedness. These assumptions imply the `rand`
+  factorization above. (Hainmueller Assumption 3)
 - `ConjointSingleShotDesign`: a single-shot assignment law `ν` with positive mass
   on each [profile](jargon_profile.md), an explicit randomization mechanism for
   `X`, `Measure.map X μ = ν`, and bounded, measurable, consistent

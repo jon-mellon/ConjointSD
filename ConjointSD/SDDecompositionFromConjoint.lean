@@ -56,7 +56,7 @@ lemma scoreAssumptions_of_bounded
       simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul
   have hint_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μ :=
     integrable_of_bounded (μ := μ) hmeas_sq hbound_sq
-  exact ⟨hPop, hMeas, hint_gA0, hint_sq⟩
+  exact ⟨hPop, hMeas, hint_sq⟩
 
 /-- From `ScoreAssumptions`, derive `IIDAssumptions` for Z := Zcomp A g. -/
 lemma iidAssumptions_Zcomp [ProbMeasureAssumptions μ]
@@ -64,8 +64,7 @@ lemma iidAssumptions_Zcomp [ProbMeasureAssumptions μ]
     (h : ScoreAssumptions (μ := μ) A g) :
     IIDAssumptions (μ := μ) (Zcomp (A := A) (g := g)) := by
   let Z : ℕ → Ω → ℝ := Zcomp (A := A) (g := g)
-  refine ⟨?intZ, ?indepZ, ?identZ, ?intZ2⟩
-  · simpa [Z, Zcomp] using h.int_g0
+  refine ⟨?indepZ, ?identZ, ?intZ2⟩
   · intro i j hij
     have hijA : IndepFun (A i) (A j) μ := h.popiid.indepA hij
     have : IndepFun (g ∘ (A i)) (g ∘ (A j)) μ :=

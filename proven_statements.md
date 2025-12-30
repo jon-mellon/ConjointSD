@@ -38,6 +38,22 @@ Formalization (Lean name): `sd component consistent`
 Formalization (math):
 `sdHatZ (fun i => g (A i)) -> popSDZ (fun i => g (A i))` a.e.
 
+## L2 implies L1 for moment bundles (Assumptions)
+
+File: `ConjointSD/Assumptions.lean`
+
+Statement: Under a probability measure, second-moment assumptions in the
+assumption bundles imply first-moment integrability.
+
+Intuition: On a probability space, square-integrability controls absolute
+integrability by Cauchy–Schwarz.
+
+Formalization (Lean names): `PopulationMomentAssumptions.int1`,
+`IIDAssumptions.intZ`, `ScoreAssumptions.int_g0`
+
+Formalization (math):
+If `E[s^2] < ∞` then `E[|s|] < ∞` for each bundled moment assumption.
+
 ## gExp eq gPot (ConjointIdentification)
 
 File: `ConjointSD/ConjointIdentification.lean`

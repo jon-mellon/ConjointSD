@@ -12,7 +12,7 @@ Core definitions:
 
 Assumption bundles (defined in `ConjointSD/Assumptions.lean`):
 - `ConjointIdAssumptions` collects [measurability](jargon_measurable.md), a condition that observed outcomes equal the potential outcomes for the assigned profile, and a factorization that expresses random assignment.
-- `ConjointIdRandomized` is a stronger, more explicit random-assignment package using [independence](jargon_independent.md).
+- `ConjointIdRandomized` is a stronger, more explicit random-assignment package using [independence](jargon_independent.md) plus bounded outcomes; integrability is derived from boundedness under a probability measure.
 - `ConjointRandomizationMechanism` models the assignment as a function of a randomization variable that is [independent](jargon_independent.md) of every [potential outcome](jargon_potential_outcome.md).
 - `ConjointSingleShotDesign` describes the one-shot conjoint design with a specified assignment [distribution](jargon_distribution.md), an explicit randomization mechanism, and bounded outcomes.
 
@@ -32,4 +32,4 @@ In plain [terms](jargon_term.md): under random assignment and basic regularity c
 
 Note: attribute-level AMCE identification and estimation assumptions (e.g., conditional or componentwise randomization) are not formalized here; we defer to Hainmueller–Hopkins–Yamamoto for those results.
 
-Recent changes: derive assignment ignorability from an explicit randomization mechanism.
+Recent changes: drop explicit integrability assumptions for potential outcomes; boundedness plus `ProbMeasureAssumptions` now supplies integrability when needed.

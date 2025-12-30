@@ -5,6 +5,9 @@ import ConjointSD
 #print ConjointSD.PopIID
 #print ConjointSD.IIDAssumptions
 #print ConjointSD.ScoreAssumptions
+#print ConjointSD.PopulationMomentAssumptions.int1
+#print ConjointSD.IIDAssumptions.intZ
+#print ConjointSD.ScoreAssumptions.int_g0
 #print ConjointSD.SplitEvalAssumptions
 #print ConjointSD.GEstimationAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
