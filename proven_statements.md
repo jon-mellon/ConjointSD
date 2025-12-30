@@ -27,7 +27,7 @@ Intuition: If draws are i.i.d., the sample moments stabilize, so the sample
 Formalization (Lean name): `sdHatZ tendsto ae`
 
 Formalization (math):
-`sdHatZ(Z) -> popSDZ(Z)` a.e. under `IIDAssumptions Z`.
+`sdHatZ(Z) -> designSDZ(Z)` a.e. under `IIDAssumptions Z`.
 
 ## sd component consistent (SDDecompositionFromConjoint)
 
@@ -49,7 +49,7 @@ score process.
 Formalization (Lean name): `sd component consistent`
 
 Formalization (math):
-`sdHatZ (fun i => g (A i)) -> popSDZ (fun i => g (A i))` a.e.
+`sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))` a.e.
 
 ## L2 implies L1 for moment bundles (Assumptions)
 
@@ -62,7 +62,7 @@ assumptions in the assumption bundles imply first-moment
 Intuition: On a probability space, square-integrability controls absolute
 integrability by Cauchy–Schwarz.
 
-Formalization (Lean names): `PopulationMomentAssumptions.int1`,
+Formalization (Lean names): `AttrMomentAssumptions.int1`,
 `IIDAssumptions.intZ`, `ScoreAssumptions.int_g0`
 
 Formalization (math):
@@ -84,7 +84,7 @@ Formalization (Lean name): `gExp eq gPot`
 Formalization (math):
 `gExp = gPot` under `ConjointIdAssumptions`.
 
-## popSDAttr congr ae (TargetEquivalence)
+## attrSD congr ae (TargetEquivalence)
 
 File: `ConjointSD/TargetEquivalence.lean`
 
@@ -96,10 +96,10 @@ Intuition: Differences on a `nu`-null set do not change moments under the target
 [distribution](readable/jargon_distribution.md) for the
 [population](readable/jargon_population.md).
 
-Formalization (Lean name): `popSDAttr congr ae`
+Formalization (Lean name): `attrSD congr ae`
 
 Formalization (math):
-If `s = t` `nu`-a.e., then `popSDAttr nu s = popSDAttr nu t`.
+If `s = t` `nu`-a.e., then `attrSD nu s = attrSD nu t`.
 
 ## gStar eq sum blocks of WellSpecified (ModelBridge)
 
@@ -138,7 +138,7 @@ Intuition: First the fitted score stabilizes, then the evaluation
 Formalization (Lean name): `sequential consistency ae`
 
 Formalization (math):
-`sdEst m n -> popSDAttr nu (g theta0)` sequentially, under
+`sdEst m n -> attrSD nu (g theta0)` sequentially, under
 `SplitEvalAssumptions` and `GEstimationAssumptions`.
 
 ## paper identifies potMean from condMean (PaperWrappers)
@@ -217,7 +217,7 @@ Formalization (Lean name): `paper sd total sequential consistency to true target
 
 Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
-`popSDAttr ν (gTotalΘ gB θ0) = weightSDAttr ν w gTrue`.
+`attrSD ν (gTotalΘ gB θ0) = weightSDAttr ν w gTrue`.
 
 ## paper sd total sequential consistency to gPot ae of identification (PaperWrappers)
 
@@ -237,7 +237,7 @@ Formalization (Lean name): `paper sd total sequential consistency to gPot ae of 
 
 Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
-`popSDAttr ν (gTotalΘ gB θ0) = weightSDAttr ν w (gPot μ Y)`.
+`attrSD ν (gTotalΘ gB θ0) = weightSDAttr ν w (gPot μ Y)`.
 
 ## paper total sd estimator consistency ae of gBTerm (PaperCoreEstimand)
 
@@ -245,7 +245,7 @@ File: `ConjointSD/PaperCoreEstimand.lean`
 
 Statement: The paper’s total [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) (plugging a [term](readable/jargon_term.md)
-model into the target-[population](readable/jargon_population.md) attribute
+model into the target human [population](readable/jargon_population.md) attribute
 [distribution](readable/jargon_distribution.md))
 [converges](readable/jargon_convergence.md) to the paper’s total weighted
 [standard deviation](readable/jargon_standard_deviation.md) target.
@@ -279,9 +279,9 @@ Formalization (Lean name): `paper sd total sequential consistency to gStar ae of
 
 Formalization (math):
 Sequential consistency for `gTotalΘ (gBTerm ...)`, plus
-`popSDAttr ν (gTotalΘ (gBTerm ...) θ0) = weightSDAttr ν w (gStar μ Y)`.
+`attrSD ν (gTotalΘ (gBTerm ...) θ0) = weightSDAttr ν w (gStar μ Y)`.
 
-## popSDAttr diff le of L2Approx (TargetEquivalence)
+## attrSD diff le of L2Approx (TargetEquivalence)
 
 File: `ConjointSD/TargetEquivalence.lean`
 
@@ -293,10 +293,10 @@ Intuition: [L2](readable/jargon_l2.md) closeness bounds
 [second moments](readable/jargon_second_moment.md), which bounds the
 [standard deviation](readable/jargon_standard_deviation.md) difference.
 
-Formalization (Lean name): `popSDAttr diff le of L2Approx`
+Formalization (Lean name): `attrSD diff le of L2Approx`
 
 Formalization (math):
-If `E[|s - t|^2] ≤ δ^2`, then `|popSDAttr ν s - popSDAttr ν t| ≤ 2 * δ`.
+If `E[|s - t|^2] ≤ δ^2`, then `|attrSD ν s - attrSD ν t| ≤ 2 * δ`.
 
 ## gStar eq sum blocks of parametricMainInteractions (WellSpecifiedFromNoInteractions)
 
@@ -315,7 +315,7 @@ Formalization (Lean name): `gStar eq sum blocks of parametricMainInteractions`
 Formalization (math):
 `NoInteractions -> gStar = sum b gBlock b`.
 
-## paperTotalSD weighted eq pop (PaperCoreEstimand)
+## paperTotalSD weighted eq attr (PaperCoreEstimand)
 
 File: `ConjointSD/PaperCoreEstimand.lean`
 
@@ -330,12 +330,12 @@ target [distribution](readable/jargon_distribution.md) for the
 [population](readable/jargon_population.md), so
 [standard deviation](readable/jargon_standard_deviation.md) values coincide.
 
-Formalization (Lean name): `paperTotalSD weighted eq pop`
+Formalization (Lean name): `paperTotalSD weighted eq attr`
 
 Formalization (math):
 `paperTotalSD_weighted ν w = paperTotalSD ν` under moment matching.
 
-## paperBlockSDs weighted eq pop (PaperCoreEstimand)
+## paperBlockSDs weighted eq attr (PaperCoreEstimand)
 
 File: `ConjointSD/PaperCoreEstimand.lean`
 
@@ -348,7 +348,7 @@ block SD target under the target
 Intuition: The block-level version of the weighted-to-target-distribution
 [standard deviation](readable/jargon_standard_deviation.md) transfer.
 
-Formalization (Lean name): `paperBlockSDs weighted eq pop`
+Formalization (Lean name): `paperBlockSDs weighted eq attr`
 
 Formalization (math):
 For all `b`, `paperBlockSDs_weighted ν w b = paperBlockSDs ν b`.
@@ -434,7 +434,7 @@ target [distribution](readable/jargon_distribution.md).
 Formalization (Lean name): `paper sd blocks sequential consistency to true target ae`
 
 Formalization (math):
-`popSDAttr ν (gBlock ...) = popSDAttr ν gTrueB` for each block.
+`attrSD ν (gBlock ...) = attrSD ν gTrueB` for each block.
 
 ## paper sd blocks sequential consistency to approx target ae (PaperWrappers)
 
@@ -451,7 +451,7 @@ Intuition: [L2](readable/jargon_l2.md) approximation bounds
 Formalization (Lean name): `paper sd blocks sequential consistency to approx target ae`
 
 Formalization (math):
-`|popSDAttr ν s - popSDAttr ν t| ≤ bound` for each block.
+`|attrSD ν s - attrSD ν t| ≤ bound` for each block.
 
 ## paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE (PaperWrappers)
 
@@ -470,7 +470,7 @@ error bounds.
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE`
 
 Formalization (math):
-`|popSDAttr ν gTotal - weightSDAttr ν w gStar| ≤ bound`.
+`|attrSD ν gTotal - weightSDAttr ν w gStar| ≤ bound`.
 
 ## paper sd total sequential consistency to gStar approx ae of ApproxOracleAE (PaperWrappers)
 
@@ -487,9 +487,9 @@ Intuition: Two approximation errors add to a
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxOracleAE`
 
 Formalization (math):
-`|popSDAttr ν gTotal - weightSDAttr ν w gStar| ≤ bound`.
+`|attrSD ν gTotal - weightSDAttr ν w gStar| ≤ bound`.
 
-## paper weighted block sds eq pop (PaperWrappers)
+## paper weighted block sds eq attr (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
 
@@ -503,10 +503,10 @@ under that target distribution.
 Intuition: Moment matching transfers
 [standard deviation](readable/jargon_standard_deviation.md) targets blockwise.
 
-Formalization (Lean name): `paper weighted block sds eq pop`
+Formalization (Lean name): `paper weighted block sds eq attr`
 
 Formalization (math):
-For all `b`, `weightSDAttr ν w (gTrueB b) = popSDAttr ν (gTrueB b)`.
+For all `b`, `weightSDAttr ν w (gTrueB b) = attrSD ν (gTrueB b)`.
 
 ## paper sd blocks and total sequential consistency ae of paper ols moments (PaperWrappers)
 
@@ -544,7 +544,7 @@ score.
 Formalization (Lean name): `paper sd total sequential consistency ae of paper ols gStar total`
 
 Formalization (math):
-`popSDAttr ν gTotal = weightSDAttr ν w gStar` under OLS moments, well-spec, and
+`attrSD ν gTotal = weightSDAttr ν w gStar` under OLS moments, well-spec, and
 weighted moment matching.
 
 ## paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal (PaperWrappers)
@@ -564,7 +564,7 @@ the θ-hat [continuity](readable/jargon_continuity.md) route.
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal`
 
 Formalization (math):
-`popSDAttr ν gTotal = weightSDAttr ν w gStar` under `hGTotal` and well-spec.
+`attrSD ν gTotal = weightSDAttr ν w gStar` under `hGTotal` and well-spec.
 
 ## paper sd total sequential consistency to gStar ae of NoInteractions (PaperWrappers)
 
@@ -583,7 +583,7 @@ Intuition: No-[interactions](readable/jargon_interaction.md) implies
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of NoInteractions`
 
 Formalization (math):
-`popSDAttr ν gTotal = weightSDAttr ν w gStar` under no-interactions.
+`attrSD ν gTotal = weightSDAttr ν w gStar` under no-interactions.
 
 ## Dependency tables
 

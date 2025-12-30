@@ -17,7 +17,7 @@ closest to the manuscript:
 
 4) “Convergence to the true estimand” is obtained by adding an explicit target-equality
    assumption (typically InvarianceAE / well-specification), plus AE-congruence lemmas
-   showing population SDs match when score functions match ν-a.e.
+   showing target human population SDs match when score functions match ν-a.e.
 -/
 
 import Mathlib
@@ -374,7 +374,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded
   · exact hMt m hmt
 
 /-!
-## 4) Turn “converges to popSDAttr ν (g θ0)” into “converges to the true SD target”
+## 4) Turn “converges to attrSD ν (g θ0)” into “converges to the true SD target”
 by assuming ν-a.e. equality to a declared true score function and using congruence lemmas.
 -/
 
@@ -397,7 +397,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
             ∀ᶠ n : ℕ in atTop,
               totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
-          popSDAttr ν (gBlock (gB := gB) b θ0) = popSDAttr ν (gTrueB b) := by
+          attrSD ν (gBlock (gB := gB) b θ0) = attrSD ν (gTrueB b) := by
   rcases paper_sd_blocks_sequential_consistency_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplit := hSplit) (hθ := hθ) (hCont := hCont) (ε := ε) (hε := hε)
@@ -406,8 +406,8 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
   intro m hm b
   have hCons := hM m hm b
   have hEq :
-      popSDAttr ν (gBlock (gB := gB) b θ0) = popSDAttr ν (gTrueB b) :=
-    popSDAttr_congr_ae (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b) (hTrueB b)
+      attrSD ν (gBlock (gB := gB) b θ0) = attrSD ν (gTrueB b) :=
+    attrSD_congr_ae (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b) (hTrueB b)
   exact ⟨hCons, hEq⟩
 
 /-!
@@ -433,10 +433,10 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
     (hBoundT :
       ∀ b : B, BoundedAE (ν := ν) (s := gTrueB b) C)
     (hMomS :
-      ∀ b : B, PopulationMomentAssumptions (ν := ν) (s := gBlock (gB := gB) b θ0))
-    (hMomT : ∀ b : B, PopulationMomentAssumptions (ν := ν) (s := gTrueB b))
-    (hVarS : ∀ b : B, 0 ≤ popVarAttr ν (gBlock (gB := gB) b θ0))
-    (hVarT : ∀ b : B, 0 ≤ popVarAttr ν (gTrueB b))
+      ∀ b : B, AttrMomentAssumptions (ν := ν) (s := gBlock (gB := gB) b θ0))
+    (hMomT : ∀ b : B, AttrMomentAssumptions (ν := ν) (s := gTrueB b))
+    (hVarS : ∀ b : B, 0 ≤ attrVar ν (gBlock (gB := gB) b θ0))
+    (hVarT : ∀ b : B, 0 ≤ attrVar ν (gTrueB b))
     (hδ : 0 ≤ δ)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -446,7 +446,7 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
             ∀ᶠ n : ℕ in atTop,
               totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
-          |popSDAttr ν (gBlock (gB := gB) b θ0) - popSDAttr ν (gTrueB b)|
+          |attrSD ν (gBlock (gB := gB) b θ0) - attrSD ν (gTrueB b)|
             ≤ Real.sqrt (4 * C * δ) := by
   rcases paper_sd_blocks_sequential_consistency_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
@@ -457,9 +457,9 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
   intro m hm b
   have hCons := hM m hm b
   have hEq :
-      |popSDAttr ν (gBlock (gB := gB) b θ0) - popSDAttr ν (gTrueB b)|
+      |attrSD ν (gBlock (gB := gB) b θ0) - attrSD ν (gTrueB b)|
         ≤ Real.sqrt (4 * C * δ) :=
-    popSDAttr_diff_le_of_approx_ae
+    attrSD_diff_le_of_approx_ae
       (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b)
       (hs := hMomS b) (ht := hMomT b)
       (hBoundS := hBoundS b) (hBoundT := hBoundT b)
@@ -483,10 +483,10 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
       ApproxInvarianceAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) δ)
     (hBoundS : BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
     (hBoundT : BoundedAE (ν := ν) (s := gTrue) C)
-    (hMomS : PopulationMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
-    (hMomT : PopulationMomentAssumptions (ν := ν) (s := gTrue))
-    (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
-    (hVarT : 0 ≤ popVarAttr ν gTrue)
+    (hMomS : AttrMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
+    (hMomT : AttrMomentAssumptions (ν := ν) (s := gTrue))
+    (hVarS : 0 ≤ attrVar ν (gTotalΘ (gB := gB) θ0))
+    (hVarT : 0 ≤ attrVar ν gTrue)
     (hδ : 0 ≤ δ)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -495,7 +495,7 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        |popSDAttr ν (gTotalΘ (gB := gB) θ0) - popSDAttr ν gTrue|
+        |attrSD ν (gTotalΘ (gB := gB) θ0) - attrSD ν gTrue|
           ≤ Real.sqrt (4 * C * δ) := by
   rcases paper_sd_total_sequential_consistency_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
@@ -506,9 +506,9 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
   intro m hm
   have hCons := hM m hm
   have hEq :
-      |popSDAttr ν (gTotalΘ (gB := gB) θ0) - popSDAttr ν gTrue|
+      |attrSD ν (gTotalΘ (gB := gB) θ0) - attrSD ν gTrue|
         ≤ Real.sqrt (4 * C * δ) :=
-    popSDAttr_diff_le_of_approx_ae
+    attrSD_diff_le_of_approx_ae
       (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue)
       (hs := hMomS) (ht := hMomT)
       (hBoundS := hBoundS) (hBoundT := hBoundT)
@@ -530,7 +530,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
     (gTrue : Attr → ℝ)
     (hTrue : InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
     (w : Attr → ℝ)
-    (hMom : WeightMatchesPopMoments (ν := ν) (w := w) (s := gTrue))
+    (hMom : WeightMatchesAttrMoments (ν := ν) (w := w) (s := gTrue))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -538,7 +538,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
+        attrSD ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
   rcases paper_sd_total_sequential_consistency_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
@@ -548,13 +548,13 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
   intro m hm
   have hCons := hM m hm
   have hEq :
-      popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν gTrue :=
-    popSDAttr_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
+      attrSD ν (gTotalΘ (gB := gB) θ0) = attrSD ν gTrue :=
+    attrSD_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
   have hWeight :
-      weightSDAttr ν w gTrue = popSDAttr ν gTrue :=
-    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w) (s := gTrue) hMom
+      weightSDAttr ν w gTrue = attrSD ν gTrue :=
+    weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w) (s := gTrue) hMom
   have hEq' :
-      popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
+      attrSD ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
     simpa [hWeight] using hEq
   exact ⟨hCons, hEq'⟩
 
@@ -576,10 +576,10 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
         (gExp (μ := μ) (X := X) (Yobs := Yobs)))
     (w : Attr → ℝ)
     (hMomExp :
-      WeightMatchesPopMoments (ν := ν) (w := w)
+      WeightMatchesAttrMoments (ν := ν) (w := w)
         (s := gExp (μ := μ) (X := X) (Yobs := Yobs)))
     (hMomPot :
-      WeightMatchesPopMoments (ν := ν) (w := w)
+      WeightMatchesAttrMoments (ν := ν) (w := w)
         (s := gPot (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -588,7 +588,7 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0)
+        attrSD ν (gTotalΘ (gB := gB) θ0)
           =
         weightSDAttr ν w (gPot (μ := μ) (Y := Y)) := by
   rcases paper_sd_total_sequential_consistency_to_true_target_ae
@@ -611,21 +611,21 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
     intro a
     simpa [hEq]
   have hEqPot :
-      popSDAttr ν (gExp (μ := μ) (X := X) (Yobs := Yobs))
+      attrSD ν (gExp (μ := μ) (X := X) (Yobs := Yobs))
         =
-      popSDAttr ν (gPot (μ := μ) (Y := Y)) :=
-    popSDAttr_congr_ae (ν := ν)
+      attrSD ν (gPot (μ := μ) (Y := Y)) :=
+    attrSD_congr_ae (ν := ν)
       (s := gExp (μ := μ) (X := X) (Yobs := Yobs))
       (t := gPot (μ := μ) (Y := Y)) hEqAE
   have hWeightExp :
       weightSDAttr ν w (gExp (μ := μ) (X := X) (Yobs := Yobs)) =
-        popSDAttr ν (gExp (μ := μ) (X := X) (Yobs := Yobs)) :=
-    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+        attrSD ν (gExp (μ := μ) (X := X) (Yobs := Yobs)) :=
+    weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := gExp (μ := μ) (X := X) (Yobs := Yobs)) hMomExp
   have hWeightPot :
       weightSDAttr ν w (gPot (μ := μ) (Y := Y)) =
-        popSDAttr ν (gPot (μ := μ) (Y := Y)) :=
-    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+        attrSD ν (gPot (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := gPot (μ := μ) (Y := Y)) hMomPot
   have hEqWeighted :
       weightSDAttr ν w (gExp (μ := μ) (X := X) (Yobs := Yobs))
@@ -634,9 +634,9 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
     calc
       weightSDAttr ν w (gExp (μ := μ) (X := X) (Yobs := Yobs))
           =
-        popSDAttr ν (gExp (μ := μ) (X := X) (Yobs := Yobs)) := hWeightExp
+        attrSD ν (gExp (μ := μ) (X := X) (Yobs := Yobs)) := hWeightExp
       _ =
-        popSDAttr ν (gPot (μ := μ) (Y := Y)) := hEqPot
+        attrSD ν (gPot (μ := μ) (Y := Y)) := hEqPot
       _ =
         weightSDAttr ν w (gPot (μ := μ) (Y := Y)) := by
           symm
@@ -673,13 +673,13 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
     (C : ℝ)
     (hBoundS : BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
     (hBoundT : BoundedAE (ν := ν) (s := gStar (μ := μ) (Y := Y)) C)
-    (hMomS : PopulationMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
-    (hMomT : PopulationMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
-    (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
-    (hVarT : 0 ≤ popVarAttr ν (gStar (μ := μ) (Y := Y)))
+    (hMomS : AttrMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
+    (hMomT : AttrMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
+    (hVarS : 0 ≤ attrVar ν (gTotalΘ (gB := gB) θ0))
+    (hVarT : 0 ≤ attrVar ν (gStar (μ := μ) (Y := Y)))
     (w : Attr → ℝ)
     (hMom :
-      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (hδ : 0 ≤ δ)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -688,7 +688,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        |popSDAttr ν (gTotalΘ (gB := gB) θ0)
+        |attrSD ν (gTotalΘ (gB := gB) θ0)
             - weightSDAttr ν w (gStar (μ := μ) (Y := Y))|
           ≤ Real.sqrt (4 * C * δ) := by
   have hApprox :
@@ -721,8 +721,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
       with ⟨M, hM⟩
   have hWeight :
       weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
-        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
-    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+        attrSD ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := gStar (μ := μ) (Y := Y)) hMom
   refine ⟨M, ?_⟩
   intro m hm
@@ -751,13 +751,13 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
     (C : ℝ)
     (hBoundS : BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
     (hBoundT : BoundedAE (ν := ν) (s := gStar (μ := μ) (Y := Y)) C)
-    (hMomS : PopulationMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
-    (hMomT : PopulationMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
-    (hVarS : 0 ≤ popVarAttr ν (gTotalΘ (gB := gB) θ0))
-    (hVarT : 0 ≤ popVarAttr ν (gStar (μ := μ) (Y := Y)))
+    (hMomS : AttrMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
+    (hMomT : AttrMomentAssumptions (ν := ν) (s := gStar (μ := μ) (Y := Y)))
+    (hVarS : 0 ≤ attrVar ν (gTotalΘ (gB := gB) θ0))
+    (hVarT : 0 ≤ attrVar ν (gStar (μ := μ) (Y := Y)))
     (w : Attr → ℝ)
     (hMom :
-      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (hδModel : 0 ≤ δModel)
     (hδOracle : 0 ≤ δOracle)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -767,7 +767,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        |popSDAttr ν (gTotalΘ (gB := gB) θ0)
+        |attrSD ν (gTotalΘ (gB := gB) θ0)
             - weightSDAttr ν w (gStar (μ := μ) (Y := Y))|
           ≤ Real.sqrt (4 * C * (δModel + δOracle)) := by
   rcases hApprox with ⟨hApproxModel, hApproxOracle⟩
@@ -796,8 +796,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
       with ⟨M, hM⟩
   have hWeight :
       weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
-        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
-    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+        attrSD ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := gStar (μ := μ) (Y := Y)) hMom
   refine ⟨M, ?_⟩
   intro m hm
@@ -830,7 +830,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
       FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
     (w : Attr → ℝ)
     (hMom :
-      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -838,7 +838,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+        attrSD ν (gTotalΘ (gB := gB) θ0) =
           weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   have hBlocks :
       gStar (μ := μ) (Y := Y)
@@ -867,14 +867,14 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
       with ⟨M, hM⟩
   have hWeight :
       weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
-        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
-    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+        attrSD ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := gStar (μ := μ) (Y := Y)) hMom
   refine ⟨M, ?_⟩
   intro m hm
   rcases hM m hm with ⟨hCons, hEq⟩
   have hEq' :
-      popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+      attrSD ν (gTotalΘ (gB := gB) θ0) =
         weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
     simpa [hWeight] using hEq
   exact ⟨hCons, hEq'⟩
@@ -882,7 +882,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
 end SDSequentialConsistency
 
 /-!
-## 3b) Weighted population targets (survey weights)
+## 3b) Weighted attribute-distribution targets (survey weights)
 -/
 
 section WeightedTargets
@@ -893,21 +893,21 @@ variable {B : Type*}
 variable (ν : Measure Attr)
 variable (w : Attr → ℝ)
 
-/-- Weighted SD equals the population SD when weighted moments match population moments. -/
-theorem paper_weighted_sd_eq_pop
+/-- Weighted SD equals the target human population SD when weighted moments match target moments. -/
+theorem paper_weighted_sd_eq_attr
     (s : Attr → ℝ)
-    (hMom : WeightMatchesPopMoments (ν := ν) (w := w) (s := s)) :
-    weightSDAttr ν w s = popSDAttr ν s :=
+    (hMom : WeightMatchesAttrMoments (ν := ν) (w := w) (s := s)) :
+    weightSDAttr ν w s = attrSD ν s :=
 by
-  exact weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w) (s := s) hMom
+  exact weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w) (s := s) hMom
 
-/-- Per-block weighted SD matches population SD under moment matching. -/
-theorem paper_weighted_block_sds_eq_pop
+/-- Per-block weighted SD matches target human population SD under moment matching. -/
+theorem paper_weighted_block_sds_eq_attr
     (gTrueB : B → Attr → ℝ)
-    (hMom : ∀ b : B, WeightMatchesPopMoments (ν := ν) (w := w) (s := gTrueB b)) :
-    ∀ b : B, weightSDAttr ν w (gTrueB b) = popSDAttr ν (gTrueB b) :=
+    (hMom : ∀ b : B, WeightMatchesAttrMoments (ν := ν) (w := w) (s := gTrueB b)) :
+    ∀ b : B, weightSDAttr ν w (gTrueB b) = attrSD ν (gTrueB b) :=
 by
-  exact fun b => paper_weighted_sd_eq_pop (ν := ν) (w := w) (s := gTrueB b) (hMom b)
+  exact fun b => paper_weighted_sd_eq_attr (ν := ν) (w := w) (s := gTrueB b) (hMom b)
 
 end WeightedTargets
 
@@ -930,8 +930,9 @@ variable (θ0 : Θ) (θhat : ℕ → Θ)
 variable (w : Attr → ℝ)
 
 /--
-Bridge to weighted targets: if the true score's weighted moments match population moments,
-then the standard consistency target can be rewritten as a weighted SD target.
+Bridge to weighted targets: if the true score's weighted moments match target
+human population moments, then the standard consistency target can be rewritten
+as a weighted SD target.
 -/
 theorem paper_sd_total_sequential_consistency_to_weighted_target_ae
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
@@ -943,7 +944,7 @@ theorem paper_sd_total_sequential_consistency_to_weighted_target_ae
       FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
     (gTrue : Attr → ℝ)
     (hTrue : InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
-    (hMom : WeightMatchesPopMoments (ν := ν) (w := w) (s := gTrue))
+    (hMom : WeightMatchesAttrMoments (ν := ν) (w := w) (s := gTrue))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -951,7 +952,7 @@ theorem paper_sd_total_sequential_consistency_to_weighted_target_ae
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
+        attrSD ν (gTotalΘ (gB := gB) θ0) = weightSDAttr ν w gTrue := by
   simpa using
     paper_sd_total_sequential_consistency_to_true_target_ae
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
@@ -978,7 +979,7 @@ variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
 variable (blk : PaperTerm Main Inter → B)
 
 /--
-Paper-facing bridge: OLS population moments imply the combined block+total sequential
+Paper-facing bridge: OLS attribute-distribution moments imply the combined block+total sequential
 consistency statement for the paper term model, assuming functional continuity.
 -/
 theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
@@ -1011,7 +1012,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m)
     (hMom :
-      OLSMomentAssumptionsOfPop
+      OLSMomentAssumptionsOfAttr
         (ν := ν)
         (A := Atrain) (Y := Yobs)
         (g := gStar (μ := μ) (Y := Y))
@@ -1162,7 +1163,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m)
     (hMom :
-      OLSMomentAssumptionsOfPop
+      OLSMomentAssumptionsOfAttr
         (ν := ν)
         (A := Atrain) (Y := Yobs)
         (g := gStar (μ := μ) (Y := Y))
@@ -1181,7 +1182,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
     (w : Attr → ℝ)
     (hMomW :
-      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1200,7 +1201,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
                   n)
               m n ω < ε)
         ∧
-        popSDAttr ν
+        attrSD ν
             (gTotalΘ
               (gB := fun b θ a =>
                 gBlockTerm (blk := blk) (β := θ)
@@ -1286,7 +1287,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
             simp [gTotalΘ, gTotal]
       _ = gStar (μ := μ) (Y := Y) x := hBlocksx
   have hEq :
-      popSDAttr ν
+      attrSD ν
           (gTotalΘ
             (gB := fun b θ a =>
               gBlockTerm (blk := blk) (β := θ)
@@ -1295,15 +1296,15 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
         =
         weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
     have hEqPop :
-        popSDAttr ν
+        attrSD ν
             (gTotalΘ
               (gB := fun b θ a =>
                 gBlockTerm (blk := blk) (β := θ)
                   (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
               θ0)
           =
-          popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
-      popSDAttr_congr_ae
+          attrSD ν (gStar (μ := μ) (Y := Y)) :=
+      attrSD_congr_ae
         (ν := ν)
         (s := gTotalΘ
           (gB := fun b θ a =>
@@ -1312,11 +1313,11 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
           θ0)
         (t := gStar (μ := μ) (Y := Y)) hStar
     have hWeight :
-        popSDAttr ν (gStar (μ := μ) (Y := Y))
+        attrSD ν (gStar (μ := μ) (Y := Y))
           =
         weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
       simpa using
-        (weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+        (weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
           (s := gStar (μ := μ) (Y := Y)) hMomW).symm
     exact hEqPop.trans hWeight
   refine ⟨M, ?_⟩
@@ -1343,7 +1344,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν gTrue := by
+        attrSD ν (gTotalΘ (gB := gB) θ0) = attrSD ν gTrue := by
   rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hMap := hMap) (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
@@ -1353,8 +1354,8 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
   intro m hm
   have hCons := hM m hm
   have hEq :
-      popSDAttr ν (gTotalΘ (gB := gB) θ0) = popSDAttr ν gTrue :=
-    popSDAttr_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
+      attrSD ν (gTotalΘ (gB := gB) θ0) = attrSD ν gTrue :=
+    attrSD_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
   exact ⟨hCons, hEq⟩
 
 omit [TopologicalSpace Θ] in
@@ -1376,7 +1377,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
       GEstimationAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
     (w : Attr → ℝ)
     (hMom :
-      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1384,7 +1385,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+        attrSD ν (gTotalΘ (gB := gB) θ0) =
           weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   have hBlocks :
       gStar (μ := μ) (Y := Y)
@@ -1413,14 +1414,14 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
       with ⟨M, hM⟩
   have hWeight :
       weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
-        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
-    weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+        attrSD ν (gStar (μ := μ) (Y := Y)) :=
+    weightSDAttr_eq_attrSD_of_moments (ν := ν) (w := w)
       (s := gStar (μ := μ) (Y := Y)) hMom
   refine ⟨M, ?_⟩
   intro m hm
   rcases hM m hm with ⟨hCons, hEq⟩
   have hEq' :
-      popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+      attrSD ν (gTotalΘ (gB := gB) θ0) =
         weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
     simpa [hWeight] using hEq
   exact ⟨hCons, hEq'⟩
@@ -1478,7 +1479,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
       FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
     (w : Profile K V → ℝ)
     (hMom :
-      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1486,7 +1487,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        popSDAttr ν (gTotalΘ (gB := gB) θ0) =
+        attrSD ν (gTotalΘ (gB := gB) θ0) =
           weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   rcases hNoInt with ⟨μ0, main, hadd⟩
   have hspec :

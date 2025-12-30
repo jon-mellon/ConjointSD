@@ -5,7 +5,7 @@ Utilities to eliminate the Route-1 assumption
   hG : ∀ b, GEstimationAssumptions …
 from paper-facing theorems, by deriving it from:
   (1) θhat → θ0
-  (2) continuity-at-θ0 of the population functionals
+  (2) continuity-at-θ0 of the attribute-distribution functionals
 
 This file compiles independently and is meant to be imported by your paper wrapper file
 (previously `FinalTheorems.lean`).

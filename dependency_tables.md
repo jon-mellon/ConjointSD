@@ -30,10 +30,14 @@ output of `Scratch.lean`.
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
@@ -41,11 +45,7 @@ output of `Scratch.lean`.
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
-<col style="width: 0%" />
 <col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
@@ -63,7 +63,7 @@ output of `Scratch.lean`.
 <col style="width: 1%" />
 <col style="width: 2%" />
 <col style="width: 1%" />
-<col style="width: 1%" />
+<col style="width: 2%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 2%" />
@@ -84,12 +84,12 @@ output of `Scratch.lean`.
 <tr>
 <th style="text-align: left;"></th>
 <th style="text-align: left;">Count</th>
-<th style="text-align: left;">PopulationMomentAssumptions</th>
+<th style="text-align: left;">AttrMomentAssumptions</th>
 <th style="text-align: left;">IIDAssumptions</th>
 <th style="text-align: left;">ScoreAssumptions</th>
 <th style="text-align: left;">sdHatZ tendsto ae</th>
 <th style="text-align: left;">sd component consistent</th>
-<th style="text-align: left;">sdHat fixed m tendsto ae popSDAttr</th>
+<th style="text-align: left;">sdHat fixed m tendsto ae attrSD</th>
 <th style="text-align: left;">totalErr tendsto trainErr fixed m</th>
 <th style="text-align: left;">trainErr tendsto zero</th>
 <th style="text-align: left;">sequential consistency ae</th>
@@ -104,18 +104,18 @@ bounded</th>
 <th style="text-align: left;">identified potMean from condMean</th>
 <th style="text-align: left;">identified amce from condMeans</th>
 <th style="text-align: left;">gExp eq gPot</th>
-<th style="text-align: left;">popMeanAttr congr ae</th>
-<th style="text-align: left;">popM2Attr congr ae</th>
-<th style="text-align: left;">popVarAttr congr ae</th>
-<th style="text-align: left;">popSDAttr congr ae</th>
+<th style="text-align: left;">attrMean congr ae</th>
+<th style="text-align: left;">attrM2 congr ae</th>
+<th style="text-align: left;">attrVar congr ae</th>
+<th style="text-align: left;">attrSD congr ae</th>
 <th style="text-align: left;">approxInvarianceAE triangle</th>
-<th style="text-align: left;">popMeanAttr diff le of L2Approx</th>
-<th style="text-align: left;">popSDAttr diff le of L2Approx</th>
-<th style="text-align: left;">popMeanAttr abs le of bounded ae</th>
-<th style="text-align: left;">popMeanAttr diff le of approx ae</th>
-<th style="text-align: left;">popM2Attr diff le of approx ae</th>
-<th style="text-align: left;">popVarAttr diff le of approx ae</th>
-<th style="text-align: left;">popSDAttr diff le of approx ae</th>
+<th style="text-align: left;">attrMean diff le of L2Approx</th>
+<th style="text-align: left;">attrSD diff le of L2Approx</th>
+<th style="text-align: left;">attrMean abs le of bounded ae</th>
+<th style="text-align: left;">attrMean diff le of approx ae</th>
+<th style="text-align: left;">attrM2 diff le of approx ae</th>
+<th style="text-align: left;">attrVar diff le of approx ae</th>
+<th style="text-align: left;">attrSD diff le of approx ae</th>
 <th style="text-align: left;">gLin eq gTotal blocks</th>
 <th style="text-align: left;">gStar eq sum blocks of WellSpecified</th>
 <th style="text-align: left;">gStar approx sum blocks of
@@ -127,10 +127,10 @@ ApproxWellSpecifiedAE</th>
 parametricMainInteractions</th>
 <th style="text-align: left;">gStar eq sum blocks of
 parametricMainInteractions</th>
-<th style="text-align: left;">paperBlockSD weighted eq pop</th>
-<th style="text-align: left;">paperTotalSD weighted eq pop</th>
-<th style="text-align: left;">paperBlockSDs weighted eq pop</th>
-<th style="text-align: left;">weightSDAttr eq popSDAttr of moments</th>
+<th style="text-align: left;">paperBlockSD weighted eq attr</th>
+<th style="text-align: left;">paperTotalSD weighted eq attr</th>
+<th style="text-align: left;">paperBlockSDs weighted eq attr</th>
+<th style="text-align: left;">weightSDAttr eq attrSD of moments</th>
 <th style="text-align: left;">paper total sd estimator consistency ae of
 gBTerm</th>
 <th style="text-align: left;">gTotalΘ eq gTotal gBTerm</th>
@@ -175,8 +175,8 @@ gStar approx ae of ApproxOracleAE</th>
 gStar ae of WellSpecified</th>
 <th style="text-align: left;">paper sd total sequential consistency to
 weighted target ae</th>
-<th style="text-align: left;">paper weighted sd eq pop</th>
-<th style="text-align: left;">paper weighted block sds eq pop</th>
+<th style="text-align: left;">paper weighted sd eq attr</th>
+<th style="text-align: left;">paper weighted block sds eq attr</th>
 <th style="text-align: left;">paper sd blocks and total sequential
 consistency ae of paper ols moments</th>
 <th style="text-align: left;">paper sd total sequential consistency ae
@@ -194,7 +194,7 @@ gStar ae of NoInteractions</th>
 <tbody>
 <tr>
 <td style="text-align: left;">∀ᵐ (a : Attr) ∂ν, s a = t a</td>
-<td style="text-align: left;">14</td>
+<td style="text-align: left;">15</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -263,10 +263,162 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;">AttrMomentAssumptions aemeas</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+</tr>
+<tr>
+<td style="text-align: left;">AttrMomentAssumptions int2</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 </tr>
 <tr>
 <td style="text-align: left;">ConjointIdAssumptions consistency</td>
@@ -571,6 +723,234 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+</tr>
+<tr>
+<td style="text-align: left;">DesignAttrIID identA</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;">DesignAttrIID indepA</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;">DesignAttrIID measA</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;">GEstimationAssumptions m2 tendsto</td>
@@ -1105,7 +1485,7 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;">OLSMomentAssumptionsOfPop cross
+<td style="text-align: left;">OLSMomentAssumptionsOfAttr cross
 tendsto</td>
 <td style="text-align: left;">2</td>
 <td style="text-align: left;">❌</td>
@@ -1182,7 +1562,7 @@ tendsto</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">OLSMomentAssumptionsOfPop gramInv
+<td style="text-align: left;">OLSMomentAssumptionsOfAttr gramInv
 tendsto</td>
 <td style="text-align: left;">2</td>
 <td style="text-align: left;">❌</td>
@@ -1254,386 +1634,6 @@ tendsto</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-</tr>
-<tr>
-<td style="text-align: left;">PopIID identA</td>
-<td style="text-align: left;">31</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-</tr>
-<tr>
-<td style="text-align: left;">PopIID indepA</td>
-<td style="text-align: left;">31</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-</tr>
-<tr>
-<td style="text-align: left;">PopIID measA</td>
-<td style="text-align: left;">31</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-</tr>
-<tr>
-<td style="text-align: left;">PopulationMomentAssumptions aemeas</td>
-<td style="text-align: left;">8</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-</tr>
-<tr>
-<td style="text-align: left;">PopulationMomentAssumptions int2</td>
-<td style="text-align: left;">8</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1867,8 +1867,8 @@ tendsto</td>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;">WeightMatchesPopMoments m2 eq</td>
-<td style="text-align: left;">17</td>
+<td style="text-align: left;">WeightMatchesAttrMoments m2 eq</td>
+<td style="text-align: left;">18</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1937,14 +1937,14 @@ tendsto</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;">WeightMatchesPopMoments mean eq</td>
-<td style="text-align: left;">17</td>
+<td style="text-align: left;">WeightMatchesAttrMoments mean eq</td>
+<td style="text-align: left;">18</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2013,7 +2013,7 @@ tendsto</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2023,7 +2023,7 @@ tendsto</td>
 
 ## Auto-generated theorem dependency matrix
 
-<table>
+<table style="width:100%;">
 <colgroup>
 <col style="width: 2%" />
 <col style="width: 0%" />
@@ -2049,10 +2049,14 @@ tendsto</td>
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
@@ -2060,11 +2064,7 @@ tendsto</td>
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
-<col style="width: 0%" />
 <col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
@@ -2102,12 +2102,12 @@ tendsto</td>
 <thead>
 <tr>
 <th style="text-align: left;"></th>
-<th style="text-align: left;">PopulationMomentAssumptions</th>
+<th style="text-align: left;">AttrMomentAssumptions</th>
 <th style="text-align: left;">IIDAssumptions</th>
 <th style="text-align: left;">ScoreAssumptions</th>
 <th style="text-align: left;">sdHatZ tendsto ae</th>
 <th style="text-align: left;">sd component consistent</th>
-<th style="text-align: left;">sdHat fixed m tendsto ae popSDAttr</th>
+<th style="text-align: left;">sdHat fixed m tendsto ae attrSD</th>
 <th style="text-align: left;">totalErr tendsto trainErr fixed m</th>
 <th style="text-align: left;">trainErr tendsto zero</th>
 <th style="text-align: left;">sequential consistency ae</th>
@@ -2122,18 +2122,18 @@ bounded</th>
 <th style="text-align: left;">identified potMean from condMean</th>
 <th style="text-align: left;">identified amce from condMeans</th>
 <th style="text-align: left;">gExp eq gPot</th>
-<th style="text-align: left;">popMeanAttr congr ae</th>
-<th style="text-align: left;">popM2Attr congr ae</th>
-<th style="text-align: left;">popVarAttr congr ae</th>
-<th style="text-align: left;">popSDAttr congr ae</th>
+<th style="text-align: left;">attrMean congr ae</th>
+<th style="text-align: left;">attrM2 congr ae</th>
+<th style="text-align: left;">attrVar congr ae</th>
+<th style="text-align: left;">attrSD congr ae</th>
 <th style="text-align: left;">approxInvarianceAE triangle</th>
-<th style="text-align: left;">popMeanAttr diff le of L2Approx</th>
-<th style="text-align: left;">popSDAttr diff le of L2Approx</th>
-<th style="text-align: left;">popMeanAttr abs le of bounded ae</th>
-<th style="text-align: left;">popMeanAttr diff le of approx ae</th>
-<th style="text-align: left;">popM2Attr diff le of approx ae</th>
-<th style="text-align: left;">popVarAttr diff le of approx ae</th>
-<th style="text-align: left;">popSDAttr diff le of approx ae</th>
+<th style="text-align: left;">attrMean diff le of L2Approx</th>
+<th style="text-align: left;">attrSD diff le of L2Approx</th>
+<th style="text-align: left;">attrMean abs le of bounded ae</th>
+<th style="text-align: left;">attrMean diff le of approx ae</th>
+<th style="text-align: left;">attrM2 diff le of approx ae</th>
+<th style="text-align: left;">attrVar diff le of approx ae</th>
+<th style="text-align: left;">attrSD diff le of approx ae</th>
 <th style="text-align: left;">gLin eq gTotal blocks</th>
 <th style="text-align: left;">gStar eq sum blocks of WellSpecified</th>
 <th style="text-align: left;">gStar approx sum blocks of
@@ -2145,10 +2145,10 @@ ApproxWellSpecifiedAE</th>
 parametricMainInteractions</th>
 <th style="text-align: left;">gStar eq sum blocks of
 parametricMainInteractions</th>
-<th style="text-align: left;">paperBlockSD weighted eq pop</th>
-<th style="text-align: left;">paperTotalSD weighted eq pop</th>
-<th style="text-align: left;">paperBlockSDs weighted eq pop</th>
-<th style="text-align: left;">weightSDAttr eq popSDAttr of moments</th>
+<th style="text-align: left;">paperBlockSD weighted eq attr</th>
+<th style="text-align: left;">paperTotalSD weighted eq attr</th>
+<th style="text-align: left;">paperBlockSDs weighted eq attr</th>
+<th style="text-align: left;">weightSDAttr eq attrSD of moments</th>
 <th style="text-align: left;">paper total sd estimator consistency ae of
 gBTerm</th>
 <th style="text-align: left;">gTotalΘ eq gTotal gBTerm</th>
@@ -2193,8 +2193,8 @@ gStar approx ae of ApproxOracleAE</th>
 gStar ae of WellSpecified</th>
 <th style="text-align: left;">paper sd total sequential consistency to
 weighted target ae</th>
-<th style="text-align: left;">paper weighted sd eq pop</th>
-<th style="text-align: left;">paper weighted block sds eq pop</th>
+<th style="text-align: left;">paper weighted sd eq attr</th>
+<th style="text-align: left;">paper weighted block sds eq attr</th>
 <th style="text-align: left;">paper sd blocks and total sequential
 consistency ae of paper ols moments</th>
 <th style="text-align: left;">paper sd total sequential consistency ae
@@ -2211,7 +2211,7 @@ gStar ae of NoInteractions</th>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">PopulationMomentAssumptions</td>
+<td style="text-align: left;">AttrMomentAssumptions</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2586,7 +2586,7 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;">sdHat fixed m tendsto ae popSDAttr</td>
+<td style="text-align: left;">sdHat fixed m tendsto ae attrSD</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3563,7 +3563,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popMeanAttr congr ae</td>
+<td style="text-align: left;">attrMean congr ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3632,13 +3632,13 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;">popM2Attr congr ae</td>
+<td style="text-align: left;">attrM2 congr ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3707,13 +3707,13 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;">popVarAttr congr ae</td>
+<td style="text-align: left;">attrVar congr ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3782,13 +3782,13 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;">popSDAttr congr ae</td>
+<td style="text-align: left;">attrSD congr ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3857,7 +3857,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3938,7 +3938,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popMeanAttr diff le of L2Approx</td>
+<td style="text-align: left;">attrMean diff le of L2Approx</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4013,7 +4013,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popSDAttr diff le of L2Approx</td>
+<td style="text-align: left;">attrSD diff le of L2Approx</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4088,7 +4088,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popMeanAttr abs le of bounded ae</td>
+<td style="text-align: left;">attrMean abs le of bounded ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4163,7 +4163,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popMeanAttr diff le of approx ae</td>
+<td style="text-align: left;">attrMean diff le of approx ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4238,7 +4238,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popM2Attr diff le of approx ae</td>
+<td style="text-align: left;">attrM2 diff le of approx ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4313,7 +4313,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popVarAttr diff le of approx ae</td>
+<td style="text-align: left;">attrVar diff le of approx ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4388,7 +4388,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">popSDAttr diff le of approx ae</td>
+<td style="text-align: left;">attrSD diff le of approx ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4532,7 +4532,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -4607,7 +4607,7 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -4992,7 +4992,7 @@ parametricMainInteractions</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">paperBlockSD weighted eq pop</td>
+<td style="text-align: left;">paperBlockSD weighted eq attr</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5067,7 +5067,7 @@ parametricMainInteractions</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">paperTotalSD weighted eq pop</td>
+<td style="text-align: left;">paperTotalSD weighted eq attr</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5142,7 +5142,7 @@ parametricMainInteractions</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">paperBlockSDs weighted eq pop</td>
+<td style="text-align: left;">paperBlockSDs weighted eq attr</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5217,7 +5217,7 @@ parametricMainInteractions</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">weightSDAttr eq popSDAttr of moments</td>
+<td style="text-align: left;">weightSDAttr eq attrSD of moments</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5286,7 +5286,7 @@ parametricMainInteractions</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -7038,7 +7038,7 @@ weighted target ae</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">paper weighted sd eq pop</td>
+<td style="text-align: left;">paper weighted sd eq attr</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7113,7 +7113,7 @@ weighted target ae</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">paper weighted block sds eq pop</td>
+<td style="text-align: left;">paper weighted block sds eq attr</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7648,4 +7648,4 @@ gStar ae of NoInteractions</td>
 
 ## Theorem dependency DAG
 
-<img src="dependency_tables_files/theorem_dependency_dag.png" width="3415" />
+<img src="dependency_tables_files/theorem_dependency_dag.png" width="3628" />

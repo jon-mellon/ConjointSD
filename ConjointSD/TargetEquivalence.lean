@@ -1,7 +1,7 @@
 /-
 ConjointSD/TargetEquivalence.lean
 
-If two score functions are equal ν-a.e., then their population mean/second-moment/variance/SD
+If two score functions are equal ν-a.e., then their attribute-distribution mean/second-moment/variance/SD
 under ν are equal. This is the basic tool to turn “consistency to g θ0” into “consistency to
 the true estimand”, once you add a WellSpecified / InvarianceAE assumption.
 -/
@@ -21,39 +21,39 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable (ν : Measure Attr)
 variable {s t : Attr → ℝ}
 
-/-- If s = t ν-a.e., then their population means are equal. -/
-theorem popMeanAttr_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
-    popMeanAttr ν s = popMeanAttr ν t := by
+/-- If s = t ν-a.e., then their attribute-distribution means are equal. -/
+theorem attrMean_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
+    attrMean ν s = attrMean ν t := by
   have : (∫ a, s a ∂ν) = (∫ a, t a ∂ν) := by
     exact integral_congr_ae h
-  simpa [popMeanAttr] using this
+  simpa [attrMean] using this
 
-/-- If s = t ν-a.e., then their population second moments are equal. -/
-theorem popM2Attr_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
-    popM2Attr ν s = popM2Attr ν t := by
+/-- If s = t ν-a.e., then their attribute-distribution second moments are equal. -/
+theorem attrM2_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
+    attrM2 ν s = attrM2 ν t := by
   have h2 : ∀ᵐ a ∂ν, (s a) ^ 2 = (t a) ^ 2 := by
     refine h.mono ?_
     intro a ha
     simp [ha]
   have : (∫ a, (s a) ^ 2 ∂ν) = (∫ a, (t a) ^ 2 ∂ν) := by
     exact integral_congr_ae h2
-  simpa [popM2Attr] using this
+  simpa [attrM2] using this
 
-/-- If s = t ν-a.e., then their population variances are equal. -/
-theorem popVarAttr_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
-    popVarAttr ν s = popVarAttr ν t := by
-  have hm : popMeanAttr ν s = popMeanAttr ν t :=
-    popMeanAttr_congr_ae (ν := ν) (s := s) (t := t) h
-  have hm2 : popM2Attr ν s = popM2Attr ν t :=
-    popM2Attr_congr_ae (ν := ν) (s := s) (t := t) h
-  simp [popVarAttr, hm, hm2]
+/-- If s = t ν-a.e., then their attribute-distribution variances are equal. -/
+theorem attrVar_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
+    attrVar ν s = attrVar ν t := by
+  have hm : attrMean ν s = attrMean ν t :=
+    attrMean_congr_ae (ν := ν) (s := s) (t := t) h
+  have hm2 : attrM2 ν s = attrM2 ν t :=
+    attrM2_congr_ae (ν := ν) (s := s) (t := t) h
+  simp [attrVar, hm, hm2]
 
-/-- If s = t ν-a.e., then their population SDs are equal. -/
-theorem popSDAttr_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
-    popSDAttr ν s = popSDAttr ν t := by
-  have hv : popVarAttr ν s = popVarAttr ν t :=
-    popVarAttr_congr_ae (ν := ν) (s := s) (t := t) h
-  simp [popSDAttr, hv]
+/-- If s = t ν-a.e., then their attribute-distribution SDs are equal. -/
+theorem attrSD_congr_ae (h : ∀ᵐ a ∂ν, s a = t a) :
+    attrSD ν s = attrSD ν t := by
+  have hv : attrVar ν s = attrVar ν t :=
+    attrVar_congr_ae (ν := ν) (s := s) (t := t) h
+  simp [attrSD, hv]
 
 end
 
@@ -67,7 +67,7 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable (ν : Measure Attr)
 variable {s t u : Attr → ℝ}
 
-/-- Approximate invariance on population support: `|s - t| ≤ ε` ν-a.e. -/
+/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
 def ApproxInvarianceAE (s t : Attr → ℝ) (ε : ℝ) : Prop :=
   ∀ᵐ a ∂ν, |s a - t a| ≤ ε
 
@@ -92,17 +92,17 @@ section ApproximateMoments
 
 variable [ProbMeasureAssumptions ν]
 
-theorem popMeanAttr_diff_le_of_L2Approx
+theorem attrMean_diff_le_of_L2Approx
     (hs : Integrable s ν)
     (ht : Integrable t ν)
     (hL2 : L2Approx (ν := ν) (gModel := s) (gTarget := t) δ) :
-    |popMeanAttr ν s - popMeanAttr ν t| ≤ δ := by
+    |attrMean ν s - attrMean ν t| ≤ δ := by
   rcases hL2 with ⟨hMem, hBound⟩
   have hdiff :
-      |popMeanAttr ν s - popMeanAttr ν t|
+      |attrMean ν s - attrMean ν t|
         =
       |∫ a, (s a - t a) ∂ν| := by
-    simp [popMeanAttr, integral_sub, hs, ht]
+    simp [attrMean, integral_sub, hs, ht]
   have habs :
       |∫ a, (s a - t a) ∂ν| ≤ ∫ a, |s a - t a| ∂ν := by
     simpa using
@@ -137,18 +137,18 @@ theorem popMeanAttr_diff_le_of_L2Approx
         (∫ a, |s a - t a| ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
       simpa using h
     simpa [Real.sqrt_eq_rpow] using h1
-  have hle : |popMeanAttr ν s - popMeanAttr ν t| ≤
+  have hle : |attrMean ν s - attrMean ν t| ≤
       Real.sqrt (∫ a, |s a - t a| ^ 2 ∂ν) := by
     exact le_trans (by simpa [hdiff] using habs) hcs
   exact le_trans hle hBound
 
 section L2Centering
 
-lemma popVarAttr_eq_integral_centered
+lemma attrVar_eq_integral_centered
     (hs : Integrable s ν)
     (hs2 : Integrable (fun a => (s a) ^ 2) ν) :
-    popVarAttr ν s = ∫ a, (s a - popMeanAttr ν s) ^ 2 ∂ν := by
-  set μs : ℝ := popMeanAttr ν s
+    attrVar ν s = ∫ a, (s a - attrMean ν s) ^ 2 ∂ν := by
+  set μs : ℝ := attrMean ν s
   have hmul : Integrable (fun a => (2 * μs) * s a) ν := by
     simpa [mul_comm, mul_left_comm, mul_assoc] using hs.mul_const (2 * μs)
   have hconst : Integrable (fun _ : Attr => μs ^ 2) ν := integrable_const _
@@ -185,7 +185,7 @@ lemma popVarAttr_eq_integral_centered
         (f := fun a => (s a) ^ 2 - (2 * μs) * s a)
         (g := fun _ : Attr => μs ^ 2) hleft hconst)
   have hmean : ∫ a, s a ∂ν = μs := by
-    simp [μs, popMeanAttr]
+    simp [μs, attrMean]
   have hconst_int : ∫ a, μs ^ 2 ∂ν = μs ^ 2 := by
     simp
   have hcalc :
@@ -209,26 +209,26 @@ lemma popVarAttr_eq_integral_centered
                 ring
               simpa [hmean] using hring
   have hmean_sq : (∫ a, s a ∂ν) ^ 2 = μs ^ 2 := by
-    simp [μs, popMeanAttr]
+    simp [μs, attrMean]
   calc
-    popVarAttr ν s = ∫ a, (s a) ^ 2 ∂ν - μs ^ 2 := by
-      simp [popVarAttr, popM2Attr, popMeanAttr, hmean_sq, μs]
+    attrVar ν s = ∫ a, (s a) ^ 2 ∂ν - μs ^ 2 := by
+      simp [attrVar, attrM2, attrMean, hmean_sq, μs]
     _ = ∫ a, (s a - μs) ^ 2 ∂ν := by
       symm
       exact hcalc
 
-lemma popSDAttr_eq_l2_centered
+lemma attrSD_eq_l2_centered
     (hs : Integrable s ν)
     (hs2 : Integrable (fun a => (s a) ^ 2) ν) :
-    popSDAttr ν s = Real.sqrt (∫ a, |s a - popMeanAttr ν s| ^ 2 ∂ν) := by
+    attrSD ν s = Real.sqrt (∫ a, |s a - attrMean ν s| ^ 2 ∂ν) := by
   have hvar :
-      popVarAttr ν s = ∫ a, (s a - popMeanAttr ν s) ^ 2 ∂ν :=
-    popVarAttr_eq_integral_centered (ν := ν) (s := s) hs hs2
+      attrVar ν s = ∫ a, (s a - attrMean ν s) ^ 2 ∂ν :=
+    attrVar_eq_integral_centered (ν := ν) (s := s) hs hs2
   have habs :
-      (∫ a, |s a - popMeanAttr ν s| ^ 2 ∂ν)
-        = ∫ a, (s a - popMeanAttr ν s) ^ 2 ∂ν := by
+      (∫ a, |s a - attrMean ν s| ^ 2 ∂ν)
+        = ∫ a, (s a - attrMean ν s) ^ 2 ∂ν := by
     simp [abs_sq]
-  simp [popSDAttr, hvar, habs]
+  simp [attrSD, hvar, habs]
 
 end L2Centering
 
@@ -237,11 +237,11 @@ section L2Triangle
 lemma l2_centered_triangle_eLpNorm
     (hMem : MemLp (fun a => s a - t a) (2 : ENNReal) ν) :
     ENNReal.toReal
-        (eLpNorm (fun a => (s a - popMeanAttr ν s) - (t a - popMeanAttr ν t)) 2 ν)
+        (eLpNorm (fun a => (s a - attrMean ν s) - (t a - attrMean ν t)) 2 ν)
       ≤
     ENNReal.toReal (eLpNorm (fun a => s a - t a) 2 ν)
-      + ENNReal.toReal (eLpNorm (fun _ : Attr => popMeanAttr ν s - popMeanAttr ν t) 2 ν) := by
-  set c : ℝ := popMeanAttr ν s - popMeanAttr ν t
+      + ENNReal.toReal (eLpNorm (fun _ : Attr => attrMean ν s - attrMean ν t) 2 ν) := by
+  set c : ℝ := attrMean ν s - attrMean ν t
   have hconst : MemLp (fun _ : Attr => c) (2 : ENNReal) ν := by
     simpa using (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := c))
   have htri :
@@ -275,7 +275,7 @@ lemma l2_centered_triangle_eLpNorm
     exact ENNReal.toReal_add (ne_of_lt hMem.2) (ne_of_lt hconst.2)
   have hrewrite :
       (fun a => (s a - t a) - c) =
-        fun a => (s a - popMeanAttr ν s) - (t a - popMeanAttr ν t) := by
+        fun a => (s a - attrMean ν s) - (t a - attrMean ν t) := by
     funext a
     simp [c, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
   simpa [hsum, hrewrite, c] using hmono
@@ -339,13 +339,13 @@ section ApproximateMoments
 
 variable [ProbMeasureAssumptions ν]
 
-theorem popSDAttr_diff_le_of_L2Approx
-    (hs : PopulationMomentAssumptions (ν := ν) s)
-    (ht : PopulationMomentAssumptions (ν := ν) t)
+theorem attrSD_diff_le_of_L2Approx
+    (hs : AttrMomentAssumptions (ν := ν) s)
+    (ht : AttrMomentAssumptions (ν := ν) t)
     (hL2 : L2Approx (ν := ν) (gModel := s) (gTarget := t) δ) :
-    |popSDAttr ν s - popSDAttr ν t| ≤ 2 * δ := by
-  set μs : ℝ := popMeanAttr ν s
-  set μt : ℝ := popMeanAttr ν t
+    |attrSD ν s - attrSD ν t| ≤ 2 * δ := by
+  set μs : ℝ := attrMean ν s
+  set μt : ℝ := attrMean ν t
   have hs_mem : MemLp s (2 : ENNReal) ν := by
     have hs_meas : AEStronglyMeasurable s ν := hs.int1.aestronglyMeasurable
     have hs_mem' : MemLp s (2 : ENNReal) ν :=
@@ -363,23 +363,23 @@ theorem popSDAttr_diff_le_of_L2Approx
   have hcenter_diff : MemLp (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν := by
     simpa using hcenter_s.sub hcenter_t
   have hs_center :
-      popSDAttr ν s =
+      attrSD ν s =
         ENNReal.toReal (eLpNorm (fun a => s a - μs) (2 : ENNReal) ν) := by
     have hsd :=
-      popSDAttr_eq_l2_centered (ν := ν) (s := s) hs.int1 hs.int2
+      attrSD_eq_l2_centered (ν := ν) (s := s) hs.int1 hs.int2
     have hsd' :
-        popSDAttr ν s = Real.sqrt (∫ a, |s a - μs| ^ 2 ∂ν) := by
+        attrSD ν s = Real.sqrt (∫ a, |s a - μs| ^ 2 ∂ν) := by
       simpa [μs] using hsd
     have hbridge :=
       sqrt_integral_sq_eq_eLpNorm (ν := ν) (s := fun a => s a - μs) hcenter_s
     simpa [μs] using (hsd'.trans hbridge)
   have ht_center :
-      popSDAttr ν t =
+      attrSD ν t =
         ENNReal.toReal (eLpNorm (fun a => t a - μt) (2 : ENNReal) ν) := by
     have hsd :=
-      popSDAttr_eq_l2_centered (ν := ν) (s := t) ht.int1 ht.int2
+      attrSD_eq_l2_centered (ν := ν) (s := t) ht.int1 ht.int2
     have hsd' :
-        popSDAttr ν t = Real.sqrt (∫ a, |t a - μt| ^ 2 ∂ν) := by
+        attrSD ν t = Real.sqrt (∫ a, |t a - μt| ^ 2 ∂ν) := by
       simpa [μt] using hsd
     have hbridge :=
       sqrt_integral_sq_eq_eLpNorm (ν := ν) (s := fun a => t a - μt) hcenter_t
@@ -472,22 +472,22 @@ theorem popSDAttr_diff_le_of_L2Approx
           (f := fun a => t a - μt) (g := fun a => s a - μs) (p := (2 : ENNReal)) (μ := ν))
     simpa [hswap] using htri2'
   have hsd_le :
-      |popSDAttr ν s - popSDAttr ν t|
+      |attrSD ν s - attrSD ν t|
         ≤ ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
     have h1 :
-        popSDAttr ν s
-          ≤ popSDAttr ν t
+        attrSD ν s
+          ≤ attrSD ν t
               + ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
       simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri1
     have h2 :
-        popSDAttr ν t
-          ≤ popSDAttr ν s
+        attrSD ν t
+          ≤ attrSD ν s
               + ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
       simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri2
-    have h1' : popSDAttr ν s - popSDAttr ν t
+    have h1' : attrSD ν s - attrSD ν t
         ≤ ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
       linarith
-    have h2' : popSDAttr ν t - popSDAttr ν s
+    have h2' : attrSD ν t - attrSD ν s
         ≤ ENNReal.toReal (eLpNorm (fun a => (s a - μs) - (t a - μt)) (2 : ENNReal) ν) := by
       linarith
     exact (abs_sub_le_iff).2 ⟨h1', h2'⟩
@@ -517,7 +517,7 @@ theorem popSDAttr_diff_le_of_L2Approx
               simp [Real.enorm_eq_ofReal_abs]
   have hmean :
       |μs - μt| ≤ δ :=
-    popMeanAttr_diff_le_of_L2Approx (ν := ν) (s := s) (t := t) hs.int1 ht.int1 hL2
+    attrMean_diff_le_of_L2Approx (ν := ν) (s := s) (t := t) hs.int1 ht.int1 hL2
   have hnorm_st :
       ENNReal.toReal (eLpNorm (fun a => s a - t a) (2 : ENNReal) ν) ≤ δ := by
     have hMem : MemLp (fun a => s a - t a) (2 : ENNReal) ν := by
@@ -539,10 +539,10 @@ theorem popSDAttr_diff_le_of_L2Approx
     nlinarith [htri_centered, hnorm_st, hmean']
   exact le_trans hsd_le hle
 
-theorem popMeanAttr_abs_le_of_bounded_ae
+theorem attrMean_abs_le_of_bounded_ae
     (hs : Integrable s ν)
     (hBound : BoundedAE (ν := ν) s C) :
-    |popMeanAttr ν s| ≤ C := by
+    |attrMean ν s| ≤ C := by
   have h1 : |∫ a, s a ∂ν| ≤ ∫ a, |s a| ∂ν := by
     simpa using (abs_integral_le_integral_abs (f := s) (μ := ν))
   have h2 : ∫ a, |s a| ∂ν ≤ ∫ a, C ∂ν := by
@@ -551,19 +551,19 @@ theorem popMeanAttr_abs_le_of_bounded_ae
     exact integral_mono_ae hs_abs hC_int hBound
   have hconst : ∫ a, C ∂ν = C := by
     simp
-  simpa [popMeanAttr, hconst] using (le_trans h1 h2)
+  simpa [attrMean, hconst] using (le_trans h1 h2)
 
-theorem popMeanAttr_diff_le_of_approx_ae
+theorem attrMean_diff_le_of_approx_ae
     (hs : Integrable s ν)
     (ht : Integrable t ν)
     (hApprox : ApproxInvarianceAE (ν := ν) s t ε) :
-    |popMeanAttr ν s - popMeanAttr ν t| ≤ ε := by
+    |attrMean ν s - attrMean ν t| ≤ ε := by
   have hst : Integrable (fun a => s a - t a) ν := hs.sub ht
   have h1 :
-      |popMeanAttr ν s - popMeanAttr ν t|
+      |attrMean ν s - attrMean ν t|
         =
       |∫ a, (s a - t a) ∂ν| := by
-    simp [popMeanAttr, integral_sub, hs, ht]
+    simp [attrMean, integral_sub, hs, ht]
   have h2 : |∫ a, (s a - t a) ∂ν| ≤ ∫ a, |s a - t a| ∂ν := by
     simpa using
       (abs_integral_le_integral_abs (f := fun a => s a - t a) (μ := ν))
@@ -631,14 +631,14 @@ private theorem abs_sqrt_sub_sqrt_le_sqrt_abs_sub
     _   ≤ Real.sqrt |a - b| := by
             exact Real.sqrt_le_sqrt hle_sq
 
-theorem popM2Attr_diff_le_of_approx_ae
-    (hs : PopulationMomentAssumptions (ν := ν) s)
-    (ht : PopulationMomentAssumptions (ν := ν) t)
+theorem attrM2_diff_le_of_approx_ae
+    (hs : AttrMomentAssumptions (ν := ν) s)
+    (ht : AttrMomentAssumptions (ν := ν) t)
     (hBoundS : BoundedAE (ν := ν) s C)
     (hBoundT : BoundedAE (ν := ν) t C)
     (hApprox : ApproxInvarianceAE (ν := ν) s t ε)
     (hε : 0 ≤ ε) :
-    |popM2Attr ν s - popM2Attr ν t| ≤ 2 * C * ε := by
+    |attrM2 ν s - attrM2 ν t| ≤ 2 * C * ε := by
   have hAE :
       ∀ᵐ a ∂ν, |(s a) ^ 2 - (t a) ^ 2| ≤ 2 * C * ε := by
     have hAll := hApprox.and (hBoundS.and hBoundT)
@@ -666,10 +666,10 @@ theorem popM2Attr_diff_le_of_approx_ae
   have ht2 : Integrable (fun a => (t a) ^ 2) ν := ht.int2
   have hst2 : Integrable (fun a => (s a) ^ 2 - (t a) ^ 2) ν := hs2.sub ht2
   have h1 :
-      |popM2Attr ν s - popM2Attr ν t|
+      |attrM2 ν s - attrM2 ν t|
         =
       |∫ a, ((s a) ^ 2 - (t a) ^ 2) ∂ν| := by
-    simp [popM2Attr, integral_sub, hs2, ht2]
+    simp [attrM2, integral_sub, hs2, ht2]
   have h2 :
       |∫ a, ((s a) ^ 2 - (t a) ^ 2) ∂ν|
         ≤
@@ -688,103 +688,103 @@ theorem popM2Attr_diff_le_of_approx_ae
     simpa [hconst] using hle
   simpa [h1] using (le_trans h2 h3)
 
-theorem popVarAttr_diff_le_of_approx_ae
-    (hs : PopulationMomentAssumptions (ν := ν) s)
-    (ht : PopulationMomentAssumptions (ν := ν) t)
+theorem attrVar_diff_le_of_approx_ae
+    (hs : AttrMomentAssumptions (ν := ν) s)
+    (ht : AttrMomentAssumptions (ν := ν) t)
     (hBoundS : BoundedAE (ν := ν) s C)
     (hBoundT : BoundedAE (ν := ν) t C)
     (hApprox : ApproxInvarianceAE (ν := ν) s t ε)
     (hε : 0 ≤ ε) :
-    |popVarAttr ν s - popVarAttr ν t| ≤ 4 * C * ε := by
+    |attrVar ν s - attrVar ν t| ≤ 4 * C * ε := by
   have hmean_diff :
-      |popMeanAttr ν s - popMeanAttr ν t| ≤ ε :=
-    popMeanAttr_diff_le_of_approx_ae (ν := ν) (s := s) (t := t)
+      |attrMean ν s - attrMean ν t| ≤ ε :=
+    attrMean_diff_le_of_approx_ae (ν := ν) (s := s) (t := t)
       hs.int1 ht.int1 hApprox
   have hmean_s :
-      |popMeanAttr ν s| ≤ C :=
-    popMeanAttr_abs_le_of_bounded_ae (ν := ν) (s := s)
+      |attrMean ν s| ≤ C :=
+    attrMean_abs_le_of_bounded_ae (ν := ν) (s := s)
       hs.int1 hBoundS
   have hmean_t :
-      |popMeanAttr ν t| ≤ C :=
-    popMeanAttr_abs_le_of_bounded_ae (ν := ν) (s := t)
+      |attrMean ν t| ≤ C :=
+    attrMean_abs_le_of_bounded_ae (ν := ν) (s := t)
       ht.int1 hBoundT
   have hmean_sq :
-      |(popMeanAttr ν s) ^ 2 - (popMeanAttr ν t) ^ 2| ≤ 2 * C * ε := by
-    have hsum : |popMeanAttr ν s + popMeanAttr ν t| ≤
-        |popMeanAttr ν s| + |popMeanAttr ν t| := by
-      simpa using (abs_add_le (popMeanAttr ν s) (popMeanAttr ν t))
+      |(attrMean ν s) ^ 2 - (attrMean ν t) ^ 2| ≤ 2 * C * ε := by
+    have hsum : |attrMean ν s + attrMean ν t| ≤
+        |attrMean ν s| + |attrMean ν t| := by
+      simpa using (abs_add_le (attrMean ν s) (attrMean ν t))
     have hfact :
-        (popMeanAttr ν s) ^ 2 - (popMeanAttr ν t) ^ 2
+        (attrMean ν s) ^ 2 - (attrMean ν t) ^ 2
           =
-        (popMeanAttr ν s - popMeanAttr ν t)
-          * (popMeanAttr ν s + popMeanAttr ν t) := by
+        (attrMean ν s - attrMean ν t)
+          * (attrMean ν s + attrMean ν t) := by
       ring
     have hmul :
-        |(popMeanAttr ν s) ^ 2 - (popMeanAttr ν t) ^ 2|
+        |(attrMean ν s) ^ 2 - (attrMean ν t) ^ 2|
           =
-        |popMeanAttr ν s - popMeanAttr ν t|
-          * |popMeanAttr ν s + popMeanAttr ν t| := by
+        |attrMean ν s - attrMean ν t|
+          * |attrMean ν s + attrMean ν t| := by
       simp [hfact, abs_mul]
     calc
-      |(popMeanAttr ν s) ^ 2 - (popMeanAttr ν t) ^ 2|
-          = |popMeanAttr ν s - popMeanAttr ν t|
-              * |popMeanAttr ν s + popMeanAttr ν t| := hmul
-      _   ≤ ε * (|popMeanAttr ν s| + |popMeanAttr ν t|) := by
-              have hnonneg : 0 ≤ |popMeanAttr ν s + popMeanAttr ν t| := abs_nonneg _
+      |(attrMean ν s) ^ 2 - (attrMean ν t) ^ 2|
+          = |attrMean ν s - attrMean ν t|
+              * |attrMean ν s + attrMean ν t| := hmul
+      _   ≤ ε * (|attrMean ν s| + |attrMean ν t|) := by
+              have hnonneg : 0 ≤ |attrMean ν s + attrMean ν t| := abs_nonneg _
               exact mul_le_mul hmean_diff hsum hnonneg hε
       _   ≤ ε * (C + C) := by
-              have hsum_le : |popMeanAttr ν s| + |popMeanAttr ν t| ≤ C + C := by nlinarith
+              have hsum_le : |attrMean ν s| + |attrMean ν t| ≤ C + C := by nlinarith
               exact mul_le_mul_of_nonneg_left hsum_le hε
       _   = 2 * C * ε := by ring
   have hM2 :
-      |popM2Attr ν s - popM2Attr ν t| ≤ 2 * C * ε :=
-    popM2Attr_diff_le_of_approx_ae (ν := ν) (s := s) (t := t)
+      |attrM2 ν s - attrM2 ν t| ≤ 2 * C * ε :=
+    attrM2_diff_le_of_approx_ae (ν := ν) (s := s) (t := t)
       hs ht hBoundS hBoundT hApprox hε
   have hvar :
-      popVarAttr ν s - popVarAttr ν t
+      attrVar ν s - attrVar ν t
         =
-      (popM2Attr ν s - popM2Attr ν t)
-        - ((popMeanAttr ν s) ^ 2 - (popMeanAttr ν t) ^ 2) := by
-    simp [popVarAttr, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+      (attrM2 ν s - attrM2 ν t)
+        - ((attrMean ν s) ^ 2 - (attrMean ν t) ^ 2) := by
+    simp [attrVar, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
   have htriangle :
-      |popVarAttr ν s - popVarAttr ν t|
-        ≤ |popM2Attr ν s - popM2Attr ν t|
-            + |(popMeanAttr ν t) ^ 2 - (popMeanAttr ν s) ^ 2| := by
+      |attrVar ν s - attrVar ν t|
+        ≤ |attrM2 ν s - attrM2 ν t|
+            + |(attrMean ν t) ^ 2 - (attrMean ν s) ^ 2| := by
     have h :=
-      abs_add_le (popM2Attr ν s - popM2Attr ν t)
-        (-(popMeanAttr ν s ^ 2 - popMeanAttr ν t ^ 2))
+      abs_add_le (attrM2 ν s - attrM2 ν t)
+        (-(attrMean ν s ^ 2 - attrMean ν t ^ 2))
     simpa [hvar, sub_eq_add_neg, abs_neg, abs_sub_comm,
       add_comm, add_left_comm, add_assoc] using h
-  have hsum : |popM2Attr ν s - popM2Attr ν t|
-        + |(popMeanAttr ν t) ^ 2 - (popMeanAttr ν s) ^ 2|
+  have hsum : |attrM2 ν s - attrM2 ν t|
+        + |(attrMean ν t) ^ 2 - (attrMean ν s) ^ 2|
           ≤ 4 * C * ε := by
     have hmean_sq' :
-        |(popMeanAttr ν t) ^ 2 - (popMeanAttr ν s) ^ 2| ≤ 2 * C * ε := by
+        |(attrMean ν t) ^ 2 - (attrMean ν s) ^ 2| ≤ 2 * C * ε := by
       simpa [abs_sub_comm] using hmean_sq
     nlinarith [hM2, hmean_sq']
   exact le_trans htriangle hsum
 
-theorem popSDAttr_diff_le_of_approx_ae
-    (hs : PopulationMomentAssumptions (ν := ν) s)
-    (ht : PopulationMomentAssumptions (ν := ν) t)
+theorem attrSD_diff_le_of_approx_ae
+    (hs : AttrMomentAssumptions (ν := ν) s)
+    (ht : AttrMomentAssumptions (ν := ν) t)
     (hBoundS : BoundedAE (ν := ν) s C)
     (hBoundT : BoundedAE (ν := ν) t C)
     (hApprox : ApproxInvarianceAE (ν := ν) s t ε)
     (hε : 0 ≤ ε)
-    (hVarS : 0 ≤ popVarAttr ν s) (hVarT : 0 ≤ popVarAttr ν t) :
-    |popSDAttr ν s - popSDAttr ν t| ≤ Real.sqrt (4 * C * ε) := by
+    (hVarS : 0 ≤ attrVar ν s) (hVarT : 0 ≤ attrVar ν t) :
+    |attrSD ν s - attrSD ν t| ≤ Real.sqrt (4 * C * ε) := by
   have hvar :
-      |popVarAttr ν s - popVarAttr ν t| ≤ 4 * C * ε :=
-    popVarAttr_diff_le_of_approx_ae (ν := ν) (s := s) (t := t)
+      |attrVar ν s - attrVar ν t| ≤ 4 * C * ε :=
+    attrVar_diff_le_of_approx_ae (ν := ν) (s := s) (t := t)
       hs ht hBoundS hBoundT hApprox hε
   have hsd :
-      |popSDAttr ν s - popSDAttr ν t|
-        ≤ Real.sqrt |popVarAttr ν s - popVarAttr ν t| := by
-    simpa [popSDAttr] using
-      (abs_sqrt_sub_sqrt_le_sqrt_abs_sub (a := popVarAttr ν s) (b := popVarAttr ν t)
+      |attrSD ν s - attrSD ν t|
+        ≤ Real.sqrt |attrVar ν s - attrVar ν t| := by
+    simpa [attrSD] using
+      (abs_sqrt_sub_sqrt_le_sqrt_abs_sub (a := attrVar ν s) (b := attrVar ν t)
         hVarS hVarT)
   have hsqrt :
-      Real.sqrt |popVarAttr ν s - popVarAttr ν t|
+      Real.sqrt |attrVar ν s - attrVar ν t|
         ≤ Real.sqrt (4 * C * ε) := by
     apply Real.sqrt_le_sqrt
     exact hvar

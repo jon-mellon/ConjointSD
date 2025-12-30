@@ -17,12 +17,12 @@ Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consis
 - Includes bounded variants.
 - Adds `hGTotal`-based wrappers so the total-score sequential consistency chain can be driven directly by `GEstimationAssumptions`.
 - Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only and blocks+total sequential [consistency](jargon_consistency.md) results, with a weighted-`gStar` target when [well-specification](jargon_well_specified.md) and moment matching hold.
-- Adds a weighted-target bridge: if weighted moments match population moments, the sequential-consistency target can be stated using `weightSDAttr`.
+- Adds a weighted-target bridge: if weighted moments match target human population moments, the sequential-consistency target can be stated using `weightSDAttr`.
 
 Section 4: targeting the true [estimand](jargon_estimand.md)
-- Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.
+- Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the target human [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.
 - Provides an approximate version where the scores are within epsilon, giving an explicit [standard deviation](jargon_standard_deviation.md) error bound.
-- Adds weighted-target transfer lemmas: if survey weights match population moments for a score, the weighted SD equals the population SD.
+- Adds weighted-target transfer lemmas: if survey weights match target human population moments for a score, the weighted SD equals the target human population SD.
 - Adds an identification bridge: if the model score targets the observed score and the observed score equals the causal score, then the SD target is the weighted causal one under moment matching (using [potential outcomes](jargon_potential_outcome.md) and [conditional means](jargon_conditional_mean.md)).
 
 Section 4c: link to the causal [estimand](jargon_estimand.md)

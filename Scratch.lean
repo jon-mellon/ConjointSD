@@ -2,10 +2,10 @@ import ConjointSD
 
 -- Scratchpad to inspect SD-consistency assumptions.
 
-#print ConjointSD.PopIID
+#print ConjointSD.DesignAttrIID
 #print ConjointSD.IIDAssumptions
 #print ConjointSD.ScoreAssumptions
-#print ConjointSD.PopulationMomentAssumptions.int1
+#print ConjointSD.AttrMomentAssumptions.int1
 #print ConjointSD.IIDAssumptions.intZ
 #print ConjointSD.ScoreAssumptions.int_g0
 #print ConjointSD.SplitEvalAssumptions
@@ -17,7 +17,7 @@ import ConjointSD
 #print ConjointSD.sd_component_consistent
 
 -- Sample splitting (evaluation stage).
-#print ConjointSD.sdHat_fixed_m_tendsto_ae_popSDAttr
+#print ConjointSD.sdHat_fixed_m_tendsto_ae_attrSD
 
 -- Sequential consistency (train then eval).
 #print ConjointSD.totalErr_tendsto_trainErr_fixed_m
@@ -38,18 +38,18 @@ import ConjointSD
 #print ConjointSD.gExp_eq_gPot
 
 -- Target equivalence and approximation bounds.
-#print ConjointSD.popMeanAttr_congr_ae
-#print ConjointSD.popM2Attr_congr_ae
-#print ConjointSD.popVarAttr_congr_ae
-#print ConjointSD.popSDAttr_congr_ae
+#print ConjointSD.attrMean_congr_ae
+#print ConjointSD.attrM2_congr_ae
+#print ConjointSD.attrVar_congr_ae
+#print ConjointSD.attrSD_congr_ae
 #print ConjointSD.approxInvarianceAE_triangle
-#print ConjointSD.popMeanAttr_diff_le_of_L2Approx
-#print ConjointSD.popSDAttr_diff_le_of_L2Approx
-#print ConjointSD.popMeanAttr_abs_le_of_bounded_ae
-#print ConjointSD.popMeanAttr_diff_le_of_approx_ae
-#print ConjointSD.popM2Attr_diff_le_of_approx_ae
-#print ConjointSD.popVarAttr_diff_le_of_approx_ae
-#print ConjointSD.popSDAttr_diff_le_of_approx_ae
+#print ConjointSD.attrMean_diff_le_of_L2Approx
+#print ConjointSD.attrSD_diff_le_of_L2Approx
+#print ConjointSD.attrMean_abs_le_of_bounded_ae
+#print ConjointSD.attrMean_diff_le_of_approx_ae
+#print ConjointSD.attrM2_diff_le_of_approx_ae
+#print ConjointSD.attrVar_diff_le_of_approx_ae
+#print ConjointSD.attrSD_diff_le_of_approx_ae
 
 -- Model bridge.
 #print ConjointSD.gLin_eq_gTotal_blocks
@@ -63,10 +63,10 @@ import ConjointSD
 -- Paper core estimands.
 #print ConjointSD.paperBlockSDs_apply
 #print ConjointSD.paperTotalSD_def
-#print ConjointSD.paperBlockSD_weighted_eq_pop
-#print ConjointSD.paperTotalSD_weighted_eq_pop
-#print ConjointSD.paperBlockSDs_weighted_eq_pop
-#print ConjointSD.weightSDAttr_eq_popSDAttr_of_moments
+#print ConjointSD.paperBlockSD_weighted_eq_attr
+#print ConjointSD.paperTotalSD_weighted_eq_attr
+#print ConjointSD.paperBlockSDs_weighted_eq_attr
+#print ConjointSD.weightSDAttr_eq_attrSD_of_moments
 #print ConjointSD.paper_total_sd_estimator_consistency_ae_of_gBTerm
 #print ConjointSD.gTotalΘ_eq_gTotal_gBTerm
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
@@ -92,8 +92,8 @@ import ConjointSD
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
 #print ConjointSD.paper_sd_total_sequential_consistency_to_weighted_target_ae
-#print ConjointSD.paper_weighted_sd_eq_pop
-#print ConjointSD.paper_weighted_block_sds_eq_pop
+#print ConjointSD.paper_weighted_sd_eq_attr
+#print ConjointSD.paper_weighted_block_sds_eq_attr
 #print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_hGTotal
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total

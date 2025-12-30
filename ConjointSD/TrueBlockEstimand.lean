@@ -90,9 +90,9 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
             ∀ᶠ n : ℕ in atTop,
               totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
-          popSDAttr ν (gBlock (gB := gB) b θ0)
+          attrSD ν (gBlock (gB := gB) b θ0)
             =
-          popSDAttr ν (trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b) := by
+          attrSD ν (trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b) := by
   classical
   let gTrueB : B → Attr → ℝ :=
     fun b => trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b
@@ -139,10 +139,10 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
                 (gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
                 θ0 θhat m n ω < ε)
           ∧
-          popSDAttr ν
+          attrSD ν
             (gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b θ0)
             =
-          popSDAttr ν
+          attrSD ν
             (trueBlockScore (blk := blk) (β0 := β0) (φ := φ) b) := by
   classical
   have hBlockSpec :

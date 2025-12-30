@@ -2,12 +2,12 @@
 ConjointSD/RegressionConsistencyBridge.lean
 
 Route 2 bridge: derive `GEstimationAssumptions` from (i) parameter convergence `θhat → θ0`
-and (ii) continuity of the induced population functionals at `θ0`.
+and (ii) continuity of the induced attribute-distribution functionals at `θ0`.
 
 This version matches your current `GEstimationAssumptions` interface:
   fields: `mean_tendsto` and `m2_tendsto`.
 
-We do NOT redeclare `popSDAttr_tendsto_of_GEstimationAssumptions` (it already exists in your project).
+We do NOT redeclare `attrSD_tendsto_of_GEstimationAssumptions` (it already exists in your project).
 -/
 
 import ConjointSD.EstimatedG
@@ -37,54 +37,54 @@ theorem GEstimationAssumptions_of_theta_tendsto
     { mean_tendsto := ?_
       m2_tendsto   := ?_ }
   · -- mean_tendsto
-    simpa [gHat, popMeanΘ] using (hcont.cont_mean.tendsto.comp hθ.tendsto)
+    simpa [gHat, attrMeanΘ] using (hcont.cont_mean.tendsto.comp hθ.tendsto)
   · -- m2_tendsto
-    simpa [gHat, popM2Θ] using (hcont.cont_m2.tendsto.comp hθ.tendsto)
+    simpa [gHat, attrM2Θ] using (hcont.cont_m2.tendsto.comp hθ.tendsto)
 
 /--
 Derived variance convergence (new name to avoid collisions).
 
-`popVarAttr ν s = popM2Attr ν s - (popMeanAttr ν s)^2`.
+`attrVar ν s = attrM2 ν s - (attrMean ν s)^2`.
 So if mean and second moment converge, variance converges.
 -/
-theorem popVarAttr_tendsto_of_GEstimationAssumptions_bridge
+theorem attrVar_tendsto_of_GEstimationAssumptions_bridge
     {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hG : GEstimationAssumptions (ν := ν) g θ0 θhat) :
     Tendsto
-      (fun n => popVarAttr ν (gHat g θhat n))
+      (fun n => attrVar ν (gHat g θhat n))
       atTop
-      (nhds (popVarAttr ν (g θ0))) := by
+      (nhds (attrVar ν (g θ0))) := by
   let _ := (inferInstance : TopologicalSpace Θ)
   have hmean :
       Tendsto
-        (fun n => popMeanAttr ν (gHat g θhat n))
+        (fun n => attrMean ν (gHat g θhat n))
         atTop
-        (nhds (popMeanAttr ν (g θ0))) :=
+        (nhds (attrMean ν (g θ0))) :=
     hG.mean_tendsto
   have hm2 :
       Tendsto
-        (fun n => popM2Attr ν (gHat g θhat n))
+        (fun n => attrM2 ν (gHat g θhat n))
         atTop
-        (nhds (popM2Attr ν (g θ0))) :=
+        (nhds (attrM2 ν (g θ0))) :=
     hG.m2_tendsto
   have hmean_sq :
       Tendsto
-        (fun n => (popMeanAttr ν (gHat g θhat n)) ^ 2)
+        (fun n => (attrMean ν (gHat g θhat n)) ^ 2)
         atTop
-        (nhds ((popMeanAttr ν (g θ0)) ^ 2)) := by
+        (nhds ((attrMean ν (g θ0)) ^ 2)) := by
     -- use continuity of x ↦ x^2
     simpa [pow_two] using (hmean.mul hmean)
   have hsub :
       Tendsto
         (fun n =>
-          popM2Attr ν (gHat g θhat n)
-            - (popMeanAttr ν (gHat g θhat n)) ^ 2)
+          attrM2 ν (gHat g θhat n)
+            - (attrMean ν (gHat g θhat n)) ^ 2)
         atTop
-        (nhds (popM2Attr ν (g θ0) - (popMeanAttr ν (g θ0)) ^ 2)) :=
+        (nhds (attrM2 ν (g θ0) - (attrMean ν (g θ0)) ^ 2)) :=
     hm2.sub hmean_sq
-  simpa [popVarAttr] using hsub
+  simpa [attrVar] using hsub
 
 /-!
 ## Blocks: continuity assumptions and resulting `GEstimationAssumptions` per block

@@ -31,7 +31,7 @@ lemma integrable_of_bounded
 lemma scoreAssumptions_of_bounded
     [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hPop : PopIID (μ := μ) A)
+    (hPop : DesignAttrIID (μ := μ) A)
     (hMeas : Measurable g)
     (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ScoreAssumptions (μ := μ) A g := by
@@ -66,12 +66,12 @@ lemma iidAssumptions_Zcomp [ProbMeasureAssumptions μ]
   let Z : ℕ → Ω → ℝ := Zcomp (A := A) (g := g)
   refine ⟨?indepZ, ?identZ, ?intZ2⟩
   · intro i j hij
-    have hijA : IndepFun (A i) (A j) μ := h.popiid.indepA hij
+    have hijA : IndepFun (A i) (A j) μ := h.designAttrIID.indepA hij
     have : IndepFun (g ∘ (A i)) (g ∘ (A j)) μ :=
       hijA.comp h.meas_g h.meas_g
     simpa [Z, Zcomp, Function.comp] using this
   · intro i
-    have hiA : IdentDistrib (A i) (A 0) μ μ := h.popiid.identA i
+    have hiA : IdentDistrib (A i) (A 0) μ μ := h.designAttrIID.identA i
     have : IdentDistrib (g ∘ (A i)) (g ∘ (A 0)) μ μ :=
       hiA.comp h.meas_g
     simpa [Z, Zcomp, Function.comp] using this
@@ -85,21 +85,21 @@ theorem sd_component_consistent [ProbMeasureAssumptions μ]
       Tendsto
         (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
-        (nhds (popSDZ (μ := μ) (Zcomp (A := A) (g := g)))) := by
+        (nhds (designSDZ (μ := μ) (Zcomp (A := A) (g := g)))) := by
   have hIID : IIDAssumptions (μ := μ) (Zcomp (A := A) (g := g)) :=
     iidAssumptions_Zcomp (μ := μ) (A := A) (g := g) h
   simpa using (sdHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := A) (g := g)) hIID)
 
 theorem sd_component_consistent_of_bounded [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hPop : PopIID (μ := μ) A)
+    (hPop : DesignAttrIID (μ := μ) A)
     (hMeas : Measurable g)
     (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
-        (nhds (popSDZ (μ := μ) (Zcomp (A := A) (g := g)))) := by
+        (nhds (designSDZ (μ := μ) (Zcomp (A := A) (g := g)))) := by
   have hScore :
       ScoreAssumptions (μ := μ) (A := A) (g := g) :=
     scoreAssumptions_of_bounded
@@ -123,11 +123,11 @@ theorem sd_block_consistent [ProbMeasureAssumptions μ]
       Tendsto
         (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g b)) n ω)
         atTop
-        (nhds (popSDZ (μ := μ) (Zcomp (A := A) (g := g b)))) := by
+        (nhds (designSDZ (μ := μ) (Zcomp (A := A) (g := g b)))) := by
   have hb : ScoreAssumptions (μ := μ) (A := A) (g := g b) :=
     scoreAssumptions_of_bounded
       (μ := μ) (A := A) (g := g b)
-      (hPop := h.popiid) (hMeas := h.meas_g b) (hBound := h.bound_g b)
+      (hPop := h.designAttrIID) (hMeas := h.meas_g b) (hBound := h.bound_g b)
   exact sd_component_consistent (μ := μ) (A := A) (g := g b) hb
 
 end ConjointSD
