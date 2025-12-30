@@ -74,6 +74,10 @@ def varHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
 def sdHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   Real.sqrt (varHatZ (Z := Z) n ω)
 
+/-- Empirical RMSE proxy: √(m2Hat). -/
+def rmseHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  Real.sqrt (m2HatZ (Z := Z) n ω)
+
 /-- Population mean: ∫ Z 0 dμ. -/
 def popMeanZ (Z : ℕ → Ω → ℝ) : ℝ :=
   ∫ ω, Z 0 ω ∂μ
@@ -89,6 +93,10 @@ def popVarZ (Z : ℕ → Ω → ℝ) : ℝ :=
 /-- Population SD proxy: √(popVar). -/
 def popSDZ (Z : ℕ → Ω → ℝ) : ℝ :=
   Real.sqrt (popVarZ (μ := μ) Z)
+
+/-- Population RMSE proxy: √(popM2). -/
+def popRMSEZ (Z : ℕ → Ω → ℝ) : ℝ :=
+  Real.sqrt (popM2Z (μ := μ) Z)
 
 end PredictedSD
 

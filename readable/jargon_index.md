@@ -2,7 +2,9 @@
 
 Lean helper pages with plain-language definitions.
 
+- [Additive projection](jargon_additive_projection.md)
 - [Almost everywhere (a.e.)](jargon_almost_everywhere.md)
+- [AMCE (average marginal component effect)](jargon_amce.md)
 - [Block](jargon_block.md)
 - [Bridge](jargon_bridge.md)
 - [Conditional mean](jargon_conditional_mean.md)
@@ -12,6 +14,7 @@ Lean helper pages with plain-language definitions.
 - [Covariance](jargon_covariance.md)
 - [Discharge](jargon_discharge.md)
 - [Distribution (also called a measure)](jargon_distribution.md)
+- [Estimand](jargon_estimand.md)
 - [Estimator](jargon_estimator.md)
 - [Finite type (Fintype)](jargon_finite_type.md)
 - [Identically distributed](jargon_identically_distributed.md)
@@ -20,10 +23,12 @@ Lean helper pages with plain-language definitions.
 - [Integrable](jargon_integrable.md)
 - [Integral](jargon_integral.md)
 - [Interaction](jargon_interaction.md)
+- [Law of large numbers (LLN)](jargon_lln.md)
 - [Lemma](jargon_lemma.md)
 - [L2 (mean-square) error](jargon_l2.md)
 - [Linear model](jargon_linear_model.md)
 - [Linear-in-terms](jargon_linear_in_terms.md)
+- [Marginalization](jargon_marginalization.md)
 - [Mean (average)](jargon_mean.md)
 - [Measurable](jargon_measurable.md)
 - [Normalization](jargon_normalization.md)
@@ -36,6 +41,7 @@ Lean helper pages with plain-language definitions.
 - [Potential outcome](jargon_potential_outcome.md)
 - [Profile](jargon_profile.md)
 - [Regression](jargon_regression.md)
+- [RMSE (root mean square error)](jargon_rmse.md)
 - [Second moment](jargon_second_moment.md)
 - [Sequential consistency](jargon_sequential_consistency.md)
 - [Standard deviation](jargon_standard_deviation.md)

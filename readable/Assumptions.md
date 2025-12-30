@@ -8,7 +8,7 @@ each package is asserting and why it matters.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
-Recent changes: added an additive-projection oracle assumption for component SD bounds.
+Recent changes: added an [additive-projection](jargon_additive_projection.md) oracle assumption for component SD bounds.
 
 ## Transport
 
@@ -29,8 +29,8 @@ Recent changes: added an additive-projection oracle assumption for component SD 
   `Z`. Requires [independent](jargon_independent.md) and
   [identically distributed](jargon_identically_distributed.md) draws, plus
   [integrability](jargon_integrable.md) of `Z 0` and `(Z 0)^2`. This is the
-  standard input for a strong
-  law for both the [mean](jargon_mean.md) and
+  standard input for a strong [LLN](jargon_lln.md)
+  for both the [mean](jargon_mean.md) and
   [second moment](jargon_second_moment.md), which
   delivers SD [consistency](jargon_consistency.md).
 
@@ -44,7 +44,7 @@ Recent changes: added an additive-projection oracle assumption for component SD 
   [measurability](jargon_measurable.md) of the score function `g`, plus
   [integrability](jargon_integrable.md) of `g(A 0)` and `g(A 0)^2`. This is the
   input needed to apply the [standard deviation](jargon_standard_deviation.md)
-  law of large numbers to the induced score process.
+  [LLN](jargon_lln.md) to the induced score process.
 - `DecompAssumptions`: bundles `PopIID`, [measurability](jargon_measurable.md) of
   each
   [block](jargon_block.md) score `g b`, and a uniform boundedness condition for
@@ -107,7 +107,7 @@ Recent changes: added an additive-projection oracle assumption for component SD 
 - `OLSMomentAssumptionsOfPop`: the [population](jargon_population.md) version of
   the above, with the limits pinned to the
   [population](jargon_population.md) Gram and cross moments.
-  This is the standard LLN + identifiability package for [OLS](jargon_ols.md).
+  This is the standard [LLN](jargon_lln.md) + identifiability package for [OLS](jargon_ols.md).
 
 ## SurveyWeights
 
@@ -145,7 +145,7 @@ Recent changes: added an additive-projection oracle assumption for component SD 
 ## ModelBridge
 
 - `WellSpecified`: exact [well-specified](jargon_well_specified.md): the causal
-  estimand `gStar` equals the
+  [estimand](jargon_estimand.md) `gStar` equals the
   [linear-in-terms](jargon_linear_in_terms.md) model `gLin` for all
   [profiles](jargon_profile.md).
 - `ApproxWellSpecified`: uniform approximation by `gLin`, with a fixed error
@@ -156,14 +156,15 @@ Recent changes: added an additive-projection oracle assumption for component SD 
 - `ApproxOracleAE`: a two-stage approximation assumption: a flexible score
   approximates the true target `gStar`, and the model score approximates the
   flexible score, both [almost everywhere](jargon_almost_everywhere.md).
-- `L2Approx`: an [L2](jargon_l2.md)/RMSE-style approximation assumption: the model score differs
+- `L2Approx`: an [L2](jargon_l2.md)/[RMSE](jargon_rmse.md)-style approximation assumption: the model score differs
   from the target by at most `δ` in mean-square (uses the [L2](jargon_l2.md) norm under `ν`).
 - `ParametricMainInteractions`: the paper's parametric assumption that `gStar`
   is exactly an intercept plus the specified main effects and listed
   [interactions](jargon_interaction.md).
-- `AdditiveProjectionOracle`: defines the oracle as a linear-in-terms projection plus a
-  residual orthogonal to each term feature, formalizing component targets when the oracle is
-  nonlinear or interactive.
+- `AdditiveProjectionOracle`: defines the oracle as a linear-in-terms
+  [additive projection](jargon_additive_projection.md) plus a residual orthogonal
+  to each term feature, formalizing component targets when the oracle is nonlinear
+  or interactive.
 
 ## WellSpecifiedFromNoInteractions
 
@@ -173,7 +174,7 @@ Recent changes: added an additive-projection oracle assumption for component SD 
 
 ## PaperOLSConsistency
 
-- `PaperOLSLLNA`: entrywise law of large numbers for the sample Gram matrix and
+- `PaperOLSLLNA`: entrywise [LLN](jargon_lln.md) for the sample Gram matrix and
   cross moment vector, [converging](jargon_convergence.md) to
   [population](jargon_population.md) targets for the paper basis.
 - `PaperOLSInverseStability`: stability of the inverse Gram entries, ensuring

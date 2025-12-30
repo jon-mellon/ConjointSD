@@ -8,13 +8,14 @@ assumptions) builds on.
 Highlights:
 - Core score-model definitions: `gLin`, `gStar`, `PaperTerm`, `βPaper`, `φPaper`.
 - [Population](jargon_population.md)/empirical moment functionals: `popMeanAttr`, `popM2Attr`,
-  `popVarAttr`, `popSDAttr`, `meanHatZ`, `m2HatZ`, `varHatZ`, `sdHatZ`, plus
-  `popMeanZ`/`popM2Z`/`popVarZ`/`popSDZ` (see [mean](jargon_mean.md),
-  [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md)).
+  `popVarAttr`, `popSDAttr`, `meanHatZ`, `m2HatZ`, `varHatZ`, `sdHatZ`, `rmseHatZ`, plus
+  `popMeanZ`/`popM2Z`/`popVarZ`/`popSDZ`/`popRMSEZ` (see [mean](jargon_mean.md),
+  [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md),
+  [RMSE](jargon_rmse.md)).
 - Plug-in and induced-process helpers: `gHat`, `Zcomp`, `popMeanΘ`, `popM2Θ`, `blockScoreΘ`.
 - [OLS](jargon_ols.md) helpers and [estimator](jargon_estimator.md) scaffolding: `empiricalRisk`,
   `OLSSequence`, `gramMatrix`, `crossVec`, `popGram`, `popCross`.
-- Conjoint identification primitives: `eventX`, `condMean`, `potMean`, `amce`.
+- Conjoint identification primitives: `eventX`, `condMean`, `potMean`, `amce` ([AMCE](jargon_amce.md)).
 
 Purpose:
 - Keep foundational definitions in one place so assumption packages can be audited in

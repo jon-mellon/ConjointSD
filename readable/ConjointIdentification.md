@@ -8,7 +8,7 @@ Core definitions:
 - `eventX x`: the set of units whose assigned [profile](jargon_profile.md) equals `x`.
 - `condMean`: the [conditional mean](jargon_conditional_mean.md) of a variable on an event.
 - `potMean`: the [mean](jargon_mean.md) of a [potential outcome](jargon_potential_outcome.md) under profile `x`.
-- `amce`: the difference in potential [means](jargon_mean.md) between two [profiles](jargon_profile.md).
+- `amce`: the difference in potential [means](jargon_mean.md) between two [profiles](jargon_profile.md) ([AMCE](jargon_amce.md)).
 
 Assumption bundles (defined in `ConjointSD/Assumptions.lean`):
 - `ConjointIdAssumptions` collects [measurability](jargon_measurable.md), a condition that observed outcomes equal the potential outcomes for the assigned profile, positivity of assignment, and a factorization that expresses random assignment.

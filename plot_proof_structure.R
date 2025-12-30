@@ -133,6 +133,7 @@ write_import_dag_png <- function(output_path = output_png, title = "Lean import 
   }
   dir_create(path_dir(output_path))
   graph <- plot_import_dag(title = title)
+  plot_import_dag(title = title)
   svg <- DiagrammeRsvg::export_svg(graph)
   rsvg::rsvg_png(charToRaw(svg), file = output_path)
   message("Wrote DAG PNG to: ", output_path)

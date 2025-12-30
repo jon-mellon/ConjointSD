@@ -18,12 +18,12 @@ Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consis
 - Adds `hGTotal`-based wrappers so the total-score sequential consistency chain can be driven directly by `GEstimationAssumptions`.
 - Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only and blocks+total sequential [consistency](jargon_consistency.md) results.
 
-Section 4: targeting the true estimand
+Section 4: targeting the true [estimand](jargon_estimand.md)
 - Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.
 - Provides an approximate version where the scores are within epsilon, giving an explicit [standard deviation](jargon_standard_deviation.md) error bound.
 - Adds weighted-target transfer lemmas: if survey weights match population moments for a score, the weighted SD equals the population SD.
 
-Section 4c: link to the causal estimand
+Section 4c: link to the causal [estimand](jargon_estimand.md)
 - If the total model score at `theta0` matches a linear [term](jargon_term.md) model and that model is [well-specified](jargon_well_specified.md) for `gStar`, then the [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) targets `gStar`.
 - Adds an approximate counterpart: if the model is only approximately [well-specified](jargon_well_specified.md) ν-a.e., the total-score [standard deviation](jargon_standard_deviation.md) target is within an explicit bound of the `gStar` target.
 - Adds a two-stage approximation version: a flexible oracle score approximates `gStar`, and the model approximates that oracle, with the combined error driving the [standard deviation](jargon_standard_deviation.md) bound.

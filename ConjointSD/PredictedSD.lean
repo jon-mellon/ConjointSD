@@ -55,6 +55,21 @@ lemma m2HatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
     ProbabilityTheory.strong_law_ae (μ := μ) (X := Zsq) hInt hInd hId
   simpa [m2HatZ, popM2Z, Zsq] using hslln
 
+/-- SLLN for empirical RMSE: √(m2Hat) → √(popM2). -/
+lemma rmseHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
+    (h : IIDAssumptions (μ := μ) Z) :
+    ∀ᵐ ω ∂μ,
+      Tendsto (fun n : ℕ => rmseHatZ (Z := Z) n ω) atTop
+        (nhds (popRMSEZ (μ := μ) Z)) := by
+  have hm2 := m2HatZ_tendsto_ae (μ := μ) (Z := Z) h
+  refine hm2.mono ?_
+  intro ω hm2ω
+  have hsqrt :
+      Tendsto Real.sqrt (nhds (popM2Z (μ := μ) Z))
+        (nhds (Real.sqrt (popM2Z (μ := μ) Z))) :=
+    (Real.continuous_sqrt.continuousAt).tendsto
+  simpa [rmseHatZ, popRMSEZ] using (hsqrt.comp hm2ω)
+
 /-- Convergence of varHat by combining mean and second-moment limits. -/
 lemma varHatZ_tendsto_ae (Z : ℕ → Ω → ℝ) [IsProbabilityMeasure μ]
     (h : IIDAssumptions (μ := μ) Z) :

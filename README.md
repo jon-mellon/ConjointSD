@@ -2,8 +2,9 @@
 
 ConjointSD is a Lean formalization of the standard deviation (SD) decomposition and
 consistency results used in conjoint analysis. It connects the paper's causal
-estimands to plug-in SD estimators, and organizes the supporting probability,
-transport, identification, and regression machinery.
+[estimands](readable/jargon_estimand.md) to [plug-in](readable/jargon_plug_in.md) SD
+estimators, and organizes the supporting probability, transport, identification,
+and regression machinery.
 
 ## Documentation indexes
 
