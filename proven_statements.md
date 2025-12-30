@@ -216,7 +216,8 @@ Formalization (math):
 File: `ConjointSD/PaperCoreEstimand.lean`
 
 Statement: If the term model is [well specified](readable/jargon_well_specified.md)
-for `gStar`, then the sequential SD consistency target can be stated for `gStar`.
+for `gStar`, then the sequential SD consistency target can be stated for the
+weighted `gStar` SD target.
 
 Intuition: Well specification identifies the causal score with the model score,
 so the population SD target transfers to `gStar`.
@@ -225,7 +226,7 @@ Formalization (Lean name): `paper sd total sequential consistency to gStar ae of
 
 Formalization (math):
 Sequential consistency for `gTotalΘ (gBTerm ...)`, plus
-`popSDAttr ν (gTotalΘ (gBTerm ...) θ0) = popSDAttr ν (gStar μ Y)`.
+`popSDAttr ν (gTotalΘ (gBTerm ...) θ0) = weightSDAttr ν w (gStar μ Y)`.
 
 ## Dependency tables
 

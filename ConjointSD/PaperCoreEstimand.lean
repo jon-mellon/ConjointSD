@@ -251,6 +251,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
     (blk : Term → B) (φ : Term → Attr → ℝ)
     (βOf : Θ → Term → ℝ) (β : Term → ℝ)
     (θ0 : Θ) (θhat : ℕ → Θ)
+    (w : Attr → ℝ)
     (hβ : βOf θ0 = β)
     (Y : Attr → Ω → ℝ)
     (hspec : WellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ))
@@ -267,6 +268,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
         (ν := ν)
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
+    (hMom :
+      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -279,7 +282,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
         popSDAttr ν
             (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
           =
-        popSDAttr ν (gStar (μ := μ) (Y := Y)) := by
+        weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   have hTotalModel :
       ∀ x,
         gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0 x
@@ -289,7 +292,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
     simpa [hβ] using
       (gTotalΘ_eq_gTotal_gBTerm
         (blk := blk) (βOf := βOf) (φ := φ) (θ0 := θ0) x)
-  exact
+  rcases
     paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
       (μ := μ) (A := A) (ν := ν)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
@@ -299,6 +302,22 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
       (hMap := hMap) (hSplitTotal := hSplitTotal)
       (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  have hWeight :
+      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
+        popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
+    paper_weighted_sd_eq_pop (ν := ν) (w := w)
+      (s := gStar (μ := μ) (Y := Y)) hMom
+  refine ⟨M, ?_⟩
+  intro m hm
+  rcases hM m hm with ⟨hCons, hEq⟩
+  have hEq' :
+      popSDAttr ν
+          (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
+        =
+      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
+    simpa [hWeight] using hEq
+  exact ⟨hCons, hEq'⟩
 
 end MainEstimator
 
