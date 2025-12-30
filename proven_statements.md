@@ -2,20 +2,27 @@
 
 This file lists key theorems that are already proved in the Lean development,
 with the file they live in, an explanation, an intuition line, and a compact
-formalization. The list is curated to cover identification, SD consistency,
+formalization. The list is curated to cover identification,
+[standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md),
 transport, and model-to-target bridges.
 
 ## sdHatZ tendsto ae (PredictedSD)
 
 File: `ConjointSD/PredictedSD.lean`
 
-Statement: Under [IID](readable/jargon iid.md) and moment assumptions, the
-empirical [standard deviation](readable/jargon standard deviation.md) of a real
-process [converges](readable/jargon convergence.md) almost everywhere to the
-population SD.
+Statement: Under [IID](readable/jargon_iid.md) and moment assumptions, the
+empirical [standard deviation](readable/jargon_standard_deviation.md) of a real
+process [converges](readable/jargon_convergence.md) almost everywhere to the
+[standard deviation](readable/jargon_standard_deviation.md) under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md).
 
-Intuition: If draws are i.i.d., the sample moments stabilize, so the sample SD
-approaches the true population SD.
+Intuition: If draws are i.i.d., the sample moments stabilize, so the sample
+[standard deviation](readable/jargon_standard_deviation.md) approaches the true
+[standard deviation](readable/jargon_standard_deviation.md) under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md).
 
 Formalization (Lean name): `sdHatZ tendsto ae`
 
@@ -27,11 +34,17 @@ Formalization (math):
 File: `ConjointSD/SDDecompositionFromConjoint.lean`
 
 Statement: For a score function `g` applied to attribute draws `A i`, the
-empirical SD of `g(A i)` [converges](readable/jargon convergence.md) to the
-population SD when the score process satisfies [ScoreAssumptions](readable/Assumptions.md).
+empirical [standard deviation](readable/jargon_standard_deviation.md) of
+`g(A i)` [converges](readable/jargon_convergence.md) to the
+[standard deviation](readable/jargon_standard_deviation.md) under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md) when the score process satisfies
+[ScoreAssumptions](readable/Assumptions.md).
 
 Intuition: Once you view each `g(A i)` as a real-valued i.i.d. sequence, the
-standard SD consistency result applies to the induced score process.
+standard [standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md) result applies to the induced
+score process.
 
 Formalization (Lean name): `sd component consistent`
 
@@ -42,8 +55,9 @@ Formalization (math):
 
 File: `ConjointSD/Assumptions.lean`
 
-Statement: Under a probability measure, second-moment assumptions in the
-assumption bundles imply first-moment integrability.
+Statement: Under a probability measure, [second moment](readable/jargon_second_moment.md)
+assumptions in the assumption bundles imply first-moment
+[integrability](readable/jargon_integrable.md).
 
 Intuition: On a probability space, square-integrability controls absolute
 integrability by Cauchy–Schwarz.
@@ -59,8 +73,8 @@ If `E[s^2] < ∞` then `E[|s|] < ∞` for each bundled moment assumption.
 File: `ConjointSD/ConjointIdentification.lean`
 
 Statement: Under conjoint identification assumptions, the observed
-[conditional mean](readable/jargon conditional mean.md) score equals the causal
-potential-outcome score.
+[conditional mean](readable/jargon_conditional_mean.md) score equals the causal
+[potential outcome](readable/jargon_potential_outcome.md) score.
 
 Intuition: Random assignment and consistency let observed conditional averages
 recover causal averages.
@@ -74,11 +88,13 @@ Formalization (math):
 
 File: `ConjointSD/TargetEquivalence.lean`
 
-Statement: If two scores agree almost everywhere under `nu`, then their
-population SDs are equal.
+Statement: If two scores agree [almost everywhere](readable/jargon_almost_everywhere.md)
+under `nu`, then their [standard deviation](readable/jargon_standard_deviation.md)
+values under the target [distribution](readable/jargon_distribution.md) are equal.
 
-Intuition: Differences on a `nu`-null set do not change [population](readable/jargon population.md)
-moments.
+Intuition: Differences on a `nu`-null set do not change moments under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md).
 
 Formalization (Lean name): `popSDAttr congr ae`
 
@@ -89,9 +105,10 @@ If `s = t` `nu`-a.e., then `popSDAttr nu s = popSDAttr nu t`.
 
 File: `ConjointSD/ModelBridge.lean`
 
-Statement: If the causal [estimand](readable/jargon estimand.md) `gStar` is
-[well-specified](readable/jargon well specified.md) by the linear-in-terms model,
-then it equals the sum of block scores.
+Statement: If the causal [estimand](readable/jargon_estimand.md) `gStar` is
+[well-specified](readable/jargon_well_specified.md) by the
+[linear-in-terms](readable/jargon_linear_in_terms.md) model, then it equals the
+sum of [block](readable/jargon_block.md) scores.
 
 Intuition: Well-specification means the model and target are the same function,
 so the model’s block decomposition is a valid decomposition of the target.
@@ -105,12 +122,18 @@ Formalization (math):
 
 File: `ConjointSD/SequentialConsistency.lean`
 
-Statement: With evaluation-sample moment assumptions and plug-in moment
-[convergence](readable/jargon convergence.md), the two-stage SD estimator is
-sequentially consistent (training size then evaluation size).
+Statement: With evaluation-sample moment assumptions and [plug-in](readable/jargon_plug_in.md)
+moment [convergence](readable/jargon_convergence.md), the two-stage
+[standard deviation](readable/jargon_standard_deviation.md)
+[estimator](readable/jargon_estimator.md) is
+[sequentially consistent](readable/jargon_sequential_consistency.md) (training
+size then evaluation size).
 
-Intuition: First the fitted score stabilizes, then the evaluation SD converges
-to the population SD of that stabilized score.
+Intuition: First the fitted score stabilizes, then the evaluation
+[standard deviation](readable/jargon_standard_deviation.md) converges to the
+[standard deviation](readable/jargon_standard_deviation.md) under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md) of that stabilized score.
 
 Formalization (Lean name): `sequential consistency ae`
 
@@ -122,8 +145,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under conjoint identification assumptions, the observed conditional
-mean for profile `x0` equals the potential outcome mean for `x0`.
+Statement: Under conjoint identification assumptions, the observed
+[conditional mean](readable/jargon_conditional_mean.md) for profile `x0` equals
+the [potential outcome](readable/jargon_potential_outcome.md) mean for `x0`.
 
 Intuition: Random assignment and consistency make the observed conditional
 average a causal mean.
@@ -138,10 +162,11 @@ Formalization (math):
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Under conjoint identification assumptions, the difference in observed
-conditional means equals the AMCE.
+[conditional means](readable/jargon_conditional_mean.md) equals the
+[AMCE](readable/jargon_amce.md).
 
-Intuition: AMCE is a causal contrast, and identification lets you compute it
-from observed conditional averages.
+Intuition: [AMCE](readable/jargon_amce.md) is a causal contrast, and
+identification lets you compute it from observed conditional averages.
 
 Formalization (Lean name): `paper identifies amce from condMeans`
 
@@ -152,12 +177,21 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: For the total score `gTotalΘ gB`, if `θhat -> θ0` and the population
-moments are continuous at `θ0`, then the evaluation SD estimator is sequentially
-consistent (training size then evaluation size).
+Statement: For the total score `gTotalΘ gB`, if `θhat -> θ0` and the moments
+under the target [distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md) are
+[continuous](readable/jargon_continuity.md) at `θ0`, then the evaluation
+[standard deviation](readable/jargon_standard_deviation.md)
+[estimator](readable/jargon_estimator.md) is
+[sequentially consistent](readable/jargon_sequential_consistency.md) (training
+size then evaluation size).
 
-Intuition: Parameter convergence plus continuity yields plug in moment
-convergence, which then feeds the sequential SD consistency chain.
+Intuition: [parameter](readable/jargon_parameter.md)
+[convergence](readable/jargon_convergence.md) plus
+[continuity](readable/jargon_continuity.md) yields [plug-in](readable/jargon_plug_in.md)
+moment convergence, which then feeds the sequential
+[standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md) chain.
 
 Formalization (Lean name): `paper sd total sequential consistency ae`
 
@@ -170,10 +204,14 @@ File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Adds an external validity assumption (`InvarianceAE`) so the total
 score target can be replaced by a declared true target `gTrue`, and then
-states the weighted SD target under moment matching.
+states the weighted [standard deviation](readable/jargon_standard_deviation.md)
+target under moment matching.
 
-Intuition: If the model score equals the true population score on the population
-support, their population SDs are identical.
+Intuition: If the model score equals the true
+[population](readable/jargon_population.md) score on the
+[population support](readable/jargon_population_support.md), their
+[standard deviation](readable/jargon_standard_deviation.md) values under the
+target [distribution](readable/jargon_distribution.md) are identical.
 
 Formalization (Lean name): `paper sd total sequential consistency to true target ae`
 
@@ -186,11 +224,14 @@ Sequential consistency for `gTotalΘ gB`, plus
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: If the model targets the observed score and the observed score equals
-the causal score, then the sequential SD consistency target is the weighted
-causal score.
+the causal score, then the sequential
+[standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md) target is the weighted causal
+score.
 
 Intuition: Identification turns the observed score into the causal score, so the
-population SD equality transfers to `gPot`.
+[standard deviation](readable/jargon_standard_deviation.md) equality under the
+target [distribution](readable/jargon_distribution.md) transfers to `gPot`.
 
 Formalization (Lean name): `paper sd total sequential consistency to gPot ae of identification`
 
@@ -202,11 +243,16 @@ Sequential consistency for `gTotalΘ gB`, plus
 
 File: `ConjointSD/PaperCoreEstimand.lean`
 
-Statement: The paper’s total SD estimator (plugging a term model into the
-population sample) converges to the paper’s total weighted SD target.
+Statement: The paper’s total [standard deviation](readable/jargon_standard_deviation.md)
+[estimator](readable/jargon_estimator.md) (plugging a [term](readable/jargon_term.md)
+model into the target-[population](readable/jargon_population.md) attribute
+[distribution](readable/jargon_distribution.md))
+[converges](readable/jargon_convergence.md) to the paper’s total weighted
+[standard deviation](readable/jargon_standard_deviation.md) target.
 
-Intuition: This is the paper facing version of sequential consistency, specialized
-to the term model used in the manuscript.
+Intuition: This is the paper-facing version of
+[sequential consistency](readable/jargon_sequential_consistency.md), specialized
+to the [term](readable/jargon_term.md) model used in the manuscript.
 
 Formalization (Lean name): `paper total sd estimator consistency ae of gBTerm`
 
@@ -217,12 +263,17 @@ Formalization (math):
 
 File: `ConjointSD/PaperCoreEstimand.lean`
 
-Statement: If the term model is [well specified](readable/jargon_well_specified.md)
-for `gStar`, then the sequential SD consistency target can be stated for the
-weighted `gStar` SD target.
+Statement: If the [term](readable/jargon_term.md) model is
+[well specified](readable/jargon_well_specified.md)
+for `gStar`, then the sequential
+[standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md) target can be stated for the
+weighted `gStar` [standard deviation](readable/jargon_standard_deviation.md)
+target.
 
 Intuition: Well specification identifies the causal score with the model score,
-so the population SD target transfers to `gStar`.
+so the [standard deviation](readable/jargon_standard_deviation.md) target under
+the target [distribution](readable/jargon_distribution.md) transfers to `gStar`.
 
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of gBTerm`
 
@@ -235,10 +286,12 @@ Sequential consistency for `gTotalΘ (gBTerm ...)`, plus
 File: `ConjointSD/TargetEquivalence.lean`
 
 Statement: If two scores are close in [L2](readable/jargon_l2.md), then their
-population [standard deviation](readable/jargon_standard_deviation.md) values
-are close.
+[standard deviation](readable/jargon_standard_deviation.md) values under the
+target [distribution](readable/jargon_distribution.md) are close.
 
-Intuition: L2 closeness bounds second moments, which bounds the SD difference.
+Intuition: [L2](readable/jargon_l2.md) closeness bounds
+[second moments](readable/jargon_second_moment.md), which bounds the
+[standard deviation](readable/jargon_standard_deviation.md) difference.
 
 Formalization (Lean name): `popSDAttr diff le of L2Approx`
 
@@ -249,10 +302,13 @@ If `E[|s - t|^2] ≤ δ^2`, then `|popSDAttr ν s - popSDAttr ν t| ≤ 2 * δ`.
 
 File: `ConjointSD/WellSpecifiedFromNoInteractions.lean`
 
-Statement: If the causal score has only main effects (no interactions), then it
-equals the sum of block scores in the term model.
+Statement: If the causal score has only main effects (no
+[interactions](readable/jargon_interaction.md)), then it equals the sum of
+[block](readable/jargon_block.md) scores in the [term](readable/jargon_term.md)
+model.
 
-Intuition: With no interactions, the linear term model is exactly the target.
+Intuition: With no [interactions](readable/jargon_interaction.md), the
+[linear model](readable/jargon_linear_model.md) is exactly the target.
 
 Formalization (Lean name): `gStar eq sum blocks of parametricMainInteractions`
 
@@ -263,11 +319,16 @@ Formalization (math):
 
 File: `ConjointSD/PaperCoreEstimand.lean`
 
-Statement: If weighted moments match population moments, the weighted total SD
-target equals the unweighted population SD target.
+Statement: If weighted moments match moments under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md), the weighted total
+[standard deviation](readable/jargon_standard_deviation.md) target equals the
+unweighted SD target under that distribution.
 
-Intuition: Moment matching makes weighted moments identical to population
-moments, so SDs coincide.
+Intuition: Moment matching makes weighted moments identical to moments under the
+target [distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md), so
+[standard deviation](readable/jargon_standard_deviation.md) values coincide.
 
 Formalization (Lean name): `paperTotalSD weighted eq pop`
 
@@ -278,10 +339,14 @@ Formalization (math):
 
 File: `ConjointSD/PaperCoreEstimand.lean`
 
-Statement: Under moment matching, each weighted block SD target equals the
-population block SD target.
+Statement: Under moment matching, each weighted [block](readable/jargon_block.md)
+[standard deviation](readable/jargon_standard_deviation.md) target equals the
+block SD target under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md).
 
-Intuition: The block-level version of the weighted-to-population SD transfer.
+Intuition: The block-level version of the weighted-to-target-distribution
+[standard deviation](readable/jargon_standard_deviation.md) transfer.
 
 Formalization (Lean name): `paperBlockSDs weighted eq pop`
 
@@ -292,8 +357,9 @@ For all `b`, `paperBlockSDs_weighted ν w b = paperBlockSDs ν b`.
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: For the status conjoint, the observed conditional mean identifies
-the potential-outcome mean.
+Statement: For the status conjoint, the observed
+[conditional mean](readable/jargon_conditional_mean.md) identifies the
+[potential outcome](readable/jargon_potential_outcome.md) mean.
 
 Intuition: The status design satisfies the identification assumptions, so the
 generic identification result applies.
@@ -307,8 +373,8 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: For the status conjoint, AMCE equals a difference of observed
-conditional means.
+Statement: For the status conjoint, [AMCE](readable/jargon_amce.md) equals a
+difference of observed [conditional means](readable/jargon_conditional_mean.md).
 
 Intuition: The status design satisfies the identification assumptions, so the
 generic AMCE identification result applies.
@@ -322,8 +388,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If the term model is well-specified for `gStar`, then the causal
-score equals the sum of block scores.
+Statement: If the [term](readable/jargon_term.md) model is
+[well-specified](readable/jargon_well_specified.md) for `gStar`, then the causal
+score equals the sum of [block](readable/jargon_block.md) scores.
 
 Intuition: Well-specification makes the model score identical to the causal
 score.
@@ -337,11 +404,13 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: With boundedness, the block and total SD estimators are sequentially
-consistent.
+Statement: With boundedness, the [block](readable/jargon_block.md) and total
+[standard deviation](readable/jargon_standard_deviation.md)
+[estimators](readable/jargon_estimator.md) are
+[sequentially consistent](readable/jargon_sequential_consistency.md).
 
-Intuition: Boundedness ensures moments exist and strengthens the consistency
-path.
+Intuition: Boundedness ensures moments exist and strengthens the
+[consistency](readable/jargon_consistency.md) path.
 
 Formalization (Lean name): `paper sd blocks and total sequential consistency ae of bounded`
 
@@ -352,10 +421,15 @@ Block and total `totalErr` go to 0 sequentially under bounded assumptions.
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If block scores match the true targets almost everywhere, the block
-SD consistency target transfers to the true targets.
+Statement: If [block](readable/jargon_block.md) scores match the true targets
+[almost everywhere](readable/jargon_almost_everywhere.md), the block
+[standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md) target transfers to the true
+targets.
 
-Intuition: A.E. equality implies equal population SDs.
+Intuition: A.E. equality implies equal
+[standard deviation](readable/jargon_standard_deviation.md) values under the
+target [distribution](readable/jargon_distribution.md).
 
 Formalization (Lean name): `paper sd blocks sequential consistency to true target ae`
 
@@ -366,10 +440,13 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If blocks are approximately correct in L2, the block SD targets are
-within an explicit bound.
+Statement: If [blocks](readable/jargon_block.md) are approximately correct in
+[L2](readable/jargon_l2.md), the block
+[standard deviation](readable/jargon_standard_deviation.md) targets are within
+an explicit bound.
 
-Intuition: L2 approximation bounds SD error.
+Intuition: [L2](readable/jargon_l2.md) approximation bounds
+[standard deviation](readable/jargon_standard_deviation.md) error.
 
 Formalization (Lean name): `paper sd blocks sequential consistency to approx target ae`
 
@@ -380,10 +457,15 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If the model is approximately well-specified ν-a.e., the total SD
-target is within an explicit bound of the weighted `gStar` target.
+Statement: If the model is approximately
+[well-specified](readable/jargon_well_specified.md)
+ν-[almost everywhere](readable/jargon_almost_everywhere.md), the total
+[standard deviation](readable/jargon_standard_deviation.md) target is within an
+explicit bound of the weighted `gStar` target.
 
-Intuition: Approximate well-specification translates into SD error bounds.
+Intuition: Approximate [well-specification](readable/jargon_well_specified.md)
+translates into [standard deviation](readable/jargon_standard_deviation.md)
+error bounds.
 
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE`
 
@@ -394,11 +476,13 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If a flexible oracle approximates `gStar` and the model approximates
-the oracle, the total SD target is within a combined bound of the weighted
-`gStar` target.
+Statement: If a flexible [oracle](readable/jargon_oracle.md) approximates
+`gStar` and the model approximates the oracle, the total
+[standard deviation](readable/jargon_standard_deviation.md) target is within a
+combined bound of the weighted `gStar` target.
 
-Intuition: Two approximation errors add to an SD error bound.
+Intuition: Two approximation errors add to a
+[standard deviation](readable/jargon_standard_deviation.md) error bound.
 
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxOracleAE`
 
@@ -409,10 +493,15 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If weighted moments match population moments, each weighted block SD
-equals the population block SD.
+Statement: If weighted moments match moments under the target
+[distribution](readable/jargon_distribution.md) for the
+[population](readable/jargon_population.md), each weighted
+[block](readable/jargon_block.md)
+[standard deviation](readable/jargon_standard_deviation.md) equals the block SD
+under that target distribution.
 
-Intuition: Moment matching transfers SD targets blockwise.
+Intuition: Moment matching transfers
+[standard deviation](readable/jargon_standard_deviation.md) targets blockwise.
 
 Formalization (Lean name): `paper weighted block sds eq pop`
 
@@ -423,11 +512,14 @@ For all `b`, `weightSDAttr ν w (gTrueB b) = popSDAttr ν (gTrueB b)`.
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under paper OLS moment assumptions, block and total sequential
-consistency holds for the term model.
+Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions, block
+and total [sequential consistency](readable/jargon_sequential_consistency.md)
+holds for the [term](readable/jargon_term.md) model.
 
-Intuition: OLS consistency yields the plug-in moment assumptions needed for the
-SD consistency chain.
+Intuition: [OLS](readable/jargon_ols.md) [consistency](readable/jargon_consistency.md)
+yields the [plug-in](readable/jargon_plug_in.md) moment assumptions needed for
+the [standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md) chain.
 
 Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols moments`
 
@@ -438,26 +530,36 @@ Block and total `totalErr` go to 0 sequentially under OLS moment assumptions.
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under paper OLS moment assumptions and well-specification, the total
-sequential consistency target is the weighted `gStar` SD.
+Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions,
+[well-specification](readable/jargon_well_specified.md), and weighted moment
+matching, the total sequential
+[consistency](readable/jargon_consistency.md) target is the weighted
+[standard deviation](readable/jargon_standard_deviation.md) of `gStar`.
 
-Intuition: OLS consistency plus well-specification transfers the SD target to
-the causal score.
+Intuition: [OLS](readable/jargon_ols.md) [consistency](readable/jargon_consistency.md)
+plus [well-specification](readable/jargon_well_specified.md) transfers the
+[standard deviation](readable/jargon_standard_deviation.md) target to the causal
+score.
 
 Formalization (Lean name): `paper sd total sequential consistency ae of paper ols gStar total`
 
 Formalization (math):
-`popSDAttr ν gTotal = weightSDAttr ν w gStar` under OLS moments and well-spec.
+`popSDAttr ν gTotal = weightSDAttr ν w gStar` under OLS moments, well-spec, and
+weighted moment matching.
 
 ## paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If `GEstimationAssumptions` hold and the model is well-specified for
-`gStar`, the total SD target is the weighted `gStar` SD.
+Statement: If `GEstimationAssumptions` hold and the model is
+[well-specified](readable/jargon_well_specified.md) for `gStar`, the total
+[standard deviation](readable/jargon_standard_deviation.md) target is the
+weighted `gStar`
+[standard deviation](readable/jargon_standard_deviation.md).
 
-Intuition: `GEstimationAssumptions` drive the same SD target transfer as the
-θ-hat continuity route.
+Intuition: `GEstimationAssumptions` drive the same
+[standard deviation](readable/jargon_standard_deviation.md) target transfer as
+the θ-hat [continuity](readable/jargon_continuity.md) route.
 
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal`
 
@@ -468,11 +570,15 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under the no-interactions assumption, the total SD target is the
-weighted `gStar` SD.
+Statement: Under the no-[interactions](readable/jargon_interaction.md)
+assumption, the total
+[standard deviation](readable/jargon_standard_deviation.md) target is the
+weighted `gStar`
+[standard deviation](readable/jargon_standard_deviation.md).
 
-Intuition: No-interactions implies well-specification, which transfers the SD
-target to `gStar`.
+Intuition: No-[interactions](readable/jargon_interaction.md) implies
+[well-specification](readable/jargon_well_specified.md), which transfers the
+[standard deviation](readable/jargon_standard_deviation.md) target to `gStar`.
 
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of NoInteractions`
 

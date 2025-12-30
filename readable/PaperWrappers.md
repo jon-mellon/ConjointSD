@@ -16,7 +16,7 @@ Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consis
 - Uses the "Route 2" [bridge](jargon_bridge.md): [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) plus [continuity](jargon_continuity.md) implies the [plug-in](jargon_plug_in.md) moment assumptions.
 - Includes bounded variants.
 - Adds `hGTotal`-based wrappers so the total-score sequential consistency chain can be driven directly by `GEstimationAssumptions`.
-- Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only and blocks+total sequential [consistency](jargon_consistency.md) results.
+- Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only and blocks+total sequential [consistency](jargon_consistency.md) results, with a weighted-`gStar` target when [well-specification](jargon_well_specified.md) and moment matching hold.
 - Adds a weighted-target bridge: if weighted moments match population moments, the sequential-consistency target can be stated using `weightSDAttr`.
 
 Section 4: targeting the true [estimand](jargon_estimand.md)

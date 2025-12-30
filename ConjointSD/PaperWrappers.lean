@@ -1173,6 +1173,15 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
         (ν := ν)
         (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
         θ0)
+    (hspec :
+      WellSpecified
+        (μ := μ)
+        (Y := Y)
+        (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+    (w : Attr → ℝ)
+    (hMomW :
+      WeightMatchesPopMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1189,7 +1198,16 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
                   (A := Atrain) (Y := Yobs)
                   (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
                   n)
-              m n ω < ε) := by
+              m n ω < ε)
+        ∧
+        popSDAttr ν
+            (gTotalΘ
+              (gB := fun b θ a =>
+                gBlockTerm (blk := blk) (β := θ)
+                  (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+              θ0)
+          =
+          weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
   have hGTotal :
       GEstimationAssumptions
         (ν := ν)
@@ -1209,8 +1227,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
       (fMain := fMain) (fInter := fInter)
       (blk := blk) (θ0 := θ0)
       hMom hCont
-  exact
-    paper_sd_total_sequential_consistency_ae_of_hGTotal
+  rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
       (μ := μ) (A := Aeval) (ν := ν)
       (gB := fun b θ a =>
         gBlockTerm (blk := blk) (β := θ)
@@ -1221,8 +1238,91 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
           (A := Atrain) (Y := Yobs)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
           n)
-      (hMap := hMap) (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+      (hMap := hMap)
+      (hSplitTotal := hSplitTotal)
+      (hGTotal := hGTotal)
       (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  have hBlocks :
+      gStar (μ := μ) (Y := Y)
+        =
+      gTotal
+        (B := B)
+        (g := gBlockTerm (blk := blk) (β := θ0)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
+    gStar_eq_sum_blocks_of_WellSpecified
+      (μ := μ) (Y := Y) (blk := blk) (β := θ0)
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) hspec
+  have hStar :
+      InvarianceAE
+        (ν := ν)
+        (gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+          θ0)
+        (gStar (μ := μ) (Y := Y)) := by
+    refine ae_of_all _ ?_
+    intro x
+    have hBlocksx :
+        gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) x
+          =
+        gStar (μ := μ) (Y := Y) x := by
+      simpa using congrArg (fun f => f x) hBlocks.symm
+    calc
+      gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+          θ0 x
+          =
+          gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) x := by
+            simp [gTotalΘ, gTotal]
+      _ = gStar (μ := μ) (Y := Y) x := hBlocksx
+  have hEq :
+      popSDAttr ν
+          (gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+            θ0)
+        =
+        weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
+    have hEqPop :
+        popSDAttr ν
+            (gTotalΘ
+              (gB := fun b θ a =>
+                gBlockTerm (blk := blk) (β := θ)
+                  (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+              θ0)
+          =
+          popSDAttr ν (gStar (μ := μ) (Y := Y)) :=
+      popSDAttr_congr_ae
+        (ν := ν)
+        (s := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+          θ0)
+        (t := gStar (μ := μ) (Y := Y)) hStar
+    have hWeight :
+        popSDAttr ν (gStar (μ := μ) (Y := Y))
+          =
+        weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
+      simpa using
+        (weightSDAttr_eq_popSDAttr_of_moments (ν := ν) (w := w)
+          (s := gStar (μ := μ) (Y := Y)) hMomW).symm
+    exact hEqPop.trans hWeight
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hCons := hM m hm
+  exact ⟨hCons, hEq⟩
 
 end PaperOLSNoTopo
 

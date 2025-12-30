@@ -6,6 +6,9 @@ consistency results used in conjoint analysis. It connects the paper's causal
 estimators, and organizes the supporting probability, transport, identification,
 and regression machinery.
 
+
+Note: the social status paper contains no AI written text. This repository, by contrast, contains almost nothing but AI written text. Any errors are still the responsibility of the authors. 
+
 ## Documentation indexes
 
 - [Lean docs index](readable/lean_index.md): readable summaries of each Lean file.
