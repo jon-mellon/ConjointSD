@@ -9,21 +9,92 @@ import ConjointSD
 #print ConjointSD.GEstimationAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
 #print ConjointSD.ConjointIdAssumptions
-#print ConjointSD.sequential_consistency_ae
-
--- Proven statements (base layer).
+-- Core SD and decomposition.
 #print ConjointSD.sdHatZ_tendsto_ae
 #print ConjointSD.sd_component_consistent
-#print ConjointSD.gExp_eq_gPot
-#print ConjointSD.popSDAttr_congr_ae
-#print ConjointSD.gStar_eq_sum_blocks_of_WellSpecified
-#print ConjointSD.sequential_consistency_ae
 
--- Proven statements (paper-facing wrappers).
+-- Sample splitting (evaluation stage).
+#print ConjointSD.sdHat_fixed_m_tendsto_ae_popSDAttr
+#print ConjointSD.sdHat_fixed_m_tendsto_ae_popSDAttr_of_bounded
+
+-- Sequential consistency (train then eval).
+#print ConjointSD.totalErr_tendsto_trainErr_fixed_m
+#print ConjointSD.totalErr_tendsto_trainErr_fixed_m_of_bounded
+#print ConjointSD.trainErr_tendsto_zero
+#print ConjointSD.sequential_consistency_ae
+#print ConjointSD.sequential_consistency_ae_of_bounded
+
+-- Decomposition sequential consistency.
+#print ConjointSD.sequential_consistency_blocks_ae
+#print ConjointSD.sequential_consistency_total_ae
+#print ConjointSD.sequential_consistency_blocks_ae_of_bounded
+#print ConjointSD.sequential_consistency_total_ae_of_bounded
+
+-- Identification.
+#print ConjointSD.condMean_eq_potMean_of_rand
+#print ConjointSD.ae_restrict_consistency
+#print ConjointSD.identified_potMean_from_condMean
+#print ConjointSD.identified_amce_from_condMeans
+#print ConjointSD.gExp_eq_gPot
+
+-- Target equivalence and approximation bounds.
+#print ConjointSD.popMeanAttr_congr_ae
+#print ConjointSD.popM2Attr_congr_ae
+#print ConjointSD.popVarAttr_congr_ae
+#print ConjointSD.popSDAttr_congr_ae
+#print ConjointSD.approxInvarianceAE_triangle
+#print ConjointSD.popMeanAttr_diff_le_of_L2Approx
+#print ConjointSD.popSDAttr_diff_le_of_L2Approx
+#print ConjointSD.popMeanAttr_abs_le_of_bounded_ae
+#print ConjointSD.popMeanAttr_diff_le_of_approx_ae
+#print ConjointSD.popM2Attr_diff_le_of_approx_ae
+#print ConjointSD.popVarAttr_diff_le_of_approx_ae
+#print ConjointSD.popSDAttr_diff_le_of_approx_ae
+
+-- Model bridge.
+#print ConjointSD.gLin_eq_gTotal_blocks
+#print ConjointSD.gStar_eq_sum_blocks_of_WellSpecified
+#print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecified
+#print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
+#print ConjointSD.gLin_eq_parametric
+#print ConjointSD.wellSpecified_of_parametricMainInteractions
+#print ConjointSD.gStar_eq_sum_blocks_of_parametricMainInteractions
+
+-- Paper core estimands.
+#print ConjointSD.paperBlockSDs_apply
+#print ConjointSD.paperTotalSD_def
+#print ConjointSD.paperBlockSD_weighted_eq_pop
+#print ConjointSD.paperTotalSD_weighted_eq_pop
+#print ConjointSD.paperBlockSDs_weighted_eq_pop
+#print ConjointSD.paper_total_sd_estimator_consistency_ae_of_gBTerm
+#print ConjointSD.gTotalΘ_eq_gTotal_gBTerm
+#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
+
+-- Paper-facing wrappers.
 #print ConjointSD.paper_identifies_potMean_from_condMean
 #print ConjointSD.paper_identifies_amce_from_condMeans
+#print ConjointSD.paper_identifies_potMean_from_condMean_status
+#print ConjointSD.paper_identifies_amce_from_condMeans_status
+#print ConjointSD.paper_gStar_eq_sum_blocks_of_WellSpecified
+#print ConjointSD.paper_sd_blocks_sequential_consistency_ae
+#print ConjointSD.paper_sd_blocks_sequential_consistency_ae_of_bounded
 #print ConjointSD.paper_sd_total_sequential_consistency_ae
+#print ConjointSD.paper_sd_total_sequential_consistency_ae_of_bounded
+#print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae
+#print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded
+#print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae
+#print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae
+#print ConjointSD.paper_sd_total_sequential_consistency_to_approx_target_ae
 #print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
-#print ConjointSD.paper_total_sd_estimator_consistency_ae_of_gBTerm
-#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
+#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
+#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
+#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
+#print ConjointSD.paper_weighted_sd_eq_pop
+#print ConjointSD.paper_weighted_block_sds_eq_pop
+#print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
+#print ConjointSD.paper_sd_total_sequential_consistency_ae_of_hGTotal
+#print ConjointSD.paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
+#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
+#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hGTotal
+#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
