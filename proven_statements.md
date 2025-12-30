@@ -38,22 +38,6 @@ Formalization (Lean name): `sd component consistent`
 Formalization (math):
 `sdHatZ (fun i => g (A i)) -> popSDZ (fun i => g (A i))` a.e.
 
-## sd component consistent to popSDAttr (OracleSDConsistency)
-
-File: `ConjointSD/OracleSDConsistency.lean`
-
-Statement: If `A 0` has attribute [distribution](readable/jargon distribution.md)
-`nu`, then the SD limit from the previous theorem can be rewritten as the
-population target `popSDAttr nu g`.
-
-Intuition: This is a transport step from the big probability space to the
-attribute-level population target.
-
-Formalization (Lean name): `sd component consistent to popSDAttr`
-
-Formalization (math):
-`sdHatZ (fun i => g (A i)) -> popSDAttr nu g` a.e., assuming `Law(A 0) = nu`.
-
 ## gExp eq gPot (ConjointIdentification)
 
 File: `ConjointSD/ConjointIdentification.lean`

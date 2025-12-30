@@ -10,7 +10,6 @@ Readable summaries of the Lean development.
 - [DeriveGEstimationAssumptions.lean](DeriveGEstimationAssumptions.md)
 - [EstimatedG.lean](EstimatedG.md)
 - [ModelBridge.lean](ModelBridge.md)
-- [OracleSDConsistency.lean](OracleSDConsistency.md)
 - [PaperCoreEstimand.lean](PaperCoreEstimand.md)
 - [PaperOLSConsistency.lean](PaperOLSConsistency.md)
 - [PaperWrappers.lean](PaperWrappers.md)

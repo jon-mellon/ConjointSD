@@ -4,7 +4,6 @@ import ConjointSD
 
 #print ConjointSD.PopIID
 #print ConjointSD.ScoreAssumptions
-#print ConjointSD.sd_component_consistent_to_popSDAttr
 #print ConjointSD.SplitEvalAssumptions
 #print ConjointSD.GEstimationAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
@@ -13,7 +12,6 @@ import ConjointSD
 -- Proven statements (base layer).
 #print ConjointSD.sdHatZ_tendsto_ae
 #print ConjointSD.sd_component_consistent
-#print ConjointSD.sd_component_consistent_to_popSDAttr
 #print ConjointSD.gExp_eq_gPot
 #print ConjointSD.popSDAttr_congr_ae
 #print ConjointSD.gStar_eq_sum_blocks_of_WellSpecified

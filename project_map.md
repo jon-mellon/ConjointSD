@@ -21,7 +21,6 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 - [ConjointSD/Transport.lean](readable/Transport.md) re-exports population functionals and transport assumptions now centralized in `Defs.lean`/`Assumptions.lean`.
 - [ConjointSD/PopulationBridge.lean](readable/PopulationBridge.md) bridges moments under `μ` for `g(A0)` to moments under `ν` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
-- [ConjointSD/OracleSDConsistency.lean](readable/OracleSDConsistency.md) restates [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) with the `popSDAttr ν g` target using `SDDecompositionFromConjoint` + `PopulationBridge`.
 - [ConjointSD/SurveyWeights.lean](readable/SurveyWeights.md) adds weighted [population](readable/jargon_population.md) [estimands](readable/jargon_estimand.md) and finite-[population](readable/jargon_population.md) targets; builds on `Transport`.
 - [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds, [L2](readable/jargon_l2.md)/[RMSE](readable/jargon_rmse.md) mean and SD bounds, and a triangle-inequality lemma for chaining approximations; uses `Transport`.
 
@@ -33,7 +32,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Estimation and sequential consistency
 
 - [ConjointSD/EstimatedG.lean](readable/EstimatedG.md) derives [variance](readable/jargon_variance.md)/[SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) from `GEstimationAssumptions` (now in `Assumptions.lean`) and the plug-in score `gHat` (now in `Defs.lean`).
-- [ConjointSD/SampleSplitting.lean](readable/SampleSplitting.md) proves evaluation-stage [SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) for fixed training index `m` using `OracleSDConsistency` and `EstimatedG`.
+- [ConjointSD/SampleSplitting.lean](readable/SampleSplitting.md) proves evaluation-stage [SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) for fixed training index `m` using `SDDecompositionFromConjoint`, `PopulationBridge`, and `EstimatedG`.
 - [ConjointSD/SequentialConsistency.lean](readable/SequentialConsistency.md) defines `sdEst`, training error, and total error; proves [sequential consistency](readable/jargon_sequential_consistency.md) (m then n) using `SampleSplitting` and `EstimatedG`.
 - [ConjointSD/DecompositionSequentialConsistency.lean](readable/DecompositionSequentialConsistency.md) lifts [sequential consistency](readable/jargon_sequential_consistency.md) to [block](readable/jargon_block.md) scores and total scores (single `M` for all blocks); uses `SequentialConsistency`, `SampleSplitting`, `EstimatedG`, and `Transport`.
 

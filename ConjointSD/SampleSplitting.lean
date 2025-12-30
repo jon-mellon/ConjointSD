@@ -7,7 +7,8 @@ For a fixed training index `m`, treat `gHat g θhat m` as a fixed (“oracle”)
 function and apply the oracle SD consistency theorem.
 -/
 
-import ConjointSD.OracleSDConsistency
+import ConjointSD.SDDecompositionFromConjoint
+import ConjointSD.PopulationBridge
 import ConjointSD.EstimatedG
 import ConjointSD.Assumptions
 
@@ -53,13 +54,19 @@ theorem sdHat_fixed_m_tendsto_ae_popSDAttr
           sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
         atTop
         (nhds (popSDAttr (Measure.map (A 0) μ) (gHat g θhat m))) := by
-  simpa using
-    (sd_component_consistent_to_popSDAttr
-      (μ := μ) (A := A) (ν := Measure.map (A 0) μ)
-      (g := gHat g θhat m)
-      (hScore := h.hScore)
-      (hA0 := h.hScore.popiid.measA 0)
-      (hLaw := rfl))
+  have hSDZ :
+      ∀ᵐ ω ∂μ,
+        Tendsto
+          (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
+          atTop
+          (nhds (popSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)))) :=
+    sd_component_consistent (μ := μ) (A := A) (g := gHat g θhat m) h.hScore
+  have hEq :
+      popSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)) =
+        popSDAttr (Measure.map (A 0) μ) (gHat g θhat m) :=
+    popSDZ_Zcomp_eq_popSDAttr (μ := μ) (A := A) (ν := Measure.map (A 0) μ)
+      (g := gHat g θhat m) (hA0 := h.hScore.popiid.measA 0) (hg := h.hScore.meas_g) (hLaw := rfl)
+  simpa [hEq] using hSDZ
 
 theorem sdHat_fixed_m_tendsto_ae_popSDAttr_of_bounded
     (μ : Measure Ω) [IsProbabilityMeasure μ]

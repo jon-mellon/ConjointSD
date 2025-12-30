@@ -9,7 +9,6 @@ import ConjointSD.EstimatedG
 import ConjointSD.SampleSplitting
 import ConjointSD.ModelBridge
 import ConjointSD.PopulationBridge
-import ConjointSD.OracleSDConsistency
 import ConjointSD.SequentialConsistency
 import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.PaperWrappers

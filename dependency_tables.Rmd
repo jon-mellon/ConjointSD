@@ -18,7 +18,6 @@ lines <- system(cmd, intern = TRUE)
 theorems <- c(
   "sdHatZ_tendsto_ae",
   "sd_component_consistent",
-  "sd_component_consistent_to_popSDAttr",
   "gExp_eq_gPot",
   "popSDAttr_congr_ae",
   "gStar_eq_sum_blocks_of_WellSpecified",
