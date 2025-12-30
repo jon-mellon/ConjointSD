@@ -24,7 +24,11 @@ Recent changes: added an [additive-projection](jargon_additive_projection.md) or
   [population support](jargon_population_support.md). Intuitively, they may
   differ only on a set with zero probability under `ν`; this is the external
   validity/transport assumption that lets population targets be read off from
-  the experimental score.
+  the experimental score. Formally: `gExp = gPop` nu-a.e. (under `ν`). It does
+  not by itself guarantee the fitted model
+  matches that score; misspecification or estimation error can still break
+  transfer. It also fails if the experimental setup elicits a different scoring
+  rule than the real-world population process (beyond a ν-null set).
 
 ## PredictedSD
 
