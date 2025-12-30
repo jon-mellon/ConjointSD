@@ -536,6 +536,59 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
     popSDAttr_congr_ae (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
   exact ⟨hCons, hEq⟩
 
+theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
+    (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
+    (hId : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (hLaw : Measure.map (A 0) μ = ν)
+    (hSplitTotal :
+      ∀ m,
+        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν) (g := gTotalΘ (gB := gB)) θ0)
+    (hExp :
+      InvarianceAE
+        (ν := ν)
+        (gTotalΘ (gB := gB) θ0)
+        (gExp (μ := μ) (X := X) (Yobs := Yobs)))
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ M : ℕ,
+      ∀ m ≥ M,
+        (∀ᵐ ω ∂μ,
+          ∀ᶠ n : ℕ in atTop,
+            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
+        ∧
+        popSDAttr ν (gTotalΘ (gB := gB) θ0)
+          =
+        popSDAttr ν (gPot (μ := μ) (Y := Y)) := by
+  rcases paper_sd_total_sequential_consistency_to_true_target_ae
+      (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (hLaw := hLaw) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (gTrue := gExp (μ := μ) (X := X) (Yobs := Yobs))
+      (hTrue := hExp) (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm
+  rcases hM m hm with ⟨hCons, hEqExp⟩
+  have hEq : gExp (μ := μ) (X := X) (Yobs := Yobs) = gPot (μ := μ) (Y := Y) :=
+    gExp_eq_gPot (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) hId
+  have hEqAE :
+      ∀ᵐ a ∂ν,
+        gExp (μ := μ) (X := X) (Yobs := Yobs) a
+          =
+        gPot (μ := μ) (Y := Y) a := by
+    refine ae_of_all _ ?_
+    intro a
+    simpa [hEq]
+  have hEqPot :
+      popSDAttr ν (gExp (μ := μ) (X := X) (Yobs := Yobs))
+        =
+      popSDAttr ν (gPot (μ := μ) (Y := Y)) :=
+    popSDAttr_congr_ae (ν := ν)
+      (s := gExp (μ := μ) (X := X) (Yobs := Yobs))
+      (t := gPot (μ := μ) (Y := Y)) hEqAE
+  exact ⟨hCons, hEqExp.trans hEqPot⟩
+
 /-!
 ## 4c) Link well-specification to the true causal estimand `gStar`
 -/

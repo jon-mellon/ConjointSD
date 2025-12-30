@@ -27,18 +27,21 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 6) Main [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md) not instantiated for the status conjoint
    - Remaining gap: specialize the [theorem](readable/jargon_theorem.md) to the status conjoint by instantiating the paper’s [term](readable/jargon_term.md) set, [block](readable/jargon_block.md) map, features, and coefficient map (`blk`, `φ`, `βOf`, `β0`) and by proving the SplitEvalAssumptions / continuity / [convergence](readable/jargon_convergence.md) hypotheses from the design.
 
-7) Missingness and “not sure” responses are not modeled
+7) Identification layer not explicitly composed with the SD-consistency chain (resolved)
+   - Current state: added a paper-facing wrapper that composes identification with the SD target chain so causal interpretation is explicit when the model targets the observed score.
+
+8) Missingness and “not sure” responses are not modeled
    - The formalized outcomes are bounded real values on [0,100] and do not model the “not sure” response option or any missingness mechanism.
    - To fix: justify treating “not sure” as ignorable, or add a missingness/selection model and connect it to the [estimands](readable/jargon_estimand.md).
 
-8) Status [estimand](readable/jargon_estimand.md) may need explicit [marginalization](readable/jargon_marginalization.md) over the paired profile
+9) Status [estimand](readable/jargon_estimand.md) may need explicit [marginalization](readable/jargon_marginalization.md) over the paired profile
    - If outcomes depend on both profiles shown in a task, the estimand should be stated as the expected response to a focal profile, averaged over the randomized partner profile (and respondent conditions), matching standard conjoint [AMCE](readable/jargon_amce.md) targets.
    - To fix: re-express the estimand and identification statements to [marginalize](readable/jargon_marginalization.md) over the partner profile distribution, or justify a no-interference assumption if the paper targets profile-only potential outcomes.
 
-9) Component [SD](readable/jargon_standard_deviation.md) targets require an [additive-projection](readable/jargon_additive_projection.md) definition
+10) Component [SD](readable/jargon_standard_deviation.md) targets require an [additive-projection](readable/jargon_additive_projection.md) definition
    - We want bounds for component SDs even when the oracle includes nonlinear/interactive structure. That requires defining components as the additive [L2](readable/jargon_l2.md) projection of the oracle onto the linear/main-effects span, with a residual capturing non-additive effects.
    - Remaining gap: formalize the projection target, prove the residual is orthogonal (so its [L2](readable/jargon_l2.md) norm equals the “nonlinear component” size), and relate the fitted OLS components to this projection (estimation error vs approximation error). Without this definition, component SDs are not identified by overall [RMSE](readable/jargon_rmse.md).
 
-10) Empirical [RMSE](readable/jargon_rmse.md)s vs population [L2](readable/jargon_l2.md) bounds are not linked
+11) Empirical [RMSE](readable/jargon_rmse.md)s vs population [L2](readable/jargon_l2.md) bounds are not linked
    - The proof uses population [L2](readable/jargon_l2.md) distances under `ν`, but the R workflow computes test-set [RMSE](readable/jargon_rmse.md)s. A generalization/[LLN](readable/jargon_lln.md) step is needed to show the sample RMSE converges to the population `L2(ν)` distance (or to a weighted population target).
    - To fix: add a sample-to-population convergence lemma for the [RMSE](readable/jargon_rmse.md) estimator (possibly under the same IID/weighting assumptions as the SD consistency results), and thread it into the [L2](readable/jargon_l2.md)-approximation assumptions used in the bounds.

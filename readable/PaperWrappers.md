@@ -22,6 +22,7 @@ Section 4: targeting the true [estimand](jargon_estimand.md)
 - Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.
 - Provides an approximate version where the scores are within epsilon, giving an explicit [standard deviation](jargon_standard_deviation.md) error bound.
 - Adds weighted-target transfer lemmas: if survey weights match population moments for a score, the weighted SD equals the population SD.
+- Adds an identification bridge: if the model score targets the observed score and the observed score equals the causal score, then the SD target is the causal one (using [potential outcomes](jargon_potential_outcome.md) and [conditional means](jargon_conditional_mean.md)).
 
 Section 4c: link to the causal [estimand](jargon_estimand.md)
 - If the total model score at `theta0` matches a linear [term](jargon_term.md) model and that model is [well-specified](jargon_well_specified.md) for `gStar`, then the [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) targets `gStar`.
