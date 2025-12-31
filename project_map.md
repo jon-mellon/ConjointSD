@@ -19,7 +19,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Population targets and transport
 
-- [ConjointSD/Transport.lean](readable/Transport.md) re-exports attribute-distribution functionals and transport assumptions now centralized in `Defs.lean`/`Assumptions.lean`.
+- [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean` and small transport lemmas like `attrSD_eq_of_moments`.
 - [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under `ν` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
 - [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds, [L2](readable/jargon_l2.md)/[RMSE](readable/jargon_rmse.md) mean and SD bounds, and a triangle-inequality lemma for chaining approximations; uses `Transport`.
 

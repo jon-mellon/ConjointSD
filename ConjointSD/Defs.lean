@@ -94,6 +94,28 @@ def sdHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
 def rmseHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   Real.sqrt (m2HatZ (Z := Z) n ω)
 
+/-- Weights evaluated along a draw stream `A`. -/
+def Wcomp {Attr : Type*} (A : ℕ → Ω → Attr) (w : Attr → ℝ) : ℕ → Ω → ℝ :=
+  fun i ω => w (A i ω)
+
+/-- Weighted empirical mean: (∑ w_i Z_i) / (∑ w_i). -/
+def meanHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  (meanHatZ (Z := fun i ω => W i ω * Z i ω) n ω)
+    / (meanHatZ (Z := W) n ω)
+
+/-- Weighted empirical second moment: (∑ w_i Z_i^2) / (∑ w_i). -/
+def m2HatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  (meanHatZ (Z := fun i ω => W i ω * (Z i ω) ^ 2) n ω)
+    / (meanHatZ (Z := W) n ω)
+
+/-- Plug-in weighted variance proxy. -/
+def varHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  m2HatZW (Z := Z) (W := W) n ω - (meanHatZW (Z := Z) (W := W) n ω) ^ 2
+
+/-- Plug-in weighted SD proxy. -/
+def sdHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  Real.sqrt (varHatZW (Z := Z) (W := W) n ω)
+
 /-- Experimental design distribution mean: ∫ Z 0 dμ. -/
 def designMeanZ (Z : ℕ → Ω → ℝ) : ℝ :=
   ∫ ω, Z 0 ω ∂μ
@@ -109,6 +131,25 @@ def designVarZ (Z : ℕ → Ω → ℝ) : ℝ :=
 /-- Experimental design distribution SD proxy: √(designVar). -/
 def designSDZ (Z : ℕ → Ω → ℝ) : ℝ :=
   Real.sqrt (designVarZ (μ := μ) Z)
+
+/-- Weighted design mean: (∫ W0 Z0)/(∫ W0). -/
+def designMeanZW (Z W : ℕ → Ω → ℝ) : ℝ :=
+  (designMeanZ (μ := μ) (Z := fun i ω => W i ω * Z i ω))
+    / (designMeanZ (μ := μ) (Z := W))
+
+/-- Weighted design second moment: (∫ W0 Z0^2)/(∫ W0). -/
+def designM2ZW (Z W : ℕ → Ω → ℝ) : ℝ :=
+  (designMeanZ (μ := μ) (Z := fun i ω => W i ω * (Z i ω) ^ 2))
+    / (designMeanZ (μ := μ) (Z := W))
+
+/-- Weighted design variance proxy. -/
+def designVarZW (Z W : ℕ → Ω → ℝ) : ℝ :=
+  designM2ZW (μ := μ) (Z := Z) (W := W)
+    - (designMeanZW (μ := μ) (Z := Z) (W := W)) ^ 2
+
+/-- Weighted design SD proxy. -/
+def designSDZW (Z W : ℕ → Ω → ℝ) : ℝ :=
+  Real.sqrt (designVarZW (μ := μ) (Z := Z) (W := W))
 
 /-- Experimental design distribution RMSE proxy: √(designM2). -/
 def designRMSEZ (Z : ℕ → Ω → ℝ) : ℝ :=

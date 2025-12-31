@@ -20,7 +20,8 @@ Throughout, `ν` denotes the *attribute distribution* (a target
 [distribution](jargon_distribution.md)) for the target human
 [population](jargon_population.md). We use `μexp` for the experimental design
 distribution (the law generating the conjoint experiment data) and `μ` for the
-evaluation-law used to compute SDs; `EvalAttrMoments` ties evaluation draws to `ν`.
+evaluation-law used to compute SDs; `EvalWeightMatchesAttrMoments` ties weighted
+evaluation draws to `ν`.
 In this document, “population” always means the target human
 [population](jargon_population.md); we avoid using it as a synonym for a
 measure. When we say “[population](jargon_population.md) mean/variance/SD,” we
@@ -67,20 +68,20 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     [variance](jargon_variance.md) and [standard deviation](jargon_standard_deviation.md).
     Intuition: finite energy rules out heavy tails that would make SD undefined
     or unstable. Formal: `Integrable (fun a => (s a) ^ 2) ν`.
-- `EvalAttrMoments`: transport assumption for a specific score `s`.
-  It only requires the evaluation draw’s [mean](jargon_mean.md) and
-  [second moment](jargon_second_moment.md) for `s` (computed under
-  `Measure.map (A 0) μ`) to match the target [population](jargon_population.md)
-  moments under `ν`. This supports SD targets without full law equality.
-  - `EvalAttrMoments.measA0`: `A 0` is measurable.
+- `EvalWeightMatchesAttrMoments`: weighted transport assumption for a specific score `s`.
+  It asserts that the evaluation draw’s *weighted* [mean](jargon_mean.md) and
+  [second moment](jargon_second_moment.md) (under weights `w`) match the target
+  [population](jargon_population.md) moments under `ν`. This supports SD targets
+  without full law equality, but requires the weighting step explicitly.
+  - `EvalWeightMatchesAttrMoments.measA0`: `A 0` is measurable.
     Intuition: the evaluation draw is a well-defined random variable.
     Formal: `Measurable (A 0)`.
-  - `EvalAttrMoments.mean_eq`: evaluation mean equals target mean.
-    Intuition: evaluation averages match the population target.
-    Formal: `attrMean (Measure.map (A 0) μ) s = attrMean ν s`.
-  - `EvalAttrMoments.m2_eq`: evaluation second moment equals target second moment.
-    Intuition: evaluation scale matches the population target.
-    Formal: `attrM2 (Measure.map (A 0) μ) s = attrM2 ν s`.
+  - `EvalWeightMatchesAttrMoments.mean_eq`: weighted evaluation mean equals target mean.
+    Intuition: reweighted evaluation averages match the population target.
+    Formal: `(∫ w a * s a)/(∫ w a) = attrMean ν s` under `Measure.map (A 0) μ`.
+  - `EvalWeightMatchesAttrMoments.m2_eq`: weighted evaluation second moment equals target second moment.
+    Intuition: reweighted evaluation scale matches the population target.
+    Formal: `(∫ w a * s a^2)/(∫ w a) = attrM2 ν s` under `Measure.map (A 0) μ`.
 - `InvarianceAE`: almost-everywhere equality under the attribute distribution
   `ν`, i.e., the experimental and [population](jargon_population.md) scores
   agree on the [population support](jargon_population_support.md) (support of
@@ -98,13 +99,6 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [population](jargon_population.md) differ only on events that never occur in
   the [population](jargon_population.md). Formal:
   `∀ᵐ x ∂ν, gExp x = gPop x`.
-- `attrSD_eq_of_moments`: if two measures agree on the [mean](jargon_mean.md)
-  and [second moment](jargon_second_moment.md) of `s`, then their
-  [standard deviation](jargon_standard_deviation.md) for `s` is equal.
-  Intuition: SD depends only on first and second moments.
-  Formal: `attrMean ν₁ s = attrMean ν₂ s` and `attrM2 ν₁ s = attrM2 ν₂ s`
-  imply `attrSD ν₁ s = attrSD ν₂ s`.
-
 ## BasicMeasure
 
 - `ProbMeasureAssumptions` (trivial): bundles `IsProbabilityMeasure μ` as an explicit
@@ -115,6 +109,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   `IsProbabilityMeasure μ`.
 
 ## Convergence
+
+Plan is to eliminate assuming these and replace them with a derivation from the OLS setup.
 
 - `ThetaTendstoAssumptions` (too strong, needs to be derived): bundles estimator convergence `θhat → θ0` to keep
   convergence hypotheses explicit and reusable; this is a sample-side
@@ -134,18 +130,18 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Intuition: a strict error tolerance avoids degenerate bounds.
     Formal: `0 < ε`.
   - Usage note: throughout the repo, `ε` is always a nonnegative tolerance on
-    magnitude. In sequential consistency results it bounds nonnegative error
-    quantities like `totalErr ... < ε`. In approximation assumptions it appears
-    as an absolute-error bound such as `|...| ≤ ε` (e.g., approximate
-    well-specification or no-interactions). There are no uses where `ε` encodes
-    a signed directional error; if that were desired, the assumptions would need
-    one-sided inequalities instead of absolute-value bounds. This makes
-    `EpsilonAssumptions` a bookkeeping convention that records the “ε is a
-    tolerance” intent explicitly in hypotheses.
+  magnitude. In sequential consistency results it bounds nonnegative error
+  quantities like `totalErr ... < ε`. In approximation assumptions it appears
+  as an absolute-error bound such as `|...| ≤ ε` (e.g., approximate
+  well-specification or no-interactions). There are no uses where `ε` encodes
+  a signed directional error; if that were desired, the assumptions would need
+  one-sided inequalities instead of absolute-value bounds. This makes
+  `EpsilonAssumptions` a bookkeeping convention that records the “ε is a
+  tolerance” intent explicitly in hypotheses.
 
 ## PredictedSD
 
-- `IIDAssumptions` (probably strong than needed but fine for now): [IID](jargon_iid.md) assumptions for a sequence `Z` under a
+- `IIDAssumptions` (probably stronger than needed but fine for now): [IID](jargon_iid.md) assumptions for a sequence `Z` under a
   probability measure `μ` on the sample space `Ω`. Requires
   [independent](jargon_independent.md) and
   [identically distributed](jargon_identically_distributed.md) draws, plus
@@ -215,6 +211,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## EstimatedG
 
+Plan is to eliminate assuming these and replace them with a derivation from the OLS setup.
+
 - `GEstimationAssumptions`: [convergence](jargon_convergence.md) of
   [population](jargon_population.md) [mean](jargon_mean.md) and
   [second moment](jargon_second_moment.md) when
@@ -238,19 +236,21 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## SampleSplitting
 
-- `SplitEvalAssumptions`: evaluation-stage assumption for sample splitting. For a fixed
-  training index `m`, the estimated score `gHat g θhat m` is treated as a fixed
-  [score](jargon_score.md) function of attributes, and the evaluation draws `A n`
-  are required to satisfy `ScoreAssumptions` under the evaluation design
-  distribution `μ`. This is the standard setup for showing the empirical
+- `SplitEvalWeightAssumptions`: weighted evaluation-stage assumptions for sample splitting.
+  For a fixed training index `m`, the estimated score `gHat g θhat m` is treated as
+  a fixed [score](jargon_score.md), and the evaluation draws are paired with weights
+  `w` so that weighted LLNs apply. This lets the weighted empirical
   [standard deviation](jargon_standard_deviation.md) of the estimated score
-  [converges](jargon_convergence.md) to its [population](jargon_population.md) SD.
-  Intuition: once training is fixed, the evaluation sample behaves like an i.i.d.
-  sample for a fixed score, so LLN-style SD consistency applies.
-  - `SplitEvalAssumptions.hScore`: the evaluation score satisfies `ScoreAssumptions`.
-    Intuition: the evaluation draw is i.i.d. with finite second moment for the
-    fixed estimated score `gHat g θhat m`.
+  [converge](jargon_convergence.md) to the population SD target.
+  - `SplitEvalWeightAssumptions.hScore`: unweighted score assumptions for `gHat g θhat m`.
     Formal: `ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)`.
+  - `SplitEvalWeightAssumptions.hWeight`: score assumptions for the weights `w`.
+    Formal: `ScoreAssumptions (μ := μ) (A := A) (g := w)`.
+  - `SplitEvalWeightAssumptions.hWeightScore`: score assumptions for the weighted score `w * gHat`.
+  - `SplitEvalWeightAssumptions.hWeightScoreSq`: score assumptions for `w * (gHat)^2`.
+  - `SplitEvalWeightAssumptions.hW0`: the weight mean is nonzero so ratios are well-defined.
+- `SplitEvalAssumptions`: the unweighted evaluation-stage assumptions used as part of
+  weighted setups. It still packages `ScoreAssumptions` for the fixed score.
 - `SplitEvalAssumptionsBounded`: alternative evaluation assumptions that replace
   the full `ScoreAssumptions` bundle with a stronger, more concrete checklist:
   [measurability](jargon_measurable.md) of the fixed evaluation score

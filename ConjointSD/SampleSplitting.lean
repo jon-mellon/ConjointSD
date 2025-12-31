@@ -54,45 +54,100 @@ lemma splitEvalAssumptions_of_bounded_of_stream
 
 /--
 For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converges a.s.
-    to the attribute-distribution SD under the evaluation attribute law `law(A 0)`.
+    to the population SD under weighted evaluation moments.
 -/
 theorem sdHat_fixed_m_tendsto_ae_attrSD
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr)
+    (w : Attr → ℝ)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
-    (h : SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
-    (hMom : EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-      (s := gHat g θhat m)) :
+    (h : SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w) (g := g) (θhat := θhat) m)
+    (hMom : EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+      (w := w) (s := gHat g θhat m)) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n : ℕ =>
-          sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
+          sdHatZW (Z := Zcomp (A := A) (g := gHat g θhat m))
+            (W := Wcomp (A := A) (w := w)) n ω)
         atTop
         (nhds (attrSD ν (gHat g θhat m))) := by
   have hSDZ :
       ∀ᵐ ω ∂μ,
         Tendsto
-          (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
+          (fun n : ℕ =>
+            sdHatZW (Z := Zcomp (A := A) (g := gHat g θhat m))
+              (W := Wcomp (A := A) (w := w)) n ω)
           atTop
-          (nhds (designSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)))) :=
-    sd_component_consistent (μ := μ) (A := A) (g := gHat g θhat m) h.hScore
+          (nhds (designSDZW (μ := μ)
+            (Z := Zcomp (A := A) (g := gHat g θhat m))
+            (W := Wcomp (A := A) (w := w)))) := by
+    have hW :
+        IIDAssumptions (μ := μ) (Wcomp (A := A) (w := w)) :=
+      iidAssumptions_Zcomp (μ := μ) (A := A) (g := w) h.hWeight
+    have hWZ :
+        IIDAssumptions (μ := μ)
+          (fun i ω => Wcomp (A := A) (w := w) i ω
+            * Zcomp (A := A) (g := gHat g θhat m) i ω) :=
+      iidAssumptions_Zcomp (μ := μ) (A := A)
+        (g := fun a => w a * gHat g θhat m a) h.hWeightScore
+    have hWZ2 :
+        IIDAssumptions (μ := μ)
+          (fun i ω => Wcomp (A := A) (w := w) i ω
+            * (Zcomp (A := A) (g := gHat g θhat m) i ω) ^ 2) :=
+      iidAssumptions_Zcomp (μ := μ) (A := A)
+        (g := fun a => w a * (gHat g θhat m a) ^ 2) h.hWeightScoreSq
+    exact sdHatZW_tendsto_ae
+      (μ := μ)
+      (Z := Zcomp (A := A) (g := gHat g θhat m))
+      (W := Wcomp (A := A) (w := w))
+      hWZ hWZ2 hW h.hW0
   have hEq :
-      designSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)) =
+      designSDZW (μ := μ)
+        (Z := Zcomp (A := A) (g := gHat g θhat m))
+        (W := Wcomp (A := A) (w := w)) =
         attrSD ν (gHat g θhat m) :=
     by
-      have hDesign :
-          designSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)) =
-            attrSD (Measure.map (A 0) μ) (gHat g θhat m) := by
+      have hMeanW :
+          designMeanZ (μ := μ) (Z := Wcomp (A := A) (w := w)) =
+            attrMean (Measure.map (A 0) μ) w := by
         simpa using
-          (designSDZ_Zcomp_eq_attrSD (μ := μ) (A := A) (g := gHat g θhat m)
-            (hA0 := hMom.measA0) (hg := h.hScore.meas_g))
-      have hMomEq :
-          attrSD (Measure.map (A 0) μ) (gHat g θhat m) =
-            attrSD ν (gHat g θhat m) := by
-        exact attrSD_eq_of_moments (s := gHat g θhat m) hMom.mean_eq hMom.m2_eq
-      simpa [hMomEq] using hDesign
+          (designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A) (g := w)
+            (hA0 := hMom.measA0) (hg := h.hWeight.meas_g))
+      have hMeanWZ :
+          designMeanZ (μ := μ)
+              (Z := fun i ω =>
+                Wcomp (A := A) (w := w) i ω
+                  * Zcomp (A := A) (g := gHat g θhat m) i ω) =
+            attrMean (Measure.map (A 0) μ) (fun a => w a * gHat g θhat m a) := by
+        simpa using
+          (designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A)
+            (g := fun a => w a * gHat g θhat m a)
+            (hA0 := hMom.measA0) (hg := h.hWeightScore.meas_g))
+      have hM2WZ :
+          designMeanZ (μ := μ)
+              (Z := fun i ω =>
+                Wcomp (A := A) (w := w) i ω
+                  * (Zcomp (A := A) (g := gHat g θhat m) i ω) ^ 2) =
+            attrMean (Measure.map (A 0) μ) (fun a => w a * (gHat g θhat m a) ^ 2) := by
+        simpa using
+          (designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A)
+            (g := fun a => w a * (gHat g θhat m a) ^ 2)
+            (hA0 := hMom.measA0) (hg := h.hWeightScoreSq.meas_g))
+      have hMean :
+          designMeanZW (μ := μ)
+              (Z := Zcomp (A := A) (g := gHat g θhat m))
+              (W := Wcomp (A := A) (w := w)) =
+            attrMean ν (gHat g θhat m) := by
+        simp [designMeanZW, hMeanW, hMeanWZ, hMom.mean_eq, attrMean]
+      have hM2 :
+          designM2ZW (μ := μ)
+              (Z := Zcomp (A := A) (g := gHat g θhat m))
+              (W := Wcomp (A := A) (w := w)) =
+            attrM2 ν (gHat g θhat m) := by
+        simpa [designM2ZW, hMeanW, hM2WZ, attrMean, attrM2] using hMom.m2_eq
+      simp [designSDZW, designVarZW, attrSD, attrVar, hMean, hM2]
   simpa [hEq] using hSDZ
 
 end

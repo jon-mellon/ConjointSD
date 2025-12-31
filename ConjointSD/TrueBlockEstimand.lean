@@ -70,11 +70,13 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     {Term : Type*} [Fintype Term] [DecidableEq B]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (w : Attr → ℝ)
     (hMom : ∀ m b,
-      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-        (s := gHat (gBlock (gB := gB) b) θhat m))
+      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
     (hSplit : ∀ m b,
-      SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
+      SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
+        (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
@@ -90,7 +92,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
         ∀ b : B,
           (∀ᵐ ω ∂μ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr μ A ν
+              totalErr μ A ν w
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
           attrSD ν (gBlock (gB := gB) b θ0)
@@ -109,7 +111,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     simpa [gTrueB] using hBlockSpec b x
   simpa [gTrueB] using
     (paper_sd_blocks_sequential_consistency_to_true_target_ae
-      (μ := μ) (A := A) (ν := ν) (hMom := hMom) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (μ := μ) (A := A) (ν := ν) (w := w) (hMom := hMom) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
       (gTrueB := gTrueB) (hTrueB := hTrueB)
       (ε := ε) (hε := hε))
@@ -124,12 +126,14 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
     (βOf : Θ → Term → ℝ) (β0 : Term → ℝ)
     (hβ : βOf θ0 = β0)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (w : Attr → ℝ)
     (hMom : ∀ m b,
-      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+        (w := w)
         (s := gHat (gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b) θhat m))
     (hSplit : ∀ m b,
-      SplitEvalAssumptions
-        (μ := μ) (A := A)
+      SplitEvalWeightAssumptions
+        (μ := μ) (A := A) (w := w)
         (g := gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
         (θhat := θhat) m)
     (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
@@ -144,7 +148,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
         ∀ b : B,
           (∀ᵐ ω ∂μ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr μ A ν
+              totalErr μ A ν w
                 (gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
                 θ0 θhat m n ω < ε)
           ∧
@@ -168,7 +172,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
     (paper_blocks_converge_to_trueBlockSDs_ae
       (μ := μ) (A := A) (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
-      (blk := blk) (β0 := β0) (φ := φ) (ν := ν) (hMom := hMom)
+      (blk := blk) (β0 := β0) (φ := φ) (ν := ν) (w := w) (hMom := hMom)
       (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
       (hBlockSpec := hBlockSpec) (ε := ε) (hε := hε))
 

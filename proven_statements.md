@@ -161,7 +161,7 @@ moment [convergence](readable/jargon_convergence.md), the two-stage
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
 size then evaluation size), targeting the attribute-law SD under `ν` with
-`EvalAttrMoments` matching the evaluation draw’s mean/second moment to `ν`.
+`EvalWeightMatchesAttrMoments` matching weighted evaluation moments to `ν`.
 
 Intuition: First the fitted score stabilizes, then the evaluation
 [standard deviation](readable/jargon_standard_deviation.md) converges to the
@@ -172,8 +172,8 @@ Intuition: First the fitted score stabilizes, then the evaluation
 Formalization (Lean name): `sequential consistency ae`
 
 Formalization (math):
-`sdEst m n -> attrSD nu (g theta0)` sequentially, under
-`SplitEvalAssumptions` and `GEstimationAssumptions`.
+`sdEst w m n -> attrSD nu (g theta0)` sequentially, under
+`SplitEvalWeightAssumptions` and `GEstimationAssumptions`.
 
 ## paper identifies potMean from condMean (PaperWrappers)
 
@@ -218,7 +218,7 @@ under the target [distribution](readable/jargon_distribution.md) for the
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size), with `EvalAttrMoments` tying evaluation moments to `ν`.
+size then evaluation size), with `EvalWeightMatchesAttrMoments` tying weighted evaluation moments to `ν`.
 
 Intuition: [parameter](readable/jargon_parameter.md)
 [convergence](readable/jargon_convergence.md) plus
@@ -230,7 +230,7 @@ moment convergence, which then feeds the sequential
 Formalization (Lean name): `paper sd total sequential consistency ae`
 
 Formalization (math):
-`totalErr μ A ν (gTotalΘ gB) θ0 θhat m n -> 0` sequentially in `m,n`.
+`totalErr μ A ν w (gTotalΘ gB) θ0 θhat m n -> 0` sequentially in `m,n`.
 
 ## paper sd total sequential consistency to true target ae (PaperWrappers)
 
@@ -278,8 +278,8 @@ File: `ConjointSD/PaperCoreEstimand.lean`
 Statement: The paper’s total [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) (plugging a [term](readable/jargon_term.md)
 model into the target human [population](readable/jargon_population.md) attribute
-[distribution](readable/jargon_distribution.md), with `EvalAttrMoments` connecting
-the evaluation moments to `ν`)
+[distribution](readable/jargon_distribution.md), with `EvalWeightMatchesAttrMoments` connecting
+weighted evaluation moments to `ν`)
 [converges](readable/jargon_convergence.md) to the paper’s total
 [standard deviation](readable/jargon_standard_deviation.md) target.
 
@@ -290,7 +290,7 @@ to the [term](readable/jargon_term.md) model used in the manuscript.
 Formalization (Lean name): `paper total sd estimator consistency ae of gBTerm`
 
 Formalization (math):
-`|paperTotalSDEst μ A blk βOf φ θhat m n - paperTotalSD ν blk β0 φ| < ε` a.e. eventually.
+`|paperTotalSDEst μ A w blk βOf φ θhat m n - paperTotalSD ν blk β0 φ| < ε` a.e. eventually.
 
 ## paper sd total sequential consistency to gStar ae of gBTerm (PaperCoreEstimand)
 

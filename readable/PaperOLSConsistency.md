@@ -11,6 +11,7 @@ Assumption package:
 - The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets and the normal equations identify `theta0`.
 - `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from existing `ScoreAssumptions` and a (strong) noiseless link `Yobs = gStar ∘ A` on sample paths, with the attribute moments computed under `Measure.map (A 0) μ` for the experimental design.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN, inverse‑Gram stability, and identifiability into the a.e. `OLSMomentAssumptionsOfAttr` statement used by later theorems.
+- In the Gram/cross convergence proofs, empirical means are now routed through `meanHatZ_tendsto_ae_of_score`, keeping the flow explicitly tied to `ScoreAssumptions` rather than standalone IID bundles.
 
 Main results:
 - `theta_tendsto_of_paper_ols_moments_ae` gives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0`.

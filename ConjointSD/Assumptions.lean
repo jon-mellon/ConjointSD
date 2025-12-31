@@ -31,20 +31,6 @@ section Transport
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/--
-Moment-matching transport: the mean and second moment of `s` under the evaluation draw
-match the target population moments under `ν`.
--/
-structure EvalAttrMoments {Ω : Type*} [MeasurableSpace Ω]
-    (μ : Measure Ω) (A : ℕ → Ω → Attr) (ν : Measure Attr) (s : Attr → ℝ) : Prop where
-  measA0 : Measurable (A 0)
-  mean_eq : attrMean (Measure.map (A 0) μ) s = attrMean ν s
-  m2_eq : attrM2 (Measure.map (A 0) μ) s = attrM2 ν s
-
-namespace EvalAttrMoments
-
-end EvalAttrMoments
-
 /-- Convenient moment conditions on `s` under an attribute distribution `ν`. -/
 structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (s : Attr → ℝ) : Prop where
@@ -62,12 +48,6 @@ theorem int1 {ν : Measure Attr} [ProbMeasureAssumptions ν] {s : Attr → ℝ}
   exact (memLp_one_iff_integrable).1 hs_mem1
 
 end AttrMomentAssumptions
-
-theorem attrSD_eq_of_moments {ν₁ ν₂ : Measure Attr} (s : Attr → ℝ)
-    (hmean : attrMean ν₁ s = attrMean ν₂ s)
-    (hm2 : attrM2 ν₁ s = attrM2 ν₂ s) :
-    attrSD ν₁ s = attrSD ν₂ s := by
-  simp [attrSD, attrVar, hmean, hm2]
 
 /--
 Invariance only on attribute-distribution support (AE under `ν`): `gExp = gPop` holds
@@ -214,6 +194,26 @@ structure SplitEvalAssumptions
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
   hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
+
+/--
+Weighted-evaluation assumptions for a fixed training index `m`.
+
+These package the IID/integrability conditions needed to apply weighted LLNs.
+-/
+structure SplitEvalWeightAssumptions
+    (μ : Measure Ω) [ProbMeasureAssumptions μ] (A : ℕ → Ω → Attr)
+    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ) : Prop where
+  hScore : ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)
+  hWeight : ScoreAssumptions (μ := μ) (A := A) (g := w)
+  hWeightScore :
+    ScoreAssumptions (μ := μ) (A := A)
+      (g := fun a => w a * gHat g θhat m a)
+  hWeightScoreSq :
+    ScoreAssumptions (μ := μ) (A := A)
+      (g := fun a => w a * (gHat g θhat m a) ^ 2)
+  hW0 :
+    designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := w)) ≠ 0
 
 /-- Boundedness-based assumptions for evaluation at a fixed training index `m`. -/
 structure SplitEvalAssumptionsBounded

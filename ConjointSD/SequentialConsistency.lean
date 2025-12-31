@@ -36,11 +36,14 @@ variable {Θ : Type*}
 /-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/
 def sdEst
     (μ : Measure Ω) (A : ℕ → Ω → Attr)
+    (w : Attr → ℝ)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m n : ℕ) (ω : Ω) : ℝ :=
   by
     let _ := μ
-    exact sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω
+    exact
+      sdHatZW (Z := Zcomp (A := A) (g := gHat g θhat m))
+        (W := Wcomp (A := A) (w := w)) n ω
 
 /-- Oracle target SD under `ν` using the oracle score `g θ0`. -/
 def sdOracle
@@ -56,9 +59,10 @@ def trainErr
 /-- Total error at `(m,n)`: empirical SD gap to oracle SD. -/
 def totalErr
     (μ : Measure Ω) (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+    (ν : Measure Attr) (w : Attr → ℝ)
+    (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (m n : ℕ) (ω : Ω) : ℝ :=
-  abs (sdEst μ A g θhat m n ω - sdOracle ν g θ0)
+  abs (sdEst μ A w g θhat m n ω - sdOracle ν g θ0)
 
 /--
 Step (1): for fixed `m`, as `n → ∞`, total error → training error (a.e.).
@@ -69,32 +73,37 @@ theorem totalErr_tendsto_trainErr_fixed_m
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr)
+    (w : Attr → ℝ)
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (m : ℕ)
     (h :
-      SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
-    (hMom : EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-      (s := gHat g θhat m)) :
+      SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w) (g := g) (θhat := θhat) m)
+    (hMom : EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+      (w := w) (s := gHat g θhat m)) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n : ℕ =>
-          totalErr μ A ν g θ0 θhat m n ω)
+          totalErr μ A ν w g θ0 θhat m n ω)
         atTop
         (nhds (trainErr ν g θ0 θhat m)) := by
   -- Base convergence from SampleSplitting:
   have hBase_map :
       ∀ᵐ ω ∂μ,
         Tendsto
-          (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
+          (fun n : ℕ =>
+            sdHatZW (Z := Zcomp (A := A) (g := gHat g θhat m))
+              (W := Wcomp (A := A) (w := w)) n ω)
           atTop
           (nhds (attrSD ν (gHat g θhat m))) :=
     sdHat_fixed_m_tendsto_ae_attrSD
-      (μ := μ) (A := A) (ν := ν) (g := g) (θhat := θhat) m h hMom
+      (μ := μ) (A := A) (ν := ν) (w := w) (g := g) (θhat := θhat) m h hMom
   -- Rewrite the limit using `hLaw`.
   have hBase :
       ∀ᵐ ω ∂μ,
         Tendsto
-          (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
+          (fun n : ℕ =>
+            sdHatZW (Z := Zcomp (A := A) (g := gHat g θhat m))
+              (W := Wcomp (A := A) (w := w)) n ω)
           atTop
           (nhds (attrSD ν (gHat g θhat m))) := by
     simpa using hBase_map
@@ -150,7 +159,7 @@ theorem trainErr_tendsto_zero
 Step (3): sequential ε–M–eventually-in-n consistency (a.e. over ω).
 
 Assumptions:
-- `hSplit : ∀ m, SplitEvalAssumptions ... m` gives evaluation-stage conditions for each m.
+- `hSplit : ∀ m, SplitEvalWeightAssumptions ... m` gives evaluation-stage conditions for each m.
 - `hG` gives convergence of the attribute-distribution SD under `ν`
   for gHat → g θ0.
 
@@ -161,10 +170,12 @@ theorem sequential_consistency_ae
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (w : Attr → ℝ)
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hSplit : ∀ m, SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
-    (hMom : ∀ m, EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-      (s := gHat g θhat m))
+    (hSplit : ∀ m,
+      SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w) (g := g) (θhat := θhat) m)
+    (hMom : ∀ m, EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+      (w := w) (s := gHat g θhat m))
     (hG :
       GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -172,7 +183,7 @@ theorem sequential_consistency_ae
       ∀ m ≥ M,
         (∀ᵐ ω ∂μ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr μ A ν g θ0 θhat m n ω < ε) := by
+            totalErr μ A ν w g θ0 θhat m n ω < ε) := by
   -- training-error convergence
   have hTrain :
       Tendsto (fun m : ℕ => trainErr ν g θ0 θhat m)
@@ -197,17 +208,17 @@ theorem sequential_consistency_ae
   have hTend :
       ∀ᵐ ω ∂μ,
         Tendsto
-          (fun n : ℕ => totalErr μ A ν g θ0 θhat m n ω)
+          (fun n : ℕ => totalErr μ A ν w g θ0 θhat m n ω)
           atTop
           (nhds (trainErr ν g θ0 θhat m)) :=
     totalErr_tendsto_trainErr_fixed_m
-      (μ := μ) (A := A) (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat)
+      (μ := μ) (A := A) (ν := ν) (w := w) (g := g) (θ0 := θ0) (θhat := θhat)
       (m := m) (h := hSplit m) (hMom := hMom m)
   -- Convert pointwise Tendsto into an eventually upper bound trainErr(m) + ε/2, a.e. in ω
   have hEvN :
       ∀ᵐ ω ∂μ,
         ∀ᶠ n : ℕ in atTop,
-          totalErr μ A ν g θ0 θhat m n ω
+          totalErr μ A ν w g θ0 θhat m n ω
             < trainErr ν g θ0 θhat m + ε / 2 := by
     refine hTend.mono ?_
     intro ω ht

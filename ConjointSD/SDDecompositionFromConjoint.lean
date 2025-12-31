@@ -77,6 +77,18 @@ lemma iidAssumptions_Zcomp [ProbMeasureAssumptions μ]
     simpa [Z, Zcomp, Function.comp] using this
   · simpa [Z, Zcomp] using h.int_g0_sq
 
+lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μ]
+    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
+    (h : ScoreAssumptions (μ := μ) A g) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ => meanHatZ (Z := Zcomp (A := A) (g := g)) n ω)
+        atTop
+        (nhds (designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g)))) := by
+  have hIID : IIDAssumptions (μ := μ) (Zcomp (A := A) (g := g)) :=
+    iidAssumptions_Zcomp (μ := μ) (A := A) (g := g) h
+  simpa using meanHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := A) (g := g)) hIID
+
 /-- Consistency of the plug-in SD for a single component scoring rule g. -/
 theorem sd_component_consistent [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)

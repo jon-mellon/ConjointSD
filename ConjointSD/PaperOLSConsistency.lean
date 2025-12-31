@@ -154,9 +154,6 @@ theorem paper_ols_lln_of_score_assumptions_ae
       fun a =>
         (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
           * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)
-    have hIID :
-        IIDAssumptions (μ := μ) (Zcomp (A := Aω) (g := gGram)) :=
-      iidAssumptions_Zcomp (μ := μ) (A := Aω) (g := gGram) (hScoreGram i j)
     have hmean :
         ∀ᵐ ω ∂μ,
           Tendsto
@@ -164,7 +161,8 @@ theorem paper_ols_lln_of_score_assumptions_ae
               meanHatZ (Z := Zcomp (A := Aω) (g := gGram)) n ω)
             atTop
             (nhds (designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gGram)))) :=
-      meanHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := Aω) (g := gGram)) hIID
+      meanHatZ_tendsto_ae_of_score
+        (μ := μ) (A := Aω) (g := gGram) (hScoreGram i j)
     have hpop :
         designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gGram))
           =
@@ -218,9 +216,6 @@ theorem paper_ols_lln_of_score_assumptions_ae
       fun a =>
         (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
           * gStar (μ := μ) (Y := Y) a
-    have hIID :
-        IIDAssumptions (μ := μ) (Zcomp (A := Aω) (g := gCross)) :=
-      iidAssumptions_Zcomp (μ := μ) (A := Aω) (g := gCross) (hScoreCross i)
     have hmean :
         ∀ᵐ ω ∂μ,
           Tendsto
@@ -228,7 +223,8 @@ theorem paper_ols_lln_of_score_assumptions_ae
               meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω)
             atTop
             (nhds (designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross)))) :=
-      meanHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := Aω) (g := gCross)) hIID
+      meanHatZ_tendsto_ae_of_score
+        (μ := μ) (A := Aω) (g := gCross) (hScoreCross i)
     have hpop :
         designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross))
           =

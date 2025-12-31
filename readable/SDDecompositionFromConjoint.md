@@ -12,6 +12,7 @@ Key definitions:
 Main results:
 - If `g` is bounded, then the second-moment and [integrable](jargon_integrable.md) conditions hold automatically.
 - `iidAssumptions_Zcomp` shows that the score process `Zcomp` inherits [IID](jargon_iid.md) properties from `A`.
+- `meanHatZ_tendsto_ae_of_score` applies the [LLN](jargon_lln.md) for the empirical [mean](jargon_mean.md) directly from `ScoreAssumptions`.
 - `sd_component_consistent` proves the empirical [standard deviation](jargon_standard_deviation.md) of `g(A i)` [converges](jargon_convergence.md) to the target attribute-distribution [SD](jargon_standard_deviation.md).
 - `sd_component_consistent_of_design` is a wrapper that takes `ConjointRandomizationStream` and yields the same SD-consistency result, making the link to randomization explicit.
 - `sd_component_consistent_of_bounded` is a convenient bounded version.
@@ -20,4 +21,4 @@ Block version:
 - `DecompAssumptions` bundles boundedness and [measurability](jargon_measurable.md) for all [blocks](jargon_block.md).
 - `sd_block_consistent` applies the single-score result to any chosen block.
 
-This file is the [bridge](jargon_bridge.md) from general [IID](jargon_iid.md) assumptions on the data to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) for scores and blocks.
+This file is the [bridge](jargon_bridge.md) from design-based attribute IID to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) for scores and blocks.

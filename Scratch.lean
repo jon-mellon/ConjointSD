@@ -18,6 +18,7 @@ import ConjointSD
 #print ConjointSD.sdHatZ_tendsto_ae
 #print ConjointSD.sd_component_consistent
 #print ConjointSD.sd_component_consistent_of_design
+#print ConjointSD.meanHatZ_tendsto_ae_of_score
 
 -- Sample splitting (evaluation stage).
 #print ConjointSD.sdHat_fixed_m_tendsto_ae_attrSD

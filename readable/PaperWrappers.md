@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/PaperWrappers.lean](../ConjointSD/PaperWrappers.lean)
 
-This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript. The wrapper statements use the standard probability/convergence bundles and target attribute moments under `ν`, with `EvalAttrMoments` encoding the evaluation-to-population moment match needed for SD targets. Where causal scores (`gStar`, `gPot`, `gExp`) appear, they are tied to the experimental law `μexp`, separating experimental identification from population evaluation.
+This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript. The wrapper statements use the standard probability/convergence bundles and target attribute moments under `ν`, with `EvalWeightMatchesAttrMoments` encoding the weighted evaluation-to-population moment match needed for SD targets. Where causal scores (`gStar`, `gPot`, `gExp`) appear, they are tied to the experimental law `μexp`, separating experimental identification from population evaluation.
 
 Section 1: identification
 - Wraps the identification results so they read as "[conditional mean](jargon_conditional_mean.md) identifies the potential [mean](jargon_mean.md)" and "difference in [conditional [means](jargon_mean.md)](jargon_conditional_mean.md) identifies the treatment contrast," now with an explicit positivity assumption on the conditioning events.

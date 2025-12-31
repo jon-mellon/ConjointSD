@@ -40,12 +40,14 @@ theorem sequential_consistency_blocks_ae
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (w : Attr → ℝ)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
-      SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
+      SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
+        (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hMom : ∀ m b,
-      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-        (s := gHat (gBlock (gB := gB) b) θhat m))
+      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
     (hG : ∀ b,
       GEstimationAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
@@ -55,7 +57,7 @@ theorem sequential_consistency_blocks_ae
         ∀ b : B,
           (∀ᵐ ω ∂μ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr μ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
+              totalErr μ A ν w (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
   classical
   have hEach :
       ∀ b : B,
@@ -63,12 +65,12 @@ theorem sequential_consistency_blocks_ae
           ∀ m ≥ Mb,
             (∀ᵐ ω ∂μ,
               ∀ᶠ n : ℕ in atTop,
-                totalErr μ A ν
+                totalErr μ A ν w
                   (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
     intro b
     simpa [gBlock] using
       (sequential_consistency_ae
-        (μ := μ) (A := A) (ν := ν)
+        (μ := μ) (A := A) (ν := ν) (w := w)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
         (hMom := fun m => hMom m b)
@@ -90,13 +92,15 @@ theorem sequential_consistency_total_ae
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (w : Attr → ℝ)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
-        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+        SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
+          (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hMom : ∀ m,
-      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-        (s := gHat (gTotalΘ (gB := gB)) θhat m))
+      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
     (hGTotal :
       GEstimationAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
@@ -105,10 +109,10 @@ theorem sequential_consistency_total_ae
       ∀ m ≥ M,
         (∀ᵐ ω ∂μ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
+            totalErr μ A ν w (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   simpa [gTotalΘ] using
     (sequential_consistency_ae
-      (μ := μ) (A := A) (ν := ν)
+      (μ := μ) (A := A) (ν := ν) (w := w)
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
       (hMom := hMom)
@@ -119,13 +123,22 @@ theorem sequential_consistency_blocks_ae_of_bounded
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (w : Attr → ℝ)
     (hPop : DesignAttrIID (μ := μ) A)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
       SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
+    (hWeight : ScoreAssumptions (μ := μ) (A := A) (g := w))
+    (hWeightScore : ∀ m b,
+      ScoreAssumptions (μ := μ) (A := A)
+        (g := fun a => w a * gHat (gBlock (gB := gB) b) θhat m a))
+    (hWeightScoreSq : ∀ m b,
+      ScoreAssumptions (μ := μ) (A := A)
+        (g := fun a => w a * (gHat (gBlock (gB := gB) b) θhat m a) ^ 2))
+    (hW0 : designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := w)) ≠ 0)
     (hMom : ∀ m b,
-      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-        (s := gHat (gBlock (gB := gB) b) θhat m))
+      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
     (hG : ∀ b,
       GEstimationAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
@@ -135,18 +148,24 @@ theorem sequential_consistency_blocks_ae_of_bounded
         ∀ b : B,
           (∀ᵐ ω ∂μ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr μ A ν
+              totalErr μ A ν w
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
   have hSplit' :
       ∀ m b,
-        SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m :=
+        SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
+          (g := gBlock (gB := gB) b) (θhat := θhat) m :=
     fun m b =>
-      splitEvalAssumptions_of_bounded
-        (μ := μ) (A := A) (hPop := hPop)
-        (g := gBlock (gB := gB) b) (θhat := θhat) (m := m) (hSplit m b)
+      { hScore :=
+          (splitEvalAssumptions_of_bounded
+            (μ := μ) (A := A) (hPop := hPop)
+            (g := gBlock (gB := gB) b) (θhat := θhat) (m := m) (hSplit m b)).hScore
+        hWeight := hWeight
+        hWeightScore := hWeightScore m b
+        hWeightScoreSq := hWeightScoreSq m b
+        hW0 := hW0 }
   exact
     sequential_consistency_blocks_ae
-      (μ := μ) (A := A) (ν := ν)
+      (μ := μ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplit') (hMom := hMom) (hG := hG) (ε := ε) (hε := hε)
 
@@ -154,14 +173,23 @@ theorem sequential_consistency_total_ae_of_bounded
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (w : Attr → ℝ)
     (hPop : DesignAttrIID (μ := μ) A)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
+    (hWeight : ScoreAssumptions (μ := μ) (A := A) (g := w))
+    (hWeightScore : ∀ m,
+      ScoreAssumptions (μ := μ) (A := A)
+        (g := fun a => w a * gHat (gTotalΘ (gB := gB)) θhat m a))
+    (hWeightScoreSq : ∀ m,
+      ScoreAssumptions (μ := μ) (A := A)
+        (g := fun a => w a * (gHat (gTotalΘ (gB := gB)) θhat m a) ^ 2))
+    (hW0 : designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := w)) ≠ 0)
     (hMom : ∀ m,
-      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
-        (s := gHat (gTotalΘ (gB := gB)) θhat m))
+      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
     (hGTotal :
       GEstimationAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
@@ -170,18 +198,24 @@ theorem sequential_consistency_total_ae_of_bounded
       ∀ m ≥ M,
         (∀ᵐ ω ∂μ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr μ A ν
+            totalErr μ A ν w
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   have hSplitTotal' :
       ∀ m,
-        SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m :=
+        SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
+          (g := gTotalΘ (gB := gB)) (θhat := θhat) m :=
     fun m =>
-      splitEvalAssumptions_of_bounded
-        (μ := μ) (A := A) (hPop := hPop)
-        (g := gTotalΘ (gB := gB)) (θhat := θhat) (m := m) (hSplitTotal m)
+      { hScore :=
+          (splitEvalAssumptions_of_bounded
+            (μ := μ) (A := A) (hPop := hPop)
+            (g := gTotalΘ (gB := gB)) (θhat := θhat) (m := m) (hSplitTotal m)).hScore
+        hWeight := hWeight
+        hWeightScore := hWeightScore m
+        hWeightScoreSq := hWeightScoreSq m
+        hW0 := hW0 }
   exact
     sequential_consistency_total_ae
-      (μ := μ) (A := A) (ν := ν)
+      (μ := μ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotal') (hMom := hMom) (hGTotal := hGTotal) (ε := ε) (hε := hε)
 

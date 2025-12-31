@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/Transport.lean](../ConjointSD/Transport.lean)
 
-This file defines the target human [population](jargon_population.md)-level targets and the transport assumptions linking experimental and target-population scores.
+This file gathers the target human [population](jargon_population.md)-level targets, transport assumptions, and small transport lemmas used by later results.
 
 Population targets:
 - `attrMean`, `attrM2`, `attrVar`, `attrSD` define the mean, second moment, variance, and standard deviation of a score function under the attribute [distribution](jargon_distribution.md) `nu` for the target human population (see [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md)).
@@ -14,4 +14,9 @@ Transport assumptions:
   [distribution](jargon_distribution.md). This is the transport condition used by
   later results.
 
-This file is the foundation: it defines the target human population targets that all later [consistency](jargon_consistency.md) results point to.
+Derived transport facts:
+- `attrSD_eq_of_moments`: if two measures agree on the [mean](jargon_mean.md)
+  and [second moment](jargon_second_moment.md) of `s`, then their
+  [standard deviation](jargon_standard_deviation.md) for `s` is equal.
+
+This file is the foundation: it exposes the target human population targets and transport conditions that all later [consistency](jargon_consistency.md) results point to.

@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/DecompositionSequentialConsistency.lean](../ConjointSD/DecompositionSequentialConsistency.lean)
 
-This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score. It uses the standard probability/convergence bundles and evaluates targets under the target attribute distribution `ν`, with `EvalAttrMoments` providing the evaluation-to-population moment match needed for the SD targets.
+This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score. It uses the standard probability/convergence bundles and evaluates targets under the target attribute distribution `ν`, with `EvalWeightMatchesAttrMoments` providing the weighted evaluation-to-population moment match needed for the SD targets.
 
 Key definitions:
 - `gBlock` is the block score as a function of the [parameter](jargon_parameter.md).
