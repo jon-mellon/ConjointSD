@@ -19,6 +19,4 @@ import ConjointSD.RegressionEstimator
 import ConjointSD.PaperOLSConsistency
 import ConjointSD.PaperCoreEstimand
 import ConjointSD.WellSpecifiedFromNoInteractions
-import ConjointSD.SurveyWeights
 import ConjointSD.StatusConjointDesign
-import ConjointSD.StatusSurveyWeights

@@ -63,7 +63,8 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
     (h : SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν)) :
+    (hMom : EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+      (s := gHat g θhat m)) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n : ℕ =>
@@ -81,9 +82,17 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
       designSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)) =
         attrSD ν (gHat g θhat m) :=
     by
-      simpa [hEval.law] using
-        (designSDZ_Zcomp_eq_attrSD (μ := μ) (A := A) (g := gHat g θhat m)
-          (hA0 := hEval.measA0) (hg := h.hScore.meas_g))
+      have hDesign :
+          designSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)) =
+            attrSD (Measure.map (A 0) μ) (gHat g θhat m) := by
+        simpa using
+          (designSDZ_Zcomp_eq_attrSD (μ := μ) (A := A) (g := gHat g θhat m)
+            (hA0 := hMom.measA0) (hg := h.hScore.meas_g))
+      have hMomEq :
+          attrSD (Measure.map (A 0) μ) (gHat g θhat m) =
+            attrSD ν (gHat g θhat m) := by
+        exact attrSD_eq_of_moments (s := gHat g θhat m) hMom.mean_eq hMom.m2_eq
+      simpa [hMomEq] using hDesign
   simpa [hEq] using hSDZ
 
 end

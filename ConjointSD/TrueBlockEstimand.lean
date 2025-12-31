@@ -70,7 +70,9 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     {Term : Type*} [Fintype Term] [DecidableEq B]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
+    (hMom : ∀ m b,
+      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+        (s := gHat (gBlock (gB := gB) b) θhat m))
     (hSplit : ∀ m b,
       SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
@@ -107,7 +109,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     simpa [gTrueB] using hBlockSpec b x
   simpa [gTrueB] using
     (paper_sd_blocks_sequential_consistency_to_true_target_ae
-      (μ := μ) (A := A) (ν := ν) (hEval := hEval) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (μ := μ) (A := A) (ν := ν) (hMom := hMom) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
       (gTrueB := gTrueB) (hTrueB := hTrueB)
       (ε := ε) (hε := hε))
@@ -122,7 +124,9 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
     (βOf : Θ → Term → ℝ) (β0 : Term → ℝ)
     (hβ : βOf θ0 = β0)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
+    (hMom : ∀ m b,
+      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+        (s := gHat (gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b) θhat m))
     (hSplit : ∀ m b,
       SplitEvalAssumptions
         (μ := μ) (A := A)
@@ -164,7 +168,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
     (paper_blocks_converge_to_trueBlockSDs_ae
       (μ := μ) (A := A) (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
-      (blk := blk) (β0 := β0) (φ := φ) (ν := ν) (hEval := hEval)
+      (blk := blk) (β0 := β0) (φ := φ) (ν := ν) (hMom := hMom)
       (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
       (hBlockSpec := hBlockSpec) (ε := ε) (hε := hε))
 

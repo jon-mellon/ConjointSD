@@ -21,14 +21,12 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 - [ConjointSD/Transport.lean](readable/Transport.md) re-exports attribute-distribution functionals and transport assumptions now centralized in `Defs.lean`/`Assumptions.lean`.
 - [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under `ν` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
-- [ConjointSD/SurveyWeights.lean](readable/SurveyWeights.md) adds weighted target-human-[population](readable/jargon_population.md) [estimands](readable/jargon_estimand.md) and finite-[population](readable/jargon_population.md) targets; builds on `Transport`.
 - [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds, [L2](readable/jargon_l2.md)/[RMSE](readable/jargon_rmse.md) mean and SD bounds, and a triangle-inequality lemma for chaining approximations; uses `Transport`.
 
 ## Identification and design
 
 - [ConjointSD/ConjointIdentification.lean](readable/ConjointIdentification.md) formalizes conjoint identification assumptions and derives observed-[mean](readable/jargon_mean.md) identification of [potential outcomes](readable/jargon_potential_outcome.md) and [AMCE](readable/jargon_amce.md); defines `gExp`/`gPot` equality under assumptions.
 - [ConjointSD/StatusConjointDesign.lean](readable/StatusConjointDesign.md) encodes the specific status-conjoint randomization (uniform over [profiles](readable/jargon_profile.md)/tasks) and proves it satisfies `ConjointIdRandomized`, plus an explicit positivity lemma for assignments.
-- [ConjointSD/StatusSurveyWeights.lean](readable/StatusSurveyWeights.md) introduces status-conjoint survey-weight placeholders and links weighted SD targets to target human population SDs under moment matching.
 
 ## Estimation and sequential consistency
 
@@ -54,7 +52,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Paper-facing wrappers and estimands
 
 - [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), target-equivalence wrappers (exact and approximate, including two-stage oracle bounds), weighted-target transfer lemmas, `hGTotal`-based total-score variants, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; central hub for exported statements.
-- [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core [estimands](readable/jargon_estimand.md) ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, `SurveyWeights`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery (including weighted target-human-population SD targets).
+- [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core [estimands](readable/jargon_estimand.md) ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
 
 ## Tooling
 

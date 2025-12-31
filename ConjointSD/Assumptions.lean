@@ -32,13 +32,18 @@ section Transport
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /--
-Evaluation-law assumption: the evaluation attribute draw `A 0` has attribute law `ν`.
-This ties the evaluation sample distribution to the target population distribution.
+Moment-matching transport: the mean and second moment of `s` under the evaluation draw
+match the target population moments under `ν`.
 -/
-structure EvalAttrLaw {Ω : Type*} [MeasurableSpace Ω]
-    (μ : Measure Ω) (A : ℕ → Ω → Attr) (ν : Measure Attr) : Prop where
+structure EvalAttrMoments {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (A : ℕ → Ω → Attr) (ν : Measure Attr) (s : Attr → ℝ) : Prop where
   measA0 : Measurable (A 0)
-  law : Measure.map (A 0) μ = ν
+  mean_eq : attrMean (Measure.map (A 0) μ) s = attrMean ν s
+  m2_eq : attrM2 (Measure.map (A 0) μ) s = attrM2 ν s
+
+namespace EvalAttrMoments
+
+end EvalAttrMoments
 
 /-- Convenient moment conditions on `s` under an attribute distribution `ν`. -/
 structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
@@ -57,6 +62,12 @@ theorem int1 {ν : Measure Attr} [ProbMeasureAssumptions ν] {s : Attr → ℝ}
   exact (memLp_one_iff_integrable).1 hs_mem1
 
 end AttrMomentAssumptions
+
+theorem attrSD_eq_of_moments {ν₁ ν₂ : Measure Attr} (s : Attr → ℝ)
+    (hmean : attrMean ν₁ s = attrMean ν₂ s)
+    (hm2 : attrM2 ν₁ s = attrM2 ν₂ s) :
+    attrSD ν₁ s = attrSD ν₂ s := by
+  simp [attrSD, attrVar, hmean, hm2]
 
 /--
 Invariance only on attribute-distribution support (AE under `ν`): `gExp = gPop` holds
@@ -306,23 +317,27 @@ section SurveyWeights
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/-- Assumptions ensuring weighted moments are well-defined and nondegenerate. -/
-structure WeightAssumptions (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
-  nonneg : ∀ᵐ a ∂ν, 0 ≤ w a
-  intW   : Integrable w ν
-  intWs  : Integrable (fun a => w a * s a) ν
-  intWs2 : Integrable (fun a => w a * (s a) ^ 2) ν
-  mass_pos : 0 < ∫ a, w a ∂ν
-
 /--
-Moment-matching assumption: weighted mean and second moment equal target human
-population moments.
+Evaluation-weight moment matching: weighted moments of the evaluation draw
+match target human population moments under `ν`.
+
+This is a transport-style assumption that links the evaluation sample
+(`A 0` under `μ`) to the population distribution `ν` without requiring full
+law equality.
 -/
-structure WeightMatchesAttrMoments (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+structure EvalWeightMatchesAttrMoments
+    {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (A : ℕ → Ω → Attr)
+    (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+  measA0 : Measurable (A 0)
   mean_eq :
-    (∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν) = attrMean ν s
+    (∫ a, w a * s a ∂Measure.map (A 0) μ) / (∫ a, w a ∂Measure.map (A 0) μ)
+      =
+    attrMean ν s
   m2_eq :
-    (∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν) = attrM2 ν s
+    (∫ a, w a * (s a) ^ 2 ∂Measure.map (A 0) μ) / (∫ a, w a ∂Measure.map (A 0) μ)
+      =
+    attrM2 ν s
 
 end SurveyWeights
 

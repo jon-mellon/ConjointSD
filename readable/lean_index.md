@@ -22,8 +22,6 @@ Readable summaries of the Lean development.
 - [SDDecompositionFromConjoint.lean](SDDecompositionFromConjoint.md)
 - [SequentialConsistency.lean](SequentialConsistency.md)
 - [StatusConjointDesign.lean](StatusConjointDesign.md)
-- [StatusSurveyWeights.lean](StatusSurveyWeights.md)
-- [SurveyWeights.lean](SurveyWeights.md)
 - [TargetEquivalence.lean](TargetEquivalence.md)
 - [TermModelBlocks.lean](TermModelBlocks.md)
 - [Transport.lean](Transport.md)

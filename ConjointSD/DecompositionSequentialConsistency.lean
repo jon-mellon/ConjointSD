@@ -43,7 +43,9 @@ theorem sequential_consistency_blocks_ae
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
       SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
+    (hMom : ∀ m b,
+      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+        (s := gHat (gBlock (gB := gB) b) θhat m))
     (hG : ∀ b,
       GEstimationAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
@@ -69,7 +71,7 @@ theorem sequential_consistency_blocks_ae
         (μ := μ) (A := A) (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
-        (hEval := hEval)
+        (hMom := fun m => hMom m b)
         (hG := hG b)
         (ε := ε) (hε := hε))
   choose Mb hMb using hEach
@@ -92,7 +94,9 @@ theorem sequential_consistency_total_ae
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
+    (hMom : ∀ m,
+      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+        (s := gHat (gTotalΘ (gB := gB)) θhat m))
     (hGTotal :
       GEstimationAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
@@ -107,7 +111,7 @@ theorem sequential_consistency_total_ae
       (μ := μ) (A := A) (ν := ν)
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
-      (hEval := hEval)
+      (hMom := hMom)
       (hG := hGTotal)
       (ε := ε) (hε := hε))
 
@@ -119,7 +123,9 @@ theorem sequential_consistency_blocks_ae_of_bounded
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
       SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
+    (hMom : ∀ m b,
+      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+        (s := gHat (gBlock (gB := gB) b) θhat m))
     (hG : ∀ b,
       GEstimationAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
@@ -142,7 +148,7 @@ theorem sequential_consistency_blocks_ae_of_bounded
     sequential_consistency_blocks_ae
       (μ := μ) (A := A) (ν := ν)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplit') (hEval := hEval) (hG := hG) (ε := ε) (hε := hε)
+      (hSplit := hSplit') (hMom := hMom) (hG := hG) (ε := ε) (hε := hε)
 
 theorem sequential_consistency_total_ae_of_bounded
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
@@ -153,7 +159,9 @@ theorem sequential_consistency_total_ae_of_bounded
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
+    (hMom : ∀ m,
+      EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+        (s := gHat (gTotalΘ (gB := gB)) θhat m))
     (hGTotal :
       GEstimationAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
@@ -175,7 +183,7 @@ theorem sequential_consistency_total_ae_of_bounded
     sequential_consistency_total_ae
       (μ := μ) (A := A) (ν := ν)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotal') (hEval := hEval) (hGTotal := hGTotal) (ε := ε) (hε := hε)
+      (hSplitTotal := hSplitTotal') (hMom := hMom) (hGTotal := hGTotal) (ε := ε) (hε := hε)
 
 end
 

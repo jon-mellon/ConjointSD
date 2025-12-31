@@ -20,8 +20,8 @@ Throughout, `ν` denotes the *attribute distribution* (a target
 [distribution](jargon_distribution.md)) for the target human
 [population](jargon_population.md). We use `μexp` for the experimental design
 distribution (the law generating the conjoint experiment data) and `μ` for the
-evaluation-law used to compute SDs; `EvalAttrLaw` ties `μ` to `ν` after any
-reweighting. In this document, “population” always means the target human
+evaluation-law used to compute SDs; `EvalAttrMoments` ties evaluation draws to `ν`.
+In this document, “population” always means the target human
 [population](jargon_population.md); we avoid using it as a synonym for a
 measure. When we say “[population](jargon_population.md) mean/variance/SD,” we
 mean those quantities computed with respect to `ν`, the attribute distribution
@@ -67,14 +67,20 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     [variance](jargon_variance.md) and [standard deviation](jargon_standard_deviation.md).
     Intuition: finite energy rules out heavy tails that would make SD undefined
     or unstable. Formal: `Integrable (fun a => (s a) ^ 2) ν`.
-- `EvalAttrLaw`: ties the evaluation draw `A 0` under the evaluation law `μ`
-  (the population sample used for SD estimation) to the target attribute
-  distribution `ν` by requiring measurability of `A 0` and the law identity
-  `Measure.map (A 0) μ = ν`. This is separate from the experimental design
-  randomization; it encodes the evaluation sample law after any reweighting.
-  Intuition: we may draw profiles under the design but evaluate SDs under the
-  target attribute law via reweighting. Formal:
-  `Measurable (A 0) ∧ Measure.map (A 0) μ = ν`.
+- `EvalAttrMoments`: transport assumption for a specific score `s`.
+  It only requires the evaluation draw’s [mean](jargon_mean.md) and
+  [second moment](jargon_second_moment.md) for `s` (computed under
+  `Measure.map (A 0) μ`) to match the target [population](jargon_population.md)
+  moments under `ν`. This supports SD targets without full law equality.
+  - `EvalAttrMoments.measA0`: `A 0` is measurable.
+    Intuition: the evaluation draw is a well-defined random variable.
+    Formal: `Measurable (A 0)`.
+  - `EvalAttrMoments.mean_eq`: evaluation mean equals target mean.
+    Intuition: evaluation averages match the population target.
+    Formal: `attrMean (Measure.map (A 0) μ) s = attrMean ν s`.
+  - `EvalAttrMoments.m2_eq`: evaluation second moment equals target second moment.
+    Intuition: evaluation scale matches the population target.
+    Formal: `attrM2 (Measure.map (A 0) μ) s = attrM2 ν s`.
 - `InvarianceAE`: almost-everywhere equality under the attribute distribution
   `ν`, i.e., the experimental and [population](jargon_population.md) scores
   agree on the [population support](jargon_population_support.md) (support of
@@ -92,10 +98,16 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [population](jargon_population.md) differ only on events that never occur in
   the [population](jargon_population.md). Formal:
   `∀ᵐ x ∂ν, gExp x = gPop x`.
+- `attrSD_eq_of_moments`: if two measures agree on the [mean](jargon_mean.md)
+  and [second moment](jargon_second_moment.md) of `s`, then their
+  [standard deviation](jargon_standard_deviation.md) for `s` is equal.
+  Intuition: SD depends only on first and second moments.
+  Formal: `attrMean ν₁ s = attrMean ν₂ s` and `attrM2 ν₁ s = attrM2 ν₂ s`
+  imply `attrSD ν₁ s = attrSD ν₂ s`.
 
 ## BasicMeasure
 
-- `ProbMeasureAssumptions`: bundles `IsProbabilityMeasure μ` as an explicit
+- `ProbMeasureAssumptions` (trivial): bundles `IsProbabilityMeasure μ` as an explicit
   assumption package so theorems can avoid standalone probability-measure
   hypotheses. Intuition: we are working with a genuine probability law, not
   just a finite measure; the same wrapper is used for the target distribution
@@ -104,7 +116,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## Convergence
 
-- `ThetaTendstoAssumptions`: bundles estimator convergence `θhat → θ0` to keep
+- `ThetaTendstoAssumptions` (too strong, needs to be derived): bundles estimator convergence `θhat → θ0` to keep
   convergence hypotheses explicit and reusable; this is a sample-side
   assumption about an estimator sequence under the experimental design
   distribution `μ`.
@@ -115,16 +127,25 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## Positivity
 
-- `EpsilonAssumptions`: bundles the positivity requirement `0 < ε` that appears
+- `EpsilonAssumptions` (trivial): bundles the positivity requirement `0 < ε` that appears
   in sequential consistency statements. This is a deterministic condition (no
   [population](jargon_population.md)/sample measure involved).
   - `EpsilonAssumptions.pos`: positivity of the tolerance/approximation scale.
     Intuition: a strict error tolerance avoids degenerate bounds.
     Formal: `0 < ε`.
+  - Usage note: throughout the repo, `ε` is always a nonnegative tolerance on
+    magnitude. In sequential consistency results it bounds nonnegative error
+    quantities like `totalErr ... < ε`. In approximation assumptions it appears
+    as an absolute-error bound such as `|...| ≤ ε` (e.g., approximate
+    well-specification or no-interactions). There are no uses where `ε` encodes
+    a signed directional error; if that were desired, the assumptions would need
+    one-sided inequalities instead of absolute-value bounds. This makes
+    `EpsilonAssumptions` a bookkeeping convention that records the “ε is a
+    tolerance” intent explicitly in hypotheses.
 
 ## PredictedSD
 
-- `IIDAssumptions`: [IID](jargon_iid.md) assumptions for a sequence `Z` under a
+- `IIDAssumptions` (probably strong than needed but fine for now): [IID](jargon_iid.md) assumptions for a sequence `Z` under a
   probability measure `μ` on the sample space `Ω`. Requires
   [independent](jargon_independent.md) and
   [identically distributed](jargon_identically_distributed.md) draws, plus
@@ -333,46 +354,24 @@ Reader mapping to standard OLS assumptions:
     `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
       (nhds (attrCross (ν := ν) (g := g) (φ := φ) i))`.
 
-## SurveyWeights
-
-- `WeightAssumptions`: nonnegativity of weights a.e.,
-  [integrability](jargon_integrable.md) of `w`, `w*s`, and `w*s^2`, plus strictly
-  positive total weight. Together these ensure weighted moments
-  ([mean](jargon_mean.md), [variance](jargon_variance.md),
-  [standard deviation](jargon_standard_deviation.md)) are well-defined and
-  nondegenerate. These are [population](jargon_population.md) moment conditions
-  under the attribute distribution `ν`, used to define weighted
-  [population](jargon_population.md) targets.
-  - `WeightAssumptions.nonneg`: weights are nonnegative a.e.
-    Intuition: weights behave like sampling probabilities.
-    Formal: `∀ᵐ a ∂ν, 0 ≤ w a`.
-  - `WeightAssumptions.intW`: weights are integrable.
-    Intuition: total weight is finite.
-    Formal: `Integrable w ν`.
-  - `WeightAssumptions.intWs`: weighted score is integrable.
-    Intuition: weighted mean exists.
-    Formal: `Integrable (fun a => w a * s a) ν`.
-  - `WeightAssumptions.intWs2`: weighted square is integrable.
-    Intuition: weighted variance exists.
-    Formal: `Integrable (fun a => w a * (s a) ^ 2) ν`.
-  - `WeightAssumptions.mass_pos`: total weight is strictly positive.
-    Intuition: the weighted sample is nondegenerate.
-    Formal: `0 < ∫ a, w a ∂ν`.
-- `WeightMatchesAttrMoments`: the weighted [mean](jargon_mean.md) and weighted
-  [second moment](jargon_second_moment.md) match the
-  [population](jargon_population.md) moments, a
-  moment-matching condition used to transfer SD targets from the
-  [population](jargon_population.md) to a weighted evaluation sample. This is
-  the formal statement that weighting makes the evaluation sample match the
-  target human population moments under `ν`.
-  - `WeightMatchesAttrMoments.mean_eq`: weighted mean equals
+## EvaluationWeights
+- `EvalWeightMatchesAttrMoments`: evaluation-weight transport assumption. It
+  says the weighted mean/second moment of the evaluation draw `A 0` under `μ`
+  (i.e., under `Measure.map (A 0) μ`) match the target human
+  [population](jargon_population.md) moments under `ν`. This is the explicit
+  bridge from an evaluation sample to population targets without assuming full
+  law equality.
+  - `EvalWeightMatchesAttrMoments.measA0`: `A 0` is measurable.
+    Intuition: the evaluation draw is a well-defined random variable.
+    Formal: `Measurable (A 0)`.
+  - `EvalWeightMatchesAttrMoments.mean_eq`: weighted evaluation mean equals
     [population](jargon_population.md) mean.
     Intuition: reweighting fixes the mean target.
-    Formal: `(∫ a, w a * s a ∂ν) / (∫ a, w a ∂ν) = attrMean ν s`.
-  - `WeightMatchesAttrMoments.m2_eq`: weighted second moment equals
-    [population](jargon_population.md) second moment.
+    Formal: `(∫ a, w a * s a ∂Measure.map (A 0) μ) / (∫ a, w a ∂Measure.map (A 0) μ) = attrMean ν s`.
+  - `EvalWeightMatchesAttrMoments.m2_eq`: weighted evaluation second moment
+    equals [population](jargon_population.md) second moment.
     Intuition: reweighting fixes the variance scale.
-    Formal: `(∫ a, w a * (s a) ^ 2 ∂ν) / (∫ a, w a ∂ν) = attrM2 ν s`.
+    Formal: `(∫ a, w a * (s a) ^ 2 ∂Measure.map (A 0) μ) / (∫ a, w a ∂Measure.map (A 0) μ) = attrM2 ν s`.
 
 ## ConjointIdentification
 

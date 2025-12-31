@@ -53,6 +53,7 @@ import ConjointSD
 #print ConjointSD.attrM2_diff_le_of_approx_ae
 #print ConjointSD.attrVar_diff_le_of_approx_ae
 #print ConjointSD.attrSD_diff_le_of_approx_ae
+#print ConjointSD.attrSD_eq_of_moments
 
 -- Model bridge.
 #print ConjointSD.gLin_eq_gTotal_blocks
@@ -68,10 +69,6 @@ import ConjointSD
 -- Paper core estimands.
 #print ConjointSD.paperBlockSDs_apply
 #print ConjointSD.paperTotalSD_def
-#print ConjointSD.paperBlockSD_weighted_eq_attr
-#print ConjointSD.paperTotalSD_weighted_eq_attr
-#print ConjointSD.paperBlockSDs_weighted_eq_attr
-#print ConjointSD.weightSDAttr_eq_attrSD_of_moments
 #print ConjointSD.paper_total_sd_estimator_consistency_ae_of_gBTerm
 #print ConjointSD.gTotalΘ_eq_gTotal_gBTerm
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
@@ -96,9 +93,6 @@ import ConjointSD
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
-#print ConjointSD.paper_sd_total_sequential_consistency_to_weighted_target_ae
-#print ConjointSD.paper_weighted_sd_eq_attr
-#print ConjointSD.paper_weighted_block_sds_eq_attr
 #print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_hGTotal
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total

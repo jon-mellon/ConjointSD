@@ -73,7 +73,8 @@ theorem totalErr_tendsto_trainErr_fixed_m
     (m : ℕ)
     (h :
       SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν)) :
+    (hMom : EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+      (s := gHat g θhat m)) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n : ℕ =>
@@ -88,7 +89,7 @@ theorem totalErr_tendsto_trainErr_fixed_m
           atTop
           (nhds (attrSD ν (gHat g θhat m))) :=
     sdHat_fixed_m_tendsto_ae_attrSD
-      (μ := μ) (A := A) (ν := ν) (g := g) (θhat := θhat) m h hEval
+      (μ := μ) (A := A) (ν := ν) (g := g) (θhat := θhat) m h hMom
   -- Rewrite the limit using `hLaw`.
   have hBase :
       ∀ᵐ ω ∂μ,
@@ -162,7 +163,8 @@ theorem sequential_consistency_ae
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m, SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
-    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
+    (hMom : ∀ m, EvalAttrMoments (μ := μ) (A := A) (ν := ν)
+      (s := gHat g θhat m))
     (hG :
       GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -200,7 +202,7 @@ theorem sequential_consistency_ae
           (nhds (trainErr ν g θ0 θhat m)) :=
     totalErr_tendsto_trainErr_fixed_m
       (μ := μ) (A := A) (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat)
-      (m := m) (h := hSplit m) (hEval := hEval)
+      (m := m) (h := hSplit m) (hMom := hMom m)
   -- Convert pointwise Tendsto into an eventually upper bound trainErr(m) + ε/2, a.e. in ω
   have hEvN :
       ∀ᵐ ω ∂μ,
