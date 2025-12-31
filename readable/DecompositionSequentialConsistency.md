@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/DecompositionSequentialConsistency.lean](../ConjointSD/DecompositionSequentialConsistency.lean)
 
-This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score. It now uses bundled assumption records (`ProbMeasureAssumptions`, `MapLawAssumptions`, `ThetaTendstoAssumptions`, `EpsilonAssumptions`) in place of the corresponding standalone hypotheses.
+This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score. It uses the standard probability/convergence bundles and evaluates targets under the target attribute distribution `ν`, with `EvalAttrLaw` linking the evaluation draw under `μ` to `ν`.
 
 Key definitions:
 - `gBlock` is the block score as a function of the [parameter](jargon_parameter.md).

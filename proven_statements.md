@@ -67,38 +67,6 @@ Formalization (Lean name): `sd_component_consistent_of_design`
 Formalization (math):
 `ConjointRandomizationStream A Y -> sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))`.
 
-## DesignAttrIID of randomization stream (Assumptions)
-
-File: `ConjointSD/Assumptions.lean`
-
-Statement: The stream randomization mechanism implies `DesignAttrIID` for the
-attribute stream.
-
-Intuition: If each draw is generated from an i.i.d. randomization variable, the
-attribute stream inherits independence and identical distribution.
-
-Formalization (Lean name): `DesignAttrIID.of_randomization_stream`
-
-Formalization (math):
-`ConjointRandomizationStream A Y -> DesignAttrIID A`.
-
-## L2 implies L1 for moment bundles (Assumptions)
-
-File: `ConjointSD/Assumptions.lean`
-
-Statement: Under a probability measure, [second moment](readable/jargon_second_moment.md)
-assumptions in the assumption bundles imply first-moment
-[integrability](readable/jargon_integrable.md).
-
-Intuition: On a probability space, square-integrability controls absolute
-integrability by Cauchy–Schwarz.
-
-Formalization (Lean names): `AttrMomentAssumptions.int1`,
-`IIDAssumptions.intZ`, `ScoreAssumptions.int_g0`
-
-Formalization (math):
-If `E[s^2] < ∞` then `E[|s|] < ∞` for each bundled moment assumption.
-
 ## gExp eq gPot (ConjointIdentification)
 
 File: `ConjointSD/ConjointIdentification.lean`
@@ -192,7 +160,8 @@ moment [convergence](readable/jargon_convergence.md), the two-stage
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size).
+size then evaluation size), targeting the attribute-law SD under `ν` with
+`EvalAttrLaw` relating `A 0` under `μ` to the target attribute distribution.
 
 Intuition: First the fitted score stabilizes, then the evaluation
 [standard deviation](readable/jargon_standard_deviation.md) converges to the
@@ -249,7 +218,7 @@ under the target [distribution](readable/jargon_distribution.md) for the
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size).
+size then evaluation size), with `EvalAttrLaw` tying evaluation draws to `ν`.
 
 Intuition: [parameter](readable/jargon_parameter.md)
 [convergence](readable/jargon_convergence.md) plus
@@ -302,7 +271,7 @@ Formalization (Lean name): `paper sd total sequential consistency to gPot ae of 
 
 Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
-`attrSD ν (gTotalΘ gB θ0) = weightSDAttr ν w (gPot μ Y)`.
+`attrSD ν (gTotalΘ gB θ0) = weightSDAttr ν w (gPot μexp Y)`.
 
 ## paper total sd estimator consistency ae of gBTerm (PaperCoreEstimand)
 
@@ -311,7 +280,8 @@ File: `ConjointSD/PaperCoreEstimand.lean`
 Statement: The paper’s total [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) (plugging a [term](readable/jargon_term.md)
 model into the target human [population](readable/jargon_population.md) attribute
-[distribution](readable/jargon_distribution.md))
+[distribution](readable/jargon_distribution.md), with `EvalAttrLaw` connecting
+the evaluation draw to `ν`)
 [converges](readable/jargon_convergence.md) to the paper’s total weighted
 [standard deviation](readable/jargon_standard_deviation.md) target.
 
@@ -344,7 +314,7 @@ Formalization (Lean name): `paper sd total sequential consistency to gStar ae of
 
 Formalization (math):
 Sequential consistency for `gTotalΘ (gBTerm ...)`, plus
-`attrSD ν (gTotalΘ (gBTerm ...) θ0) = weightSDAttr ν w (gStar μ Y)`.
+`attrSD ν (gTotalΘ (gBTerm ...) θ0) = weightSDAttr ν w (gStar μexp Y)`.
 
 ## attrSD diff le of L2Approx (TargetEquivalence)
 
@@ -535,7 +505,7 @@ error bounds.
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE`
 
 Formalization (math):
-`|attrSD ν gTotal - weightSDAttr ν w gStar| ≤ bound`.
+`|attrSD ν gTotal - weightSDAttr ν w gStar(μexp)| ≤ bound`.
 
 ## paper sd total sequential consistency to gStar approx ae of ApproxOracleAE (PaperWrappers)
 
@@ -552,7 +522,7 @@ Intuition: Two approximation errors add to a
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxOracleAE`
 
 Formalization (math):
-`|attrSD ν gTotal - weightSDAttr ν w gStar| ≤ bound`.
+`|attrSD ν gTotal - weightSDAttr ν w gStar(μexp)| ≤ bound`.
 
 ## paper weighted block sds eq attr (PaperWrappers)
 
@@ -609,7 +579,7 @@ score.
 Formalization (Lean name): `paper sd total sequential consistency ae of paper ols gStar total`
 
 Formalization (math):
-`attrSD ν gTotal = weightSDAttr ν w gStar` under OLS moments, well-spec, and
+`attrSD ν gTotal = weightSDAttr ν w gStar(μexp)` under OLS moments, well-spec, and
 weighted moment matching.
 
 ## paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal (PaperWrappers)
@@ -629,7 +599,7 @@ the θ-hat [continuity](readable/jargon_continuity.md) route.
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal`
 
 Formalization (math):
-`attrSD ν gTotal = weightSDAttr ν w gStar` under `hGTotal` and well-spec.
+`attrSD ν gTotal = weightSDAttr ν w gStar(μexp)` under `hGTotal` and well-spec.
 
 ## paper sd total sequential consistency to gStar ae of NoInteractions (PaperWrappers)
 
@@ -648,7 +618,7 @@ Intuition: No-[interactions](readable/jargon_interaction.md) implies
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of NoInteractions`
 
 Formalization (math):
-`attrSD ν gTotal = weightSDAttr ν w gStar` under no-interactions.
+`attrSD ν gTotal = weightSDAttr ν w gStar(μexp)` under no-interactions.
 
 ## Dependency tables
 

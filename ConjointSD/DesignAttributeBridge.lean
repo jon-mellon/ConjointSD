@@ -28,6 +28,14 @@ open scoped BigOperators
 noncomputable section
 namespace ConjointSD
 
+-- Pushforward of a probability measure is a probability measure when the map is measurable.
+instance probMeasureAssumptions_map_of_measurable
+    {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    {A : ℕ → Ω → Attr} {hA0 : Measurable (A 0)} :
+    ProbMeasureAssumptions (Measure.map (A 0) μ) :=
+  ⟨Measure.isProbabilityMeasure_map hA0.aemeasurable⟩
+
 section
 
 variable {Ω : Type*} [MeasurableSpace Ω]
@@ -35,7 +43,6 @@ variable (μ : Measure Ω)
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 variable (A : ℕ → Ω → Attr)
-variable (ν : Measure Attr)
 
 /--
 Bridge for means: if `A 0 ∼ ν`, then the mean of `g(A 0)` under the experimental
@@ -43,11 +50,11 @@ design distribution `μ` equals the mean of `g` under the attribute distribution
 -/
 theorem designMeanZ_Zcomp_eq_attrMean
     (g : Attr → ℝ)
-    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hA0 : Measurable (A 0))
     (hg : Measurable g) :
     designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
-    attrMean ν g := by
+    attrMean (Measure.map (A 0) μ) g := by
   have hg_str : AEStronglyMeasurable g (Measure.map (A 0) μ) :=
     hg.aemeasurable.aestronglyMeasurable
   have hmap :
@@ -55,16 +62,14 @@ theorem designMeanZ_Zcomp_eq_attrMean
     -- change-of-variables for pushforward measures
     simpa using
       (MeasureTheory.integral_map (μ := μ) (f := g) (φ := A 0)
-        hMap.measA0.aemeasurable hg_str)
+        hA0.aemeasurable hg_str)
   calc
     designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g))
         = (∫ ω, g (A 0 ω) ∂μ) := by
             simp [designMeanZ, Zcomp]
     _   = (∫ a, g a ∂Measure.map (A 0) μ) := by
             simp [hmap]
-    _   = (∫ a, g a ∂ν) := by
-            simp [hMap.map_eq]
-    _   = attrMean ν g := by
+    _   = attrMean (Measure.map (A 0) μ) g := by
             simp [attrMean]
 
 /--
@@ -74,11 +79,11 @@ distribution `ν`.
 -/
 theorem designM2Z_Zcomp_eq_attrM2
     (g : Attr → ℝ)
-    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hA0 : Measurable (A 0))
     (hg : Measurable g) :
     designM2Z (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
-    attrM2 ν g := by
+    attrM2 (Measure.map (A 0) μ) g := by
   -- square via multiplication (avoids any separate pow measurability concerns)
   let g2 : Attr → ℝ := fun a => g a * g a
   have hg2 : Measurable g2 := by
@@ -89,7 +94,7 @@ theorem designM2Z_Zcomp_eq_attrM2
       (∫ a, g2 a ∂Measure.map (A 0) μ) = (∫ ω, g2 (A 0 ω) ∂μ) := by
     simpa using
       (MeasureTheory.integral_map (μ := μ) (f := g2) (φ := A 0)
-        hMap.measA0.aemeasurable hg2_str)
+        hA0.aemeasurable hg2_str)
   calc
     designM2Z (μ := μ) (Z := Zcomp (A := A) (g := g))
         = (∫ ω, (g (A 0 ω)) ^ 2 ∂μ) := by
@@ -98,40 +103,41 @@ theorem designM2Z_Zcomp_eq_attrM2
             simp [g2, pow_two]
     _   = (∫ a, g2 a ∂Measure.map (A 0) μ) := by
             simp [hmap]
-    _   = (∫ a, g2 a ∂ν) := by
-            simp [hMap.map_eq]
-    _   = (∫ a, (g a) ^ 2 ∂ν) := by
+    _   = (∫ a, (g a) ^ 2 ∂Measure.map (A 0) μ) := by
             simp [g2, pow_two]
-    _   = attrM2 ν g := by
+    _   = attrM2 (Measure.map (A 0) μ) g := by
             simp [attrM2]
 
 /-- Bridge for variances (proxy form): follows from the mean and second-moment bridges. -/
 theorem designVarZ_Zcomp_eq_attrVar
     (g : Attr → ℝ)
-    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hA0 : Measurable (A 0))
     (hg : Measurable g) :
     designVarZ (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
-    attrVar ν g := by
+    attrVar (Measure.map (A 0) μ) g := by
   have hmean :
-      designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g)) = attrMean ν g :=
-    designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A) (ν := ν) (g := g) hMap hg
+      designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := g)) =
+        attrMean (Measure.map (A 0) μ) g :=
+    designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A) (g := g) hA0 hg
   have hm2 :
-      designM2Z (μ := μ) (Z := Zcomp (A := A) (g := g)) = attrM2 ν g :=
-    designM2Z_Zcomp_eq_attrM2 (μ := μ) (A := A) (ν := ν) (g := g) hMap hg
+      designM2Z (μ := μ) (Z := Zcomp (A := A) (g := g)) =
+        attrM2 (Measure.map (A 0) μ) g :=
+    designM2Z_Zcomp_eq_attrM2 (μ := μ) (A := A) (g := g) hA0 hg
   simp [designVarZ, attrVar, hmean, hm2]
 
 /-- Bridge for SDs: follows from the variance bridge. -/
 theorem designSDZ_Zcomp_eq_attrSD
     (g : Attr → ℝ)
-    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hA0 : Measurable (A 0))
     (hg : Measurable g) :
     designSDZ (μ := μ) (Z := Zcomp (A := A) (g := g))
       =
-    attrSD ν g := by
+    attrSD (Measure.map (A 0) μ) g := by
   have hvar :
-      designVarZ (μ := μ) (Z := Zcomp (A := A) (g := g)) = attrVar ν g :=
-    designVarZ_Zcomp_eq_attrVar (μ := μ) (A := A) (ν := ν) (g := g) hMap hg
+      designVarZ (μ := μ) (Z := Zcomp (A := A) (g := g)) =
+        attrVar (Measure.map (A 0) μ) g :=
+    designVarZ_Zcomp_eq_attrVar (μ := μ) (A := A) (g := g) hA0 hg
   simp [designSDZ, attrSD, hvar]
 
 end

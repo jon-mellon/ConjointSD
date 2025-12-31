@@ -157,7 +157,6 @@ variable {Θ : Type*} [TopologicalSpace Θ]
 
 variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
 variable (A : ℕ → Ω → Attr)
-
 variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 
 /-- Paper’s main SD estimator: evaluation-stage SD for the term-induced total score. -/
@@ -179,7 +178,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
     (θ0 : Θ) (θhat : ℕ → Θ)
     (w : Attr → ℝ)
     (hβ : βOf θ0 = β0)
-    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptions
@@ -204,7 +203,8 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
               (paperTotalSDEst (μ := μ) (A := A)
                 (blk := blk) (βOf := βOf) (φ := φ)
                 (θhat := θhat) m n ω
-                - paperTotalSD_weighted (ν := ν) (w := w) (blk := blk) (β0 := β0) (φ := φ))
+                - paperTotalSD_weighted (ν := ν)
+                  (w := w) (blk := blk) (β0 := β0) (φ := φ))
               < ε) := by
   classical
   have hTrue :
@@ -216,10 +216,10 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
     intro a
     simp [paperTrueTotalScore, paperTrueBlockScore, trueBlockScore, gTotalΘ, gBTerm, hβ]
   rcases paper_sd_total_sequential_consistency_to_weighted_target_ae
-      (μ := μ) (A := A) (ν := ν)
+      (μ := μ) (A := A) (ν := ν) (hEval := hEval)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
-      (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (gTrue := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
       (hTrue := hTrue) (w := w) (hMom := hMom) (ε := ε) (hε := hε)
       with ⟨M, hM⟩
@@ -227,10 +227,11 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
   intro m hm
   have hCons := hM m hm
   have hEqTarget :
-      attrSD ν
+      attrSD (ν)
           (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
         =
-      paperTotalSD_weighted (ν := ν) (w := w) (blk := blk) (β0 := β0) (φ := φ) := by
+      paperTotalSD_weighted (ν := ν)
+        (w := w) (blk := blk) (β0 := β0) (φ := φ) := by
     simpa [paperTotalSD_weighted] using hCons.2
   refine hCons.1.mono ?_
   intro ω hω
@@ -260,9 +261,10 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
     (θ0 : Θ) (θhat : ℕ → Θ)
     (w : Attr → ℝ)
     (hβ : βOf θ0 = β)
+    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
     (Y : Attr → Ω → ℝ)
-    (hspec : WellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ))
-    (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
+    (hspec : WellSpecified (μ := μexp) (Y := Y) (β := β) (φ := φ))
+    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν))
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptions
@@ -276,7 +278,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
     (hMom :
-      WeightMatchesAttrMoments (ν := ν) (w := w) (s := gStar (μ := μ) (Y := Y)))
+      WeightMatchesAttrMoments (ν := ν) (w := w)
+        (s := gStar (μ := μexp) (Y := Y)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -286,10 +289,10 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
               (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
               θ0 θhat m n ω < ε)
         ∧
-        attrSD ν
+        attrSD (ν)
             (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
           =
-        weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
+        weightSDAttr (ν) w (gStar (μ := μexp) (Y := Y)) := by
   have hTotalModel :
       ∀ x,
         gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0 x
@@ -301,29 +304,29 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
         (blk := blk) (βOf := βOf) (φ := φ) (θ0 := θ0) x)
   rcases
     paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
-      (μ := μ) (A := A) (ν := ν)
+      (μ := μ) (A := A) (ν := ν) (hEval := hEval) (μexp := μexp)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
       (Y := Y) (blk := blk) (β := β) (φ := φ)
       (hTotalModel := hTotalModel) (hspec := hspec)
-      (hMap := hMap) (hSplitTotal := hSplitTotal)
+      (hSplitTotal := hSplitTotal)
       (hθ := hθ) (hContTotal := hContTotal)
       (w := w) (hMom := hMom)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   have hWeight :
-      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) =
-        attrSD ν (gStar (μ := μ) (Y := Y)) :=
+      weightSDAttr (ν) w (gStar (μ := μexp) (Y := Y)) =
+        attrSD (ν) (gStar (μ := μexp) (Y := Y)) :=
     paper_weighted_sd_eq_attr (ν := ν) (w := w)
-      (s := gStar (μ := μ) (Y := Y)) hMom
+      (s := gStar (μ := μexp) (Y := Y)) hMom
   refine ⟨M, ?_⟩
   intro m hm
   rcases hM m hm with ⟨hCons, hEq⟩
   have hEq' :
-      attrSD ν
+      attrSD (ν)
           (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
         =
-      weightSDAttr ν w (gStar (μ := μ) (Y := Y)) := by
+      weightSDAttr (ν) w (gStar (μ := μexp) (Y := Y)) := by
     simpa [hWeight] using hEq
   exact ⟨hCons, hEq'⟩
 

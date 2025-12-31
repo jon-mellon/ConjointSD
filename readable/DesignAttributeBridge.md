@@ -2,10 +2,10 @@
 
 Lean file: [ConjointSD/DesignAttributeBridge.lean](../ConjointSD/DesignAttributeBridge.lean)
 
-This file connects averages computed under the experimental design distribution to averages computed under the attribute [distribution](jargon_distribution.md) `nu` for the target human [population](jargon_population.md). The law-identification and measurability assumptions are now bundled as `MapLawAssumptions`.
+This file connects averages computed under the experimental design distribution to averages computed under the attribute [distribution](jargon_distribution.md) induced by the pushforward law `Measure.map (A 0) μ`. The bridge assumes measurability of `A 0` and uses change-of-variables formulas for the map.
 
 Setup:
-- `A 0` is a random attribute draw on the experimental design distribution, with attribute distribution `nu` (see [distribution](jargon_distribution.md)).
+- `A 0` is a random attribute draw on the experimental design distribution, with attribute distribution `Measure.map (A 0) μ` (see [distribution](jargon_distribution.md)).
 - `g` is a score function on attributes.
 - `Zcomp` is the composed process `g (A i)`.
 

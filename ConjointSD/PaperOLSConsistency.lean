@@ -94,7 +94,6 @@ variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
 omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions ν] in
 theorem paper_ols_lln_of_score_assumptions_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hMap : MapLawAssumptions (μ := μ) (A := Aω) (ν := ν))
     (hYobs : ∀ n ω, Yobsω n ω = gStar (μ := μ) (Y := Y) (Aω n ω))
     (hScoreGram :
       ∀ i j,
@@ -121,7 +120,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           atTop
           (nhds
             (attrGram
-              (ν := ν)
+              (ν := Measure.map (Aω 0) μ)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)))
       ∧
       (∀ i,
@@ -134,7 +133,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           atTop
           (nhds
             (attrCross
-              (ν := ν)
+              (ν := Measure.map (Aω 0) μ)
               (g := gStar (μ := μ) (Y := Y))
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
   classical
@@ -148,7 +147,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
         atTop
         (nhds
           (attrGram
-            (ν := ν)
+            (ν := Measure.map (Aω 0) μ)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)) := by
     intro i j
     let gGram : Attr → ℝ :=
@@ -169,11 +168,11 @@ theorem paper_ols_lln_of_score_assumptions_ae
     have hpop :
         designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gGram))
           =
-        attrMean ν gGram :=
+        attrMean (Measure.map (Aω 0) μ) gGram :=
       designMeanZ_Zcomp_eq_attrMean
-        (μ := μ) (A := Aω) (ν := ν) (g := gGram)
-        (hMap := { measA0 := (hScoreGram i j).designAttrIID.measA 0, map_eq := hMap.map_eq })
-        (hScoreGram i j).meas_g
+        (μ := μ) (A := Aω) (g := gGram)
+        (hA0 := (hScoreGram i j).designAttrIID.measA 0)
+        (hg := (hScoreGram i j).meas_g)
     refine hmean.mono ?_
     intro ω hω
     have hω' :
@@ -181,7 +180,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           (fun n =>
             meanHatZ (Z := Zcomp (A := Aω) (g := gGram)) n ω)
           atTop
-          (nhds (attrMean ν gGram)) := by
+          (nhds (attrMean (Measure.map (Aω 0) μ) gGram)) := by
       simpa [hpop] using hω
     have hgram_eq :
         ∀ n,
@@ -211,7 +210,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
         atTop
         (nhds
           (attrCross
-            (ν := ν)
+            (ν := Measure.map (Aω 0) μ)
             (g := gStar (μ := μ) (Y := Y))
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i)) := by
     intro i
@@ -233,11 +232,11 @@ theorem paper_ols_lln_of_score_assumptions_ae
     have hpop :
         designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross))
           =
-        attrMean ν gCross :=
+        attrMean (Measure.map (Aω 0) μ) gCross :=
       designMeanZ_Zcomp_eq_attrMean
-        (μ := μ) (A := Aω) (ν := ν) (g := gCross)
-        (hMap := { measA0 := (hScoreCross i).designAttrIID.measA 0, map_eq := hMap.map_eq })
-        (hScoreCross i).meas_g
+        (μ := μ) (A := Aω) (g := gCross)
+        (hA0 := (hScoreCross i).designAttrIID.measA 0)
+        (hg := (hScoreCross i).meas_g)
     refine hmean.mono ?_
     intro ω hω
     have hω' :
@@ -245,7 +244,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
           (fun n =>
             meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω)
           atTop
-          (nhds (attrMean ν gCross)) := by
+          (nhds (attrMean (Measure.map (Aω 0) μ) gCross)) := by
       simpa [hpop] using hω
     have hcross_eq :
         (fun n =>
@@ -273,7 +272,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
       atTop
       (nhds
         (attrGram
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)) := by
     refine (ae_all_iff.2 ?_)
     intro i
@@ -289,7 +288,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
       atTop
       (nhds
         (attrCross
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (g := gStar (μ := μ) (Y := Y))
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i)) := by
     refine (ae_all_iff.2 ?_)

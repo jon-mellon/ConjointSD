@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/SampleSplitting.lean](../ConjointSD/SampleSplitting.lean)
 
-This file handles the evaluation stage in a sample-splitting setup. It now uses `ProbMeasureAssumptions` and the bundled `MapLawAssumptions` when translating experimental-design SDs to attribute-distribution SDs.
+This file handles the evaluation stage in a sample-splitting setup. It uses `ProbMeasureAssumptions` for the target attribute distribution `ν` and assumes `EvalAttrLaw` so the evaluation draw `A 0` under the evaluation law `μ` has attribute distribution `ν` (typically after reweighting to the target population). The training data that produced `θhat` is not modeled here.
 
 Key definitions:
 - `SplitEvalAssumptions` bundles the evaluation-stage assumptions needed to treat the

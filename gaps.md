@@ -30,3 +30,15 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 7) OLS cross-moment convergence is assumed rather than derived
    - The `PaperOLSLLNA.cross_tendsto` assumption is a law-of-large-numbers statement about the empirical cross moments `X'Y/n`. It is not derived from the current randomization assumptions, which only ensure randomized assignment of profiles and independence from potential outcomes.
    - To fix: either (i) add an explicit joint-draw LLN package for `(A i, Yobs i)` (independence across draws + finite second moments) and derive `cross_tendsto`, or (ii) add a cluster-level LLN (independent respondents, within-respondent dependence allowed) and derive a clustered version of `cross_tendsto` consistent with robust inference practice.
+
+8) Functional continuity is assumed rather than derived from the linear/additive model
+   - The `FunctionalContinuityAssumptions` bundle in `ConjointSD/Assumptions.lean` is currently required by several sequential consistency results, but it should follow from the paper’s linear/additive score specification plus bounded features.
+   - Sketch to close the gap:
+     - Prove pointwise continuity: for fixed attribute profile `a`, show `θ ↦ g θ a` is continuous for the specific model (e.g., `gPaper`, `gBlockTerm`, `gTotalΘ`) by unfolding the finite sum in `θ` and using continuity of addition/multiplication and finite sums.
+     - Add a domination lemma: if the feature map is bounded or has an integrable envelope, then `|g θ a|` is uniformly dominated for all θ in a neighborhood of `θ0`, and likewise for `|g θ a|^2`.
+     - Use dominated convergence to show `θ ↦ attrMeanΘ ν g` and `θ ↦ attrM2Θ ν g` are continuous at `θ0`, yielding `FunctionalContinuityAssumptions`.
+     - Replace `FunctionalContinuityAssumptions` hypotheses in paper-facing theorems with the concrete linear-model + bounded-feature assumptions, and drop the standalone assumption from `ConjointSD/Assumptions.lean` once the derivation is wired through.
+
+9) Population moment assumptions are weaker than the paper’s bounded-score intuition
+   - `AttrMomentAssumptions` currently assumes only a.e. measurability and square-integrability under the target population attribute distribution `ν`. In the paper, status scores are implicitly bounded (0–100), so square-integrability should follow from boundedness plus measurability.
+   - To fix: add a bounded-score assumption for population scores (or reuse existing boundedness bundles), derive `AttrMomentAssumptions.int2` from it, and replace direct `AttrMomentAssumptions` usage in paper-facing statements with the bounded version.

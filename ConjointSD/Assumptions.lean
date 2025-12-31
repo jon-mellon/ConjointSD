@@ -31,6 +31,15 @@ section Transport
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
+/--
+Evaluation-law assumption: the evaluation attribute draw `A 0` has attribute law `ν`.
+This ties the evaluation sample distribution to the target population distribution.
+-/
+structure EvalAttrLaw {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (A : ℕ → Ω → Attr) (ν : Measure Attr) : Prop where
+  measA0 : Measurable (A 0)
+  law : Measure.map (A 0) μ = ν
+
 /-- Convenient moment conditions on `s` under an attribute distribution `ν`. -/
 structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (s : Attr → ℝ) : Prop where
@@ -58,18 +67,6 @@ def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
   ∀ᵐ x ∂ν, gExp x = gPop x
 
 end Transport
-
-section MapLaw
-
-variable {Ω : Type*} [MeasurableSpace Ω]
-variable {Attr : Type*} [MeasurableSpace Attr]
-
-/-- Bundle measurability of `A 0` with its pushforward law. -/
-structure MapLawAssumptions (μ : Measure Ω) (A : ℕ → Ω → Attr) (ν : Measure Attr) : Prop where
-  measA0 : Measurable (A 0)
-  map_eq : Measure.map (A 0) μ = ν
-
-end MapLaw
 
 section Convergence
 

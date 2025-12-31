@@ -59,15 +59,17 @@ For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converg
 theorem sdHat_fixed_m_tendsto_ae_attrSD
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
+    (ν : Measure Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
-    (h : SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
+    (h : SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m)
+    (hEval : EvalAttrLaw (μ := μ) (A := A) (ν := ν)) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n : ℕ =>
           sdHatZ (Z := Zcomp (A := A) (g := gHat g θhat m)) n ω)
         atTop
-        (nhds (attrSD (Measure.map (A 0) μ) (gHat g θhat m))) := by
+        (nhds (attrSD ν (gHat g θhat m))) := by
   have hSDZ :
       ∀ᵐ ω ∂μ,
         Tendsto
@@ -77,11 +79,11 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
     sd_component_consistent (μ := μ) (A := A) (g := gHat g θhat m) h.hScore
   have hEq :
       designSDZ (μ := μ) (Z := Zcomp (A := A) (g := gHat g θhat m)) =
-        attrSD (Measure.map (A 0) μ) (gHat g θhat m) :=
-    designSDZ_Zcomp_eq_attrSD (μ := μ) (A := A) (ν := Measure.map (A 0) μ)
-      (g := gHat g θhat m)
-      (hMap := { measA0 := h.hScore.designAttrIID.measA 0, map_eq := rfl })
-      (hg := h.hScore.meas_g)
+        attrSD ν (gHat g θhat m) :=
+    by
+      simpa [hEval.law] using
+        (designSDZ_Zcomp_eq_attrSD (μ := μ) (A := A) (g := gHat g θhat m)
+          (hA0 := hEval.measA0) (hg := h.hScore.meas_g))
   simpa [hEq] using hSDZ
 
 end
