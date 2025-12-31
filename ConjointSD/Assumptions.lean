@@ -249,9 +249,11 @@ variable [DecidableEq (PaperTerm Main Inter)]
 Paper OLS design-side assumptions that are sufficient to derive the LLN hypotheses
 for the Gram and cross moments used in OLS consistency.
 
-These bundle design IID, measurability/boundedness of the paper feature map, and
-boundedness of the conjoint causal estimand `gStar`, plus the transport needed to
-swap the design attribute distribution with `ν` for Gram/cross targets.
+These bundle measurability/boundedness of the paper feature map and boundedness
+of the conjoint causal estimand `gStar`, plus the transport needed to swap the
+design attribute distribution with `ν` for Gram/cross targets. The design IID
+assumption is kept separate (as `DesignAttrIID`) and passed explicitly to lemmas
+that need it.
 -/
 structure PaperOLSDesignAssumptions
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
@@ -259,7 +261,6 @@ structure PaperOLSDesignAssumptions
     (ν : Measure Attr)
     (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
   yobs_eq : ∀ n ω, Yobs n ω = gStar (μ := μ) (Y := Y) (A n ω)
-  designAttrIID : DesignAttrIID (μ := μ) A
   meas_fMain : ∀ m, Measurable (fMain m)
   meas_fInter : ∀ i, Measurable (fInter i)
   bound_fMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C
@@ -300,6 +301,14 @@ structure PaperOLSFullRankAssumptions
       (attrGram
         (ν := ν)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+
+structure PaperOLSPosDefAssumptions
+    (ν : Measure Attr)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+  gram_posdef :
+    (attrGram
+        (ν := ν)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).PosDef
 
 structure PaperOLSOrthogonalAssumptions
     (ν : Measure Attr)

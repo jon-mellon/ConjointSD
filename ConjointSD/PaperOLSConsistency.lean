@@ -748,6 +748,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
 omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions ν] in
 theorem paper_ols_lln_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
+    (hPop : DesignAttrIID (μ := μ) Aω)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -798,7 +799,7 @@ theorem paper_ols_lln_of_design_ae
     fun i j =>
       scoreAssumptions_gram_of_design
         (μ := μ) (Aω := Aω) (fMain := fMain) (fInter := fInter)
-        hDesign.designAttrIID hmeasφ hboundφ i j
+        hPop hmeasφ hboundφ i j
   have hScoreCross :
       ∀ i,
         ScoreAssumptions
@@ -809,7 +810,7 @@ theorem paper_ols_lln_of_design_ae
     fun i =>
       scoreAssumptions_cross_of_design
         (μ := μ) (Aω := Aω) (Y := Y) (fMain := fMain) (fInter := fInter)
-        hDesign.designAttrIID hmeasφ hboundφ hDesign.meas_gStar hDesign.bound_gStar i
+        hPop hmeasφ hboundφ hDesign.meas_gStar hDesign.bound_gStar i
   have hLLN :=
     paper_ols_lln_of_score_assumptions_ae
       (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
@@ -827,6 +828,7 @@ theorem paper_ols_lln_of_design_ae
 
 theorem paper_ols_gramInv_tendsto_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
+    (hPop : DesignAttrIID (μ := μ) Aω)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -850,7 +852,7 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
   have hLLN :=
     paper_ols_lln_of_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (Aω := Aω) (Yobsω := Yobsω) hDesign
+      (Aω := Aω) (Yobsω := Yobsω) hPop hDesign
   have hdet :
       IsUnit
         (attrGram
@@ -980,6 +982,22 @@ theorem paper_ols_fullRank_of_orthogonal
               (ν := ν)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))).2
           hDetUnit }
+
+theorem paper_ols_fullRank_of_posDef
+    (hPos :
+      PaperOLSPosDefAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter)) :
+    PaperOLSFullRankAssumptions
+      (ν := ν) (fMain := fMain) (fInter := fInter) := by
+  classical
+  refine { gram_isUnit := ?_ }
+  simpa using
+    (Matrix.PosDef.isUnit
+      (M :=
+        attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+      hPos.gram_posdef)
 
 theorem paper_ols_theta0_eq_of_normal_eq
     (θ0 : PaperTerm Main Inter → ℝ)
@@ -1119,6 +1137,7 @@ theorem paper_ols_attr_moments_of_lln_fullrank_ae
 theorem paper_ols_attr_moments_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (θ0 : PaperTerm Main Inter → ℝ)
+    (hPop : DesignAttrIID (μ := μ) Aω)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -1167,7 +1186,7 @@ theorem paper_ols_attr_moments_of_design_ae
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) :=
     paper_ols_lln_of_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (Aω := Aω) (Yobsω := Yobsω) hDesign
+      (Aω := Aω) (Yobsω := Yobsω) hPop hDesign
   have hInv :
       ∀ᵐ ω ∂μ,
         ∀ i j,
@@ -1184,7 +1203,7 @@ theorem paper_ols_attr_moments_of_design_ae
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)) :=
     paper_ols_gramInv_tendsto_of_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (Aω := Aω) (Yobsω := Yobsω) hDesign hFull
+      (Aω := Aω) (Yobsω := Yobsω) hPop hDesign hFull
   have hId :
       θ0 =
         (attrGram
@@ -1245,6 +1264,7 @@ theorem theta_tendsto_of_paper_ols_moments_ae
 theorem theta_tendsto_of_paper_ols_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (θ0 : PaperTerm Main Inter → ℝ)
+    (hPop : DesignAttrIID (μ := μ) Aω)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -1276,7 +1296,7 @@ theorem theta_tendsto_of_paper_ols_design_ae
     paper_ols_attr_moments_of_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hFull hspec
+      hPop hDesign hFull hspec
   exact
     theta_tendsto_of_paper_ols_moments_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
@@ -1373,6 +1393,7 @@ theorem attrM2_tendsto_of_paper_ols_moments_ae
 theorem attrMean_tendsto_of_paper_ols_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (θ0 : PaperTerm Main Inter → ℝ)
+    (hPop : DesignAttrIID (μ := μ) Aω)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -1414,7 +1435,7 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
     theta_tendsto_of_paper_ols_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hFull hspec
+      hPop hDesign hFull hspec
   refine hθ.mono ?_
   intro ω hω
   simpa using
@@ -1432,6 +1453,7 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
 theorem attrM2_tendsto_of_paper_ols_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (θ0 : PaperTerm Main Inter → ℝ)
+    (hPop : DesignAttrIID (μ := μ) Aω)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -1473,7 +1495,7 @@ theorem attrM2_tendsto_of_paper_ols_design_ae
     theta_tendsto_of_paper_ols_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hFull hspec
+      hPop hDesign hFull hspec
   refine hθ.mono ?_
   intro ω hω
   simpa using

@@ -279,13 +279,11 @@ Reader mapping to standard OLS assumptions:
       (nhds (attrCross (ν := ν) (g := g) (φ := φ) i))`.
 - `PaperOLSDesignAssumptions`: a paper-specific bundle that is strong enough to
   *derive* the OLS LLN hypotheses for Gram and cross moments from the
-  experimental design. It packages design‑IID for attributes, measurability and
-  boundedness of the paper feature map `φPaper`, boundedness of the conjoint
-  causal estimand `gStar`, the identification link `Yobs = gStar ∘ A`, and
-  equality of the design and target Gram/cross moments (so LLN limits can be
-  expressed under `ν`).
-  - `PaperOLSDesignAssumptions.designAttrIID`: i.i.d.-style randomization for the
-    attribute stream under the experimental design.
+  experimental design once combined with a separate `DesignAttrIID` assumption.
+  It packages measurability and boundedness of the paper feature map `φPaper`,
+  boundedness of the conjoint causal estimand `gStar`, the identification link
+  `Yobs = gStar ∘ A`, and equality of the design and target Gram/cross moments
+  (so LLN limits can be expressed under `ν`).
   - `PaperOLSDesignAssumptions.meas_fMain` / `meas_fInter`: measurability of
     the main/interaction feature maps.
   - `PaperOLSDesignAssumptions.bound_fMain` / `bound_fInter`: boundedness of
@@ -293,7 +291,11 @@ Reader mapping to standard OLS assumptions:
   - `PaperOLSDesignAssumptions.meas_gStar` / `bound_gStar`: measurability and
     boundedness of the conjoint causal estimand.
   - `PaperOLSDesignAssumptions.yobs_eq`: observed outcomes equal the causal
-    estimand evaluated at the realized attributes.
+    estimand evaluated at the realized attributes. This fixes the
+    data-generating process for outcomes as `Yobs = gStar ∘ A` with no outcome
+    noise or extra dependence on `ω` beyond the attribute draw. It is not a
+    model-inclusion or estimation statement; well-specification assumptions are
+    separate and concern whether the chosen feature map can represent `gStar`.
   - `PaperOLSDesignAssumptions.gram_eq` / `cross_eq`: the design Gram/cross
     moments match the target moments under `ν`.
 - `PaperOLSFullRankAssumptions`: a minimal full‑rank condition for the
@@ -312,6 +314,10 @@ Reader mapping to standard OLS assumptions:
   diagonal with nonzero entries.
   - `PaperOLSOrthogonalAssumptions.gram_diag`: off‑diagonal cross moments are 0.
   - `PaperOLSOrthogonalAssumptions.gram_pos`: diagonal moments are nonzero.
+- `PaperOLSPosDefAssumptions`: a more general feature‑variation condition that
+  directly asserts the population Gram matrix is positive definite.
+  - `PaperOLSPosDefAssumptions.gram_posdef`: the Gram matrix is `PosDef`, which
+    implies full‑rank in `PaperOLSConsistency.lean`.
 
 ## EvaluationWeights
 - `EvalWeightMatchesAttrMoments`: evaluation-weight transport assumption. It

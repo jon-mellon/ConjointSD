@@ -10,12 +10,13 @@ Key definition:
 Assumption package:
 - The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets and the normal equations identify `theta0`.
 - `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from existing `ScoreAssumptions` and a (strong) noiseless link `Yobs = gStar ∘ A` on sample paths, with the attribute moments computed under `Measure.map (A 0) μ` for the experimental design.
-- `PaperOLSDesignAssumptions` packages design IID, bounded/measurable features, bounded `gStar`, and equality of design vs target Gram/cross moments. From this bundle:
+- `PaperOLSDesignAssumptions` packages bounded/measurable features, bounded `gStar`, and equality of design vs target Gram/cross moments, while `DesignAttrIID` is supplied separately. From these:
   - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the target `ν`.
   - `paper_ols_attr_moments_of_design_ae` combines that LLN with inverse‑Gram stability and identification to yield `OLSMomentAssumptionsOfAttr` a.e.
 - `PaperOLSFullRankAssumptions` is the explicit full‑rank premise that feeds the derivation of inverse‑Gram stability and identification (`hInv`/`hId`) from the design; the normal equations are now derived from well‑specification plus bounded/measurable features.
 - `paper_ols_gramInv_tendsto_of_design_ae` derives inverse‑Gram convergence a.e. from the design bundle plus `PaperOLSFullRankAssumptions`.
 - `paper_ols_fullRank_of_orthogonal` derives the full‑rank condition from an orthogonality/variation assumption on the paper features (`PaperOLSOrthogonalAssumptions`).
+- `paper_ols_fullRank_of_posDef` derives the full‑rank condition from positive definiteness of the Gram matrix (`PaperOLSPosDefAssumptions`).
 - `paper_ols_theta0_eq_of_normal_eq` derives the identification equation `θ0 = (attrGram)⁻¹ * attrCross` from the normal‑equation identity and full‑rank.
 - `paper_ols_normal_eq_of_wellSpecified` derives the normal‑equation identity from well‑specification plus bounded/measurable paper features.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN, inverse‑Gram stability, and identifiability into the a.e. `OLSMomentAssumptionsOfAttr` statement used by later theorems.
@@ -24,7 +25,7 @@ Assumption package:
 Main results:
 - `theta_tendsto_of_paper_ols_moments_ae` gives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0`.
 - A non-AE version is provided for deterministic sequences.
-- `theta_tendsto_of_paper_ols_design_ae` derives the same convergence from `PaperOLSDesignAssumptions` plus the full‑rank condition, with normal equations derived from well‑specification.
+- `theta_tendsto_of_paper_ols_design_ae` derives the same convergence from `DesignAttrIID` plus `PaperOLSDesignAssumptions` and the full‑rank condition, with normal equations derived from well‑specification.
 - `attrMean_tendsto_of_paper_ols_gStar` / `attrM2_tendsto_of_paper_ols_gStar` combine OLS [convergence](jargon_convergence.md) with functional [continuity](jargon_continuity.md) to produce plug‑in mean/second‑moment convergence for the paper’s score.
 - `attrMean_tendsto_of_paper_ols_moments_ae` / `attrM2_tendsto_of_paper_ols_moments_ae` provide the same [bridge](jargon_bridge.md) a.e. when the OLS moment assumptions hold along sample paths.
 - `attrMean_tendsto_of_paper_ols_design_ae` / `attrM2_tendsto_of_paper_ols_design_ae` are the end‑to‑end a.e. bridges from the design‑side bundle plus full‑rank (and normal equations derived from well‑specification) to plug‑in moment convergence.

@@ -439,8 +439,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under the paper’s design-side OLS bundle (`PaperOLSDesignAssumptions`),
-full‑rank, well‑specification, and bounded/measurable features, block and total
+Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
+(`PaperOLSDesignAssumptions`), full‑rank, well‑specification, and bounded/measurable
+features, block and total
 [sequential consistency](readable/jargon_sequential_consistency.md) holds
 almost surely over training draws for the [term](readable/jargon_term.md) model.
 
@@ -459,8 +460,8 @@ Block and total `totalErr` go to 0 sequentially under design‑side OLS assumpti
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under the paper’s design-side OLS bundle (`PaperOLSDesignAssumptions`),
-full‑rank, and
+Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
+(`PaperOLSDesignAssumptions`), full‑rank, and
 [well-specification](readable/jargon_well_specified.md), the total sequential
 [consistency](readable/jargon_consistency.md) target is the
 [standard deviation](readable/jargon_standard_deviation.md) of `gStar`.
@@ -480,8 +481,8 @@ For a.e. training draw, `attrSD ν gTotal = attrSD ν gStar(μexp)` under design
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under the paper’s design-side OLS bundle (`PaperOLSDesignAssumptions`),
-the full‑rank condition (`PaperOLSFullRankAssumptions`), and
+Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
+(`PaperOLSDesignAssumptions`), the full‑rank condition (`PaperOLSFullRankAssumptions`), and
 well‑specification, the total
 sequential [consistency](readable/jargon_consistency.md) result holds a.e. over
 training draws, and the total-score [standard deviation](readable/jargon_standard_deviation.md)
@@ -531,12 +532,27 @@ Formalization (Lean name): `paper_ols_fullRank_of_orthogonal`
 Formalization (math):
 Orthogonal/nondegenerate feature moments imply `IsUnit (attrGram ν φPaper)`.
 
+## paper ols fullRank of posDef (PaperOLSConsistency)
+
+File: `ConjointSD/PaperOLSConsistency.lean`
+
+Statement: If the population Gram matrix of the paper feature map is positive
+definite, then it is invertible (full‑rank).
+
+Intuition: positive definiteness implies all nonzero vectors have positive
+quadratic form, so the matrix is invertible.
+
+Formalization (Lean name): `paper_ols_fullRank_of_posDef`
+
+Formalization (math):
+`(attrGram ν φPaper).PosDef` implies `IsUnit (attrGram ν φPaper)`.
+
 ## paper ols attr moments of design ae (PaperOLSConsistency)
 
 File: `ConjointSD/PaperOLSConsistency.lean`
 
-Statement: Under the paper’s design-side bundle (`PaperOLSDesignAssumptions`),
-full‑rank, and well‑specification (so the normal equations hold), the OLS moment assumptions
+Statement: Under design IID (`DesignAttrIID`), the paper’s design-side bundle
+(`PaperOLSDesignAssumptions`), full‑rank, and well‑specification (so the normal equations hold), the OLS moment assumptions
 (`OLSMomentAssumptionsOfAttr`) hold almost everywhere for the paper’s
 term set and causal estimand `gStar`.
 

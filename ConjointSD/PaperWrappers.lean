@@ -1037,6 +1037,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_
               (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m)
+    (hPop : DesignAttrIID (μ := μexp) Atrain)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
@@ -1098,7 +1099,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_
       (μ := μexp) (ν := ν) (Y := Y)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
-      hDesign hFull hspec
+      hPop hDesign hFull hspec
   have hCont :
       ∀ b : B,
         FunctionalContinuityAssumptions
@@ -1232,6 +1233,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
               (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m))
+    (hPop : DesignAttrIID (μ := μexp) Atrain)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
@@ -1286,7 +1288,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
       (μ := μexp) (ν := ν) (Y := Y)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
-      hDesign hFull hspec
+      hPop hDesign hFull hspec
   have hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)
