@@ -11,6 +11,7 @@ import ConjointSD.RegressionEstimator
 import ConjointSD.SDDecompositionFromConjoint
 import ConjointSD.DesignAttributeBridge
 import ConjointSD.Assumptions
+import ConjointSD.RegressionConsistencyBridge
 
 open Filter MeasureTheory
 open scoped BigOperators
@@ -321,6 +322,147 @@ lemma bounded_mul
   have hmul : |f a| * |g a| ≤ Cf * Cg :=
     mul_le_mul hf' hg' (abs_nonneg _) hCf0
   simpa [abs_mul] using hmul
+
+omit [DecidableEq (PaperTerm Main Inter)] in
+theorem paper_ols_normal_eq_of_wellSpecified
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C)
+    (hspec :
+      WellSpecified
+        (μ := μ) (Y := Y) (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :
+    PaperOLSNormalEqAssumptions
+      (μ := μ) (Y := Y) (ν := ν)
+      (fMain := fMain) (fInter := fInter) (θ0 := θ0) := by
+  classical
+  have hmeasφ :
+      ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
+    measurable_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      hmeasMain hmeasInter
+  have hboundφ :
+      ∀ t, ∃ C, 0 ≤ C ∧
+        ∀ a, |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a| ≤ C :=
+    bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      hboundMain hboundInter
+  refine ⟨?_⟩
+  funext i
+  let φCross : PaperTerm Main Inter → Attr → ℝ :=
+    fun t a =>
+      φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+        * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a
+  have hmeasCross : ∀ t, Measurable (φCross t) := by
+    intro t
+    exact (hmeasφ i).mul (hmeasφ t)
+  have hboundCross :
+      ∀ t, ∃ C, 0 ≤ C ∧ ∀ a, |φCross t a| ≤ C := by
+    intro t
+    exact bounded_mul (hf := hboundφ i) (hg := hboundφ t)
+  have hCrossEq :
+      attrCross
+          (ν := ν)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
+        =
+      ∑ t,
+        θ0 t * attrMean ν (fun a =>
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+            * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
+    have hsum :
+        attrMean ν (gLin (β := θ0) (φ := φCross))
+          =
+        ∑ t, θ0 t * attrMean ν (φCross t) :=
+      attrMean_gLin_eq_sum
+        (ν := ν) (φ := φCross) hmeasCross hboundCross θ0
+    have hspec' :
+        ∀ a,
+          gStar (μ := μ) (Y := Y) a
+            =
+          gLin (β := θ0)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) a := by
+      intro a
+      simpa using (hspec a).symm
+    have hCross :
+        attrCross
+            (ν := ν)
+            (g := gStar (μ := μ) (Y := Y))
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
+          =
+        attrMean ν (gLin (β := θ0) (φ := φCross)) := by
+      refine congrArg (fun f => attrMean ν f) ?_
+      funext a
+      calc
+        φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+            * gStar (μ := μ) (Y := Y) a
+            =
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+            *
+          gLin (β := θ0)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) a := by
+          simp [hspec']
+        _ =
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+            * ∑ t, θ0 t
+              * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a := by
+          rfl
+        _ =
+          ∑ t,
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+              * (θ0 t
+                * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
+          simpa using
+            (Finset.mul_sum
+              (a := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+              (s := (Finset.univ : Finset (PaperTerm Main Inter)))
+              (f := fun t =>
+                θ0 t * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a))
+        _ =
+          ∑ t,
+            θ0 t * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+              * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
+          refine Finset.sum_congr rfl ?_
+          intro t ht
+          simp [mul_comm, mul_left_comm, mul_assoc]
+        _ = ∑ t, θ0 t * φCross t a := by
+          rfl
+        _ = gLin (β := θ0) (φ := φCross) a := by
+          rfl
+    calc
+      attrCross
+          (ν := ν)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
+          =
+        attrMean ν (gLin (β := θ0) (φ := φCross)) := hCross
+      _ = ∑ t, θ0 t * attrMean ν (φCross t) := hsum
+  calc
+    (attrGram
+        (ν := ν)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).mulVec θ0 i
+        =
+      ∑ t,
+        attrMean ν (fun a =>
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+            * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a)
+          * θ0 t := by
+      simp [Matrix.mulVec, dotProduct, attrGram]
+    _ =
+      ∑ t,
+        θ0 t * attrMean ν (fun a =>
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+            * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
+      refine Finset.sum_congr rfl ?_
+      intro t ht
+      simp [mul_comm, mul_left_comm, mul_assoc]
+    _ =
+      attrCross
+        (ν := ν)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i := by
+      simpa using hCrossEq.symm
 
 omit [DecidableEq (PaperTerm Main Inter)] in
 lemma scoreAssumptions_gram_of_design
@@ -679,6 +821,158 @@ theorem paper_ols_lln_of_design_ae
   · intro i
     simpa [hDesign.cross_eq i] using hcross i
 
+theorem paper_ols_gramInv_tendsto_of_design_ae
+    {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter)) :
+    ∀ᵐ ω ∂μ,
+      ∀ i j,
+        Tendsto
+          (fun n =>
+            (gramMatrix
+              (A := fun k => Aω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n)⁻¹ i j)
+          atTop
+          (nhds
+            ((attrGram
+              (ν := ν)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)) := by
+  have hLLN :=
+    paper_ols_lln_of_design_ae
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (Aω := Aω) (Yobsω := Yobsω) hDesign
+  have hdet :
+      IsUnit
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det :=
+    (Matrix.isUnit_iff_isUnit_det
+      (A :=
+        attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))).1
+      hFull.gram_isUnit
+  have hdet' :
+      (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det ≠ 0 :=
+    hdet.ne_zero
+  have hcont :
+      ContinuousAt Ring.inverse
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det := by
+    simpa [Ring.inverse] using (continuousAt_inv₀ hdet')
+  have hcontInv :
+      ContinuousAt Inv.inv
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
+    continuousAt_matrix_inv _ hcont
+  refine hLLN.mono ?_
+  intro ω hω
+  rcases hω with ⟨hgram, _⟩
+  have hGramω :
+      Tendsto
+        (fun n =>
+          gramMatrix
+            (A := fun k => Aω k ω)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n)
+        atTop
+        (nhds
+          (attrGram
+            (ν := ν)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))) := by
+    refine tendsto_pi_nhds.2 ?_
+    intro i
+    refine tendsto_pi_nhds.2 ?_
+    intro j
+    simpa using hgram i j
+  have hInvω :
+      Tendsto
+        (fun n =>
+          (gramMatrix
+            (A := fun k => Aω k ω)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+            n)⁻¹)
+        atTop
+        (nhds
+          ((attrGram
+            (ν := ν)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹)) :=
+    (hcontInv.tendsto).comp hGramω
+  have hInvω' := tendsto_pi_nhds.1 hInvω
+  intro i j
+  have hRow := hInvω' i
+  have hEntry := (tendsto_pi_nhds.1 hRow) j
+  simpa using hEntry
+
+theorem paper_ols_theta0_eq_of_normal_eq
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hNormal :
+      PaperOLSNormalEqAssumptions
+        (μ := μ) (Y := Y) (ν := ν)
+        (fMain := fMain) (fInter := fInter) (θ0 := θ0)) :
+    θ0 =
+      (attrGram
+        (ν := ν)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
+      (attrCross
+        (ν := ν)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) := by
+  have hdet :
+      IsUnit
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det :=
+    (Matrix.isUnit_iff_isUnit_det
+      (A :=
+        attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))).1
+      hFull.gram_isUnit
+  let _ :=
+    Matrix.invertibleOfIsUnitDet
+      (A :=
+        attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+      hdet
+  have hM :
+      attrCross
+          (ν := ν)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        =
+      (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).mulVec θ0 := by
+    simpa using hNormal.normal_eq.symm
+  have h :=
+    Matrix.inv_mulVec_eq_vec
+      (A :=
+        attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+      (u :=
+        attrCross
+          (ν := ν)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+      (v := θ0) hM
+  simpa using h.symm
+
 variable {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
 
 omit [ProbMeasureAssumptions μ] [ProbMeasureAssumptions ν] in
@@ -757,29 +1051,13 @@ theorem paper_ols_attr_moments_of_design_ae
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hInv :
-      ∀ᵐ ω ∂μ,
-        ∀ i j,
-          Tendsto
-            (fun n =>
-              (gramMatrix
-                (A := fun k => Aω k ω)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-                n)⁻¹ i j)
-            atTop
-            (nhds
-              ((attrGram
-                (ν := ν)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
-    (hId :
-      θ0 =
-        (attrGram
-          (ν := ν)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-          (attrCross
-            (ν := ν)
-            (g := gStar (μ := μ) (Y := Y))
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))) :
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hNormal :
+      PaperOLSNormalEqAssumptions
+        (μ := μ) (Y := Y) (ν := ν)
+        (fMain := fMain) (fInter := fInter) (θ0 := θ0)) :
     ∀ᵐ ω ∂μ,
       OLSMomentAssumptionsOfAttr
         (ν := ν)
@@ -818,6 +1096,35 @@ theorem paper_ols_attr_moments_of_design_ae
     paper_ols_lln_of_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (Aω := Aω) (Yobsω := Yobsω) hDesign
+  have hInv :
+      ∀ᵐ ω ∂μ,
+        ∀ i j,
+          Tendsto
+            (fun n =>
+              (gramMatrix
+                (A := fun k => Aω k ω)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                n)⁻¹ i j)
+            atTop
+            (nhds
+              ((attrGram
+                (ν := ν)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)) :=
+    paper_ols_gramInv_tendsto_of_design_ae
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (Aω := Aω) (Yobsω := Yobsω) hDesign hFull
+  have hId :
+      θ0 =
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
+          (attrCross
+            (ν := ν)
+            (g := gStar (μ := μ) (Y := Y))
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
+    paper_ols_theta0_eq_of_normal_eq
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) hFull hNormal
   exact
     paper_ols_attr_moments_of_lln_fullrank_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
@@ -862,29 +1169,13 @@ theorem theta_tendsto_of_paper_ols_design_ae
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hInv :
-      ∀ᵐ ω ∂μ,
-        ∀ i j,
-          Tendsto
-            (fun n =>
-              (gramMatrix
-                (A := fun k => Aω k ω)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-                n)⁻¹ i j)
-            atTop
-            (nhds
-              ((attrGram
-                (ν := ν)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
-    (hId :
-      θ0 =
-        (attrGram
-          (ν := ν)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-          (attrCross
-            (ν := ν)
-            (g := gStar (μ := μ) (Y := Y))
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))) :
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hNormal :
+      PaperOLSNormalEqAssumptions
+        (μ := μ) (Y := Y) (ν := ν)
+        (fMain := fMain) (fInter := fInter) (θ0 := θ0)) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n =>
@@ -905,7 +1196,7 @@ theorem theta_tendsto_of_paper_ols_design_ae
     paper_ols_attr_moments_of_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hInv hId
+      hDesign hFull hNormal
   exact
     theta_tendsto_of_paper_ols_moments_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
@@ -1006,29 +1297,13 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hInv :
-      ∀ᵐ ω ∂μ,
-        ∀ i j,
-          Tendsto
-            (fun n =>
-              (gramMatrix
-                (A := fun k => Aω k ω)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-                n)⁻¹ i j)
-            atTop
-            (nhds
-              ((attrGram
-                (ν := ν)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
-    (hId :
-      θ0 =
-        (attrGram
-          (ν := ν)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-          (attrCross
-            (ν := ν)
-            (g := gStar (μ := μ) (Y := Y))
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hNormal :
+      PaperOLSNormalEqAssumptions
+        (μ := μ) (Y := Y) (ν := ν)
+        (fMain := fMain) (fInter := fInter) (θ0 := θ0))
     (hCont :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -1059,7 +1334,7 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
     theta_tendsto_of_paper_ols_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hInv hId
+      hDesign hFull hNormal
   refine hθ.mono ?_
   intro ω hω
   simpa using
@@ -1081,29 +1356,13 @@ theorem attrM2_tendsto_of_paper_ols_design_ae
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hInv :
-      ∀ᵐ ω ∂μ,
-        ∀ i j,
-          Tendsto
-            (fun n =>
-              (gramMatrix
-                (A := fun k => Aω k ω)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-                n)⁻¹ i j)
-            atTop
-            (nhds
-              ((attrGram
-                (ν := ν)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
-    (hId :
-      θ0 =
-        (attrGram
-          (ν := ν)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-          (attrCross
-            (ν := ν)
-            (g := gStar (μ := μ) (Y := Y))
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hNormal :
+      PaperOLSNormalEqAssumptions
+        (μ := μ) (Y := Y) (ν := ν)
+        (fMain := fMain) (fInter := fInter) (θ0 := θ0))
     (hCont :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -1134,7 +1393,7 @@ theorem attrM2_tendsto_of_paper_ols_design_ae
     theta_tendsto_of_paper_ols_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hInv hId
+      hDesign hFull hNormal
   refine hθ.mono ?_
   intro ω hω
   simpa using

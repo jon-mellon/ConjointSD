@@ -11,6 +11,9 @@ import ConjointSD
 #print ConjointSD.functionalContinuity_gLin_of_bounded
 #print ConjointSD.functionalContinuity_gTotalΘ_of_bounded
 #print ConjointSD.functionalContinuity_gBlockTerm_of_bounded
+#print ConjointSD.paper_ols_gramInv_tendsto_of_design_ae
+#print ConjointSD.paper_ols_theta0_eq_of_normal_eq
+#print ConjointSD.paper_ols_normal_eq_of_wellSpecified
 #print ConjointSD.ConjointIdRandomized
 #print ConjointSD.ConjointRandomizationStream
 #print ConjointSD.DesignAttrIID.of_randomization_stream

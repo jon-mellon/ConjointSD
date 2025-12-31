@@ -1410,29 +1410,9 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
       PaperOLSDesignAssumptions
         (μ := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hInv :
-      ∀ᵐ ω ∂μexp,
-        ∀ i j,
-          Tendsto
-            (fun n =>
-              (gramMatrix
-                (A := fun k => Atrain k ω)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-                n)⁻¹ i j)
-            atTop
-            (nhds
-              ((attrGram
-                (ν := ν)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
-    (hId :
-      θ0 =
-        (attrGram
-          (ν := ν)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-          (attrCross
-            (ν := ν)
-            (g := gStar (μ := μexp) (Y := Y))
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter))
     (hspec :
       WellSpecified
         (μ := μexp)
@@ -1476,11 +1456,23 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
               n)
           atTop
           (nhds θ0) :=
+    let hNormal :
+        PaperOLSNormalEqAssumptions
+          (μ := μexp) (Y := Y) (ν := ν)
+          (fMain := fMain) (fInter := fInter) (θ0 := θ0) :=
+      paper_ols_normal_eq_of_wellSpecified
+        (μ := μexp) (Y := Y)
+        (Attr := Attr) (Main := Main) (Inter := Inter)
+        (fMain := fMain) (fInter := fInter)
+        (ν := ν) (θ0 := θ0)
+        hDesign.meas_fMain hDesign.meas_fInter
+        hDesign.bound_fMain hDesign.bound_fInter
+        hspec
     theta_tendsto_of_paper_ols_design_ae
       (μ := μexp) (ν := ν) (Y := Y)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
-      hDesign hInv hId
+      hDesign hFull hNormal
   have hBlocks :
       gStar (μ := μexp) (Y := Y)
         =

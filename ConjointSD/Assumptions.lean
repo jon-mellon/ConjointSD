@@ -253,6 +253,7 @@ section PaperOLSDesign
 
 variable {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]
 variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
+variable [DecidableEq (PaperTerm Main Inter)]
 
 /--
 Paper OLS design-side assumptions that are sufficient to derive the LLN hypotheses

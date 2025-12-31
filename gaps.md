@@ -50,11 +50,12 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 10) Consistency of the OLS estimator is not derived; raw `Tendsto` for `olsThetaHat` and `FunctionalContinuityAssumptions` are still used as premises in paper-facing results
    - Current state: we can prove `Tendsto` for `olsThetaHat` **if** `OLSMomentAssumptionsOfAttr` is given (see `ConjointSD/PaperOLSConsistency.lean`). We have a design-side bundle (`PaperOLSDesignAssumptions`) plus lemmas
      `paper_ols_lln_of_design_ae`, `paper_ols_attr_moments_of_design_ae`,
-     and `theta_tendsto_of_paper_ols_design_ae`, which derive the LLN and OLS moment assumptions a.e. from bounded/measurable features, bounded `gStar`, and moment transport to `ν`. Inverse‑Gram stability and identification (the `hInv` and `hId` premises) are still assumed and have not yet been derived from the design.
+     and `theta_tendsto_of_paper_ols_design_ae`, which derive the LLN and OLS moment assumptions a.e. from bounded/measurable features, bounded `gStar`, and moment transport to `ν`. Inverse‑Gram stability and identification are now derived from the explicit full‑rank and normal‑equation assumptions (`PaperOLSFullRankAssumptions`, `PaperOLSNormalEqAssumptions`), but those assumptions themselves are still not derived from the design.
+   - New: `paper_ols_normal_eq_of_wellSpecified` derives `PaperOLSNormalEqAssumptions` from well‑specification plus bounded/measurable paper features, so the normal equations can now be treated as a derived premise once well‑specification is established.
    - Completed refactor: `ThetaTendstoAssumptions` and `GEstimationAssumptions` were removed from paper-facing statements. Those theorems now take raw `Tendsto (olsThetaHat ...)` and `FunctionalContinuityAssumptions` directly, with plug‑in moment convergence derived as needed.
    - Remaining work:
      - Derive `Tendsto (olsThetaHat ...)` from `PaperOLSDesignAssumptions` without assuming `OLSMomentAssumptionsOfAttr` (i.e., close the LLN/Gram/cross‑moment path from the randomized design).
-     - Derive inverse‑Gram stability and identification (`hInv`, `hId`) from the design-side assumptions.
+     - Derive inverse‑Gram stability and identification (`hInv`, `hId`) from the design-side assumptions. We now derive `hInv` from `PaperOLSFullRankAssumptions` plus the Gram LLN and derive `hId` from `PaperOLSNormalEqAssumptions` plus full‑rank; the remaining gap is to justify those full‑rank/normal‑equation assumptions from the paper’s design.
      - Derive `FunctionalContinuityAssumptions` from the paper’s linear/additive model and bounded features (ties to gap 8), then remove it as a standalone premise in paper-facing results.
      - Re-run the documentation chain (`readable/*.md`, `proven_statements.md`, `Scratch.lean`) and refresh `dependency_tables.Rmd` / `dependency_tables.md` after those derivations.
    - Dependencies on other gaps:
@@ -69,6 +70,11 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 11.5) Unused transport lemma for attr SD
    - Candidate: `attrSD_eq_of_moments` in `ConjointSD/Transport.lean` is not referenced by any other Lean theorem or wrapper.
    - Plan: either wire it into the moment-transport chain or remove it after rechecking the DAG for new usages.
+
+11.6) Randomization-to-SD wrapper appears unused
+   - Candidate: `sd_component_consistent_of_design` in `ConjointSD/SDDecompositionFromConjoint.lean` is a convenience wrapper that derives IID from `ConjointRandomizationStream` and then applies `sd_component_consistent`, but no other theorem depends on it.
+   - Check: no other theorems are *only* used by this wrapper; `DesignAttrIID.of_randomization_stream` is also used in `ConjointSD/SampleSplitting.lean`, and `sd_component_consistent` feeds other SD wrappers.
+   - Plan: either wire it into paper-facing wrappers that cite randomization explicitly or remove it after rechecking the DAG for new usages; if removed, the `ConjointRandomizationStream.exists_randomization` row becomes a likely cut candidate as well.
 
 
 12) Derivable assumptions from bounded status are not centralized

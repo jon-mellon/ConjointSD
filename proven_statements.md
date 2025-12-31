@@ -513,12 +513,14 @@ Formalization (math):
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Under the paper’s design-side OLS bundle (`PaperOLSDesignAssumptions`),
-inverse‑Gram stability, identification, and well‑specification, the total
+the full‑rank condition (`PaperOLSFullRankAssumptions`), and
+well‑specification, the total
 sequential [consistency](readable/jargon_consistency.md) result holds a.e. over
 training draws, and the total-score [standard deviation](readable/jargon_standard_deviation.md)
 target equals the `gStar` target.
 
-Intuition: the design‑side assumptions yield raw parameter convergence and
+Intuition: the design‑side assumptions yield raw parameter convergence (with
+normal equations derived from well‑specification and bounded features) and
 bounded-feature continuity along almost all training sample paths, so the
 sequential consistency chain can be applied without separately assuming
 plug‑in moment convergence or functional continuity.
@@ -528,6 +530,23 @@ Formalization (Lean name): `paper_sd_total_sequential_consistency_ae_of_paper_ol
 Formalization (math):
 For a.e. training draw, total `totalErr` goes to 0 sequentially and
 `attrSD ν gTotal = attrSD ν gStar(μexp)`.
+
+## paper ols normal eq of wellSpecified (PaperOLSConsistency)
+
+File: `ConjointSD/PaperOLSConsistency.lean`
+
+Statement: If `gStar` is [well-specified](readable/jargon_well_specified.md) by the paper’s feature map and the features are bounded/measurable, the paper’s population normal equations hold for `θ0`:
+`(attrGram ν φPaper).mulVec θ0 = attrCross ν gStar φPaper`.
+
+Intuition: well‑specification turns the cross‑moment into a linear combination of
+feature cross‑moments, so the Gram matrix multiplies `θ0` to match the
+feature–outcome cross moment.
+
+Formalization (Lean name): `paper_ols_normal_eq_of_wellSpecified`
+
+Formalization (math):
+Normal equations for the population OLS coefficients follow from
+`gStar = gLin θ0` and bounded/measurable features.
 
 ## paper ols attr moments of design ae (PaperOLSConsistency)
 
