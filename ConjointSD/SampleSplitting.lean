@@ -27,6 +27,7 @@ variable {Θ : Type*}
 lemma splitEvalAssumptions_of_bounded
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
+    (hPop : DesignAttrIID (μ := μ) A)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
     (h : SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
@@ -35,8 +36,21 @@ lemma splitEvalAssumptions_of_bounded
       ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m) :=
     scoreAssumptions_of_bounded
       (μ := μ) (A := A) (g := gHat g θhat m)
-      (hPop := h.hPop) (hMeas := h.hMeas) (hBound := h.hBound)
+      (hPop := hPop) (hMeas := h.hMeas) (hBound := h.hBound)
   exact ⟨hScore⟩
+
+lemma splitEvalAssumptions_of_bounded_of_stream
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ)
+    (hStream : ConjointRandomizationStream (μ := μ) (A := A) (Y := Y))
+    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ)
+    (h : SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
+    SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m := by
+  have hPop : DesignAttrIID (μ := μ) A :=
+    DesignAttrIID.of_randomization_stream (μ := μ) (A := A) (Y := Y) hStream
+  exact splitEvalAssumptions_of_bounded
+    (μ := μ) (A := A) (hPop := hPop) (g := g) (θhat := θhat) (m := m) h
 
 /--
 For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converges a.s.

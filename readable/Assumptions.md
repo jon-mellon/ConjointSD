@@ -225,23 +225,26 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## SampleSplitting
 
-- `SplitEvalAssumptions`: applies `ScoreAssumptions` under a probability measure
-  `μ` (the evaluation-sample experimental design distribution) to the evaluation score
-  `gHat g θhat m` on the evaluation sample `A n`. This is the standard setup for
-  showing the empirical [standard deviation](jargon_standard_deviation.md) of
-  the estimated score [converges](jargon_convergence.md) to its
-  [population](jargon_population.md) SD.
+- `SplitEvalAssumptions`: evaluation-stage assumption for sample splitting. For a fixed
+  training index `m`, the estimated score `gHat g θhat m` is treated as a fixed
+  [score](jargon_score.md) function of attributes, and the evaluation draws `A n`
+  are required to satisfy `ScoreAssumptions` under the evaluation design
+  distribution `μ`. This is the standard setup for showing the empirical
+  [standard deviation](jargon_standard_deviation.md) of the estimated score
+  [converges](jargon_convergence.md) to its [population](jargon_population.md) SD.
+  Intuition: once training is fixed, the evaluation sample behaves like an i.i.d.
+  sample for a fixed score, so LLN-style SD consistency applies.
   - `SplitEvalAssumptions.hScore`: the evaluation score satisfies `ScoreAssumptions`.
-    Intuition: the evaluation draw is i.i.d. with finite second moment for the estimated score.
+    Intuition: the evaluation draw is i.i.d. with finite second moment for the
+    fixed estimated score `gHat g θhat m`.
     Formal: `ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)`.
-- `SplitEvalAssumptionsBounded`: alternative evaluation assumptions using
-  attribute-stream i.i.d. properties (derived from `ConjointRandomizationStream`),
-  [measurability](jargon_measurable.md) of `gHat g θhat m`, and a global bound.
-  This is a stronger but easier-to-check route to the same moment conditions
-  under the experimental design distribution `μ`.
-  - `SplitEvalAssumptionsBounded.hPop`: evaluation draws satisfy the attribute-stream
-    i.i.d. properties derived from the stream randomization mechanism.
-    Intuition: the sample is i.i.d. at the attribute level under `μ`.
+- `SplitEvalAssumptionsBounded`: alternative evaluation assumptions that replace
+  the full `ScoreAssumptions` bundle with a stronger, more concrete checklist:
+  [measurability](jargon_measurable.md) of the fixed evaluation score
+  `gHat g θhat m`, and a global bound on that score. The attribute-stream
+  i.i.d. properties are supplied separately (e.g., via `ConjointRandomizationStream`)
+  when converting to `ScoreAssumptions`. This is a stronger but easier-to-check
+  route to the same moment conditions under the experimental design distribution `μ`.
   - `SplitEvalAssumptionsBounded.hMeas`: the estimated score is measurable.
     Intuition: the score is a valid observable function of attributes.
     Formal: `Measurable (gHat g θhat m)`.

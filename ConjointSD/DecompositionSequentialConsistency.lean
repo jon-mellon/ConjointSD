@@ -109,6 +109,7 @@ theorem sequential_consistency_total_ae
 theorem sequential_consistency_blocks_ae_of_bounded
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
+    (hPop : DesignAttrIID (μ := μ) A)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
@@ -128,7 +129,8 @@ theorem sequential_consistency_blocks_ae_of_bounded
         SplitEvalAssumptions (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m :=
     fun m b =>
       splitEvalAssumptions_of_bounded
-        (μ := μ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) (m := m) (hSplit m b)
+        (μ := μ) (A := A) (hPop := hPop)
+        (g := gBlock (gB := gB) b) (θhat := θhat) (m := m) (hSplit m b)
   exact
     sequential_consistency_blocks_ae
       (μ := μ) (A := A) (ν := ν) (hMap := hMap)
@@ -138,6 +140,7 @@ theorem sequential_consistency_blocks_ae_of_bounded
 theorem sequential_consistency_total_ae_of_bounded
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr)
+    (hPop : DesignAttrIID (μ := μ) A)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
@@ -157,7 +160,8 @@ theorem sequential_consistency_total_ae_of_bounded
         SplitEvalAssumptions (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) m :=
     fun m =>
       splitEvalAssumptions_of_bounded
-        (μ := μ) (A := A) (g := gTotalΘ (gB := gB)) (θhat := θhat) (m := m) (hSplitTotal m)
+        (μ := μ) (A := A) (hPop := hPop)
+        (g := gTotalΘ (gB := gB)) (θhat := θhat) (m := m) (hSplitTotal m)
   exact
     sequential_consistency_total_ae
       (μ := μ) (A := A) (ν := ν) (hMap := hMap)

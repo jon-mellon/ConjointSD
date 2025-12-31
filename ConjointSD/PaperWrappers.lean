@@ -199,6 +199,7 @@ theorem paper_sd_blocks_sequential_consistency_ae
       (ε := ε) (hε := hε)
 
 theorem paper_sd_blocks_sequential_consistency_ae_of_bounded
+    (hPop : DesignAttrIID (μ := μ) A)
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplit : ∀ m b,
       SplitEvalAssumptionsBounded
@@ -219,7 +220,7 @@ theorem paper_sd_blocks_sequential_consistency_ae_of_bounded
       derive_hG (ν := ν) (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) hθ (hCont b)
   exact
     sequential_consistency_blocks_ae_of_bounded
-      (μ := μ) (A := A) (ν := ν) (hMap := hMap)
+      (μ := μ) (A := A) (hPop := hPop) (ν := ν) (hMap := hMap)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplit) (hG := hG)
       (ε := ε) (hε := hε)
@@ -250,6 +251,7 @@ theorem paper_sd_total_sequential_consistency_ae
       (ε := ε) (hε := hε)
 
 theorem paper_sd_total_sequential_consistency_ae_of_bounded
+    (hPop : DesignAttrIID (μ := μ) A)
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplitTotal :
       ∀ m,
@@ -269,7 +271,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_bounded
     derive_hG (ν := ν) (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) hθ hContTotal
   exact
     sequential_consistency_total_ae_of_bounded
-      (μ := μ) (A := A) (ν := ν) (hMap := hMap)
+      (μ := μ) (A := A) (hPop := hPop) (ν := ν) (hMap := hMap)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
       (ε := ε) (hε := hε)
@@ -321,6 +323,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae
   · exact hMt m hmt
 
 theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded
+    (hPop : DesignAttrIID (μ := μ) A)
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplit : ∀ m b,
       SplitEvalAssumptionsBounded
@@ -346,11 +349,11 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded
             totalErr μ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   rcases paper_sd_blocks_sequential_consistency_ae_of_bounded
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hMap := hMap) (hSplit := hSplit) (hθ := hθ) (hCont := hCont) (ε := ε) (hε := hε)
+      (hPop := hPop) (hMap := hMap) (hSplit := hSplit) (hθ := hθ) (hCont := hCont) (ε := ε) (hε := hε)
       with ⟨Mb, hMb⟩
   rcases paper_sd_total_sequential_consistency_ae_of_bounded
       (μ := μ) (A := A) (ν := ν) (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (hPop := hPop) (hMap := hMap) (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
       with ⟨Mt, hMt⟩
   let M : ℕ := Nat.max Mb Mt

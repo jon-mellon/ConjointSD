@@ -212,7 +212,6 @@ structure SplitEvalAssumptionsBounded
     (μ : Measure Ω) (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
-  hPop : DesignAttrIID (μ := μ) A
   hMeas : Measurable (gHat g θhat m)
   hBound : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
 
