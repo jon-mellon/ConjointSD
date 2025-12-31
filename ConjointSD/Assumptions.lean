@@ -296,6 +296,35 @@ structure PaperOLSDesignAssumptions
           (g := gStar (μ := μ) (Y := Y))
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
 
+/-!
+Additional design-side assumptions used to derive full-rank and identification
+properties for the paper OLS model.
+-/
+
+structure PaperOLSFullRankAssumptions
+    (ν : Measure Attr)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+  gram_isUnit :
+    IsUnit
+      (attrGram
+        (ν := ν)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+
+structure PaperOLSNormalEqAssumptions
+    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (ν : Measure Attr)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
+    (θ0 : PaperTerm Main Inter → ℝ) : Prop where
+  normal_eq :
+    (attrGram
+        (ν := ν)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).mulVec θ0
+      =
+    attrCross
+      (ν := ν)
+      (g := gStar (μ := μ) (Y := Y))
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+
 end PaperOLSDesign
 
 section SurveyWeights

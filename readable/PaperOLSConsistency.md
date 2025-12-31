@@ -13,6 +13,7 @@ Assumption package:
 - `PaperOLSDesignAssumptions` packages design IID, bounded/measurable features, bounded `gStar`, and equality of design vs target Gram/cross moments. From this bundle:
   - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the target `ν`.
   - `paper_ols_attr_moments_of_design_ae` combines that LLN with inverse‑Gram stability and identification to yield `OLSMomentAssumptionsOfAttr` a.e.
+- `PaperOLSFullRankAssumptions` and `PaperOLSNormalEqAssumptions` are the explicit full‑rank and normal‑equation premises that will feed the derivation of inverse‑Gram stability and identification (`hInv`/`hId`) from the design.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN, inverse‑Gram stability, and identifiability into the a.e. `OLSMomentAssumptionsOfAttr` statement used by later theorems.
 - In the Gram/cross convergence proofs, empirical means are now routed through `meanHatZ_tendsto_ae_of_score`, keeping the flow explicitly tied to `ScoreAssumptions` rather than standalone IID bundles.
 
@@ -25,6 +26,7 @@ Main results:
 - `attrMean_tendsto_of_paper_ols_design_ae` / `attrM2_tendsto_of_paper_ols_design_ae` are the end‑to‑end a.e. bridges from the design‑side bundle to plug‑in moment convergence.
 - `gPaper_eq_gTotalΘ_blocks` identifies the paper score with the block-sum total score (for any `blk`), so the OLS path can feed into the block/total [standard deviation](jargon_standard_deviation.md) chain.
 - `functionalContinuity_gPaper_of_bounded` and `functionalContinuity_gTotalΘ_of_bounded` derive the required functional [continuity](jargon_continuity.md) for the paper score and total block score directly from bounded/measurable features.
+- `functionalContinuity_gBlockTerm_of_bounded` does the same for each block score, using a block-specific feature map and the same bounded/measurable feature hypotheses.
 - `attrMean_tendsto_of_paper_ols_gStar_total` / `attrM2_tendsto_of_paper_ols_gStar_total` and their a.e. counterparts lift the OLS assumptions from `gPaper` to the block-sum total score.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the target human population normal equations.
 

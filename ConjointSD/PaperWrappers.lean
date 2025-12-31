@@ -984,6 +984,10 @@ consistency statement for the paper term model, assuming functional continuity.
 -/
 theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
     (θ0 : PaperTerm Main Inter → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C)
     (hMomBlocks : ∀ m b,
       EvalWeightMatchesAttrMoments (μ := μ) (A := Aeval) (ν := ν)
         (w := w)
@@ -1043,23 +1047,6 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
         (g := gStar (μ := μexp) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
         θ0)
-    (hCont :
-      ∀ b : B,
-        FunctionalContinuityAssumptions
-          (ν := ν)
-          (g := gBlock
-            (gB := fun b θ a =>
-              gBlockTerm (blk := blk) (β := θ)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
-          θ0)
-    (hContTotal :
-      FunctionalContinuityAssumptions
-        (ν := ν)
-        (g := gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-        θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1107,6 +1094,35 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
       (Y := Y) (A := Atrain) (Yobs := Yobs)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) hMom
+  have hCont :
+      ∀ b : B,
+        FunctionalContinuityAssumptions
+          (ν := ν)
+          (g := gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
+          θ0 :=
+    fun b =>
+      functionalContinuity_gBlockTerm_of_bounded
+        (Attr := Attr) (Main := Main) (Inter := Inter)
+        (fMain := fMain) (fInter := fInter)
+        (B := B) (blk := blk) (b := b)
+        (ν := ν) (θ0 := θ0)
+        hmeasMain hmeasInter hboundMain hboundInter
+  have hContTotal :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+        θ0 :=
+    functionalContinuity_gTotalΘ_of_bounded
+      (Attr := Attr) (Main := Main) (Inter := Inter) (B := B)
+      (fMain := fMain) (fInter := fInter)
+      (ν := ν) (blk := blk) (θ0 := θ0)
+      hmeasMain hmeasInter hboundMain hboundInter
   exact
     paper_sd_blocks_and_total_sequential_consistency_ae
       (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMomBlocks := hMomBlocks) (hMomTotal := hMomTotal)
@@ -1180,6 +1196,10 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
     (blk : PaperTerm Main Inter → B)
     (θ0 : PaperTerm Main Inter → ℝ)
     (w : Attr → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C)
     (hSplitTotal :
       ∀ m,
         SplitEvalWeightAssumptions
@@ -1212,14 +1232,6 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
         (A := Atrain) (Y := Yobs)
         (g := gStar (μ := μexp) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-        θ0)
-    (hContTotal :
-      FunctionalContinuityAssumptions
-        (ν := ν)
-        (g := gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
         θ0)
     (hspec :
       WellSpecified
@@ -1267,6 +1279,19 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
       (Y := Y) (A := Atrain) (Yobs := Yobs)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) hMom
+  have hContTotal :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+        θ0 :=
+    functionalContinuity_gTotalΘ_of_bounded
+      (Attr := Attr) (Main := Main) (Inter := Inter) (B := B)
+      (fMain := fMain) (fInter := fInter)
+      (ν := ν) (blk := blk) (θ0 := θ0)
+      hmeasMain hmeasInter hboundMain hboundInter
   rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
       (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMom := hMomEval)
       (gB := fun b θ a =>

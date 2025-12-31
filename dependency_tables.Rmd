@@ -238,7 +238,6 @@ assumptions_in_block <- function(block) {
     }
   }
 
-  hit <- c(hit, extract_atomic_assumptions(text))
   hit <- c(hit, assumption_defs_in_block(text))
   unique(hit)
 }
@@ -329,12 +328,6 @@ if (requireNamespace("writexl", quietly = TRUE)) {
   write.csv(assump_tbl, out_csv, row.names = FALSE)
   warning("Package 'writexl' or 'openxlsx' is required to write assumption_matrix.xlsx; wrote CSV instead.")
 }
-```
-
-## Auto-generated theorem dependency matrix
-
-```{r dependency-table, echo=FALSE}
-knitr::kable(dep_fmt, align = "l")
 ```
 
 ## Theorem dependency DAG

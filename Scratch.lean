@@ -10,6 +10,7 @@ import ConjointSD
 #print ConjointSD.attrSD_tendsto_of_mean_m2_tendsto
 #print ConjointSD.functionalContinuity_gLin_of_bounded
 #print ConjointSD.functionalContinuity_gTotalΘ_of_bounded
+#print ConjointSD.functionalContinuity_gBlockTerm_of_bounded
 #print ConjointSD.ConjointIdRandomized
 #print ConjointSD.ConjointRandomizationStream
 #print ConjointSD.DesignAttrIID.of_randomization_stream

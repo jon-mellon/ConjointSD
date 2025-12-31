@@ -307,6 +307,17 @@ Reader mapping to standard OLS assumptions:
     estimand evaluated at the realized attributes.
   - `PaperOLSDesignAssumptions.gram_eq` / `cross_eq`: the design Gram/cross
     moments match the target moments under `ν`.
+- `PaperOLSFullRankAssumptions`: a minimal full‑rank condition for the
+  population Gram matrix of the paper feature map under `ν`. This is the
+  invertibility condition needed to turn normal equations into a unique `θ0`.
+  - `PaperOLSFullRankAssumptions.gram_isUnit`: the Gram matrix is invertible
+    as a matrix in the ambient algebra. Intuition: the paper’s feature set has
+    enough variation in the target [population](jargon_population.md).
+    Formal: `IsUnit (attrGram (ν := ν) (φ := φPaper ...))`.
+- `PaperOLSNormalEqAssumptions`: a population normal‑equation identity tying
+  the Gram matrix and cross moments to the target coefficient vector `θ0`.
+  - `PaperOLSNormalEqAssumptions.normal_eq`: `attrGram * θ0 = attrCross`
+    under `ν`, with `attrCross` built from the causal estimand `gStar`.
 
 ## EvaluationWeights
 - `EvalWeightMatchesAttrMoments`: evaluation-weight transport assumption. It

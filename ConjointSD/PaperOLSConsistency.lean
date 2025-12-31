@@ -244,8 +244,20 @@ theorem functionalContinuity_gBlockTerm_of_bounded
       ∀ t, Measurable (φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t) := by
     intro t
     by_cases htb : blk t = b
-    · simp [φBlock, htb, hmeasφ t]
-    · simp [φBlock, htb, measurable_const]
+    · have hEq :
+          φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t
+            =
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t := by
+          funext a
+          simp [φBlock, htb]
+      simpa [hEq] using hmeasφ t
+    · have hEq :
+          φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t
+            =
+          (fun _ : Attr => (0 : ℝ)) := by
+          funext a
+          simp [φBlock, htb]
+      simpa [hEq] using (measurable_const : Measurable (fun _ : Attr => (0 : ℝ)))
   have hboundφBlock :
       ∀ t, ∃ C, 0 ≤ C ∧
         ∀ a, |φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t a| ≤ C := by
@@ -290,7 +302,9 @@ theorem functionalContinuity_gBlockTerm_of_bounded
         (gB := fun b θ a =>
           gBlockTerm (blk := blk) (β := θ)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
-      (θ0 := θ0) hEq hContLin
+      (θ0 := θ0)
+      (fun θ a => (hEq θ a).symm)
+      hContLin
 
 omit [DecidableEq (PaperTerm Main Inter)] in
 lemma bounded_mul

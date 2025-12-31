@@ -471,13 +471,15 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions, block
-and total [sequential consistency](readable/jargon_sequential_consistency.md)
-holds for the [term](readable/jargon_term.md) model.
+Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions and
+bounded/measurable paper features, block and total
+[sequential consistency](readable/jargon_sequential_consistency.md) holds for
+the [term](readable/jargon_term.md) model.
 
 Intuition: [OLS](readable/jargon_ols.md) [consistency](readable/jargon_consistency.md)
-yields the [plug-in](readable/jargon_plug_in.md) moment assumptions needed for
-the [standard deviation](readable/jargon_standard_deviation.md)
+yields the [plug-in](readable/jargon_plug_in.md) moment assumptions, and bounded
+features supply functional continuity, together driving the
+[standard deviation](readable/jargon_standard_deviation.md)
 [consistency](readable/jargon_consistency.md) chain.
 
 Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols moments`
@@ -489,13 +491,15 @@ Block and total `totalErr` go to 0 sequentially under OLS moment assumptions.
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions and
+Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions,
+bounded/measurable paper features, and
 [well-specification](readable/jargon_well_specified.md), the total sequential
 [consistency](readable/jargon_consistency.md) target is the
 [standard deviation](readable/jargon_standard_deviation.md) of `gStar`.
 
-Intuition: [OLS](readable/jargon_ols.md) [consistency](readable/jargon_consistency.md)
-plus [well-specification](readable/jargon_well_specified.md) transfers the
+Intuition: [OLS](readable/jargon_ols.md) [consistency](readable/jargon_consistency.md),
+bounded-feature continuity, and
+[well-specification](readable/jargon_well_specified.md) transfer the
 [standard deviation](readable/jargon_standard_deviation.md) target to the causal
 score.
 
