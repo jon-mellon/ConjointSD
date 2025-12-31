@@ -14,9 +14,4 @@ Transport assumptions:
   [distribution](jargon_distribution.md). This is the transport condition used by
   later results.
 
-Derived transport facts:
-- `attrSD_eq_of_moments`: if two measures agree on the [mean](jargon_mean.md)
-  and [second moment](jargon_second_moment.md) of `s`, then their
-  [standard deviation](jargon_standard_deviation.md) for `s` is equal.
-
 This file is the foundation: it exposes the target human population targets and transport conditions that all later [consistency](jargon_consistency.md) results point to.

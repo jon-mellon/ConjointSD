@@ -12,6 +12,7 @@ import ConjointSD
 #print ConjointSD.functionalContinuity_gTotalΘ_of_bounded
 #print ConjointSD.functionalContinuity_gBlockTerm_of_bounded
 #print ConjointSD.paper_ols_gramInv_tendsto_of_design_ae
+#print ConjointSD.paper_ols_fullRank_of_orthogonal
 #print ConjointSD.paper_ols_theta0_eq_of_normal_eq
 #print ConjointSD.paper_ols_normal_eq_of_wellSpecified
 #print ConjointSD.ConjointIdRandomized
@@ -19,7 +20,6 @@ import ConjointSD
 #print ConjointSD.DesignAttrIID.of_randomization_stream
 -- Core SD and decomposition.
 #print ConjointSD.sd_component_consistent
-#print ConjointSD.sd_component_consistent_of_design
 #print ConjointSD.meanHatZ_tendsto_ae_of_score
 #print ConjointSD.sdHatZ_tendsto_ae_of_score
 #print ConjointSD.sdHatZW_tendsto_ae_of_score
@@ -58,14 +58,12 @@ import ConjointSD
 #print ConjointSD.attrM2_diff_le_of_approx_ae
 #print ConjointSD.attrVar_diff_le_of_approx_ae
 #print ConjointSD.attrSD_diff_le_of_approx_ae
-#print ConjointSD.attrSD_eq_of_moments
 
 -- Model bridge.
 #print ConjointSD.gLin_eq_gTotal_blocks
 #print ConjointSD.gStar_eq_sum_blocks_of_WellSpecified
 #print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecified
 #print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
-#print ConjointSD.wellSpecified_of_noInteractions_of_fullMainEffects
 #print ConjointSD.approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 
 -- Paper core estimands.
@@ -95,7 +93,7 @@ import ConjointSD
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
-#print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
+#print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_hGTotal
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae

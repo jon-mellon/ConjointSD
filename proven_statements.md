@@ -51,22 +51,6 @@ Formalization (Lean name): `sd component consistent`
 Formalization (math):
 `sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))` a.e.
 
-## sd component consistent of design (SDDecompositionFromConjoint)
-
-File: `ConjointSD/SDDecompositionFromConjoint.lean`
-
-Statement: If the attribute stream satisfies `ConjointRandomizationStream`, then
-the SD consistency result for `g(A i)` holds under the standard measurability
-and second-moment requirements.
-
-Intuition: The randomization stream supplies the IID assumptions, so the
-standard empirical SD convergence proof goes through.
-
-Formalization (Lean name): `sd_component_consistent_of_design`
-
-Formalization (math):
-`ConjointRandomizationStream A Y -> sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))`.
-
 ## gExp eq gPot (ConjointIdentification)
 
 File: `ConjointSD/ConjointIdentification.lean`
@@ -116,22 +100,6 @@ Formalization (Lean name): `gStar eq sum blocks of WellSpecified`
 
 Formalization (math):
 `WellSpecified -> gStar = sum b gBlock b`.
-
-## wellSpecified of no interactions full main effects (WellSpecifiedFromNoInteractions)
-
-File: `ConjointSD/WellSpecifiedFromNoInteractions.lean`
-
-Statement: If the causal target is additive (no interactions) and the chosen
-term features are rich enough to represent any additive main-effect surface,
-then the linear-in-terms model is [well-specified](readable/jargon_well_specified.md).
-
-Intuition: Additivity gives the shape of the target, and the full main-effect
-term set guarantees the regression basis can match that shape exactly.
-
-Formalization (Lean name): `wellSpecified_of_noInteractions_of_fullMainEffects`
-
-Formalization (math):
-`NoInteractions ∧ FullMainEffectsTerms φ -> ∃ β, WellSpecified μ Y β φ`.
 
 ## approx wellSpecified of approx no interactions (WellSpecifiedFromNoInteractions)
 
@@ -467,46 +435,46 @@ Formalization (Lean name): `paper sd total sequential consistency to gStar appro
 Formalization (math):
 `|attrSD ν gTotal - attrSD ν gStar(μexp)| ≤ bound`.
 
-## paper sd blocks and total sequential consistency ae of paper ols moments (PaperWrappers)
+## paper sd blocks and total sequential consistency ae of paper ols design ae (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions and
-bounded/measurable paper features, block and total
-[sequential consistency](readable/jargon_sequential_consistency.md) holds for
-the [term](readable/jargon_term.md) model.
+Statement: Under the paper’s design-side OLS bundle (`PaperOLSDesignAssumptions`),
+full‑rank, well‑specification, and bounded/measurable features, block and total
+[sequential consistency](readable/jargon_sequential_consistency.md) holds
+almost surely over training draws for the [term](readable/jargon_term.md) model.
 
-Intuition: [OLS](readable/jargon_ols.md) [consistency](readable/jargon_consistency.md)
-yields the [plug-in](readable/jargon_plug_in.md) moment assumptions, and bounded
-features supply functional continuity, together driving the
+Intuition: design‑side OLS assumptions yield raw parameter convergence and
+moment convergence along a.e. training paths, and bounded features supply
+functional continuity, together driving the
 [standard deviation](readable/jargon_standard_deviation.md)
 [consistency](readable/jargon_consistency.md) chain.
 
-Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols moments`
+Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols design ae`
 
 Formalization (math):
-Block and total `totalErr` go to 0 sequentially under OLS moment assumptions.
+Block and total `totalErr` go to 0 sequentially under design‑side OLS assumptions.
 
 ## paper sd total sequential consistency ae of paper ols gStar total (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under paper [OLS](readable/jargon_ols.md) moment assumptions,
-bounded/measurable paper features, and
+Statement: Under the paper’s design-side OLS bundle (`PaperOLSDesignAssumptions`),
+full‑rank, and
 [well-specification](readable/jargon_well_specified.md), the total sequential
 [consistency](readable/jargon_consistency.md) target is the
 [standard deviation](readable/jargon_standard_deviation.md) of `gStar`.
 
-Intuition: [OLS](readable/jargon_ols.md) [consistency](readable/jargon_consistency.md),
+Intuition: design‑side OLS assumptions yield raw parameter convergence and
 bounded-feature continuity, and
-[well-specification](readable/jargon_well_specified.md) transfer the
+[well-specification](readable/jargon_well_specified.md) transfers the
 [standard deviation](readable/jargon_standard_deviation.md) target to the causal
 score.
 
 Formalization (Lean name): `paper sd total sequential consistency ae of paper ols gStar total`
 
 Formalization (math):
-`attrSD ν gTotal = attrSD ν gStar(μexp)` under OLS moments and well-spec.
+For a.e. training draw, `attrSD ν gTotal = attrSD ν gStar(μexp)` under design‑side OLS assumptions and well‑spec.
 
 ## paper sd total sequential consistency ae of paper ols design total ae (PaperWrappers)
 
@@ -547,6 +515,21 @@ Formalization (Lean name): `paper_ols_normal_eq_of_wellSpecified`
 Formalization (math):
 Normal equations for the population OLS coefficients follow from
 `gStar = gLin θ0` and bounded/measurable features.
+
+## paper ols fullRank of orthogonal (PaperOLSConsistency)
+
+File: `ConjointSD/PaperOLSConsistency.lean`
+
+Statement: If the paper feature map is orthogonal under `ν` and each feature has
+nonzero second moment, then the population Gram matrix is invertible (full‑rank).
+
+Intuition: orthogonality makes the Gram matrix diagonal, and nonzero diagonal
+entries make the determinant nonzero.
+
+Formalization (Lean name): `paper_ols_fullRank_of_orthogonal`
+
+Formalization (math):
+Orthogonal/nondegenerate feature moments imply `IsUnit (attrGram ν φPaper)`.
 
 ## paper ols attr moments of design ae (PaperOLSConsistency)
 

@@ -918,6 +918,69 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
   have hEntry := (tendsto_pi_nhds.1 hRow) j
   simpa using hEntry
 
+theorem paper_ols_fullRank_of_orthogonal
+    (hOrth :
+      PaperOLSOrthogonalAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter)) :
+    PaperOLSFullRankAssumptions
+      (ν := ν) (fMain := fMain) (fInter := fInter) := by
+  classical
+  let v : PaperTerm Main Inter → ℝ :=
+    fun i =>
+      attrMean
+        (ν := ν)
+        (fun a =>
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+            *
+          φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+  have hDiag :
+      attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        =
+      Matrix.diagonal v := by
+    ext i j
+    by_cases h : i = j
+    · subst h
+      simp [attrGram, v, Matrix.diagonal]
+    · have hzero := hOrth.gram_diag i j h
+      simp [attrGram, v, Matrix.diagonal, h, hzero]
+  have hProd : ∀ i, v i ≠ 0 := by
+    intro i
+    simpa [v] using hOrth.gram_pos i
+  have hDet :
+      (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det ≠ 0 := by
+    have hProd' : (∏ i, v i) ≠ 0 := by
+      refine Finset.prod_ne_zero_iff.2 ?_
+      intro i hi
+      exact hProd i
+    calc
+      (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det
+          =
+        (Matrix.diagonal v).det := by
+          simpa [hDiag]
+      _ = ∏ i, v i := by
+          simpa using (Matrix.det_diagonal (d := v))
+      _ ≠ 0 := hProd'
+  have hDetUnit :
+      IsUnit
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det :=
+    (isUnit_iff_ne_zero).2 hDet
+  exact
+    { gram_isUnit :=
+        (Matrix.isUnit_iff_isUnit_det
+          (A :=
+            attrGram
+              (ν := ν)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))).2
+          hDetUnit }
+
 theorem paper_ols_theta0_eq_of_normal_eq
     (θ0 : PaperTerm Main Inter → ℝ)
     (hFull :

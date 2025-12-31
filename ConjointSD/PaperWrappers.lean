@@ -982,13 +982,10 @@ variable (blk : PaperTerm Main Inter → B)
 Paper-facing bridge: OLS attribute-distribution moments imply the combined block+total sequential
 consistency statement for the paper term model, assuming functional continuity.
 -/
-theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
+theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae
+    (Atrain : ℕ → Ω → Attr) (Yobs : ℕ → Ω → ℝ)
     (θ0 : PaperTerm Main Inter → ℝ)
-    (hmeasMain : ∀ m, Measurable (fMain m))
-    (hmeasInter : ∀ i, Measurable (fInter i))
-    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
-    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C)
-    (hMomBlocks : ∀ m b,
+    (hMomBlocks : ∀ ω m b,
       EvalWeightMatchesAttrMoments (μ := μ) (A := Aeval) (ν := ν)
         (w := w)
         (s := gHat
@@ -998,10 +995,10 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
           (fun n =>
             olsThetaHat
-              (A := Atrain) (Y := Yobs)
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m))
-    (hMomTotal : ∀ m,
+    (hMomTotal : ∀ ω m,
       EvalWeightMatchesAttrMoments (μ := μ) (A := Aeval) (ν := ν)
         (w := w)
         (s := gHat
@@ -1011,11 +1008,11 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
           (fun n =>
             olsThetaHat
-              (A := Atrain) (Y := Yobs)
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m))
     (hSplit :
-      ∀ m b,
+      ∀ ω m b,
         SplitEvalWeightAssumptions
           (μ := μ) (A := Aeval) (w := w)
           (g := gBlock
@@ -1024,11 +1021,11 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
           (θhat := fun n =>
             olsThetaHat
-              (A := Atrain) (Y := Yobs)
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m)
     (hSplitTotal :
-      ∀ m,
+      ∀ ω m,
         SplitEvalWeightAssumptions
           (μ := μ) (A := Aeval) (w := w)
           (g := gTotalΘ
@@ -1037,63 +1034,71 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
           (θhat := fun n =>
             olsThetaHat
-              (A := Atrain) (Y := Yobs)
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
               n) m)
-    (hMom :
-      OLSMomentAssumptionsOfAttr
-        (ν := ν)
-        (A := Atrain) (Y := Yobs)
-        (g := gStar (μ := μexp) (Y := Y))
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-        θ0)
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μ := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hspec :
+      WellSpecified
+        (μ := μexp)
+        (Y := Y)
+        (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ b : B,
-          (∀ᵐ ω ∂μ,
+    ∀ᵐ ω ∂μexp,
+      ∃ M : ℕ,
+        ∀ m ≥ M,
+          (∀ b : B,
+            (∀ᵐ ω' ∂μ,
+              ∀ᶠ n : ℕ in atTop,
+                totalErr μ Aeval (ν) w
+                  (gBlock
+                    (gB := fun b θ a =>
+                      gBlockTerm (blk := blk) (β := θ)
+                        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
+                  θ0
+                  (fun n =>
+                    olsThetaHat
+                      (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                      n)
+                  m n ω' < ε))
+          ∧
+          (∀ᵐ ω' ∂μ,
             ∀ᶠ n : ℕ in atTop,
               totalErr μ Aeval (ν) w
-                (gBlock
+                (gTotalΘ
                   (gB := fun b θ a =>
                     gBlockTerm (blk := blk) (β := θ)
-                      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b)
+                      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
                 θ0
                 (fun n =>
                   olsThetaHat
-                    (A := Atrain) (Y := Yobs)
+                    (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
                     (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-                    n)
-                m n ω < ε))
-        ∧
-        (∀ᵐ ω ∂μ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr μ Aeval (ν) w
-              (gTotalΘ
-                (gB := fun b θ a =>
-                  gBlockTerm (blk := blk) (β := θ)
-                    (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-              θ0
-              (fun n =>
-                olsThetaHat
-                  (A := Atrain) (Y := Yobs)
-                  (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-              n)
-              m n ω < ε) := by
+                n)
+                m n ω' < ε) := by
   have hθ :
-      Tendsto
-        (fun n =>
-          olsThetaHat
-            (A := Atrain) (Y := Yobs)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-            n)
-        atTop
-        (nhds θ0) :=
-    theta_tendsto_of_paper_ols_moments
-      (μ := μexp) (ν := ν)
-      (Y := Y) (A := Atrain) (Yobs := Yobs)
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n)
+          atTop
+          (nhds θ0) :=
+    theta_tendsto_of_paper_ols_design_ae
+      (μ := μexp) (ν := ν) (Y := Y)
       (fMain := fMain) (fInter := fInter)
-      (θ0 := θ0) hMom
+      (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
+      hDesign hFull hspec
   have hCont :
       ∀ b : B,
         FunctionalContinuityAssumptions
@@ -1109,7 +1114,8 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
         (fMain := fMain) (fInter := fInter)
         (B := B) (blk := blk) (b := b)
         (ν := ν) (θ0 := θ0)
-        hmeasMain hmeasInter hboundMain hboundInter
+        hDesign.meas_fMain hDesign.meas_fInter
+        hDesign.bound_fMain hDesign.bound_fInter
   have hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -1122,21 +1128,25 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
       (Attr := Attr) (Main := Main) (Inter := Inter) (B := B)
       (fMain := fMain) (fInter := fInter)
       (ν := ν) (blk := blk) (θ0 := θ0)
-      hmeasMain hmeasInter hboundMain hboundInter
+      hDesign.meas_fMain hDesign.meas_fInter
+      hDesign.bound_fMain hDesign.bound_fInter
+  refine hθ.mono ?_
+  intro ω hθω
   exact
     paper_sd_blocks_and_total_sequential_consistency_ae
-      (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMomBlocks := hMomBlocks) (hMomTotal := hMomTotal)
+      (μ := μ) (A := Aeval) (ν := ν) (w := w)
+      (hMomBlocks := hMomBlocks ω) (hMomTotal := hMomTotal ω)
       (gB := fun b θ a =>
         gBlockTerm (blk := blk) (β := θ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
       (θ0 := θ0)
       (θhat := fun n =>
         olsThetaHat
-          (A := Atrain) (Y := Yobs)
+          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
           n)
-      (hSplit := hSplit) (hSplitTotal := hSplitTotal)
-      (hθ := hθ) (hCont := hCont) (hContTotal := hContTotal)
+      (hSplit := hSplit ω) (hSplitTotal := hSplitTotal ω)
+      (hθ := hθω) (hCont := hCont) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
 
 end SDSequentialConsistencyOLS
@@ -1188,190 +1198,6 @@ variable {B : Type*} [Fintype B] [DecidableEq B]
 variable [DecidableEq (PaperTerm Main Inter)]
 
 theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
-    (μ : Measure Ω) [ProbMeasureAssumptions μ]
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
-    (Aeval : ℕ → Ω → Attr)
-    (Y : Attr → Ω → ℝ) (Atrain : ℕ → Attr) (Yobs : ℕ → ℝ)
-    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
-    (blk : PaperTerm Main Inter → B)
-    (θ0 : PaperTerm Main Inter → ℝ)
-    (w : Attr → ℝ)
-    (hmeasMain : ∀ m, Measurable (fMain m))
-    (hmeasInter : ∀ i, Measurable (fInter i))
-    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
-    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C)
-    (hSplitTotal :
-      ∀ m,
-        SplitEvalWeightAssumptions
-          (μ := μ) (A := Aeval) (w := w)
-          (g := gTotalΘ
-            (gB := fun b θ a =>
-              gBlockTerm (blk := blk) (β := θ)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-          (θhat := fun n =>
-            olsThetaHat
-              (A := Atrain) (Y := Yobs)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-              n) m)
-    (hMomEval : ∀ m,
-      EvalWeightMatchesAttrMoments (μ := μ) (A := Aeval) (ν := ν)
-        (w := w)
-        (s := gHat
-          (gTotalΘ
-            (gB := fun b θ a =>
-              gBlockTerm (blk := blk) (β := θ)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-          (fun n =>
-            olsThetaHat
-              (A := Atrain) (Y := Yobs)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-              n) m))
-    (hMom :
-      OLSMomentAssumptionsOfAttr
-        (ν := ν)
-        (A := Atrain) (Y := Yobs)
-        (g := gStar (μ := μexp) (Y := Y))
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-        θ0)
-    (hspec :
-      WellSpecified
-        (μ := μexp)
-        (Y := Y)
-        (β := θ0)
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ᵐ ω ∂μ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr μ Aeval (ν) w
-              (gTotalΘ
-                (gB := fun b θ a =>
-                  gBlockTerm (blk := blk) (β := θ)
-                    (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-              θ0
-              (fun n =>
-                olsThetaHat
-                  (A := Atrain) (Y := Yobs)
-                  (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-                  n)
-              m n ω < ε)
-        ∧
-        attrSD (ν)
-            (gTotalΘ
-              (gB := fun b θ a =>
-                gBlockTerm (blk := blk) (β := θ)
-                  (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-              θ0)
-          =
-          attrSD (ν) (gStar (μ := μexp) (Y := Y)) := by
-  have hθ :
-      Tendsto
-        (fun n =>
-          olsThetaHat
-            (A := Atrain) (Y := Yobs)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-            n)
-        atTop
-        (nhds θ0) :=
-    theta_tendsto_of_paper_ols_moments
-      (μ := μexp) (ν := ν)
-      (Y := Y) (A := Atrain) (Yobs := Yobs)
-      (fMain := fMain) (fInter := fInter)
-      (θ0 := θ0) hMom
-  have hContTotal :
-      FunctionalContinuityAssumptions
-        (ν := ν)
-        (g := gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-        θ0 :=
-    functionalContinuity_gTotalΘ_of_bounded
-      (Attr := Attr) (Main := Main) (Inter := Inter) (B := B)
-      (fMain := fMain) (fInter := fInter)
-      (ν := ν) (blk := blk) (θ0 := θ0)
-      hmeasMain hmeasInter hboundMain hboundInter
-  rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
-      (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMom := hMomEval)
-      (gB := fun b θ a =>
-        gBlockTerm (blk := blk) (β := θ)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-      (θ0 := θ0)
-      (θhat := fun n =>
-        olsThetaHat
-          (A := Atrain) (Y := Yobs)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-          n)
-      (hSplitTotal := hSplitTotal)
-      (hθ := hθ) (hContTotal := hContTotal)
-      (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  have hBlocks :
-      gStar (μ := μexp) (Y := Y)
-        =
-      gTotal
-        (B := B)
-        (g := gBlockTerm (blk := blk) (β := θ0)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
-    gStar_eq_sum_blocks_of_WellSpecified
-      (μ := μexp) (Y := Y) (blk := blk) (β := θ0)
-      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) hspec
-  have hStar :
-      InvarianceAE
-        (ν := ν)
-        (gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-          θ0)
-        (gStar (μ := μexp) (Y := Y)) := by
-    refine ae_of_all _ ?_
-    intro x
-    have hBlocksx :
-        gTotal
-            (B := B)
-            (g := gBlockTerm (blk := blk) (β := θ0)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) x
-          =
-        gStar (μ := μexp) (Y := Y) x := by
-      simpa using congrArg (fun f => f x) hBlocks.symm
-    calc
-      gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-          θ0 x
-          =
-          gTotal
-            (B := B)
-            (g := gBlockTerm (blk := blk) (β := θ0)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) x := by
-            simp [gTotalΘ, gTotal]
-      _ = gStar (μ := μexp) (Y := Y) x := hBlocksx
-  have hEq :
-      attrSD (ν)
-          (gTotalΘ
-            (gB := fun b θ a =>
-              gBlockTerm (blk := blk) (β := θ)
-                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-            θ0)
-        =
-      attrSD (ν) (gStar (μ := μexp) (Y := Y)) :=
-    attrSD_congr_ae
-      (ν := ν)
-      (s := gTotalΘ
-        (gB := fun b θ a =>
-          gBlockTerm (blk := blk) (β := θ)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-        θ0)
-      (t := gStar (μ := μexp) (Y := Y)) hStar
-  refine ⟨M, ?_⟩
-  intro m hm
-  have hCons := hM m hm
-  exact ⟨hCons, hEq⟩
-
-theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
     (Aeval : ℕ → Ω → Attr)
@@ -1461,16 +1287,6 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
       hDesign hFull hspec
-  have hBlocks :
-      gStar (μ := μexp) (Y := Y)
-        =
-      gTotal
-        (B := B)
-        (g := gBlockTerm (blk := blk) (β := θ0)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
-    gStar_eq_sum_blocks_of_WellSpecified
-      (μ := μexp) (Y := Y) (blk := blk) (β := θ0)
-      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) hspec
   have hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -1485,6 +1301,33 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
       (ν := ν) (blk := blk) (θ0 := θ0)
       hDesign.meas_fMain hDesign.meas_fInter
       hDesign.bound_fMain hDesign.bound_fInter
+  refine hθ.mono ?_
+  intro ω hθω
+  rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
+      (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMom := hMomEval ω)
+      (gB := fun b θ a =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+      (θ0 := θ0)
+      (θhat := fun n =>
+        olsThetaHat
+          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          n)
+      (hSplitTotal := hSplitTotal ω)
+      (hθ := hθω) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  have hBlocks :
+      gStar (μ := μexp) (Y := Y)
+        =
+      gTotal
+        (B := B)
+        (g := gBlockTerm (blk := blk) (β := θ0)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
+    gStar_eq_sum_blocks_of_WellSpecified
+      (μ := μexp) (Y := Y) (blk := blk) (β := θ0)
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) hspec
   have hStar :
       InvarianceAE
         (ν := ν)
@@ -1511,31 +1354,12 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
           θ0 x
           =
-        gTotal
+          gTotal
             (B := B)
             (g := gBlockTerm (blk := blk) (β := θ0)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) x := by
-              simp [gTotalΘ, gTotal]
+            simp [gTotalΘ, gTotal]
       _ = gStar (μ := μexp) (Y := Y) x := hBlocksx
-  refine hθ.mono ?_
-  intro ω hθω
-  rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
-      (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMom := hMomEval ω)
-      (gB := fun b θ a =>
-        gBlockTerm (blk := blk) (β := θ)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-      (θ0 := θ0)
-      (θhat := fun n =>
-        olsThetaHat
-          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-          n)
-      (hSplitTotal := hSplitTotal ω)
-      (hθ := hθω) (hContTotal := hContTotal)
-      (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm
   have hEq :
       attrSD (ν)
           (gTotalΘ
@@ -1546,6 +1370,8 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
         =
       attrSD (ν) (gStar (μ := μexp) (Y := Y)) :=
     attrSD_congr_ae (ν := ν) hStar
+  refine ⟨M, ?_⟩
+  intro m hm
   exact ⟨hM m hm, hEq⟩
 
 end PaperOLSNoTopo

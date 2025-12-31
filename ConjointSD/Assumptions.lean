@@ -301,6 +301,28 @@ structure PaperOLSFullRankAssumptions
         (ν := ν)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
 
+structure PaperOLSOrthogonalAssumptions
+    (ν : Measure Attr)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+  gram_diag :
+    ∀ i j, i ≠ j →
+      attrMean
+          (ν := ν)
+          (fun a =>
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+              *
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)
+        = 0
+  gram_pos :
+    ∀ i,
+      attrMean
+          (ν := ν)
+          (fun a =>
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+              *
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+        ≠ 0
+
 end PaperOLSDesign
 
 section SurveyWeights

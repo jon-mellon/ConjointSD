@@ -306,6 +306,12 @@ Reader mapping to standard OLS assumptions:
   The normal equations are now derived from
   [well-specification](jargon_well_specified.md) and bounded/measurable paper
   features in `ConjointSD/PaperOLSConsistency.lean`.
+- `PaperOLSOrthogonalAssumptions`: an interpretable feature‑variation condition
+  implying full‑rank. It says off‑diagonal feature cross moments vanish and
+  each feature has nonzero second moment under `ν`, so the Gram matrix is
+  diagonal with nonzero entries.
+  - `PaperOLSOrthogonalAssumptions.gram_diag`: off‑diagonal cross moments are 0.
+  - `PaperOLSOrthogonalAssumptions.gram_pos`: diagonal moments are nonzero.
 
 ## EvaluationWeights
 - `EvalWeightMatchesAttrMoments`: evaluation-weight transport assumption. It
