@@ -27,17 +27,21 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
    - The proof uses target-human-population [L2](readable/jargon_l2.md) distances under `ν`, but the R workflow computes test-set [RMSE](readable/jargon_rmse.md)s. A generalization/[LLN](readable/jargon_lln.md) step is needed to show the sample RMSE converges to the target-human-population `L2(ν)` distance (or to a weighted target-human-population target).
    - To fix: add a sample-to-target-human-population convergence lemma for the [RMSE](readable/jargon_rmse.md) estimator (possibly under the same IID/weighting assumptions as the SD consistency results), and thread it into the [L2](readable/jargon_l2.md)-approximation assumptions used in the bounds.
 
-7) OLS cross-moment convergence is assumed rather than derived
-   - The `PaperOLSLLNA.cross_tendsto` assumption is a law-of-large-numbers statement about the empirical cross moments `X'Y/n`. It is not derived from the current randomization assumptions, which only ensure randomized assignment of profiles and independence from potential outcomes.
-   - To fix: either (i) add an explicit joint-draw LLN package for `(A i, Yobs i)` (independence across draws + finite second moments) and derive `cross_tendsto`, or (ii) add a cluster-level LLN (independent respondents, within-respondent dependence allowed) and derive a clustered version of `cross_tendsto` consistent with robust inference practice.
+7) OLS cross-moment convergence is now derived from the design assumptions
+   - Closed: `paper_ols_lln_of_design_ae` derives the Gram and cross-moment LLNs from
+     design IID, bounded/measurable features, and the `Yobs = gStar ∘ A` link
+     (see `ConjointSD/PaperOLSConsistency.lean`). The cross-moment convergence is no
+     longer assumed as a standalone input in the paper-specific OLS pipeline.
 
-8) Functional continuity is assumed rather than derived from the linear/additive model
-   - The `FunctionalContinuityAssumptions` bundle in `ConjointSD/Assumptions.lean` is currently required by several sequential consistency results, but it should follow from the paper’s linear/additive score specification plus bounded features.
-   - Sketch to close the gap:
-     - Prove pointwise continuity: for fixed attribute profile `a`, show `θ ↦ g θ a` is continuous for the specific model (e.g., `gPaper`, `gBlockTerm`, `gTotalΘ`) by unfolding the finite sum in `θ` and using continuity of addition/multiplication and finite sums.
-     - Add a domination lemma: if the feature map is bounded or has an integrable envelope, then `|g θ a|` is uniformly dominated for all θ in a neighborhood of `θ0`, and likewise for `|g θ a|^2`.
-     - Use dominated convergence to show `θ ↦ attrMeanΘ ν g` and `θ ↦ attrM2Θ ν g` are continuous at `θ0`, yielding `FunctionalContinuityAssumptions`.
-     - Replace `FunctionalContinuityAssumptions` hypotheses in paper-facing theorems with the concrete linear-model + bounded-feature assumptions, and drop the standalone assumption from `ConjointSD/Assumptions.lean` once the derivation is wired through.
+8) Functional continuity is now derived for the linear/additive model
+   - Closed for the paper’s linear model: `functionalContinuity_gLin_of_bounded` shows
+     `FunctionalContinuityAssumptions` for linear-in-terms scores under bounded/measurable
+     features, and `functionalContinuity_gTotalΘ_of_bounded` specializes this to the paper
+     block/total score family. The design-based wrapper
+     `paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae` now builds
+     continuity from `PaperOLSDesignAssumptions` instead of taking it as a premise.
+   - Remaining: general (non-linear) sequential-consistency theorems still accept
+     `FunctionalContinuityAssumptions` as an explicit hypothesis.
 
 9) Population moment assumptions are weaker than the paper’s bounded-score intuition
    - `AttrMomentAssumptions` currently assumes only a.e. measurability and square-integrability under the target population attribute distribution `ν`. In the paper, status scores are implicitly bounded (0–100), so square-integrability should follow from boundedness plus measurability.

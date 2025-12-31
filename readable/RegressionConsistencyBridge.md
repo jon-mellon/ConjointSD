@@ -13,5 +13,7 @@ Main theorems:
 
 Additional results:
 - For [block](jargon_block.md) models, `BlockFunctionalContinuityAssumptions` and block versions of the mean/second‑moment bridge are provided.
+- For linear-in-terms scores, `functionalContinuity_gLin_of_bounded` derives `FunctionalContinuityAssumptions` from bounded/measurable features by rewriting the mean and second moment as finite sums (`attrMean_gLin_eq_sum`, `attrM2_gLin_eq_sum`).
+- `functionalContinuity_of_eq` lets you transfer continuity assumptions across pointwise-equal score families.
 
 In plain [terms](jargon_term.md): if the [parameter](jargon_parameter.md) estimates settle down and the target human population moments depend smoothly on the parameter, then [plug-in](jargon_plug_in.md) moments [converge](jargon_convergence.md) as needed.

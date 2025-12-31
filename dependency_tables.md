@@ -11,34 +11,36 @@ output of `Scratch.lean`.
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 1%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 1%" />
-<col style="width: 1%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
+<col style="width: 1%" />
+<col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
+<col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
@@ -51,7 +53,7 @@ output of `Scratch.lean`.
 <col style="width: 2%" />
 <col style="width: 1%" />
 <col style="width: 0%" />
-<col style="width: 2%" />
+<col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
@@ -88,6 +90,9 @@ output of `Scratch.lean`.
 <th style="text-align: left;">attrMean tendsto of theta tendsto</th>
 <th style="text-align: left;">attrM2 tendsto of theta tendsto</th>
 <th style="text-align: left;">attrSD tendsto of mean m2 tendsto</th>
+<th style="text-align: left;">functionalContinuity gLin of bounded</th>
+<th style="text-align: left;">functionalContinuity gTotalΘ of
+bounded</th>
 <th style="text-align: left;">DesignAttrIID</th>
 <th style="text-align: left;">sd component consistent</th>
 <th style="text-align: left;">sd component consistent of design</th>
@@ -218,6 +223,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -271,6 +278,8 @@ gStar ae of NoInteractions</th>
 <tr>
 <td style="text-align: left;">AttrMomentAssumptions aemeas</td>
 <td style="text-align: left;">8</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -376,6 +385,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -423,6 +434,8 @@ gStar ae of NoInteractions</th>
 <tr>
 <td style="text-align: left;">ConjointIdRandomized bounded</td>
 <td style="text-align: left;">8</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -519,6 +532,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -575,6 +590,8 @@ gStar ae of NoInteractions</th>
 <tr>
 <td style="text-align: left;">ConjointIdRandomized ignorability</td>
 <td style="text-align: left;">8</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -671,6 +688,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -727,6 +746,8 @@ gStar ae of NoInteractions</th>
 <tr>
 <td style="text-align: left;">ConjointIdRandomized measY</td>
 <td style="text-align: left;">8</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -823,6 +844,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -880,6 +903,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">ConjointRandomizationStream exists
 randomization</td>
 <td style="text-align: left;">1</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -961,6 +986,8 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1037,6 +1064,8 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1108,6 +1137,8 @@ randomization</td>
 <tr>
 <td style="text-align: left;">DesignAttrIID measA</td>
 <td style="text-align: left;">36</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1194,6 +1225,8 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -1260,6 +1293,8 @@ randomization</td>
 <tr>
 <td style="text-align: left;">EvalWeightMatchesAttrMoments mean eq</td>
 <td style="text-align: left;">30</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1346,6 +1381,8 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -1412,6 +1449,8 @@ randomization</td>
 <tr>
 <td style="text-align: left;">Measurable (A 0)</td>
 <td style="text-align: left;">30</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1553,6 +1592,8 @@ tendsto</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -1566,6 +1607,8 @@ tendsto</td>
 <td style="text-align: left;">OLSMomentAssumptionsOfAttr gramInv
 tendsto</td>
 <td style="text-align: left;">4</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1710,6 +1753,8 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -1719,6 +1764,8 @@ fInter</td>
 <tr>
 <td style="text-align: left;">PaperOLSDesignAssumptions bound fMain</td>
 <td style="text-align: left;">2</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1862,6 +1909,8 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -1871,6 +1920,8 @@ fInter</td>
 <tr>
 <td style="text-align: left;">PaperOLSDesignAssumptions meas fInter</td>
 <td style="text-align: left;">2</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2014,6 +2065,8 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -2023,6 +2076,8 @@ fInter</td>
 <tr>
 <td style="text-align: left;">ScoreAssumptions int g0 sq</td>
 <td style="text-align: left;">35</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2104,6 +2159,8 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2179,10 +2236,12 @@ fInter</td>
 
 ## Auto-generated theorem dependency matrix
 
-<table style="width:100%;">
+<table>
 <colgroup>
 <col style="width: 2%" />
 <col style="width: 0%" />
+<col style="width: 1%" />
+<col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
@@ -2262,6 +2321,9 @@ fInter</td>
 <th style="text-align: left;">attrMean tendsto of theta tendsto</th>
 <th style="text-align: left;">attrM2 tendsto of theta tendsto</th>
 <th style="text-align: left;">attrSD tendsto of mean m2 tendsto</th>
+<th style="text-align: left;">functionalContinuity gLin of bounded</th>
+<th style="text-align: left;">functionalContinuity gTotalΘ of
+bounded</th>
 <th style="text-align: left;">DesignAttrIID</th>
 <th style="text-align: left;">sd component consistent</th>
 <th style="text-align: left;">sd component consistent of design</th>
@@ -2373,6 +2435,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2445,6 +2509,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">attrMean tendsto of theta tendsto</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2530,6 +2596,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2605,6 +2673,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2667,7 +2737,164 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
+<td style="text-align: left;">functionalContinuity gLin of bounded</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">Ø</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+</tr>
+<tr>
+<td style="text-align: left;">functionalContinuity gTotalΘ of
+bounded</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">Ø</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+</tr>
+<tr>
 <td style="text-align: left;">DesignAttrIID</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2743,6 +2970,8 @@ gStar ae of NoInteractions</th>
 </tr>
 <tr>
 <td style="text-align: left;">sd component consistent</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2824,6 +3053,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2893,6 +3124,8 @@ gStar ae of NoInteractions</th>
 </tr>
 <tr>
 <td style="text-align: left;">meanHatZ tendsto ae of score</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2968,6 +3201,8 @@ gStar ae of NoInteractions</th>
 </tr>
 <tr>
 <td style="text-align: left;">sdHatZ tendsto ae of score</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3052,6 +3287,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3118,6 +3355,8 @@ gStar ae of NoInteractions</th>
 </tr>
 <tr>
 <td style="text-align: left;">sdHat fixed m tendsto ae attrSD</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3204,6 +3443,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -3268,6 +3509,8 @@ gStar ae of NoInteractions</th>
 </tr>
 <tr>
 <td style="text-align: left;">trainErr tendsto zero</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3356,6 +3599,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3418,6 +3663,8 @@ gStar ae of NoInteractions</th>
 </tr>
 <tr>
 <td style="text-align: left;">sequential consistency blocks ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3508,6 +3755,8 @@ gStar ae of NoInteractions</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -3569,6 +3818,8 @@ gStar ae of NoInteractions</th>
 <tr>
 <td style="text-align: left;">sequential consistency blocks ae of
 bounded</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3662,6 +3913,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3738,6 +3991,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -3795,6 +4050,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">ae restrict consistency</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3890,6 +4147,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3945,6 +4204,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">identified amce from condMeans</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4042,6 +4303,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4095,6 +4358,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">attrMean congr ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4194,6 +4459,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -4245,6 +4512,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">attrVar congr ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4346,6 +4615,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4395,6 +4666,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">approxInvarianceAE triangle</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4498,6 +4771,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -4545,6 +4820,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">attrSD diff le of L2Approx</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4650,6 +4927,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4695,6 +4974,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">attrMean diff le of approx ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4802,6 +5083,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -4845,6 +5128,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">attrVar diff le of approx ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4954,6 +5239,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -4995,6 +5282,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">attrSD eq of moments</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5106,6 +5395,8 @@ bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -5145,6 +5436,8 @@ bounded</td>
 </tr>
 <tr>
 <td style="text-align: left;">gStar eq sum blocks of WellSpecified</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5259,6 +5552,8 @@ ApproxWellSpecified</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -5297,6 +5592,8 @@ ApproxWellSpecified</td>
 <tr>
 <td style="text-align: left;">gStar approx sum blocks of
 ApproxWellSpecifiedAE</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5413,6 +5710,8 @@ fullMainEffects</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5449,6 +5748,8 @@ fullMainEffects</td>
 <tr>
 <td style="text-align: left;">approxWellSpecified of
 approxNoInteractions of fullMainEffects</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5567,6 +5868,8 @@ gBTerm</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5643,6 +5946,8 @@ gBTerm</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -5676,6 +5981,8 @@ gBTerm</td>
 <tr>
 <td style="text-align: left;">paper sd total sequential consistency to
 gStar ae of gBTerm</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5797,6 +6104,8 @@ condMean</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -5827,6 +6136,8 @@ condMean</td>
 </tr>
 <tr>
 <td style="text-align: left;">paper identifies amce from condMeans</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5950,6 +6261,8 @@ status</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -5979,6 +6292,8 @@ status</td>
 <tr>
 <td style="text-align: left;">paper identifies amce from condMeans
 status</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6104,6 +6419,8 @@ WellSpecified</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6131,6 +6448,8 @@ WellSpecified</td>
 <tr>
 <td style="text-align: left;">paper sd blocks sequential consistency
 ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6258,6 +6577,8 @@ of bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6283,6 +6604,8 @@ of bounded</td>
 <tr>
 <td style="text-align: left;">paper sd total sequential consistency
 ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6412,6 +6735,8 @@ of bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -6435,6 +6760,8 @@ of bounded</td>
 <tr>
 <td style="text-align: left;">paper sd blocks and total sequential
 consistency ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6566,6 +6893,8 @@ consistency ae of bounded</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6643,6 +6972,8 @@ true target ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6663,6 +6994,8 @@ true target ae</td>
 <tr>
 <td style="text-align: left;">paper sd blocks sequential consistency to
 approx target ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6797,6 +7130,8 @@ approx target ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6815,6 +7150,8 @@ approx target ae</td>
 <tr>
 <td style="text-align: left;">paper sd total sequential consistency to
 true target ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6951,6 +7288,8 @@ gPot ae of identification</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -6967,6 +7306,8 @@ gPot ae of identification</td>
 <tr>
 <td style="text-align: left;">paper sd total sequential consistency to
 gStar approx ae of ApproxWellSpecifiedAE</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7105,6 +7446,8 @@ gStar approx ae of ApproxOracleAE</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7119,6 +7462,8 @@ gStar approx ae of ApproxOracleAE</td>
 <tr>
 <td style="text-align: left;">paper sd total sequential consistency to
 gStar ae of WellSpecified</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7195,6 +7540,8 @@ gStar ae of WellSpecified</td>
 <tr>
 <td style="text-align: left;">paper sd blocks and total sequential
 consistency ae of paper ols moments</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7336,6 +7683,8 @@ of hGTotal</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -7347,6 +7696,8 @@ of hGTotal</td>
 <tr>
 <td style="text-align: left;">paper sd total sequential consistency ae
 of paper ols gStar total</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7490,6 +7841,8 @@ of paper ols design total ae</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7498,6 +7851,8 @@ of paper ols design total ae</td>
 </tr>
 <tr>
 <td style="text-align: left;">paper ols attr moments of design ae</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7643,6 +7998,8 @@ true target ae of hGTotal</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -7650,6 +8007,8 @@ true target ae of hGTotal</td>
 <tr>
 <td style="text-align: left;">paper sd total sequential consistency to
 gStar ae of WellSpecified of hGTotal</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -7797,6 +8156,8 @@ gStar ae of NoInteractions</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">Ø</td>
 </tr>
 </tbody>
@@ -7804,4 +8165,4 @@ gStar ae of NoInteractions</td>
 
 ## Theorem dependency DAG
 
-<img src="dependency_tables_files/theorem_dependency_dag.png" width="2947" />
+<img src="dependency_tables_files/theorem_dependency_dag.png" width="3066" />

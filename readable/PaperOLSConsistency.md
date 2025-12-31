@@ -24,6 +24,7 @@ Main results:
 - `attrMean_tendsto_of_paper_ols_moments_ae` / `attrM2_tendsto_of_paper_ols_moments_ae` provide the same [bridge](jargon_bridge.md) a.e. when the OLS moment assumptions hold along sample paths.
 - `attrMean_tendsto_of_paper_ols_design_ae` / `attrM2_tendsto_of_paper_ols_design_ae` are the end‑to‑end a.e. bridges from the design‑side bundle to plug‑in moment convergence.
 - `gPaper_eq_gTotalΘ_blocks` identifies the paper score with the block-sum total score (for any `blk`), so the OLS path can feed into the block/total [standard deviation](jargon_standard_deviation.md) chain.
+- `functionalContinuity_gPaper_of_bounded` and `functionalContinuity_gTotalΘ_of_bounded` derive the required functional [continuity](jargon_continuity.md) for the paper score and total block score directly from bounded/measurable features.
 - `attrMean_tendsto_of_paper_ols_gStar_total` / `attrM2_tendsto_of_paper_ols_gStar_total` and their a.e. counterparts lift the OLS assumptions from `gPaper` to the block-sum total score.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the target human population normal equations.
 

@@ -514,10 +514,10 @@ sequential [consistency](readable/jargon_consistency.md) result holds a.e. over
 training draws, and the total-score [standard deviation](readable/jargon_standard_deviation.md)
 target equals the `gStar` target.
 
-Intuition: the design‑side assumptions yield raw parameter convergence along
-almost all training sample paths, so the sequential consistency chain can be
-applied using functional continuity without assuming plug‑in moment convergence
-directly.
+Intuition: the design‑side assumptions yield raw parameter convergence and
+bounded-feature continuity along almost all training sample paths, so the
+sequential consistency chain can be applied without separately assuming
+plug‑in moment convergence or functional continuity.
 
 Formalization (Lean name): `paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae`
 

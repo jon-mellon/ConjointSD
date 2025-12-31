@@ -17,7 +17,7 @@ Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consis
 - Includes bounded variants.
 - Adds total-score wrappers that take raw `Tendsto` + continuity hypotheses instead of a bundled plug‑in assumption.
 - Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only and blocks+total sequential [consistency](jargon_consistency.md) results.
-- Adds a design-based OLS wrapper (`paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae`) that derives the plug-in moment assumptions a.e. from `PaperOLSDesignAssumptions`, inverse-Gram stability, and identification.
+- Adds a design-based OLS wrapper (`paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae`) that derives the plug-in moment assumptions and functional continuity a.e. from `PaperOLSDesignAssumptions`, inverse-Gram stability, and identification.
 
 Section 4: targeting the true [estimand](jargon_estimand.md)
 - Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the target human [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.

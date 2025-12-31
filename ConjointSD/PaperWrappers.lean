@@ -1408,14 +1408,6 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
             (ν := ν)
             (g := gStar (μ := μexp) (Y := Y))
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))))
-    (hContTotal :
-      FunctionalContinuityAssumptions
-        (ν := ν)
-        (g := gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-        θ0)
     (hspec :
       WellSpecified
         (μ := μexp)
@@ -1474,6 +1466,20 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
     gStar_eq_sum_blocks_of_WellSpecified
       (μ := μexp) (Y := Y) (blk := blk) (β := θ0)
       (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) hspec
+  have hContTotal :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+        θ0 :=
+    functionalContinuity_gTotalΘ_of_bounded
+      (Attr := Attr) (Main := Main) (Inter := Inter) (B := B)
+      (fMain := fMain) (fInter := fInter)
+      (ν := ν) (blk := blk) (θ0 := θ0)
+      hDesign.meas_fMain hDesign.meas_fInter
+      hDesign.bound_fMain hDesign.bound_fInter
   have hStar :
       InvarianceAE
         (ν := ν)
