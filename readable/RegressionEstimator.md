@@ -21,6 +21,6 @@ Population versions:
  - `OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions` is a small adapter from target human population assumptions to the abstract limit form.
 
 Final [bridge](jargon_bridge.md):
-- `GEstimationAssumptions_of_OLSConsistency` says that if an OLS sequence [converges](jargon_convergence.md) and the target human population functionals are [continuous](jargon_continuity.md), then the [plug-in](jargon_plug_in.md) moment assumptions hold.
+- `attrMean_tendsto_of_OLSConsistency` and `attrM2_tendsto_of_OLSConsistency` say that if an OLS sequence [converges](jargon_convergence.md) and the target human population functionals are [continuous](jargon_continuity.md), then the plug‑in [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) converge.
 
 This file supplies the regression backbone used by the paper-level [consistency](jargon_consistency.md) results.

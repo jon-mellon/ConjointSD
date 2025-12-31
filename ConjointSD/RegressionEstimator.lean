@@ -2,7 +2,7 @@
 ConjointSD/RegressionEstimator.lean
 
 Minimal formalization of the paper's regression estimator (OLS-style) and a bridge
-from estimator consistency to `GEstimationAssumptions`.
+from estimator consistency to plug-in moment convergence.
 -/
 
 import ConjointSD.Assumptions
@@ -109,9 +109,9 @@ theorem olsThetaHat_tendsto_of_attr_moments
 
 /--
 Bridge: if the OLS estimator sequence is consistent and the induced attribute-distribution
-functionals are continuous at `θ0`, then `GEstimationAssumptions` holds.
+functionals are continuous at `θ0`, then the mean/second-moment targets converge.
 -/
-theorem GEstimationAssumptions_of_OLSConsistency
+theorem attrMean_tendsto_of_OLSConsistency
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
@@ -119,9 +119,28 @@ theorem GEstimationAssumptions_of_OLSConsistency
     (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
     (hCons : OLSConsistencyAssumptions (A := A) (Y := Y) (φ := φ) θ0 ols)
     (hCont : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
-    GEstimationAssumptions (ν := ν) g θ0 ols.θhat :=
-  GEstimationAssumptions_of_theta_tendsto
+    Tendsto
+      (fun n => attrMean ν (gHat g ols.θhat n))
+      atTop
+      (nhds (attrMean ν (g θ0))) :=
+  attrMean_tendsto_of_theta_tendsto
     (ν := ν) (g := g) (θ0 := θ0) (θhat := ols.θhat)
-    ⟨hCons.tendsto_theta⟩ hCont
+    hCons.tendsto_theta hCont
+
+theorem attrM2_tendsto_of_OLSConsistency
+    {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
+    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
+    {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
+    (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
+    (hCons : OLSConsistencyAssumptions (A := A) (Y := Y) (φ := φ) θ0 ols)
+    (hCont : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
+    Tendsto
+      (fun n => attrM2 ν (gHat g ols.θhat n))
+      atTop
+      (nhds (attrM2 ν (g θ0))) :=
+  attrM2_tendsto_of_theta_tendsto
+    (ν := ν) (g := g) (θ0 := θ0) (θhat := ols.θhat)
+    hCons.tendsto_theta hCont
 
 end ConjointSD

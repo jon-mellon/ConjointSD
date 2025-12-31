@@ -4,11 +4,19 @@ Always follow these project rules when making changes:
 
 ## Big Picture Context
  
-Look in paper_highlights.md for excerpts from the paper that describe its analytic goals and approach. 
+Look in paper_highlights.md for excerpts from the paper that describe its analytic goals and approach and core_idea.md for the core thrust of the proof plan. 
 
 ## Assumptions (required)
 
-Always add new assumptions (even minor ones) to `ConjointSD/Assumptions.lean` and reuse existing assumptions when possible.
+Always add new assumptions (even minor ones) to `ConjointSD/Assumptions.lean` and reuse existing assumptions when possible. 
+
+No assumption may live outside of Assumptions.lean.
+
+No non-assumption content (e.g. anything derived) should be in Assumptions.lean.
+
+## Proof rules
+
+No sorry, trivial, or other fudges. No compromising on the analytic goals for convenience.
 
 ## Jargon links (required)
 

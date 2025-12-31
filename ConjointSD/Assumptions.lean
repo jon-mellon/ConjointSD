@@ -59,16 +59,6 @@ def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
 
 end Transport
 
-section Convergence
-
-variable {Θ : Type*} [TopologicalSpace Θ]
-
-/-- Bundle convergence of an estimator sequence. -/
-structure ThetaTendstoAssumptions (θhat : ℕ → Θ) (θ0 : Θ) : Prop where
-  tendsto : Tendsto θhat atTop (nhds θ0)
-
-end Convergence
-
 section Positivity
 
 /-- Bundle positivity of ε. -/
@@ -76,32 +66,6 @@ structure EpsilonAssumptions (ε : ℝ) : Prop where
   pos : 0 < ε
 
 end Positivity
-
-section PredictedSD
-
-variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω)
-
-/-- IID + moment assumptions for applying the strong law to Z and Z^2. -/
-structure IIDAssumptions (Z : ℕ → Ω → ℝ) [ProbMeasureAssumptions μ] : Prop where
-  indep : Pairwise (fun i j => IndepFun (Z i) (Z j) μ)
-  ident : ∀ i, IdentDistrib (Z i) (Z 0) μ μ
-  intZ2 : Integrable (fun ω => (Z 0 ω) ^ 2) μ
-
-namespace IIDAssumptions
-
-theorem intZ {μ : Measure Ω} [ProbMeasureAssumptions μ] {Z : ℕ → Ω → ℝ}
-    (h : IIDAssumptions (μ := μ) Z) : Integrable (Z 0) μ := by
-  have hmeas : AEStronglyMeasurable (Z 0) μ :=
-    (h.ident 0).aemeasurable_fst.aestronglyMeasurable
-  have hmem2 : MemLp (Z 0) (2 : ENNReal) μ :=
-    (memLp_two_iff_integrable_sq hmeas).2 h.intZ2
-  have hmem1 : MemLp (Z 0) (1 : ENNReal) μ := hmem2.mono_exponent (by norm_num)
-  exact (memLp_one_iff_integrable).1 hmem1
-
-end IIDAssumptions
-
-end PredictedSD
 
 section SDDecomposition
 
@@ -119,7 +83,7 @@ structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
   indepA : Pairwise (fun i j => IndepFun (A i) (A j) μ)
   identA : ∀ i, IdentDistrib (A i) (A 0) μ μ
 
-/-- Sufficient conditions to use `sdHatZ_tendsto_ae` on the induced score process. -/
+/-- Sufficient conditions to use score-based SD consistency lemmas on the induced score process. -/
 structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions μ] :
     Prop where
   designAttrIID : DesignAttrIID (μ := μ) A
@@ -150,34 +114,6 @@ structure DecompAssumptions (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) :
   bound_g : ∀ b, ∃ C, 0 ≤ C ∧ ∀ a, |g b a| ≤ C
 
 end SDDecomposition
-
-section EstimatedG
-
-variable {Attr : Type*} [MeasurableSpace Attr]
-variable {Θ : Type*}
-
-/--
-Assumptions ensuring replacing oracle `g θ0` with estimated `g (θhat n)` does not change
-target human population moments (under the attribute distribution `ν`) in the limit.
-
-Minimal version: assume convergence of mean and second moment; derive var and sd.
--/
-structure GEstimationAssumptions
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
-  mean_tendsto :
-      Tendsto
-        (fun n => attrMean ν (gHat g θhat n))
-        atTop
-        (nhds (attrMean ν (g θ0)))
-
-  m2_tendsto :
-      Tendsto
-        (fun n => attrM2 ν (gHat g θhat n))
-        atTop
-        (nhds (attrM2 ν (g θ0)))
-
-end EstimatedG
 
 section SampleSplitting
 
@@ -313,6 +249,55 @@ structure OLSMomentAssumptionsOfAttr {Attr : Type u} {Term : Type v}
 
 end RegressionEstimator
 
+section PaperOLSDesign
+
+variable {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]
+variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
+
+/--
+Paper OLS design-side assumptions that are sufficient to derive the LLN hypotheses
+for the Gram and cross moments used in OLS consistency.
+
+These bundle design IID, measurability/boundedness of the paper feature map, and
+boundedness of the conjoint causal estimand `gStar`, plus the transport needed to
+swap the design attribute distribution with `ν` for Gram/cross targets.
+-/
+structure PaperOLSDesignAssumptions
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
+    (ν : Measure Attr)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+  yobs_eq : ∀ n ω, Yobs n ω = gStar (μ := μ) (Y := Y) (A n ω)
+  designAttrIID : DesignAttrIID (μ := μ) A
+  meas_fMain : ∀ m, Measurable (fMain m)
+  meas_fInter : ∀ i, Measurable (fInter i)
+  bound_fMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C
+  bound_fInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C
+  meas_gStar : Measurable (gStar (μ := μ) (Y := Y))
+  bound_gStar : ∃ C, 0 ≤ C ∧ ∀ a, |gStar (μ := μ) (Y := Y) a| ≤ C
+  gram_eq :
+    ∀ i j,
+      attrGram
+          (ν := Measure.map (A 0) μ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j
+        =
+      attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j
+  cross_eq :
+    ∀ i,
+      attrCross
+          (ν := Measure.map (A 0) μ)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
+        =
+      attrCross
+          (ν := ν)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
+
+end PaperOLSDesign
+
 section SurveyWeights
 
 variable {Attr : Type*} [MeasurableSpace Attr]
@@ -418,49 +403,6 @@ lemma DesignAttrIID.of_randomization_stream
     simpa [hAeq i, hAeq 0] using hA
 
 end ConjointIdentificationLemmas
-
-section ModelBridge
-
-section ParametricMainInteractions
-
-variable {Ω Attr : Type*} [MeasurableSpace Ω]
-
-variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
-
-/--
-Assumption: the causal estimand is exactly the paper’s parametric model
-(`β0` + main effects + listed interactions).
--/
-def ParametricMainInteractions (μ : Measure Ω) (Y : Attr → Ω → ℝ)
-    (β0 : ℝ) (βMain : Main → ℝ) (βInter : Inter → ℝ)
-    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop :=
-  ∀ x,
-    gStar (μ := μ) (Y := Y) x
-      =
-    β0 + (∑ m, βMain m * fMain m x) + (∑ i, βInter i * fInter i x)
-
-end ParametricMainInteractions
-
-end ModelBridge
-
-section AdditiveProjectionOracle
-
-variable {Attr Term : Type*} [MeasurableSpace Attr] [Fintype Term]
-
-/--
-Additive projection oracle: the oracle score decomposes into a linear-in-terms
-component plus a residual orthogonal (in L2) to each term feature.
--/
-def AdditiveProjectionOracle
-    (ν : Measure Attr)
-    (gOracle : Attr → ℝ)
-    (β : Term → ℝ) (φ : Term → Attr → ℝ)
-    (r : Attr → ℝ) : Prop :=
-  (∀ x, gOracle x = gLin (β := β) (φ := φ) x + r x) ∧
-  (∀ t, Integrable (fun x => r x * φ t x) ν) ∧
-  (∀ t, ∫ x, r x * φ t x ∂ν = 0)
-
-end AdditiveProjectionOracle
 
 section ApproximateOracle
 

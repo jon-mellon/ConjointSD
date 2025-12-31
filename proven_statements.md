@@ -27,7 +27,7 @@ Intuition: If draws are i.i.d., the sample moments stabilize, so the sample
 Formalization (Lean name): `sdHatZ tendsto ae`
 
 Formalization (math):
-`sdHatZ(Z) -> designSDZ(Z)` a.e. under `IIDAssumptions Z`.
+`sdHatZ(Z) -> designSDZ(Z)` a.e. for score processes derived from `ScoreAssumptions`.
 
 ## sd component consistent (SDDecompositionFromConjoint)
 
@@ -173,7 +173,8 @@ Formalization (Lean name): `sequential consistency ae`
 
 Formalization (math):
 `sdEst w m n -> attrSD nu (g theta0)` sequentially, under
-`SplitEvalWeightAssumptions` and `GEstimationAssumptions`.
+`SplitEvalWeightAssumptions`, raw parameter convergence, and
+`FunctionalContinuityAssumptions`.
 
 ## paper identifies potMean from condMean (PaperWrappers)
 
@@ -329,23 +330,6 @@ Formalization (Lean name): `attrSD diff le of L2Approx`
 
 Formalization (math):
 If `E[|s - t|^2] ≤ δ^2`, then `|attrSD ν s - attrSD ν t| ≤ 2 * δ`.
-
-## gStar eq sum blocks of parametricMainInteractions (WellSpecifiedFromNoInteractions)
-
-File: `ConjointSD/WellSpecifiedFromNoInteractions.lean`
-
-Statement: If the causal score has only main effects (no
-[interactions](readable/jargon_interaction.md)), then it equals the sum of
-[block](readable/jargon_block.md) scores in the [term](readable/jargon_term.md)
-model.
-
-Intuition: With no [interactions](readable/jargon_interaction.md), the
-[linear model](readable/jargon_linear_model.md) is exactly the target.
-
-Formalization (Lean name): `gStar eq sum blocks of parametricMainInteractions`
-
-Formalization (math):
-`NoInteractions -> gStar = sum b gBlock b`.
 
 ## paper identifies potMean from condMean status (PaperWrappers)
 
@@ -520,23 +504,65 @@ Formalization (Lean name): `paper sd total sequential consistency ae of paper ol
 Formalization (math):
 `attrSD ν gTotal = attrSD ν gStar(μexp)` under OLS moments and well-spec.
 
+## paper sd total sequential consistency ae of paper ols design total ae (PaperWrappers)
+
+File: `ConjointSD/PaperWrappers.lean`
+
+Statement: Under the paper’s design-side OLS bundle (`PaperOLSDesignAssumptions`),
+inverse‑Gram stability, identification, and well‑specification, the total
+sequential [consistency](readable/jargon_consistency.md) result holds a.e. over
+training draws, and the total-score [standard deviation](readable/jargon_standard_deviation.md)
+target equals the `gStar` target.
+
+Intuition: the design‑side assumptions yield raw parameter convergence along
+almost all training sample paths, so the sequential consistency chain can be
+applied using functional continuity without assuming plug‑in moment convergence
+directly.
+
+Formalization (Lean name): `paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae`
+
+Formalization (math):
+For a.e. training draw, total `totalErr` goes to 0 sequentially and
+`attrSD ν gTotal = attrSD ν gStar(μexp)`.
+
+## paper ols attr moments of design ae (PaperOLSConsistency)
+
+File: `ConjointSD/PaperOLSConsistency.lean`
+
+Statement: Under the paper’s design-side bundle (`PaperOLSDesignAssumptions`),
+plus inverse‑Gram stability and identification, the OLS moment assumptions
+(`OLSMomentAssumptionsOfAttr`) hold almost everywhere for the paper’s
+term set and causal estimand `gStar`.
+
+Intuition: bounded/measurable features and a design‑IID attribute stream give the
+Gram/cross LLNs; transport of those moments to the target `ν` plus invertibility
+and normal‑equation identification complete the OLS moment package.
+
+Formalization (Lean name): `paper_ols_attr_moments_of_design_ae`
+
+Formalization (math):
+`OLSMomentAssumptionsOfAttr` holds a.e. given design LLN, inverse Gram convergence,
+and identification under `ν`.
+
 ## paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: If `GEstimationAssumptions` hold and the model is
+Statement: If raw parameter convergence and
+`FunctionalContinuityAssumptions` hold and the model is
 [well-specified](readable/jargon_well_specified.md) for `gStar`, the total
 [standard deviation](readable/jargon_standard_deviation.md) target is the
 `gStar` [standard deviation](readable/jargon_standard_deviation.md).
 
-Intuition: `GEstimationAssumptions` drive the same
+Intuition: functional continuity plus θ-hat convergence drive the same
 [standard deviation](readable/jargon_standard_deviation.md) target transfer as
-the θ-hat [continuity](readable/jargon_continuity.md) route.
+plug‑in moment convergence.
 
 Formalization (Lean name): `paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal`
 
 Formalization (math):
-`attrSD ν gTotal = attrSD ν gStar(μexp)` under `hGTotal` and well-spec.
+`attrSD ν gTotal = attrSD ν gStar(μexp)` under θ-hat convergence,
+`FunctionalContinuityAssumptions`, and well-spec.
 
 ## paper sd total sequential consistency to gStar ae of NoInteractions (PaperWrappers)
 

@@ -8,7 +8,7 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
    - Empirical bound sketch (not formalized): use a sample split to estimate an approximation error ε between the linear-in-terms model and a richer benchmark, then plug ε into the approximate SD targets.
 
 2) [Sequential consistency](readable/jargon_sequential_consistency.md) proofs do not connect to the paper’s sampling/estimation workflow ([SequentialConsistency.lean](ConjointSD/SequentialConsistency.lean), [DecompositionSequentialConsistency.lean](ConjointSD/DecompositionSequentialConsistency.lean), [PaperWrappers.lean](ConjointSD/PaperWrappers.lean))
-   - Sequential results require SplitEvalAssumptions ([i.i.d.](readable/jargon_iid.md) eval sample; second-moment conditions with integrability derived under a probability measure) and `GEstimationAssumptions` but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).
+   - Sequential results require SplitEvalAssumptions ([i.i.d.](readable/jargon_iid.md) eval sample; second-moment conditions with integrability derived under a probability measure), raw parameter convergence, and `FunctionalContinuityAssumptions`, but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).
    - To fix: formalize the training/evaluation split used in the paper, show the assumptions hold for that procedure, and state rates or limits for the specific m,n regimes relevant to the data size.
 
 3) Main [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md) not instantiated for the status conjoint
@@ -43,41 +43,29 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
    - `AttrMomentAssumptions` currently assumes only a.e. measurability and square-integrability under the target population attribute distribution `ν`. In the paper, status scores are implicitly bounded (0–100), so square-integrability should follow from boundedness plus measurability.
    - To fix: add a bounded-score assumption for population scores (or reuse existing boundedness bundles), derive `AttrMomentAssumptions.int2` from it, and replace direct `AttrMomentAssumptions` usage in paper-facing statements with the bounded version.
 
-10) Consistency of the OLS estimator is not derived; `ThetaTendstoAssumptions` (and `GEstimationAssumptions`) are still used as premises in paper-facing results
-   - Current state: we can prove `Tendsto` for `olsThetaHat` **if** `OLSMomentAssumptionsOfAttr` is given (see `ConjointSD/PaperOLSConsistency.lean`), but those moment assumptions are still assumed. As a result, downstream results often require `ThetaTendstoAssumptions` or `GEstimationAssumptions` as standalone hypotheses rather than deriving them from the experimental design.
-   - Goal: derive `ThetaTendstoAssumptions` for the paper’s OLS estimator from the randomized conjoint design + measurement assumptions, then *derive* `GEstimationAssumptions` from that convergence (plus functional continuity), and finally remove both assumptions from paper-facing statements.
-   - Execution plan (do not implement yet):
-     - Inventory current OLS pipeline: identify the minimal lemma chain from `ScoreAssumptions` to `paper_ols_lln_of_score_assumptions_ae` to `OLSMomentAssumptionsOfAttr` to `theta_tendsto_of_paper_ols_moments`.
-     - Add a single assumption bundle for OLS LLN under IID (likely in `ConjointSD/Assumptions.lean`) that packages (i) `DesignAttrIID` on `A`, (ii) measurability/boundedness of `φPaper` terms, (iii) measurability/boundedness of `gStar` (or `Yobs = gStar ∘ A`), and (iv) any integrability needed for LLN.
-     - Prove helper lemmas that turn this bundle into the `ScoreAssumptions` required by `paper_ols_lln_of_score_assumptions_ae` for each Gram and cross term.
-     - Use the existing `paper_ols_lln_of_score_assumptions_ae` and `paper_ols_attr_moments_of_lln_fullrank_ae` to produce `OLSMomentAssumptionsOfAttr` almost everywhere.
-     - Derive `Tendsto (olsThetaHat ...)` and wrap it as `ThetaTendstoAssumptions`, or swap downstream theorems to consume the `Tendsto` statement directly.
-     - Add a bridging lemma: `ThetaTendstoAssumptions` + `FunctionalContinuityAssumptions` ⇒ `GEstimationAssumptions` (or use the existing bridge in `ConjointSD/RegressionConsistencyBridge.lean` if it already provides this statement for the paper’s `g`).
-     - Replace explicit `GEstimationAssumptions` premises in paper-facing results with the derived bridge lemma; only then drop `GEstimationAssumptions` from those theorem statements.
-     - Only after the above is complete, replace explicit `ThetaTendstoAssumptions` premises in `PaperWrappers.lean` and other paper-facing results with the derived OLS path.
-     - Update documentation (`readable/Assumptions.md`, `readable/PaperOLSConsistency.md`, `proven_statements.md`, `gaps.md`, `Scratch.lean`) and refresh `dependency_tables.Rmd` / `dependency_tables.md`.
-     - Run `lake build` to validate.
-   - Plan (formal work needed):
-     - Add a bundled “paper OLS LLN” assumption in `ConjointSD/Assumptions.lean` (or reuse/extend existing `ScoreAssumptions`) that implies the Gram and cross LLN statements needed by `paper_ols_lln_of_score_assumptions_ae`.
-     - Prove those LLN statements for each Gram/cross term from the design assumptions (iid/clustered assignments, bounded or square‑integrable features, and a noiseless or mean‑zero outcome link `Yobs = gStar ∘ A` or `E[Yobs | A] = gStar A`).
-     - Use `paper_ols_attr_moments_of_lln_fullrank_ae` to package the LLN results plus full‑rank/invertibility and identification (`theta0_eq`) into `OLSMomentAssumptionsOfAttr`.
-     - Apply `theta_tendsto_of_paper_ols_moments` to obtain `Tendsto (olsThetaHat ...)`, then package as `ThetaTendstoAssumptions` or use the `Tendsto` statement directly.
-     - Prove or reuse the continuity bridge from `Tendsto` to moment convergence: `FunctionalContinuityAssumptions` ⇒ continuity of `attrMeanΘ` and `attrM2Θ`, then combine with `ThetaTendstoAssumptions` to yield `GEstimationAssumptions`.
-     - Replace paper‑facing theorems that currently assume `GEstimationAssumptions` with the derived bridge path (usually via `GEstimationAssumptions_of_paper_ols_moments_*`).
+10) Consistency of the OLS estimator is not derived; raw `Tendsto` for `olsThetaHat` and `FunctionalContinuityAssumptions` are still used as premises in paper-facing results
+   - Current state: we can prove `Tendsto` for `olsThetaHat` **if** `OLSMomentAssumptionsOfAttr` is given (see `ConjointSD/PaperOLSConsistency.lean`). We have a design-side bundle (`PaperOLSDesignAssumptions`) plus lemmas
+     `paper_ols_lln_of_design_ae`, `paper_ols_attr_moments_of_design_ae`,
+     and `theta_tendsto_of_paper_ols_design_ae`, which derive the LLN and OLS moment assumptions a.e. from bounded/measurable features, bounded `gStar`, and moment transport to `ν`. Inverse‑Gram stability and identification (the `hInv` and `hId` premises) are still assumed and have not yet been derived from the design.
+   - Completed refactor: `ThetaTendstoAssumptions` and `GEstimationAssumptions` were removed from paper-facing statements. Those theorems now take raw `Tendsto (olsThetaHat ...)` and `FunctionalContinuityAssumptions` directly, with plug‑in moment convergence derived as needed.
+   - Remaining work:
+     - Derive `Tendsto (olsThetaHat ...)` from `PaperOLSDesignAssumptions` without assuming `OLSMomentAssumptionsOfAttr` (i.e., close the LLN/Gram/cross‑moment path from the randomized design).
+     - Derive inverse‑Gram stability and identification (`hInv`, `hId`) from the design-side assumptions.
+     - Derive `FunctionalContinuityAssumptions` from the paper’s linear/additive model and bounded features (ties to gap 8), then remove it as a standalone premise in paper-facing results.
+     - Re-run the documentation chain (`readable/*.md`, `proven_statements.md`, `Scratch.lean`) and refresh `dependency_tables.Rmd` / `dependency_tables.md` after those derivations.
    - Dependencies on other gaps:
      - Depends on gap (7) “OLS cross‑moment convergence is assumed rather than derived,” because that LLN is a core input to `OLSMomentAssumptionsOfAttr`.
-     - Depends on gap (8) “Functional continuity is assumed rather than derived,” because the bridge to `GEstimationAssumptions` uses continuity of the population moment functionals.
+     - Depends on gap (8) “Functional continuity is assumed rather than derived,” because that continuity underpins the derived plug‑in moment convergence.
      - If the derivation uses boundedness of scores/features to justify integrability for LLN, it is helped by gap (9) (bounded‑score to moment assumptions), but not strictly required if square‑integrability is assumed directly.
 
-11) IID assumptions are more general than the paper’s design-based pipeline
-   - Current state: `IIDAssumptions` is a standalone bundle for real‑valued processes and is used as the generic hypothesis in `PredictedSD.lean`, even though most paper-facing uses derive IID from the randomized attribute process via `ScoreAssumptions`/`DesignAttrIID`.
-   - Goal: narrow the formal pipeline so IID is derived from the conjoint design (`A` + `g`) rather than assumed for arbitrary `Z`, aligning with the paper’s randomized-attribute logic.
-   - Plan (do not implement yet):
-     - Audit all uses of `IIDAssumptions` (especially in `ConjointSD/PredictedSD.lean` and any paper-facing wrappers) and classify which can be specialized to `Z := Zcomp A g` without losing needed generality.
-     - Promote the existing derivation lemma (`iidAssumptions_Zcomp`) as the canonical entry point, and refactor downstream theorems to take `ScoreAssumptions`/`DesignAttrIID` (plus measurability and L2) rather than `IIDAssumptions`.
-     - Keep any generic IID theorems in `ConjointSD/Assumptions.lean`, but make paper-facing results go through the design-derived path.
-     - Update documentation (`readable/Assumptions.md`, `readable/PredictedSD.md`, `proven_statements.md`, `project_map.md`, `readable/lean_index.md`, `Scratch.lean`, `dependency_tables.Rmd`/`.md`) to reflect the narrower assumption flow.
-     - Run `lake build` from the repo root to verify the refactor.
+11) Redundant well-specification lemma is unused
+   - Candidate: `wellSpecified_of_noInteractions_of_fullMainEffects` in `ConjointSD/WellSpecifiedFromNoInteractions.lean` is not referenced by any other Lean theorem or wrapper.
+   - Plan: remove the lemma and update documentation to reflect its deletion, but recheck the DAG for new usages before removing it.
+
+11.5) Unused transport lemma for attr SD
+   - Candidate: `attrSD_eq_of_moments` in `ConjointSD/Transport.lean` is not referenced by any other Lean theorem or wrapper.
+   - Plan: either wire it into the moment-transport chain or remove it after rechecking the DAG for new usages.
+
 
 12) Derivable assumptions from bounded status are not centralized
    - Current state: boundedness of the status score (0–100) is implicitly used across multiple assumption bundles (e.g., `ScoreAssumptions.int_g0_sq`, `AttrMomentAssumptions.int2`, `DecompAssumptions.bound_g`), but the derivations are not recorded in one place.
@@ -87,7 +75,7 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
      - Prove helper lemmas for each *derivable* assumption field, naming targets explicitly:
        - `AttrMomentAssumptions.int2` (and thus `AttrMomentAssumptions.int1`) for `s := status`.
        - `ScoreAssumptions.int_g0_sq` (and thus `ScoreAssumptions.int_g0`) for `g := status` and `g := gHat ...` when `gHat` is status-only.
-       - `IIDAssumptions.intZ2` (and thus `IIDAssumptions.intZ`) for `Z n := status (A n)` (or bounded transforms).
+     - L2-integrability for `Z n := status (A n)` (or bounded transforms).
        - `DecompAssumptions.bound_g` for block scores that are status-only.
        - `SplitEvalAssumptionsBounded.hBound` for evaluation scores that are status-only.
      - Refactor call sites to use these lemmas and drop redundant boundedness assumptions where the score is status-only.

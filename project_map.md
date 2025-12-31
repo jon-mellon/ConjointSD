@@ -13,7 +13,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Core probability/SD machinery
 
-- [ConjointSD/PredictedSD.lean](readable/PredictedSD.md) defines empirical/experimental-design [mean](readable/jargon_mean.md), [second moment](readable/jargon_second_moment.md), [variance](readable/jargon_variance.md), and [SD](readable/jargon_standard_deviation.md) for a real-valued process; proves [LLN](readable/jargon_lln.md)-based [consistency](readable/jargon_consistency.md) `sdHatZ -> designSDZ`.
+- [ConjointSD/PredictedSD.lean](readable/PredictedSD.md) defines empirical/experimental-design [mean](readable/jargon_mean.md), [second moment](readable/jargon_second_moment.md), [variance](readable/jargon_variance.md), and [SD](readable/jargon_standard_deviation.md) for a real-valued process, plus basic measurability helpers; LLN-based SD consistency now lives in the score-based pipeline.
 - [ConjointSD/SDDecompositionFromConjoint.lean](readable/SDDecompositionFromConjoint.md) lifts `PredictedSD` to conjoint scores and proves [SD](readable/jargon_standard_deviation.md) [consistency](readable/jargon_consistency.md) for single scores and [block](readable/jargon_block.md) families using assumption bundles from `Assumptions.lean`.
 - [ConjointSD/VarianceDecompositionFromBlocks.lean](readable/VarianceDecompositionFromBlocks.md) defines [block](readable/jargon_block.md)-total scores and proves a [variance](readable/jargon_variance.md) proxy decomposition into sums of [covariances](readable/jargon_covariance.md); relies on [block](readable/jargon_block.md) scores from `SDDecompositionFromConjoint`.
 
@@ -30,17 +30,17 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Estimation and sequential consistency
 
-- [ConjointSD/EstimatedG.lean](readable/EstimatedG.md) derives [variance](readable/jargon_variance.md)/[SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) from `GEstimationAssumptions` (now in `Assumptions.lean`) and the plug-in score `gHat` (now in `Defs.lean`).
+- [ConjointSD/EstimatedG.lean](readable/EstimatedG.md) derives [variance](readable/jargon_variance.md)/[SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) from plug‑in mean/second‑moment convergence and the plug-in score `gHat` (now in `Defs.lean`).
 - [ConjointSD/SampleSplitting.lean](readable/SampleSplitting.md) proves evaluation-stage [SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) for fixed training index `m` using `SDDecompositionFromConjoint`, `DesignAttributeBridge`, and `EstimatedG`.
 - [ConjointSD/SequentialConsistency.lean](readable/SequentialConsistency.md) defines `sdEst`, training error, and total error; proves [sequential consistency](readable/jargon_sequential_consistency.md) (m then n) using `SampleSplitting` and `EstimatedG`.
 - [ConjointSD/DecompositionSequentialConsistency.lean](readable/DecompositionSequentialConsistency.md) lifts [sequential consistency](readable/jargon_sequential_consistency.md) to [block](readable/jargon_block.md) scores and total scores (single `M` for all blocks); uses `SequentialConsistency`, `SampleSplitting`, `EstimatedG`, and `Transport`.
 
 ## [Regression](readable/jargon_regression.md)/continuity bridge (Route 2)
 
-- [ConjointSD/RegressionConsistencyBridge.lean](readable/RegressionConsistencyBridge.md) derives `GEstimationAssumptions` from `θhat -> θ0` and functional continuity assumptions defined in `Assumptions.lean`; also provides [block](readable/jargon_block.md) versions.
-- [ConjointSD/DeriveGEstimationAssumptions.lean](readable/DeriveGEstimationAssumptions.md) thin wrappers that produce `GEstimationAssumptions` (and block versions) from `θhat -> θ0` + continuity; depends on `RegressionConsistencyBridge`.
-- [ConjointSD/RegressionEstimator.lean](readable/RegressionEstimator.md) formalizes the [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) sequence and bridges [estimator](readable/jargon_estimator.md) [consistency](readable/jargon_consistency.md) to `GEstimationAssumptions`; assumption packages now live in `Assumptions.lean`.
-- [ConjointSD/PaperOLSConsistency.lean](readable/PaperOLSConsistency.md) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to `GEstimationAssumptions`, plus a bridge from `gPaper` to the block-sum total score (via `gTotalΘ`).
+- [ConjointSD/RegressionConsistencyBridge.lean](readable/RegressionConsistencyBridge.md) derives plug‑in mean/second‑moment convergence from `θhat -> θ0` and functional continuity assumptions defined in `Assumptions.lean`; also provides [block](readable/jargon_block.md) versions.
+- [ConjointSD/DeriveGEstimationAssumptions.lean](readable/DeriveGEstimationAssumptions.md) thin wrappers that produce plug‑in mean/second‑moment convergence (and block versions) from `θhat -> θ0` + continuity; depends on `RegressionConsistencyBridge`.
+- [ConjointSD/RegressionEstimator.lean](readable/RegressionEstimator.md) formalizes the [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) sequence and bridges [estimator](readable/jargon_estimator.md) [consistency](readable/jargon_consistency.md) to plug‑in moment convergence; assumption packages now live in `Assumptions.lean`.
+- [ConjointSD/PaperOLSConsistency.lean](readable/PaperOLSConsistency.md) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to plug‑in moment convergence, plus a bridge from `gPaper` to the block-sum total score (via `gTotalΘ`).
 
 ## Model/[term](readable/jargon_term.md)/[block](readable/jargon_block.md) bridges
 

@@ -28,7 +28,6 @@ import ConjointSD.Assumptions
 import ConjointSD.Transport
 import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.TargetEquivalence
-import ConjointSD.DeriveGEstimationAssumptions
 import ConjointSD.PaperOLSConsistency
 import ConjointSD.WellSpecifiedFromNoInteractions
 
@@ -181,7 +180,7 @@ theorem paper_sd_blocks_sequential_consistency_ae
     (hSplit : ∀ m b,
       SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) θ0)
@@ -193,18 +192,11 @@ theorem paper_sd_blocks_sequential_consistency_ae
             ∀ᶠ n : ℕ in atTop,
               totalErr μ A ν w
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
-  have hG :
-      ∀ b : B,
-        GEstimationAssumptions (ν := ν)
-          (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) :=
-    fun b =>
-      derive_hG (ν := ν)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) hθ (hCont b)
   exact
     sequential_consistency_blocks_ae
       (μ := μ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplit) (hMom := hMom) (hG := hG)
+      (hSplit := hSplit) (hMom := hMom) (hθ := hθ) (hCont := hCont)
       (ε := ε) (hε := hε)
 
 theorem paper_sd_blocks_sequential_consistency_ae_of_bounded
@@ -223,7 +215,7 @@ theorem paper_sd_blocks_sequential_consistency_ae_of_bounded
       ScoreAssumptions (μ := μ) (A := A)
         (g := fun a => w a * (gHat (gBlock (gB := gB) b) θhat m a) ^ 2))
     (hW0 : designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := w)) ≠ 0)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) θ0)
@@ -235,20 +227,13 @@ theorem paper_sd_blocks_sequential_consistency_ae_of_bounded
             ∀ᶠ n : ℕ in atTop,
               totalErr μ A ν w
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
-  have hG :
-      ∀ b : B,
-        GEstimationAssumptions (ν := ν)
-          (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) :=
-    fun b =>
-      derive_hG (ν := ν)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) hθ (hCont b)
   exact
     sequential_consistency_blocks_ae_of_bounded
       (μ := μ) (A := A) (ν := ν) (w := w) (hPop := hPop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplit) (hWeight := hWeight) (hWeightScore := hWeightScore)
       (hWeightScoreSq := hWeightScoreSq) (hW0 := hW0)
-      (hMom := hMom) (hG := hG)
+      (hMom := hMom) (hθ := hθ) (hCont := hCont)
       (ε := ε) (hε := hε)
 
 /-- Paper-facing: total-score SD is sequentially consistent. -/
@@ -260,7 +245,7 @@ theorem paper_sd_total_sequential_consistency_ae
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -271,16 +256,11 @@ theorem paper_sd_total_sequential_consistency_ae
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν w
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
-  have hGTotal :
-      GEstimationAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) :=
-    derive_hG (ν := ν)
-      (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) hθ hContTotal
   exact
     sequential_consistency_total_ae
       (μ := μ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotal) (hMom := hMom) (hGTotal := hGTotal)
+      (hSplitTotal := hSplitTotal) (hMom := hMom) (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
 
 theorem paper_sd_total_sequential_consistency_ae_of_bounded
@@ -300,7 +280,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_bounded
       ScoreAssumptions (μ := μ) (A := A)
         (g := fun a => w a * (gHat (gTotalΘ (gB := gB)) θhat m a) ^ 2))
     (hW0 : designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := w)) ≠ 0)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -311,18 +291,13 @@ theorem paper_sd_total_sequential_consistency_ae_of_bounded
           ∀ᶠ n : ℕ in atTop,
             totalErr μ A ν w
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
-  have hGTotal :
-      GEstimationAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) :=
-    derive_hG (ν := ν)
-      (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat) hθ hContTotal
   exact
     sequential_consistency_total_ae_of_bounded
       (μ := μ) (A := A) (ν := ν) (w := w) (hPop := hPop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotal) (hWeight := hWeight)
       (hWeightScore := hWeightScore) (hWeightScoreSq := hWeightScoreSq) (hW0 := hW0)
-      (hMom := hMom) (hGTotal := hGTotal)
+      (hMom := hMom) (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
 
 /--
@@ -344,7 +319,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) θ0)
@@ -414,7 +389,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_bounded
       ScoreAssumptions (μ := μ) (A := A)
         (g := fun a => w a * (gHat (gTotalΘ (gB := gB)) θhat m a) ^ 2))
     (hW0 : designMeanZ (μ := μ) (Z := Zcomp (A := A) (g := w)) ≠ 0)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) θ0)
@@ -474,7 +449,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
     (hSplit : ∀ m b,
       SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) θ0)
@@ -524,7 +499,7 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
     (hSplit : ∀ m b,
       SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) θ0)
@@ -591,7 +566,7 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -651,7 +626,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -697,7 +672,7 @@ theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -774,7 +749,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -854,7 +829,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -937,7 +912,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)
@@ -1119,18 +1094,19 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
               n)
               m n ω < ε) := by
   have hθ :
-      ThetaTendstoAssumptions
-        (θhat := fun n =>
+      Tendsto
+        (fun n =>
           olsThetaHat
             (A := Atrain) (Y := Yobs)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
             n)
-        (θ0 := θ0) :=
-    ⟨theta_tendsto_of_paper_ols_moments
-        (μ := μexp) (ν := ν)
-        (Y := Y) (A := Atrain) (Yobs := Yobs)
-        (fMain := fMain) (fInter := fInter)
-        (θ0 := θ0) hMom⟩
+        atTop
+        (nhds θ0) :=
+    theta_tendsto_of_paper_ols_moments
+      (μ := μexp) (ν := ν)
+      (Y := Y) (A := Atrain) (Yobs := Yobs)
+      (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) hMom
   exact
     paper_sd_blocks_and_total_sequential_consistency_ae
       (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMomBlocks := hMomBlocks) (hMomTotal := hMomTotal)
@@ -1159,10 +1135,10 @@ variable {B : Type*} [Fintype B]
 variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
 variable (A : ℕ → Ω → Attr)
 variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
+variable (w : Attr → ℝ)
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
-omit [TopologicalSpace Θ] in
 theorem paper_sd_total_sequential_consistency_ae_of_hGTotal
     (hMom : ∀ m,
       EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
@@ -1171,9 +1147,10 @@ theorem paper_sd_total_sequential_consistency_ae_of_hGTotal
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hGTotal :
-      GEstimationAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν)
+        (g := gTotalΘ (gB := gB)) θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1185,7 +1162,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_hGTotal
       (sequential_consistency_total_ae
         (μ := μ) (A := A) (ν := ν) (w := w) (hMom := hMom)
         (gB := gB) (θ0 := θ0) (θhat := θhat)
-        (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+        (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
         (ε := ε) (hε := hε))
 
 section PaperOLSNoTopo
@@ -1194,7 +1171,6 @@ variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
 variable {B : Type*} [Fintype B] [DecidableEq B]
 variable [DecidableEq (PaperTerm Main Inter)]
 
-omit [TopologicalSpace Θ] in
 theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
@@ -1237,10 +1213,13 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
         (g := gStar (μ := μexp) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
         θ0)
-    (hCont :
+    (hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)
-        (g := gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
         θ0)
     (hspec :
       WellSpecified
@@ -1274,25 +1253,20 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
               θ0)
           =
           attrSD (ν) (gStar (μ := μexp) (Y := Y)) := by
-  have hGTotal :
-      GEstimationAssumptions
-        (ν := ν)
-        (g := gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
-        θ0
+  have hθ :
+      Tendsto
         (fun n =>
           olsThetaHat
             (A := Atrain) (Y := Yobs)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-            n) :=
-    GEstimationAssumptions_of_paper_ols_gStar_total
-      (μ := μexp) (ν := ν) (Y := Y)
-      (A := Atrain) (Yobs := Yobs)
+            n)
+        atTop
+        (nhds θ0) :=
+    theta_tendsto_of_paper_ols_moments
+      (μ := μexp) (ν := ν)
+      (Y := Y) (A := Atrain) (Yobs := Yobs)
       (fMain := fMain) (fInter := fInter)
-      (blk := blk) (θ0 := θ0)
-      hMom hCont
+      (θ0 := θ0) hMom
   rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
       (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMom := hMomEval)
       (gB := fun b θ a =>
@@ -1305,7 +1279,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
           n)
       (hSplitTotal := hSplitTotal)
-      (hGTotal := hGTotal)
+      (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   have hBlocks :
@@ -1372,9 +1346,199 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
   have hCons := hM m hm
   exact ⟨hCons, hEq⟩
 
+theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (Aeval : ℕ → Ω → Attr)
+    (Y : Attr → Ω → ℝ) (Atrain : ℕ → Ω → Attr) (Yobs : ℕ → Ω → ℝ)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
+    (blk : PaperTerm Main Inter → B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (w : Attr → ℝ)
+    (hSplitTotal :
+      ∀ ω m,
+        SplitEvalWeightAssumptions
+          (μ := μ) (A := Aeval) (w := w)
+          (g := gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+          (θhat := fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hMomEval : ∀ ω m,
+      EvalWeightMatchesAttrMoments (μ := μ) (A := Aeval) (ν := ν)
+        (w := w)
+        (s := gHat
+          (gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n) m))
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μ := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hInv :
+      ∀ᵐ ω ∂μexp,
+        ∀ i j,
+          Tendsto
+            (fun n =>
+              (gramMatrix
+                (A := fun k => Atrain k ω)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                n)⁻¹ i j)
+            atTop
+            (nhds
+              ((attrGram
+                (ν := ν)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
+    (hId :
+      θ0 =
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
+          (attrCross
+            (ν := ν)
+            (g := gStar (μ := μexp) (Y := Y))
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))))
+    (hContTotal :
+      FunctionalContinuityAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+        θ0)
+    (hspec :
+      WellSpecified
+        (μ := μexp)
+        (Y := Y)
+        (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
+    ∀ᵐ ω ∂μexp,
+      ∃ M : ℕ,
+        ∀ m ≥ M,
+          (∀ᵐ ω' ∂μ,
+            ∀ᶠ n : ℕ in atTop,
+              totalErr μ Aeval (ν) w
+                (gTotalΘ
+                  (gB := fun b θ a =>
+                    gBlockTerm (blk := blk) (β := θ)
+                      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+                θ0
+                (fun n =>
+                  olsThetaHat
+                    (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                    (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                    n)
+                m n ω' < ε)
+          ∧
+          attrSD (ν)
+              (gTotalΘ
+                (gB := fun b θ a =>
+                  gBlockTerm (blk := blk) (β := θ)
+                    (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+                θ0)
+            =
+            attrSD (ν) (gStar (μ := μexp) (Y := Y)) := by
+  have hθ :
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n)
+          atTop
+          (nhds θ0) :=
+    theta_tendsto_of_paper_ols_design_ae
+      (μ := μexp) (ν := ν) (Y := Y)
+      (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
+      hDesign hInv hId
+  have hBlocks :
+      gStar (μ := μexp) (Y := Y)
+        =
+      gTotal
+        (B := B)
+        (g := gBlockTerm (blk := blk) (β := θ0)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
+    gStar_eq_sum_blocks_of_WellSpecified
+      (μ := μexp) (Y := Y) (blk := blk) (β := θ0)
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) hspec
+  have hStar :
+      InvarianceAE
+        (ν := ν)
+        (gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+          θ0)
+        (gStar (μ := μexp) (Y := Y)) := by
+    refine ae_of_all _ ?_
+    intro x
+    have hBlocksx :
+        gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) x
+          =
+        gStar (μ := μexp) (Y := Y) x := by
+      simpa using congrArg (fun f => f x) hBlocks.symm
+    calc
+      gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+          θ0 x
+          =
+        gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) x := by
+              simp [gTotalΘ, gTotal]
+      _ = gStar (μ := μexp) (Y := Y) x := hBlocksx
+  refine hθ.mono ?_
+  intro ω hθω
+  rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
+      (μ := μ) (A := Aeval) (ν := ν) (w := w) (hMom := hMomEval ω)
+      (gB := fun b θ a =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+      (θ0 := θ0)
+      (θhat := fun n =>
+        olsThetaHat
+          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          n)
+      (hSplitTotal := hSplitTotal ω)
+      (hθ := hθω) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
+      with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm
+  have hEq :
+      attrSD (ν)
+          (gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+            θ0)
+        =
+      attrSD (ν) (gStar (μ := μexp) (Y := Y)) :=
+    attrSD_congr_ae (ν := ν) hStar
+  exact ⟨hM m hm, hEq⟩
+
 end PaperOLSNoTopo
 
-omit [TopologicalSpace Θ] in
 theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
     (hMom : ∀ m,
       EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
@@ -1383,9 +1547,10 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hGTotal :
-      GEstimationAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν)
+        (g := gTotalΘ (gB := gB)) θ0)
     (gTrue : Attr → ℝ)
     (hTrue : InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -1401,7 +1566,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
   rcases paper_sd_total_sequential_consistency_ae_of_hGTotal
       (μ := μ) (A := A) (ν := ν) (w := w) (hMom := hMom)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+      (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
@@ -1414,7 +1579,6 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
       (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
   exact ⟨hCons, hEq⟩
 
-omit [TopologicalSpace Θ] in
 theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hGTotal
     {Term : Type*} [Fintype Term] [DecidableEq B]
     (hMomEval : ∀ m,
@@ -1433,9 +1597,10 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hGTotal :
-      GEstimationAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν)
+        (g := gTotalΘ (gB := gB)) θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -1468,7 +1633,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
   rcases paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
       (μ := μ) (A := A) (ν := ν) (w := w) (hMom := hMomEval)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotal) (hGTotal := hGTotal)
+      (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
       (gTrue := gStar (μ := μexp) (Y := Y)) (hTrue := hStar)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
@@ -1476,6 +1641,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hG
   intro m hm
   rcases hM m hm with ⟨hCons, hEq⟩
   exact ⟨hCons, hEq⟩
+
 
 end SDSequentialConsistencyNoTopo
 
@@ -1530,7 +1696,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
       ∀ m,
         SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) θ0)

@@ -121,7 +121,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
           (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
           (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -205,7 +205,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
           (μ := μ) (A := A) (w := w)
           (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
           (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions
         (ν := ν)

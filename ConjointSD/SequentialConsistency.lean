@@ -19,6 +19,7 @@ No uniformity/joint (m,n) claim.
 import Mathlib
 import ConjointSD.SampleSplitting
 import ConjointSD.EstimatedG
+import ConjointSD.RegressionConsistencyBridge
 import ConjointSD.Transport
 
 open Filter MeasureTheory ProbabilityTheory
@@ -31,7 +32,7 @@ section
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
-variable {Θ : Type*}
+variable {Θ : Type*} [TopologicalSpace Θ]
 
 /-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/
 def sdEst
@@ -123,26 +124,40 @@ theorem totalErr_tendsto_trainErr_fixed_m
   simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
 
 /--
-Step (2): training error → 0 as `m → ∞` under `GEstimationAssumptions` for `ν`.
+Step (2): training error → 0 as `m → ∞` under parameter convergence and continuity.
 -/
 theorem trainErr_tendsto_zero
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hG :
-      GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat)) :
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hCont : FunctionalContinuityAssumptions (ν := ν) g θ0) :
     Tendsto
       (fun m : ℕ => trainErr ν g θ0 θhat m)
       atTop
       (nhds 0) := by
   let c : ℝ := attrSD ν (g θ0)
+  have hmean :
+      Tendsto
+        (fun n => attrMean ν (gHat g θhat n))
+        atTop
+        (nhds (attrMean ν (g θ0))) :=
+    attrMean_tendsto_of_theta_tendsto
+      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hθ hCont
+  have hm2 :
+      Tendsto
+        (fun n => attrM2 ν (gHat g θhat n))
+        atTop
+        (nhds (attrM2 ν (g θ0))) :=
+    attrM2_tendsto_of_theta_tendsto
+      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hθ hCont
   have hBase :
       Tendsto
         (fun m : ℕ => attrSD ν (gHat g θhat m))
         atTop
         (nhds c) := by
     simpa [c] using
-      (attrSD_tendsto_of_GEstimationAssumptions
-        (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hG)
+      (attrSD_tendsto_of_mean_m2_tendsto
+        (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hmean hm2)
   have hcont :
       Continuous (fun x : ℝ => abs (x - c)) := by
     simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
@@ -160,8 +175,8 @@ Step (3): sequential ε–M–eventually-in-n consistency (a.e. over ω).
 
 Assumptions:
 - `hSplit : ∀ m, SplitEvalWeightAssumptions ... m` gives evaluation-stage conditions for each m.
-- `hG` gives convergence of the attribute-distribution SD under `ν`
-  for gHat → g θ0.
+- `hθ` and `hCont` give convergence of the attribute-distribution SD under `ν`
+  for gHat → g θ0 via continuity.
 
 Conclusion:
 For any ε>0, ∃ M, ∀ m≥M, (∀ᵐ ω, ∀ᶠ n, totalErr ... m n ω < ε).
@@ -176,8 +191,8 @@ theorem sequential_consistency_ae
       SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w) (g := g) (θhat := θhat) m)
     (hMom : ∀ m, EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
       (w := w) (s := gHat g θhat m))
-    (hG :
-      GEstimationAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hCont : FunctionalContinuityAssumptions (ν := ν) g θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -189,7 +204,7 @@ theorem sequential_consistency_ae
       Tendsto (fun m : ℕ => trainErr ν g θ0 θhat m)
         atTop (nhds 0) :=
     trainErr_tendsto_zero
-      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hG
+      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hθ hCont
   -- pick M so that for all m≥M, trainErr m < ε/2
   have hEv :
       ∀ᶠ m : ℕ in atTop,

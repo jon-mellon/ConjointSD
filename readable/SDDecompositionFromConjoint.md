@@ -11,8 +11,8 @@ Key definitions:
 
 Main results:
 - If `g` is bounded, then the second-moment and [integrable](jargon_integrable.md) conditions hold automatically.
-- `iidAssumptions_Zcomp` shows that the score process `Zcomp` inherits [IID](jargon_iid.md) properties from `A`.
-- `meanHatZ_tendsto_ae_of_score` applies the [LLN](jargon_lln.md) for the empirical [mean](jargon_mean.md) directly from `ScoreAssumptions`.
+- `meanHatZ_tendsto_ae_of_score`, `m2HatZ_tendsto_ae_of_score`, and `sdHatZ_tendsto_ae_of_score` apply the [LLN](jargon_lln.md) to score processes directly from `ScoreAssumptions`.
+- `meanHatZW_tendsto_ae_of_score`, `m2HatZW_tendsto_ae_of_score`, and `sdHatZW_tendsto_ae_of_score` provide weighted analogues for evaluation weights.
 - `sd_component_consistent` proves the empirical [standard deviation](jargon_standard_deviation.md) of `g(A i)` [converges](jargon_convergence.md) to the target attribute-distribution [SD](jargon_standard_deviation.md).
 - `sd_component_consistent_of_design` is a wrapper that takes `ConjointRandomizationStream` and yields the same SD-consistency result, making the link to randomization explicit.
 - `sd_component_consistent_of_bounded` is a convenient bounded version.

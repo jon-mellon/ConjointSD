@@ -13,10 +13,11 @@ Section 2: model to [blocks](jargon_block.md)
 
 Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md)
 - Provides paper-facing statements that block [standard deviations](jargon_standard_deviation.md) and total standard deviation are sequentially [consistent](jargon_consistency.md) (see [sequential consistency](jargon_sequential_consistency.md) and [consistency](jargon_consistency.md)).
-- Uses the "Route 2" [bridge](jargon_bridge.md): [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) plus [continuity](jargon_continuity.md) implies the [plug-in](jargon_plug_in.md) moment assumptions.
+- Uses the "Route 2" [bridge](jargon_bridge.md): [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) plus [continuity](jargon_continuity.md) implies plug‑in moment convergence.
 - Includes bounded variants.
-- Adds `hGTotal`-based wrappers so the total-score sequential consistency chain can be driven directly by `GEstimationAssumptions`.
+- Adds total-score wrappers that take raw `Tendsto` + continuity hypotheses instead of a bundled plug‑in assumption.
 - Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only and blocks+total sequential [consistency](jargon_consistency.md) results.
+- Adds a design-based OLS wrapper (`paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae`) that derives the plug-in moment assumptions a.e. from `PaperOLSDesignAssumptions`, inverse-Gram stability, and identification.
 
 Section 4: targeting the true [estimand](jargon_estimand.md)
 - Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the target human [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.
@@ -27,7 +28,7 @@ Section 4c: link to the causal [estimand](jargon_estimand.md)
 - If the total model score at `theta0` matches a linear [term](jargon_term.md) model and that model is [well-specified](jargon_well_specified.md) for `gStar`, then the [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) targets the `gStar` SD.
 - Adds an approximate counterpart: if the model is only approximately [well-specified](jargon_well_specified.md) ν-a.e., the total-score [standard deviation](jargon_standard_deviation.md) target is within an explicit bound of the `gStar` target.
 - Adds a two-stage approximation version: a flexible oracle score approximates `gStar`, and the model approximates that oracle, with the combined error driving the [standard deviation](jargon_standard_deviation.md) bound to the `gStar` target.
-- Provides an `hGTotal` variant of the `gStar` bridge so OLS-style `GEstimationAssumptions` can drive the same conclusion.
+- Provides a `gStar` bridge variant that takes raw `Tendsto` + continuity hypotheses so the OLS path can drive the same conclusion.
 
 Section 4d: no-[interactions](jargon_interaction.md) corollary
 - Uses the "no [interactions](jargon_interaction.md)" assumption to produce [well-specification](jargon_well_specified.md) automatically and then applies the same [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) [bridge](jargon_bridge.md).

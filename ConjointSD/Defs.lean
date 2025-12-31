@@ -26,7 +26,7 @@ def gLin {Attr Term : Type*} [Fintype Term]
 abbrev Profile (K : Type u) (V : K → Type v) : Type (max u v) :=
   ∀ k : K, V k
 
-section ParametricMainInteractions
+section PaperTermSet
 
 variable {Attr : Type*}
 variable {Main Inter : Type*}
@@ -49,7 +49,7 @@ def φPaper (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) :
   | some (Sum.inl m) => fMain m
   | some (Sum.inr i) => fInter i
 
-end ParametricMainInteractions
+end PaperTermSet
 
 end ModelBridge
 

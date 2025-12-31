@@ -83,26 +83,10 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
           (nhds (designSDZW (μ := μ)
             (Z := Zcomp (A := A) (g := gHat g θhat m))
             (W := Wcomp (A := A) (w := w)))) := by
-    have hW :
-        IIDAssumptions (μ := μ) (Wcomp (A := A) (w := w)) :=
-      iidAssumptions_Zcomp (μ := μ) (A := A) (g := w) h.hWeight
-    have hWZ :
-        IIDAssumptions (μ := μ)
-          (fun i ω => Wcomp (A := A) (w := w) i ω
-            * Zcomp (A := A) (g := gHat g θhat m) i ω) :=
-      iidAssumptions_Zcomp (μ := μ) (A := A)
-        (g := fun a => w a * gHat g θhat m a) h.hWeightScore
-    have hWZ2 :
-        IIDAssumptions (μ := μ)
-          (fun i ω => Wcomp (A := A) (w := w) i ω
-            * (Zcomp (A := A) (g := gHat g θhat m) i ω) ^ 2) :=
-      iidAssumptions_Zcomp (μ := μ) (A := A)
-        (g := fun a => w a * (gHat g θhat m a) ^ 2) h.hWeightScoreSq
-    exact sdHatZW_tendsto_ae
-      (μ := μ)
-      (Z := Zcomp (A := A) (g := gHat g θhat m))
-      (W := Wcomp (A := A) (w := w))
-      hWZ hWZ2 hW h.hW0
+    exact sdHatZW_tendsto_ae_of_score
+      (μ := μ) (A := A) (w := w) (g := gHat g θhat m)
+      (hWZ := h.hWeightScore) (hWZ2 := h.hWeightScoreSq) (hW := h.hWeight)
+      (hW0 := h.hW0)
   have hEq :
       designSDZW (μ := μ)
         (Z := Zcomp (A := A) (g := gHat g θhat m))

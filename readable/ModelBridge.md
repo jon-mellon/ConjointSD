@@ -14,10 +14,4 @@ Causal target pieces:
 - `WellSpecified` and approximation variants are defined in `ConjointSD/ModelBridge.lean`.
 - The theorems show that (approximate) [well-specification](jargon_well_specified.md) implies (approximate) equality with the block-sum score.
 
-Paper term set:
-- `PaperTerm`, `betaPaper`, and `phiPaper` (from `ConjointSD/Defs.lean`) encode the intercept + main effects + [interactions](jargon_interaction.md) term set.
-- `ParametricMainInteractions` (in `ConjointSD/Assumptions.lean`) is the paper's parametric assumption written as an equality for `gStar`.
-- `wellSpecified_of_parametricMainInteractions` shows this parametric equality implies `WellSpecified`.
-- `gStar_eq_sum_blocks_of_parametricMainInteractions` then gives the block decomposition for the paper term set.
-
 This file is the main algebraic [bridge](jargon_bridge.md) from "linear model for the causal target" to "sum of block scores."

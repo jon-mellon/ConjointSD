@@ -108,19 +108,6 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   `ν` and the experimental design distribution `μ` as needed. Formal:
   `IsProbabilityMeasure μ`.
 
-## Convergence
-
-Plan is to eliminate assuming these and replace them with a derivation from the OLS setup.
-
-- `ThetaTendstoAssumptions` (too strong, needs to be derived): bundles estimator convergence `θhat → θ0` to keep
-  convergence hypotheses explicit and reusable; this is a sample-side
-  assumption about an estimator sequence under the experimental design
-  distribution `μ`.
-  - `ThetaTendstoAssumptions.tendsto`: the sequence `θhat` converges to `θ0`
-    in the topology of `Θ`, the raw input for continuity-based arguments.
-    Intuition: estimation noise vanishes asymptotically, so plugging in `θhat`
-    is equivalent to using the truth. Formal: `Tendsto θhat atTop (nhds θ0)`.
-
 ## Positivity
 
 - `EpsilonAssumptions` (trivial): bundles the positivity requirement `0 < ε` that appears
@@ -139,32 +126,6 @@ Plan is to eliminate assuming these and replace them with a derivation from the 
   `EpsilonAssumptions` a bookkeeping convention that records the “ε is a
   tolerance” intent explicitly in hypotheses.
 
-## PredictedSD
-
-- `IIDAssumptions` (probably stronger than needed but fine for now): [IID](jargon_iid.md) assumptions for a sequence `Z` under a
-  probability measure `μ` on the sample space `Ω`. Requires
-  [independent](jargon_independent.md) and
-  [identically distributed](jargon_identically_distributed.md) draws, plus
-  [integrability](jargon_integrable.md) of `(Z 0)^2`. Integrability of `Z 0`
-  is derived from square-integrability when `μ univ = 1`. This is the standard
-  input for a strong [LLN](jargon_lln.md) for both the [mean](jargon_mean.md)
-  and [second moment](jargon_second_moment.md), which delivers SD
-  [consistency](jargon_consistency.md).
-  - `IIDAssumptions.indep`: pairwise [independence](jargon_independent.md) of
-    `Z i` and `Z j`, giving the stochastic decoupling needed for LLN arguments.
-    Intuition: each draw contributes new information instead of repeating the
-    same noise. Formal: `Pairwise (fun i j => IndepFun (Z i) (Z j) μ)`.
-  - `IIDAssumptions.ident`: each `Z i` has the same law as `Z 0`, so empirical
-    averages target a single [population](jargon_population.md) moment (defined
-    via the target distribution `ν`).
-    Intuition: there is one stable data-generating process rather than a
-    drifting distribution.
-    Formal: `∀ i, IdentDistrib (Z i) (Z 0) μ μ`.
-  - `IIDAssumptions.intZ2`: square-integrability of `Z 0`, ensuring finite
-    second moments and enabling LLN for variance/SD targets. Intuition: rules
-    out rare but huge observations that would dominate the SD.
-    Formal: `Integrable (fun ω => (Z 0 ω) ^ 2) μ`.
-
 ## SDDecomposition
 
 - `DesignAttrIID`: i.i.d.-style conditions for the attribute draw process `A`
@@ -180,8 +141,9 @@ Plan is to eliminate assuming these and replace them with a derivation from the 
   the score function `g`, plus [integrability](jargon_integrable.md) of
   `g(A 0)^2` under the experimental design distribution `μ`. Integrability of
   `g(A 0)` is derived from the second-moment condition. This is the input
-  needed to apply the [standard deviation](jargon_standard_deviation.md)
-  [LLN](jargon_lln.md) to the induced score process.
+  needed to apply the score-based [standard deviation](jargon_standard_deviation.md)
+  [LLN](jargon_lln.md) lemmas for the induced score process (e.g.,
+  `sdHatZ_tendsto_ae_of_score`).
   - `ScoreAssumptions.meas_g`: the score `g` is measurable, so `g(A i)` is
     measurable when composed with each `A i`. Intuition: the score must be a
     well-defined observable function of attributes. Formal: `Measurable g`.
@@ -206,33 +168,6 @@ Plan is to eliminate assuming these and replace them with a derivation from the 
   - `DecompAssumptions.bound_g`: uniform boundedness across blocks.
     Intuition: no block has arbitrarily large magnitude, ensuring all block moments exist.
     Formal: `∀ b, ∃ C, 0 ≤ C ∧ ∀ a, |g b a| ≤ C`.
-
-## VarianceDecomposition
-
-## EstimatedG
-
-Plan is to eliminate assuming these and replace them with a derivation from the OLS setup.
-
-- `GEstimationAssumptions`: [convergence](jargon_convergence.md) of
-  [population](jargon_population.md) [mean](jargon_mean.md) and
-  [second moment](jargon_second_moment.md) when
-  replacing
-  [oracle](jargon_oracle.md) `g θ0` with estimated `g (θhat n)`. This assumption
-  is framed directly on the [population](jargon_population.md) functionals so
-  [standard deviation](jargon_standard_deviation.md) and
-  [variance](jargon_variance.md) [consistency](jargon_consistency.md) follow by
-  algebra. This is a [population](jargon_population.md)-side assumption under
-  the attribute distribution `ν`.
-  - `GEstimationAssumptions.mean_tendsto`: the estimated score's [population](jargon_population.md)
-    mean converges to the oracle mean, so bias from estimation vanishes.
-    Intuition: estimation error washes out in expectation even if pointwise
-    predictions are noisy. Formal:
-    `Tendsto (fun n => attrMean ν (gHat g θhat n)) atTop (nhds (attrMean ν (g θ0)))`.
-  - `GEstimationAssumptions.m2_tendsto`: the estimated score's [population](jargon_population.md)
-    second moment converges to the oracle second moment, enabling convergence
-    of variance and SD by algebra. Intuition: the scale of the estimated score
-    matches the oracle in the limit, not just the mean. Formal:
-    `Tendsto (fun n => attrM2 ν (gHat g θhat n)) atTop (nhds (attrM2 ν (g θ0)))`.
 
 ## SampleSplitting
 
@@ -353,6 +288,25 @@ Reader mapping to standard OLS assumptions:
     [population](jargon_population.md) value. Formal:
     `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
       (nhds (attrCross (ν := ν) (g := g) (φ := φ) i))`.
+- `PaperOLSDesignAssumptions`: a paper-specific bundle that is strong enough to
+  *derive* the OLS LLN hypotheses for Gram and cross moments from the
+  experimental design. It packages design‑IID for attributes, measurability and
+  boundedness of the paper feature map `φPaper`, boundedness of the conjoint
+  causal estimand `gStar`, the identification link `Yobs = gStar ∘ A`, and
+  equality of the design and target Gram/cross moments (so LLN limits can be
+  expressed under `ν`).
+  - `PaperOLSDesignAssumptions.designAttrIID`: i.i.d.-style randomization for the
+    attribute stream under the experimental design.
+  - `PaperOLSDesignAssumptions.meas_fMain` / `meas_fInter`: measurability of
+    the main/interaction feature maps.
+  - `PaperOLSDesignAssumptions.bound_fMain` / `bound_fInter`: boundedness of
+    each feature map (used to get integrability and LLN).
+  - `PaperOLSDesignAssumptions.meas_gStar` / `bound_gStar`: measurability and
+    boundedness of the conjoint causal estimand.
+  - `PaperOLSDesignAssumptions.yobs_eq`: observed outcomes equal the causal
+    estimand evaluated at the realized attributes.
+  - `PaperOLSDesignAssumptions.gram_eq` / `cross_eq`: the design Gram/cross
+    moments match the target moments under `ν`.
 
 ## EvaluationWeights
 - `EvalWeightMatchesAttrMoments`: evaluation-weight transport assumption. It
@@ -413,7 +367,7 @@ Reader mapping to standard OLS assumptions:
 
 ## ModelBridge
 
-- `ApproxOracleAE`: a two-stage approximation assumption: a flexible score
+- `ApproxOracleAE` (not used for consistency or identification): a two-stage approximation assumption: a flexible score
   approximates the true target `gStar`, and the model score approximates the
   flexible score, both [almost everywhere](jargon_almost_everywhere.md) under
   the attribute distribution `ν`.
@@ -426,25 +380,6 @@ Reader mapping to standard OLS assumptions:
   Formal:
   `MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
     Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ`.
-- `ParametricMainInteractions`: the paper's parametric assumption that `gStar`
-  is exactly an intercept plus the specified main effects and listed
-  [interactions](jargon_interaction.md).
-  Intuition: the causal surface is fully captured by the stated main and
-  interaction terms under the experimental design distribution `μ`.
-  Formal:
-  `∀ x, gStar (μ := μ) (Y := Y) x =
-    β0 + (∑ m, βMain m * fMain m x) + (∑ i, βInter i * fInter i x)`.
-- `AdditiveProjectionOracle`: defines the oracle as a linear-in-terms
-  [additive projection](jargon_additive_projection.md) plus a residual orthogonal
-  to each term feature, formalizing component targets when the oracle is nonlinear
-  or interactive.
-  Intuition: the oracle decomposes into a best linear projection plus an
-  orthogonal error under the attribute distribution `ν` for the target human
-  [population](jargon_population.md).
-  Formal:
-  `(∀ x, gOracle x = gLin (β := β) (φ := φ) x + r x) ∧
-    (∀ t, Integrable (fun x => r x * φ t x) ν) ∧
-    (∀ t, ∫ x, r x * φ t x ∂ν = 0)`.
 
 ## WellSpecifiedFromNoInteractions
 

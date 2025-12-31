@@ -2,23 +2,21 @@ import ConjointSD
 
 -- Scratchpad to inspect SD-consistency assumptions.
 
-#print ConjointSD.DesignAttrIID
-#print ConjointSD.IIDAssumptions
-#print ConjointSD.ScoreAssumptions
-#print ConjointSD.AttrMomentAssumptions.int1
-#print ConjointSD.IIDAssumptions.intZ
 #print ConjointSD.ScoreAssumptions.int_g0
 #print ConjointSD.SplitEvalAssumptions
-#print ConjointSD.GEstimationAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
+#print ConjointSD.attrMean_tendsto_of_theta_tendsto
+#print ConjointSD.attrM2_tendsto_of_theta_tendsto
+#print ConjointSD.attrSD_tendsto_of_mean_m2_tendsto
 #print ConjointSD.ConjointIdRandomized
 #print ConjointSD.ConjointRandomizationStream
 #print ConjointSD.DesignAttrIID.of_randomization_stream
 -- Core SD and decomposition.
-#print ConjointSD.sdHatZ_tendsto_ae
 #print ConjointSD.sd_component_consistent
 #print ConjointSD.sd_component_consistent_of_design
 #print ConjointSD.meanHatZ_tendsto_ae_of_score
+#print ConjointSD.sdHatZ_tendsto_ae_of_score
+#print ConjointSD.sdHatZW_tendsto_ae_of_score
 
 -- Sample splitting (evaluation stage).
 #print ConjointSD.sdHat_fixed_m_tendsto_ae_attrSD
@@ -61,9 +59,6 @@ import ConjointSD
 #print ConjointSD.gStar_eq_sum_blocks_of_WellSpecified
 #print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecified
 #print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
-#print ConjointSD.gLin_eq_parametric
-#print ConjointSD.wellSpecified_of_parametricMainInteractions
-#print ConjointSD.gStar_eq_sum_blocks_of_parametricMainInteractions
 #print ConjointSD.wellSpecified_of_noInteractions_of_fullMainEffects
 #print ConjointSD.approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 
@@ -97,6 +92,8 @@ import ConjointSD
 #print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_moments
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_hGTotal
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
+#print ConjointSD.paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae
+#print ConjointSD.paper_ols_attr_moments_of_design_ae
 #print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_hGTotal
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified_of_hGTotal
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions

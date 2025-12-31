@@ -26,37 +26,52 @@ open MeasureTheory
 variable {Attr : Type u} [MeasurableSpace Attr]
 variable {Θ : Type v}
 
-theorem attrMean_tendsto_of_GEstimationAssumptions
+theorem attrMean_tendsto_of_mean_tendsto
     {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
-    (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
+    (hmean :
+      Tendsto
+        (fun n => attrMean ν (gHat g θhat n))
+        atTop
+        (nhds (attrMean ν (g θ0)))) :
     Tendsto
       (fun n => attrMean ν (gHat g θhat n))
       atTop
       (nhds (attrMean ν (g θ0))) :=
-  h.mean_tendsto
+  hmean
 
-theorem attrM2_tendsto_of_GEstimationAssumptions
+theorem attrM2_tendsto_of_m2_tendsto
     {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
-    (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
+    (hm2 :
+      Tendsto
+        (fun n => attrM2 ν (gHat g θhat n))
+        atTop
+        (nhds (attrM2 ν (g θ0)))) :
     Tendsto
       (fun n => attrM2 ν (gHat g θhat n))
       atTop
       (nhds (attrM2 ν (g θ0))) :=
-  h.m2_tendsto
+  hm2
 
 /-- Derived: attribute-distribution variance convergence under ν for the plug-in score. -/
-theorem attrVar_tendsto_of_GEstimationAssumptions
+theorem attrVar_tendsto_of_mean_m2_tendsto
     {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
-    (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
+    (hmean :
+      Tendsto
+        (fun n => attrMean ν (gHat g θhat n))
+        atTop
+        (nhds (attrMean ν (g θ0))))
+    (hm2 :
+      Tendsto
+        (fun n => attrM2 ν (gHat g θhat n))
+        atTop
+        (nhds (attrM2 ν (g θ0)))) :
     Tendsto
       (fun n => attrVar ν (gHat g θhat n))
       atTop
       (nhds (attrVar ν (g θ0))) := by
-  have hmean := h.mean_tendsto
-  have hm2 := h.m2_tendsto
   have hmean2 :
       Tendsto
         (fun n => (attrMean ν (gHat g θhat n)) ^ 2)
@@ -72,17 +87,26 @@ theorem attrVar_tendsto_of_GEstimationAssumptions
   simpa [attrVar] using hvar
 
 /-- Derived: attribute-distribution SD convergence under ν for the plug-in score. -/
-theorem attrSD_tendsto_of_GEstimationAssumptions
+theorem attrSD_tendsto_of_mean_m2_tendsto
     {ν : Measure Attr} [ProbMeasureAssumptions ν]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
-    (h : GEstimationAssumptions (ν := ν) g θ0 θhat) :
+    (hmean :
+      Tendsto
+        (fun n => attrMean ν (gHat g θhat n))
+        atTop
+        (nhds (attrMean ν (g θ0))))
+    (hm2 :
+      Tendsto
+        (fun n => attrM2 ν (gHat g θhat n))
+        atTop
+        (nhds (attrM2 ν (g θ0)))) :
     Tendsto
       (fun n => attrSD ν (gHat g θhat n))
       atTop
       (nhds (attrSD ν (g θ0))) := by
   have hvar :=
-    attrVar_tendsto_of_GEstimationAssumptions
-      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) h
+    attrVar_tendsto_of_mean_m2_tendsto
+      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hmean hm2
   have hsqrt :
       Tendsto Real.sqrt (nhds (attrVar ν (g θ0)))
         (nhds (Real.sqrt (attrVar ν (g θ0)))) :=

@@ -77,7 +77,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     (hSplit : ∀ m b,
       SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) θ0)
@@ -136,7 +136,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
         (μ := μ) (A := A) (w := w)
         (g := gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
         (θhat := θhat) m)
-    (hθ : ThetaTendstoAssumptions (θhat := θhat) (θ0 := θ0))
+    (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions
         (ν := ν)

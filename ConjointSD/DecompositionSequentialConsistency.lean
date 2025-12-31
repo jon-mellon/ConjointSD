@@ -24,7 +24,7 @@ section
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
-variable {Θ : Type*}
+variable {Θ : Type*} [TopologicalSpace Θ]
 variable {B : Type*} [Fintype B]
 
 /-- A block score family parameterized by θ. -/
@@ -48,9 +48,10 @@ theorem sequential_consistency_blocks_ae
     (hMom : ∀ m b,
       EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
         (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
-    (hG : ∀ b,
-      GEstimationAssumptions (ν := ν)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hCont : ∀ b : B,
+      FunctionalContinuityAssumptions (ν := ν)
+        (g := gBlock (gB := gB) b) θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -74,7 +75,7 @@ theorem sequential_consistency_blocks_ae
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
         (hMom := fun m => hMom m b)
-        (hG := hG b)
+        (hθ := hθ) (hCont := hCont b)
         (ε := ε) (hε := hε))
   choose Mb hMb using hEach
   let M : ℕ := (Finset.univ : Finset B).sup Mb
@@ -101,9 +102,10 @@ theorem sequential_consistency_total_ae
     (hMom : ∀ m,
       EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
         (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (hGTotal :
-      GEstimationAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν)
+        (g := gTotalΘ (gB := gB)) θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -116,7 +118,7 @@ theorem sequential_consistency_total_ae
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
       (hMom := hMom)
-      (hG := hGTotal)
+      (hθ := hθ) (hCont := hContTotal)
       (ε := ε) (hε := hε))
 
 theorem sequential_consistency_blocks_ae_of_bounded
@@ -139,9 +141,10 @@ theorem sequential_consistency_blocks_ae_of_bounded
     (hMom : ∀ m b,
       EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
         (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
-    (hG : ∀ b,
-      GEstimationAssumptions (ν := ν)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hCont : ∀ b : B,
+      FunctionalContinuityAssumptions (ν := ν)
+        (g := gBlock (gB := gB) b) θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -167,7 +170,7 @@ theorem sequential_consistency_blocks_ae_of_bounded
     sequential_consistency_blocks_ae
       (μ := μ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplit') (hMom := hMom) (hG := hG) (ε := ε) (hε := hε)
+      (hSplit := hSplit') (hMom := hMom) (hθ := hθ) (hCont := hCont) (ε := ε) (hε := hε)
 
 theorem sequential_consistency_total_ae_of_bounded
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
@@ -190,9 +193,10 @@ theorem sequential_consistency_total_ae_of_bounded
     (hMom : ∀ m,
       EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
         (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (hGTotal :
-      GEstimationAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hContTotal :
+      FunctionalContinuityAssumptions (ν := ν)
+        (g := gTotalΘ (gB := gB)) θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -217,7 +221,8 @@ theorem sequential_consistency_total_ae_of_bounded
     sequential_consistency_total_ae
       (μ := μ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotal') (hMom := hMom) (hGTotal := hGTotal) (ε := ε) (hε := hε)
+      (hSplitTotal := hSplitTotal') (hMom := hMom) (hθ := hθ) (hContTotal := hContTotal)
+      (ε := ε) (hε := hε)
 
 end
 
