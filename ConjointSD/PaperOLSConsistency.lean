@@ -335,9 +335,14 @@ theorem paper_ols_normal_eq_of_wellSpecified
       WellSpecified
         (μ := μ) (Y := Y) (β := θ0)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :
-    PaperOLSNormalEqAssumptions
-      (μ := μ) (Y := Y) (ν := ν)
-      (fMain := fMain) (fInter := fInter) (θ0 := θ0) := by
+    (attrGram
+        (ν := ν)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).mulVec θ0
+      =
+    attrCross
+      (ν := ν)
+      (g := gStar (μ := μ) (Y := Y))
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) := by
   classical
   have hmeasφ :
       ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
@@ -348,7 +353,6 @@ theorem paper_ols_normal_eq_of_wellSpecified
         ∀ a, |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a| ≤ C :=
     bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
       hboundMain hboundInter
-  refine ⟨?_⟩
   funext i
   let φCross : PaperTerm Main Inter → Attr → ℝ :=
     fun t a =>
@@ -920,9 +924,14 @@ theorem paper_ols_theta0_eq_of_normal_eq
       PaperOLSFullRankAssumptions
         (ν := ν) (fMain := fMain) (fInter := fInter))
     (hNormal :
-      PaperOLSNormalEqAssumptions
-        (μ := μ) (Y := Y) (ν := ν)
-        (fMain := fMain) (fInter := fInter) (θ0 := θ0)) :
+      (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).mulVec θ0
+        =
+      attrCross
+        (ν := ν)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :
     θ0 =
       (attrGram
         (ν := ν)
@@ -958,7 +967,7 @@ theorem paper_ols_theta0_eq_of_normal_eq
       (attrGram
           (ν := ν)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).mulVec θ0 := by
-    simpa using hNormal.normal_eq.symm
+    simpa using hNormal.symm
   have h :=
     Matrix.inv_mulVec_eq_vec
       (A :=
@@ -1054,10 +1063,10 @@ theorem paper_ols_attr_moments_of_design_ae
     (hFull :
       PaperOLSFullRankAssumptions
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hNormal :
-      PaperOLSNormalEqAssumptions
-        (μ := μ) (Y := Y) (ν := ν)
-        (fMain := fMain) (fInter := fInter) (θ0 := θ0)) :
+    (hspec :
+      WellSpecified
+        (μ := μ) (Y := Y) (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :
     ∀ᵐ ω ∂μ,
       OLSMomentAssumptionsOfAttr
         (ν := ν)
@@ -1124,7 +1133,15 @@ theorem paper_ols_attr_moments_of_design_ae
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
     paper_ols_theta0_eq_of_normal_eq
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (θ0 := θ0) hFull hNormal
+      (θ0 := θ0) hFull
+      (paper_ols_normal_eq_of_wellSpecified
+        (μ := μ) (Y := Y)
+        (Attr := Attr) (Main := Main) (Inter := Inter)
+        (fMain := fMain) (fInter := fInter)
+        (ν := ν) (θ0 := θ0)
+        hDesign.meas_fMain hDesign.meas_fInter
+        hDesign.bound_fMain hDesign.bound_fInter
+        hspec)
   exact
     paper_ols_attr_moments_of_lln_fullrank_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
@@ -1172,10 +1189,10 @@ theorem theta_tendsto_of_paper_ols_design_ae
     (hFull :
       PaperOLSFullRankAssumptions
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hNormal :
-      PaperOLSNormalEqAssumptions
-        (μ := μ) (Y := Y) (ν := ν)
-        (fMain := fMain) (fInter := fInter) (θ0 := θ0)) :
+    (hspec :
+      WellSpecified
+        (μ := μ) (Y := Y) (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n =>
@@ -1196,7 +1213,7 @@ theorem theta_tendsto_of_paper_ols_design_ae
     paper_ols_attr_moments_of_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hFull hNormal
+      hDesign hFull hspec
   exact
     theta_tendsto_of_paper_ols_moments_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
@@ -1300,10 +1317,10 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
     (hFull :
       PaperOLSFullRankAssumptions
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hNormal :
-      PaperOLSNormalEqAssumptions
-        (μ := μ) (Y := Y) (ν := ν)
-        (fMain := fMain) (fInter := fInter) (θ0 := θ0))
+    (hspec :
+      WellSpecified
+        (μ := μ) (Y := Y) (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
     (hCont :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -1334,7 +1351,7 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
     theta_tendsto_of_paper_ols_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hFull hNormal
+      hDesign hFull hspec
   refine hθ.mono ?_
   intro ω hω
   simpa using
@@ -1359,10 +1376,10 @@ theorem attrM2_tendsto_of_paper_ols_design_ae
     (hFull :
       PaperOLSFullRankAssumptions
         (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hNormal :
-      PaperOLSNormalEqAssumptions
-        (μ := μ) (Y := Y) (ν := ν)
-        (fMain := fMain) (fInter := fInter) (θ0 := θ0))
+    (hspec :
+      WellSpecified
+        (μ := μ) (Y := Y) (β := θ0)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
     (hCont :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -1393,7 +1410,7 @@ theorem attrM2_tendsto_of_paper_ols_design_ae
     theta_tendsto_of_paper_ols_design_ae
       (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hDesign hFull hNormal
+      hDesign hFull hspec
   refine hθ.mono ?_
   intro ω hω
   simpa using

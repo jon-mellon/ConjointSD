@@ -117,7 +117,7 @@ theorem attrMean_tendsto_of_OLSConsistency
     (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
     {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
     (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
-    (hCons : OLSConsistencyAssumptions (A := A) (Y := Y) (φ := φ) θ0 ols)
+    (hCons : Tendsto ols.θhat atTop (nhds θ0))
     (hCont : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
     Tendsto
       (fun n => attrMean ν (gHat g ols.θhat n))
@@ -125,7 +125,7 @@ theorem attrMean_tendsto_of_OLSConsistency
       (nhds (attrMean ν (g θ0))) :=
   attrMean_tendsto_of_theta_tendsto
     (ν := ν) (g := g) (θ0 := θ0) (θhat := ols.θhat)
-    hCons.tendsto_theta hCont
+    hCons hCont
 
 theorem attrM2_tendsto_of_OLSConsistency
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
@@ -133,7 +133,7 @@ theorem attrM2_tendsto_of_OLSConsistency
     (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
     {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
     (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
-    (hCons : OLSConsistencyAssumptions (A := A) (Y := Y) (φ := φ) θ0 ols)
+    (hCons : Tendsto ols.θhat atTop (nhds θ0))
     (hCont : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
     Tendsto
       (fun n => attrM2 ν (gHat g ols.θhat n))
@@ -141,6 +141,6 @@ theorem attrM2_tendsto_of_OLSConsistency
       (nhds (attrM2 ν (g θ0))) :=
   attrM2_tendsto_of_theta_tendsto
     (ν := ν) (g := g) (θ0 := θ0) (θhat := ols.θhat)
-    hCons.tendsto_theta hCont
+    hCons hCont
 
 end ConjointSD

@@ -231,17 +231,6 @@ Reader mapping to standard OLS assumptions:
 - `OLSMomentAssumptions` / `OLSMomentAssumptionsOfAttr` correspond to LLN for
   the Gram matrix `X'X/n` and cross moments `X'Y/n`, plus invertibility/full‑rank
   of the limiting Gram, and identification via the normal equations.
-- `OLSConsistencyAssumptions` is simply the resulting conclusion (the coefficient
-  estimates converge to `θ0`), not a new domain‑specific assumption.
-
-- `OLSConsistencyAssumptions`: a single assumption that the
-  [OLS](jargon_ols.md) [estimator](jargon_estimator.md) sequence
-  [converges](jargon_convergence.md) to the target `θ0`. This is a
-  sample-sequence assumption about `ols.θhat` under the experimental design
-  distribution `μ`.
-  - `OLSConsistencyAssumptions.tendsto_theta`: convergence of the estimator sequence.
-    Intuition: the estimator settles at the true coefficient vector.
-    Formal: `Tendsto ols.θhat atTop (nhds θ0)`.
 - `OLSMomentAssumptions`: a deterministic moment-limit package. It posits limits
   for the inverse Gram matrix and cross-product vector and states that `θ0`
   solves the limiting normal equations. This is the generic,
@@ -314,10 +303,9 @@ Reader mapping to standard OLS assumptions:
     as a matrix in the ambient algebra. Intuition: the paper’s feature set has
     enough variation in the target [population](jargon_population.md).
     Formal: `IsUnit (attrGram (ν := ν) (φ := φPaper ...))`.
-- `PaperOLSNormalEqAssumptions`: a population normal‑equation identity tying
-  the Gram matrix and cross moments to the target coefficient vector `θ0`.
-  - `PaperOLSNormalEqAssumptions.normal_eq`: `attrGram * θ0 = attrCross`
-    under `ν`, with `attrCross` built from the causal estimand `gStar`.
+  The normal equations are now derived from
+  [well-specification](jargon_well_specified.md) and bounded/measurable paper
+  features in `ConjointSD/PaperOLSConsistency.lean`.
 
 ## EvaluationWeights
 - `EvalWeightMatchesAttrMoments`: evaluation-weight transport assumption. It

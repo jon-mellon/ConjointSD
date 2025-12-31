@@ -1934,7 +1934,7 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">PaperOLSNormalEqAssumptions isProb</td>
+<td style="text-align: left;">PaperOLSFullRankAssumptions isProb</td>
 <td style="text-align: left;">4</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1943,9 +1943,9 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2186,4 +2186,4 @@ fInter</td>
 
 ## Theorem dependency DAG
 
-<img src="dependency_tables_files/theorem_dependency_dag.png" width="3366" />
+<img src="dependency_tables_files/theorem_dependency_dag.png" width="3318" />

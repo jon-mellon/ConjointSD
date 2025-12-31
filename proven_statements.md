@@ -553,13 +553,13 @@ Normal equations for the population OLS coefficients follow from
 File: `ConjointSD/PaperOLSConsistency.lean`
 
 Statement: Under the paper’s design-side bundle (`PaperOLSDesignAssumptions`),
-plus inverse‑Gram stability and identification, the OLS moment assumptions
+full‑rank, and well‑specification (so the normal equations hold), the OLS moment assumptions
 (`OLSMomentAssumptionsOfAttr`) hold almost everywhere for the paper’s
 term set and causal estimand `gStar`.
 
 Intuition: bounded/measurable features and a design‑IID attribute stream give the
 Gram/cross LLNs; transport of those moments to the target `ν` plus invertibility
-and normal‑equation identification complete the OLS moment package.
+and normal‑equation identification (derived from well‑specification) complete the OLS moment package.
 
 Formalization (Lean name): `paper_ols_attr_moments_of_design_ae`
 

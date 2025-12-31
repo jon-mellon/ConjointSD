@@ -189,16 +189,6 @@ section RegressionEstimator
 
 universe u v
 
-/--
-Assumptions used to prove consistency of the OLS estimator sequence.
-This packages the convergence `θhat → θ0`; the remaining statistical conditions
-can be discharged for the paper's design in a dedicated instantiation.
--/
-structure OLSConsistencyAssumptions {Attr : Type u} {Term : Type v} [Fintype Term]
-    (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ)
-    (θ0 : Term → ℝ) (ols : OLSSequence (A := A) (Y := Y) (φ := φ)) : Prop where
-  tendsto_theta : Tendsto ols.θhat atTop (nhds θ0)
-
 /-- OLS moment assumptions with explicit limits for the inverse Gram and cross moments. -/
 structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
     [Fintype Term] [DecidableEq Term]
@@ -310,21 +300,6 @@ structure PaperOLSFullRankAssumptions
       (attrGram
         (ν := ν)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
-
-structure PaperOLSNormalEqAssumptions
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
-    (ν : Measure Attr)
-    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
-    (θ0 : PaperTerm Main Inter → ℝ) : Prop where
-  normal_eq :
-    (attrGram
-        (ν := ν)
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).mulVec θ0
-      =
-    attrCross
-      (ν := ν)
-      (g := gStar (μ := μ) (Y := Y))
-      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
 
 end PaperOLSDesign
 
