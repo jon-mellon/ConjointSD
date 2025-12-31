@@ -55,18 +55,17 @@ Formalization (math):
 
 File: `ConjointSD/SDDecompositionFromConjoint.lean`
 
-Statement: If the attribute stream satisfies `ConjointDesignAssumptions`, then
+Statement: If the attribute stream satisfies `ConjointRandomizationStream`, then
 the SD consistency result for `g(A i)` holds under the standard measurability
 and second-moment requirements.
 
-Intuition: The design bundle supplies the IID assumptions, so the standard
-empirical SD convergence proof goes through while keeping the identification
-setup tied to the same attribute stream.
+Intuition: The randomization stream supplies the IID assumptions, so the
+standard empirical SD convergence proof goes through.
 
 Formalization (Lean name): `sd_component_consistent_of_design`
 
 Formalization (math):
-`ConjointDesignAssumptions A Y Yobs -> sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))`.
+`ConjointRandomizationStream A Y -> sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))`.
 
 ## DesignAttrIID of randomization stream (Assumptions)
 
@@ -114,22 +113,7 @@ recover causal averages.
 Formalization (Lean name): `gExp eq gPot`
 
 Formalization (math):
-`gExp = gPot` under `ConjointIdAssumptions`.
-
-## conjoint id assumptions of design (ConjointIdentification)
-
-File: `ConjointSD/ConjointIdentification.lean`
-
-Statement: From `ConjointDesignAssumptions`, you can derive the identification
-assumptions for the single-shot design of `A 0`.
-
-Intuition: The stream bundle already includes the single-shot design for the
-first draw, so the standard randomized-design pipeline applies directly.
-
-Formalization (Lean name): `ConjointIdAssumptions.of_design`
-
-Formalization (math):
-`ConjointDesignAssumptions A Y Yobs -> ConjointIdAssumptions (X = A 0)`.
+`gExp = gPot` under `ConjointIdRandomized`.
 
 ## attrSD congr ae (TargetEquivalence)
 

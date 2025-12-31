@@ -17,13 +17,11 @@ Key constructions:
 - `statusX`: the assigned profile (projection from the product space).
 - `statusY` and `statusYobs`: potential and observed outcomes on this space.
 
-Main theorem:
-- `status_singleShot_design` proves that this concrete setup satisfies `ConjointSingleShotDesign`.
-  The proof checks [measurability](jargon_measurable.md), the assignment law, positive probability for each profile,
-  bounded outcomes (0 to 100), and provides an explicit randomization mechanism whose
-  independence from [potential outcomes](jargon_potential_outcome.md) yields ignorability for `X`.
+Main theorems:
+- `status_id_randomized` proves that this concrete setup satisfies `ConjointIdRandomized`.
+  The proof checks [measurability](jargon_measurable.md), bounded outcomes (0 to 100),
+  consistency, and ignorability for `X`.
+- `status_event_pos` proves that every profile has positive assignment probability.
 
-The file ends with corollaries `status_id_randomized` and `status_id_assumptions` that package this
-into the randomized identification assumptions and the paper's identification package.
-
-Recent changes: switched to an explicit randomization mechanism in the design assumptions.
+Recent changes: simplified the design output to the randomized identification bundle and
+an explicit positivity lemma.

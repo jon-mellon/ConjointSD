@@ -46,12 +46,12 @@ section Identification
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
-variable {Attr : Type*} [MeasurableSpace Attr]
+variable {Attr : Type*} [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
 variable (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
 
 /-- Identification: observed conditional mean among `X = x0` equals the potential-outcome mean. -/
 theorem paper_identifies_potMean_from_condMean
-    (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
     (x0 : Attr)
     (hpos : μ (eventX (X := X) x0) ≠ 0) :
     condMean (μ := μ) Yobs (eventX (X := X) x0) = potMean (μ := μ) Y x0 :=
@@ -59,7 +59,7 @@ theorem paper_identifies_potMean_from_condMean
 
 /-- Identification: AMCE equals a difference of observed conditional means. -/
 theorem paper_identifies_amce_from_condMeans
-    (h : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
     (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0)
     (x x' : Attr) :
     (condMean (μ := μ) Yobs (eventX (X := X) x')
@@ -92,13 +92,8 @@ theorem paper_identifies_potMean_from_condMean_status
         =
     potMean (μ := μStatus (μResp := μResp)) (statusY (Yresp := Yresp)) x0 := by
   have h :=
-    status_id_assumptions (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
-  have hpos :=
-    positivity_of_singleShot
-      (μ := μStatus (μResp := μResp)) (ν := νStatus)
-      (X := statusX) (Y := statusY (Yresp := Yresp)) (Yobs := statusYobs (Yresp := Yresp))
-      (h := status_singleShot_design (μResp := μResp) (Yresp := Yresp)
-            hmeas hmeasObs hbound)
+    status_id_randomized (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
+  have hpos := status_event_pos (μResp := μResp)
   exact
     paper_identifies_potMean_from_condMean
       (μ := μStatus (μResp := μResp))
@@ -120,13 +115,8 @@ theorem paper_identifies_amce_from_condMeans_status
       =
     amce (μ := μStatus (μResp := μResp)) (statusY (Yresp := Yresp)) x x' := by
   have h :=
-    status_id_assumptions (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
-  have hpos :=
-    positivity_of_singleShot
-      (μ := μStatus (μResp := μResp)) (ν := νStatus)
-      (X := statusX) (Y := statusY (Yresp := Yresp)) (Yobs := statusYobs (Yresp := Yresp))
-      (h := status_singleShot_design (μResp := μResp) (Yresp := Yresp)
-            hmeas hmeasObs hbound)
+    status_id_randomized (μResp := μResp) (Yresp := Yresp) hmeas hmeasObs hbound
+  have hpos := status_event_pos (μResp := μResp)
   exact
     paper_identifies_amce_from_condMeans
       (μ := μStatus (μResp := μResp))
@@ -559,8 +549,9 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
   exact ⟨hCons, hEq'⟩
 
 theorem paper_sd_total_sequential_consistency_to_gPot_ae_of_identification
+    [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    (hId : ConjointIdAssumptions (μ := μ) X Y Yobs)
+    (hId : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
     (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0)
     (hMap : MapLawAssumptions (μ := μ) (A := A) (ν := ν))
     (hSplitTotal :

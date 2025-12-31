@@ -133,11 +133,11 @@ def statusYobs {Respondent : Type u} (Yresp : StatusProfile → Respondent → T
   fun ω => Yresp ω.snd ω.fst.fst ω.fst.snd
 
 /--
-The fielded status conjoint satisfies `ConjointSingleShotDesign`:
-uniform profile randomization with positive mass on each persona, bounded 0–100 outcomes,
-and independence of `X` from each potential outcome.
+The fielded status conjoint satisfies `ConjointIdRandomized`:
+uniform profile randomization with bounded 0–100 outcomes, plus measurability,
+consistency, and ignorability.
 -/
-theorem status_singleShot_design
+theorem status_id_randomized
     {Respondent : Type u} [MeasurableSpace Respondent]
     (μResp : Measure Respondent) [ProbMeasureAssumptions μResp]
     (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
@@ -145,8 +145,9 @@ theorem status_singleShot_design
       ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
     (hmeasObs : Measurable (statusYobs (Yresp := Yresp)))
     (hbound : ∀ p r t, |Yresp p r t| ≤ 100) :
-    ConjointSingleShotDesign (μ := μStatus (μResp := μResp)) (ν := νStatus)
-      (X := statusX) (Y := statusY (Yresp := Yresp)) (Yobs := statusYobs (Yresp := Yresp)) := by
+    ConjointIdRandomized (μ := μStatus (μResp := μResp))
+      (X := statusX) (Y := statusY (Yresp := Yresp))
+      (Yobs := statusYobs (Yresp := Yresp)) := by
   classical
   -- Notation shortcuts.
   let μ := μStatus (μResp := μResp)
@@ -158,31 +159,6 @@ theorem status_singleShot_design
       ∀ p, Measurable (statusY (Yresp := Yresp) p) := fun p =>
         (hmeas p).comp (by fun_prop)
   have hYobs : Measurable (statusYobs (Yresp := Yresp)) := hmeasObs
-  -- Law of `X` is the design law `νStatus` (marginal of the product measure).
-  have hlaw :
-      Measure.map (statusX (Respondent := Respondent)) μ = νStatus := by
-    have hmap := Measure.map_snd_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
-    have hμrt : (μRT (μResp := μResp)) Set.univ = 1 := measure_univ
-    ext s hs
-    simp [μ, μStatus, μRT, statusX]
-  -- Positivity: uniform measure on `Fin 8500` gives each singleton mass `1 / 8500`.
-  have hpos : ∀ p, νStatus {p} ≠ 0 := by
-    intro p
-    classical
-    have hsing : MeasurableSet ({p} : Set StatusProfile) := by simp
-    have hmass :
-        νStatus {p} = (PMF.uniformOfFintype (α := StatusProfile)) p := by
-      simpa [νStatus, hsing] using
-        (PMF.toMeasure_apply_singleton
-          (p := PMF.uniformOfFintype (α := StatusProfile)) p hsing)
-    have hsupport :
-        (PMF.uniformOfFintype (α := StatusProfile)) p ≠ 0 := by
-      -- Every point is in the support of the uniform PMF.
-      have hsupport' := PMF.mem_support_uniformOfFintype (α := StatusProfile) p
-      exact (PMF.mem_support_iff
-        (p := PMF.uniformOfFintype (α := StatusProfile)) (a := p)).1 hsupport'
-    rw [hmass]
-    exact hsupport
   -- Boundedness: responses live on a 0–100 scale.
   have hbounded :
       ∀ p, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |statusY (Yresp := Yresp) p ω| ≤ C := by
@@ -267,56 +243,65 @@ theorem status_singleShot_design
                   have hν : νStatus Set.univ = 1 := measure_univ
                   simp [μ, μStatus, μRT, hpreY, hν]
                 simp [hXmass, hYmass, mul_comm]
-  -- Assemble the design structure.
   refine
-    { rand := by
-        refine ⟨(StatusProfile : Type 0), inferInstance,
-          statusX (Respondent := Respondent),
-          (fun p => p),
-          hXmeas,
-          measurable_id,
-          ?_,
-          hign⟩
-        rfl
-      lawX := hlaw
-      ν_pos := hpos
+    { measX := hXmeas
       measYobs := hYobs
       measY := hYmeas
       consistency := by intro ω; rfl
-      bounded := hbounded }
+      bounded := hbounded
+      ignorability := hign }
 
-/-- The instantiated randomized-design identification assumptions for the status conjoint. -/
-theorem status_id_randomized
+/-- Positivity for the status assignment: every profile has nonzero mass. -/
+theorem status_event_pos
     {Respondent : Type u} [MeasurableSpace Respondent]
-    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp]
-    (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
-    (hmeas :
-      ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
-    (hmeasObs : Measurable (statusYobs (Yresp := Yresp)))
-    (hbound : ∀ p r t, |Yresp p r t| ≤ 100) :
-    ConjointIdRandomized (μ := μStatus (μResp := μResp))
-      (X := statusX) (Y := statusY (Yresp := Yresp))
-      (Yobs := statusYobs (Yresp := Yresp)) :=
-  ConjointIdRandomized.of_singleShot
-    (μ := μStatus (μResp := μResp)) (ν := νStatus)
-    (h := status_singleShot_design (μResp := μResp) (Yresp := Yresp)
-          hmeas hmeasObs hbound)
-
-/-- The instantiated identification assumptions for the status conjoint. -/
-theorem status_id_assumptions
-    {Respondent : Type u} [MeasurableSpace Respondent]
-    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp]
-    (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
-    (hmeas :
-      ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
-    (hmeasObs : Measurable (statusYobs (Yresp := Yresp)))
-    (hbound : ∀ p r t, |Yresp p r t| ≤ 100) :
-    ConjointIdAssumptions (μ := μStatus (μResp := μResp))
-      (X := statusX) (Y := statusY (Yresp := Yresp))
-      (Yobs := statusYobs (Yresp := Yresp)) :=
-  ConjointIdAssumptions.of_randomized
-    (μ := μStatus (μResp := μResp))
-    (h := status_id_randomized (μResp := μResp) (Yresp := Yresp)
-          hmeas hmeasObs hbound)
+    (μResp : Measure Respondent) [ProbMeasureAssumptions μResp] :
+    ∀ p, (μStatus (μResp := μResp)) (eventX (X := statusX) p) ≠ 0 := by
+  classical
+  let μ := μStatus (μResp := μResp)
+  have hXmeas : Measurable (statusX : StatusΩ Respondent → StatusProfile) := by
+    simpa [StatusΩ, statusX] using
+      (measurable_snd : Measurable (fun ω : (Respondent × TaskSlot) × StatusProfile => ω.snd))
+  have hlaw :
+      Measure.map (statusX (Respondent := Respondent)) μ = νStatus := by
+    ext s hs
+    simp [μ, μStatus, μRT, statusX]
+  intro p
+  have hset : MeasurableSet ({p} : Set StatusProfile) := measurableSet_singleton p
+  have hmap_pre :
+      Measure.map (statusX (Respondent := Respondent)) μ {p} = μ (eventX (X := statusX) p) := by
+    have hpre :
+        (statusX (Respondent := Respondent)) ⁻¹' {p} = eventX (X := statusX) p := by
+      ext ω; simp [eventX]
+    calc
+      Measure.map (statusX (Respondent := Respondent)) μ {p}
+          = μ ((statusX (Respondent := Respondent)) ⁻¹' {p}) := by
+              simpa using (Measure.map_apply hXmeas hset)
+      _ = μ (eventX (X := statusX) p) := by simpa [hpre]
+  have hmass :
+      νStatus {p} = (PMF.uniformOfFintype (α := StatusProfile)) p := by
+    simpa [νStatus, hset] using
+      (PMF.toMeasure_apply_singleton
+        (p := PMF.uniformOfFintype (α := StatusProfile)) p hset)
+  have hsupport :
+      (PMF.uniformOfFintype (α := StatusProfile)) p ≠ 0 := by
+    have hsupport' := PMF.mem_support_uniformOfFintype (α := StatusProfile) p
+    exact (PMF.mem_support_iff
+      (p := PMF.uniformOfFintype (α := StatusProfile)) (a := p)).1 hsupport'
+  have hpreimage :
+      μ (eventX (X := statusX) p) = νStatus {p} := by
+    calc
+      μ (eventX (X := statusX) p)
+          = Measure.map (statusX (Respondent := Respondent)) μ {p} := by
+              simpa using hmap_pre.symm
+      _ = νStatus {p} := by simpa [hlaw]
+  have hpos : νStatus {p} ≠ 0 := by
+    simpa [hmass] using hsupport
+  intro hzero
+  apply hpos
+  calc
+    νStatus {p} = μ (eventX (X := statusX) p) := by
+      symm
+      exact hpreimage
+    _ = 0 := hzero
 
 end ConjointSD

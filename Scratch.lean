@@ -11,8 +11,7 @@ import ConjointSD
 #print ConjointSD.SplitEvalAssumptions
 #print ConjointSD.GEstimationAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
-#print ConjointSD.ConjointIdAssumptions
-#print ConjointSD.ConjointDesignAssumptions
+#print ConjointSD.ConjointIdRandomized
 #print ConjointSD.ConjointRandomizationStream
 #print ConjointSD.DesignAttrIID.of_randomization_stream
 -- Core SD and decomposition.
@@ -40,7 +39,6 @@ import ConjointSD
 #print ConjointSD.identified_potMean_from_condMean
 #print ConjointSD.identified_amce_from_condMeans
 #print ConjointSD.gExp_eq_gPot
-#print ConjointSD.ConjointIdAssumptions.of_design
 
 -- Target equivalence and approximation bounds.
 #print ConjointSD.attrMean_congr_ae
