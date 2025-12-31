@@ -12,7 +12,8 @@ Key definitions:
 Main results:
 - If `g` is bounded, then the second-moment and [integrable](jargon_integrable.md) conditions hold automatically.
 - `iidAssumptions_Zcomp` shows that the score process `Zcomp` inherits [IID](jargon_iid.md) properties from `A`.
-- `sd_component_consistent` proves the empirical [standard deviation](jargon_standard_deviation.md) of `g(A i)` [converges](jargon_convergence.md) to the target human [population](jargon_population.md) [SD](jargon_standard_deviation.md) (under the attribute distribution).
+- `sd_component_consistent` proves the empirical [standard deviation](jargon_standard_deviation.md) of `g(A i)` [converges](jargon_convergence.md) to the target attribute-distribution [SD](jargon_standard_deviation.md).
+- `sd_component_consistent_of_design` is a wrapper that takes `ConjointDesignAssumptions` and yields the same SD-consistency result, making the link to identification explicit.
 - `sd_component_consistent_of_bounded` is a convenient bounded version.
 
 Block version:

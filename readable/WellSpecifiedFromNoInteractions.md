@@ -11,10 +11,14 @@ Key ideas:
 
 What is defined:
 - `NoInteractions` says there exist a constant and main-effect functions giving the exact additive form of the causal score `gStar`.
+- `ApproxNoInteractions` relaxes this to allow a uniform error `ε` from an additive main-effects surface.
+- `FullMainEffectsTerms` captures the "full set of terms" condition: the chosen term features can express any additive main-effect surface.
 - A [term](jargon_term.md) set `Term := Option K` is used: `none` is the intercept term and `some k` is the main effect for attribute `k`.
 - `betaMain` and `phiMain` build the coefficients and features for that term set.
 
 Main theorem:
 - `wellSpecified_of_noInteractions` constructs a linear model (see [linear model](jargon_linear_model.md)) that exactly equals the causal target whenever `NoInteractions` holds.
+- `wellSpecified_of_noInteractions_of_fullMainEffects` derives well-specification for any term basis `φ` that satisfies `FullMainEffectsTerms`, using the additive representation from `NoInteractions`.
+- `approxWellSpecified_of_approxNoInteractions_of_fullMainEffects` derives approximate well-specification for any term basis `φ` that satisfies `FullMainEffectsTerms`, using `ApproxNoInteractions`.
 
 So the file [bridges](jargon_bridge.md) an intuitive causal assumption (additivity) to the formal [well-specified](jargon_well_specified.md) condition used later.

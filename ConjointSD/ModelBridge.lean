@@ -11,6 +11,31 @@ namespace ConjointSD
 # Model bridge: from linear score models to block/component scores
 -/
 
+section WellSpecified
+
+variable {Ω Attr Term : Type*} [MeasurableSpace Ω] [Fintype Term]
+
+/-- Well-specification: the causal estimand lies in the linear-in-terms model class. -/
+def WellSpecified
+    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (β : Term → ℝ) (φ : Term → Attr → ℝ) : Prop :=
+  ∀ x, gLin (β := β) (φ := φ) x = gStar (μ := μ) (Y := Y) x
+
+/-- Approximate well-specification: the estimand is within ε of the linear-in-terms model. -/
+def ApproxWellSpecified
+    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+  ∀ x, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
+
+/-- Approximate well-specification on attribute-distribution support (ν-a.e.). -/
+def ApproxWellSpecifiedAE
+    {Attr : Type*} [MeasurableSpace Attr]
+    (ν : Measure Attr) (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+  ∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
+
+end WellSpecified
+
 /--
 Block score defined by summing the terms assigned to block `b`.
 

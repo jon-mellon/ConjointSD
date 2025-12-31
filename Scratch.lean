@@ -12,9 +12,13 @@ import ConjointSD
 #print ConjointSD.GEstimationAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
 #print ConjointSD.ConjointIdAssumptions
+#print ConjointSD.ConjointDesignAssumptions
+#print ConjointSD.ConjointRandomizationStream
+#print ConjointSD.DesignAttrIID.of_randomization_stream
 -- Core SD and decomposition.
 #print ConjointSD.sdHatZ_tendsto_ae
 #print ConjointSD.sd_component_consistent
+#print ConjointSD.sd_component_consistent_of_design
 
 -- Sample splitting (evaluation stage).
 #print ConjointSD.sdHat_fixed_m_tendsto_ae_attrSD
@@ -36,6 +40,7 @@ import ConjointSD
 #print ConjointSD.identified_potMean_from_condMean
 #print ConjointSD.identified_amce_from_condMeans
 #print ConjointSD.gExp_eq_gPot
+#print ConjointSD.ConjointIdAssumptions.of_design
 
 -- Target equivalence and approximation bounds.
 #print ConjointSD.attrMean_congr_ae
@@ -59,6 +64,8 @@ import ConjointSD
 #print ConjointSD.gLin_eq_parametric
 #print ConjointSD.wellSpecified_of_parametricMainInteractions
 #print ConjointSD.gStar_eq_sum_blocks_of_parametricMainInteractions
+#print ConjointSD.wellSpecified_of_noInteractions_of_fullMainEffects
+#print ConjointSD.approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 
 -- Paper core estimands.
 #print ConjointSD.paperBlockSDs_apply

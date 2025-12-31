@@ -26,3 +26,7 @@ Lean entrypoint: [ConjointSD.lean](ConjointSD.lean)
 6) Empirical [RMSE](readable/jargon_rmse.md)s vs target-human-population [L2](readable/jargon_l2.md) bounds are not linked
    - The proof uses target-human-population [L2](readable/jargon_l2.md) distances under `ν`, but the R workflow computes test-set [RMSE](readable/jargon_rmse.md)s. A generalization/[LLN](readable/jargon_lln.md) step is needed to show the sample RMSE converges to the target-human-population `L2(ν)` distance (or to a weighted target-human-population target).
    - To fix: add a sample-to-target-human-population convergence lemma for the [RMSE](readable/jargon_rmse.md) estimator (possibly under the same IID/weighting assumptions as the SD consistency results), and thread it into the [L2](readable/jargon_l2.md)-approximation assumptions used in the bounds.
+
+7) OLS cross-moment convergence is assumed rather than derived
+   - The `PaperOLSLLNA.cross_tendsto` assumption is a law-of-large-numbers statement about the empirical cross moments `X'Y/n`. It is not derived from the current randomization assumptions, which only ensure randomized assignment of profiles and independence from potential outcomes.
+   - To fix: either (i) add an explicit joint-draw LLN package for `(A i, Yobs i)` (independence across draws + finite second moments) and derive `cross_tendsto`, or (ii) add a cluster-level LLN (independent respondents, within-respondent dependence allowed) and derive a clustered version of `cross_tendsto` consistent with robust inference practice.

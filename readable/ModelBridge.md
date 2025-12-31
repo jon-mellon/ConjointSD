@@ -11,7 +11,7 @@ Core linear model pieces:
 
 Causal target pieces:
 - `gStar` (defined in `ConjointSD/Defs.lean`) is the causal score function: the [mean](jargon_mean.md) [potential outcome](jargon_potential_outcome.md) under each [profile](jargon_profile.md).
-- `WellSpecified` and approximation variants live in `ConjointSD/Assumptions.lean`.
+- `WellSpecified` and approximation variants are defined in `ConjointSD/ModelBridge.lean`.
 - The theorems show that (approximate) [well-specification](jargon_well_specified.md) implies (approximate) equality with the block-sum score.
 
 Paper term set:

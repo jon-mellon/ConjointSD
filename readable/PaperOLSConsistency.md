@@ -8,9 +8,9 @@ Key definition:
 - `gPaper` is the score function defined by the paper's regression [terms](jargon_term.md) (intercept, main effects, [interactions](jargon_interaction.md)). It uses the [linear model](jargon_linear_model.md) setup.
 
 Assumption package:
-- `PaperOLSMomentAssumptions` says that for almost every sample path, the empirical Gram matrix and cross moments [converge](jargon_convergence.md) to their target human [population](jargon_population.md) versions for the causal target (under the attribute distribution). This is the key input for OLS [consistency](jargon_consistency.md).
-- `PaperOLSLLNA`, `PaperOLSInverseStability`, and `PaperOLSIdentifiability` break the moment package into [LLN](jargon_lln.md) for Gram/cross, inverse stability, and the target human population normal-equation identity for `theta0`.
-- `paper_ols_lln_of_score_assumptions_ae` derives the [LLN](jargon_lln.md) part from existing `ScoreAssumptions`, plus a law-of-attributes condition and a (strong) noiseless link `Yobs = gStar ∘ A` on sample paths.
+- The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets and the normal equations identify `theta0`.
+- `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from existing `ScoreAssumptions`, plus a law‑of‑attributes condition and a (strong) noiseless link `Yobs = gStar ∘ A` on sample paths.
+- `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN, inverse‑Gram stability, and identifiability into the a.e. `OLSMomentAssumptionsOfAttr` statement used by later theorems.
 
 Main results:
 - `theta_tendsto_of_paper_ols_moments_ae` gives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0`.
@@ -19,6 +19,6 @@ Main results:
 - `GEstimationAssumptions_of_paper_ols_moments_ae` provides the same [bridge](jargon_bridge.md) a.e. when the OLS moment assumptions hold along sample paths.
 - `gPaper_eq_gTotalΘ_blocks` identifies the paper score with the block-sum total score (for any `blk`), so the OLS path can feed into the block/total [standard deviation](jargon_standard_deviation.md) chain.
 - `GEstimationAssumptions_of_paper_ols_gStar_total` and `GEstimationAssumptions_of_paper_ols_moments_total_ae` lift the OLS assumptions from `gPaper` to the block-sum total score.
-- `paper_ols_moment_assumptions_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the target human population normal equations.
+- `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the target human population normal equations.
 
 This file is the link from [regression](jargon_regression.md) / [OLS](jargon_ols.md) [consistency](jargon_consistency.md) to the [plug-in](jargon_plug_in.md) moment assumptions used in the [standard deviation](jargon_standard_deviation.md) consistency proofs.

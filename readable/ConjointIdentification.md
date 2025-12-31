@@ -30,6 +30,8 @@ Final result:
 
 In plain [terms](jargon_term.md): under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function (given a separate positivity assumption for the conditioning events).
 
+Bridge note: `ConjointIdAssumptions.of_design` derives identification from `ConjointDesignAssumptions`, so the same assumption bundle can be used alongside the SD-consistency chain that relies on the attribute stream.
+
 Note: attribute-level AMCE identification and estimation assumptions (e.g., conditional or componentwise randomization) are not formalized here; we defer to Hainmueller–Hopkins–Yamamoto for those results.
 
 Recent changes: drop explicit integrability assumptions for potential outcomes; boundedness plus `ProbMeasureAssumptions` now supplies integrability when needed.

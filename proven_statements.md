@@ -51,6 +51,38 @@ Formalization (Lean name): `sd component consistent`
 Formalization (math):
 `sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))` a.e.
 
+## sd component consistent of design (SDDecompositionFromConjoint)
+
+File: `ConjointSD/SDDecompositionFromConjoint.lean`
+
+Statement: If the attribute stream satisfies `ConjointDesignAssumptions`, then
+the SD consistency result for `g(A i)` holds under the standard measurability
+and second-moment requirements.
+
+Intuition: The design bundle supplies the IID assumptions, so the standard
+empirical SD convergence proof goes through while keeping the identification
+setup tied to the same attribute stream.
+
+Formalization (Lean name): `sd_component_consistent_of_design`
+
+Formalization (math):
+`ConjointDesignAssumptions A Y Yobs -> sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))`.
+
+## DesignAttrIID of randomization stream (Assumptions)
+
+File: `ConjointSD/Assumptions.lean`
+
+Statement: The stream randomization mechanism implies `DesignAttrIID` for the
+attribute stream.
+
+Intuition: If each draw is generated from an i.i.d. randomization variable, the
+attribute stream inherits independence and identical distribution.
+
+Formalization (Lean name): `DesignAttrIID.of_randomization_stream`
+
+Formalization (math):
+`ConjointRandomizationStream A Y -> DesignAttrIID A`.
+
 ## L2 implies L1 for moment bundles (Assumptions)
 
 File: `ConjointSD/Assumptions.lean`
@@ -83,6 +115,21 @@ Formalization (Lean name): `gExp eq gPot`
 
 Formalization (math):
 `gExp = gPot` under `ConjointIdAssumptions`.
+
+## conjoint id assumptions of design (ConjointIdentification)
+
+File: `ConjointSD/ConjointIdentification.lean`
+
+Statement: From `ConjointDesignAssumptions`, you can derive the identification
+assumptions for the single-shot design of `A 0`.
+
+Intuition: The stream bundle already includes the single-shot design for the
+first draw, so the standard randomized-design pipeline applies directly.
+
+Formalization (Lean name): `ConjointIdAssumptions.of_design`
+
+Formalization (math):
+`ConjointDesignAssumptions A Y Yobs -> ConjointIdAssumptions (X = A 0)`.
 
 ## attrSD congr ae (TargetEquivalence)
 
@@ -117,6 +164,40 @@ Formalization (Lean name): `gStar eq sum blocks of WellSpecified`
 
 Formalization (math):
 `WellSpecified -> gStar = sum b gBlock b`.
+
+## wellSpecified of no interactions full main effects (WellSpecifiedFromNoInteractions)
+
+File: `ConjointSD/WellSpecifiedFromNoInteractions.lean`
+
+Statement: If the causal target is additive (no interactions) and the chosen
+term features are rich enough to represent any additive main-effect surface,
+then the linear-in-terms model is [well-specified](readable/jargon_well_specified.md).
+
+Intuition: Additivity gives the shape of the target, and the full main-effect
+term set guarantees the regression basis can match that shape exactly.
+
+Formalization (Lean name): `wellSpecified_of_noInteractions_of_fullMainEffects`
+
+Formalization (math):
+`NoInteractions ∧ FullMainEffectsTerms φ -> ∃ β, WellSpecified μ Y β φ`.
+
+## approx wellSpecified of approx no interactions (WellSpecifiedFromNoInteractions)
+
+File: `ConjointSD/WellSpecifiedFromNoInteractions.lean`
+
+Statement: If the causal target is approximately additive and the term features
+can represent any additive main-effect surface, then the linear-in-terms model
+is approximately [well-specified](readable/jargon_well_specified.md) with the
+same uniform error bound.
+
+Intuition: Approximate additivity fixes the target up to ε, and the full
+main-effect term set lets the model match that additive surface exactly, leaving
+only the ε discrepancy.
+
+Formalization (Lean name): `approxWellSpecified_of_approxNoInteractions_of_fullMainEffects`
+
+Formalization (math):
+`ApproxNoInteractions ε ∧ FullMainEffectsTerms φ -> ∃ β, ApproxWellSpecified ε`.
 
 ## sequential consistency ae (SequentialConsistency)
 

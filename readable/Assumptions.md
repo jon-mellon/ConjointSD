@@ -6,6 +6,10 @@ This file gathers all assumption bundles and assumption-level props in a single 
 for auditability. Below is a detailed, assumption-by-assumption explanation of what
 each package is asserting and why it matters.
 
+Note on OLS: the regression section uses the standard **consistency** assumptions
+(LLN for `X'X/n` and `X'Y/n`, full-rank/invertible limit, and normal-equation identification),
+not the classical Gauss–Markov/BLUE conditions.
+
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
 Recent changes: probability-measure requirements were pushed into the moment bundles, and first-moment integrability is now derived from square-integrability where applicable.
@@ -154,31 +158,20 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## SDDecomposition
 
-- `DesignAttrIID`: i.i.d.-style conditions for the attribute process `A n` under
-  the experimental design distribution `μ`. Requires
-  [measurable](jargon_measurable.md) `A i`, pairwise
-  [independence](jargon_independent.md), and
-  [identical distribution](jargon_identically_distributed.md) across `i`. This
-  is i.i.d. across the draw index (profiles/respondents/tasks) under the
-  experimental design distribution `μ` on `Ω`, not within a profile, so
-  attributes may still be
-  correlated inside each profile.
-  - `DesignAttrIID.measA`: measurability of each draw `A i`.
-    Intuition: each attribute draw is a valid random variable.
-    Formal: `∀ i, Measurable (A i)`.
-  - `DesignAttrIID.indepA`: pairwise independence of draws across indices.
-    Intuition: different profiles are stochastically independent.
-    Formal: `Pairwise (fun i j => IndepFun (A i) (A j) μ)`.
-  - `DesignAttrIID.identA`: identical distribution across indices.
-    Intuition: all profiles are drawn from the same distribution.
-    Formal: `∀ i, IdentDistrib (A i) (A 0) μ μ`.
-- `ScoreAssumptions`: combines `DesignAttrIID` with
-  [measurability](jargon_measurable.md) of the score function `g`, plus
-  [integrability](jargon_integrable.md) of `g(A 0)^2` under the experimental
-  design distribution `μ`. Integrability of `g(A 0)` is derived from the
-  second-moment
-  condition. This is the input needed to apply the
-  [standard deviation](jargon_standard_deviation.md)
+- `DesignAttrIID`: i.i.d.-style conditions for the attribute draw process `A`
+  under the experimental design distribution `μ` (measurability of each `A i`,
+  pairwise independence across draws, and identical distribution across draws).
+  Intuition: the attribute profiles are sampled in a stable, independent way
+  under the design. Formal:
+  `∀ i, Measurable (A i) ∧
+    Pairwise (fun i j => IndepFun (A i) (A j) μ) ∧
+    ∀ i, IdentDistrib (A i) (A 0) μ μ`.
+- `ScoreAssumptions`: combines attribute-stream i.i.d. properties (derived from
+  `ConjointRandomizationStream`) with [measurability](jargon_measurable.md) of
+  the score function `g`, plus [integrability](jargon_integrable.md) of
+  `g(A 0)^2` under the experimental design distribution `μ`. Integrability of
+  `g(A 0)` is derived from the second-moment condition. This is the input
+  needed to apply the [standard deviation](jargon_standard_deviation.md)
   [LLN](jargon_lln.md) to the induced score process.
   - `ScoreAssumptions.meas_g`: the score `g` is measurable, so `g(A i)` is
     measurable when composed with each `A i`. Intuition: the score must be a
@@ -187,8 +180,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     finite variance and supports LLN steps for SD consistency. Intuition: the
     score cannot have explosive tails if we want stable dispersion estimates.
     Formal: `Integrable (fun ω => (g (A 0 ω)) ^ 2) μ`.
-- `DecompAssumptions`: bundles `DesignAttrIID`, [measurability](jargon_measurable.md) of
-  each
+- `DecompAssumptions`: bundles attribute-stream i.i.d. properties (derived from
+  `ConjointRandomizationStream`), [measurability](jargon_measurable.md) of each
   [block](jargon_block.md) score `g b`, and a uniform boundedness condition for
   every block. Boundedness guarantees all required moments and simplifies
   [variance](jargon_variance.md) decomposition arguments. Concretely, there is
@@ -198,9 +191,6 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   you apply dominated-convergence or LLN-style steps without checking separate
   tail conditions for each block. These assumptions live on the sample draw
   process `A` under the experimental design distribution `μ`.
-  - `DecompAssumptions.designAttrIID`: the attribute draws satisfy `DesignAttrIID`.
-    Intuition: block scores are evaluated on i.i.d. attribute draws.
-    Formal: `DesignAttrIID (μ := μ) A`.
   - `DecompAssumptions.meas_g`: each block score is measurable.
     Intuition: each block score is a valid observable function.
     Formal: `∀ b, Measurable (g b)`.
@@ -258,12 +248,13 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Intuition: the evaluation draw is i.i.d. with finite second moment for the estimated score.
     Formal: `ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m)`.
 - `SplitEvalAssumptionsBounded`: alternative evaluation assumptions using
-  `DesignAttrIID`, [measurability](jargon_measurable.md) of `gHat g θhat m`, and a
-  global bound. This is a stronger but easier-to-check route to the same moment
-  conditions under the experimental design distribution `μ`.
-  - `SplitEvalAssumptionsBounded.hPop`: evaluation draws satisfy `DesignAttrIID`.
+  attribute-stream i.i.d. properties (derived from `ConjointRandomizationStream`),
+  [measurability](jargon_measurable.md) of `gHat g θhat m`, and a global bound.
+  This is a stronger but easier-to-check route to the same moment conditions
+  under the experimental design distribution `μ`.
+  - `SplitEvalAssumptionsBounded.hPop`: evaluation draws satisfy the attribute-stream
+    i.i.d. properties derived from the stream randomization mechanism.
     Intuition: the sample is i.i.d. at the attribute level under `μ`.
-    Formal: `DesignAttrIID (μ := μ) A`.
   - `SplitEvalAssumptionsBounded.hMeas`: the estimated score is measurable.
     Intuition: the score is a valid observable function of attributes.
     Formal: `Measurable (gHat g θhat m)`.
@@ -297,6 +288,13 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Formal: `∀ b, FunctionalContinuityAssumptions (ν := ν) (blockScoreΘ (gB := gB) b) θ0`.
 
 ## RegressionEstimator
+
+Reader mapping to standard OLS assumptions:
+- `OLSMomentAssumptions` / `OLSMomentAssumptionsOfAttr` correspond to LLN for
+  the Gram matrix `X'X/n` and cross moments `X'Y/n`, plus invertibility/full‑rank
+  of the limiting Gram, and identification via the normal equations.
+- `OLSConsistencyAssumptions` is simply the resulting conclusion (the coefficient
+  estimates converge to `θ0`), not a new domain‑specific assumption.
 
 - `OLSConsistencyAssumptions`: a single assumption that the
   [OLS](jargon_ols.md) [estimator](jargon_estimator.md) sequence
@@ -409,6 +407,11 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     `∃ (R : Type 0) (_ : MeasurableSpace R) (U : Ω → R) (f : R → Attr),
       Measurable U ∧ Measurable f ∧ X = (fun ω => f (U ω)) ∧
       ∀ x, (fun ω => U ω) ⟂ᵢ[μ] (fun ω => Y x ω)`.
+- `ConjointRandomizationStream`: extends the randomization mechanism to the
+  full attribute stream `A i`. Each draw is generated by a measurable function
+  of an i.i.d. randomization variable, and each draw is
+  [independent](jargon_independent.md) of every [potential outcome](jargon_potential_outcome.md).
+  This is the mechanism-level route to the attribute-stream i.i.d. properties.
 - `NoProfileOrderEffects`: formalizes Assumption 2 by requiring potential outcomes
   for a task to be invariant under permutations of the profile order, under the
   experimental design distribution `μ`. (Hainmueller Assumption 2)
@@ -471,8 +474,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   `X`, `Measure.map X μ = ν`, and bounded, measurable, consistent
   [potential outcomes](jargon_potential_outcome.md). The randomization mechanism
   is used to derive ignorability in `ConjointIdRandomized`. This bridges the
-  sample assignment process `μ` to the assignment law `ν` for the target human
-  [population](jargon_population.md).
+  sample assignment process `μ` to the assignment law `ν` for the target
+  attribute distribution.
   - `ConjointSingleShotDesign.rand`: explicit randomization mechanism for `X`.
     Intuition: assignment is generated by a random device.
     Formal: `ConjointRandomizationMechanism (μ := μ) (X := X) (Y := Y)`.
@@ -491,30 +494,16 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   - `ConjointSingleShotDesign.consistency`: observed equals realized potential outcome.
     Intuition: no measurement distortion.
     Formal: `∀ ω, Yobs ω = Y (X ω) ω`.
-  - `ConjointSingleShotDesign.bounded`: outcomes are uniformly bounded.
-    Intuition: boundedness ensures integrability without extra assumptions.
-    Formal: `∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C`.
+- `ConjointSingleShotDesign.bounded`: outcomes are uniformly bounded.
+  Intuition: boundedness ensures integrability without extra assumptions.
+  Formal: `∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C`.
+- `ConjointDesignAssumptions`: bundles a stream randomization mechanism for `A`
+  with a single-shot design for the first draw `A 0`. This is the shared
+  assumption package that links identification on `A 0` to SD-consistency
+  results that use the full stream `A`.
 
 ## ModelBridge
 
-- `WellSpecified`: exact [well-specified](jargon_well_specified.md): the causal
-  [estimand](jargon_estimand.md) `gStar` equals the
-  [linear-in-terms](jargon_linear_in_terms.md) model `gLin` for all
-  [profiles](jargon_profile.md).
-  Intuition: the model class contains the true causal response surface under
-  the experimental design distribution `μ`.
-  Formal: `∀ x, gLin (β := β) (φ := φ) x = gStar (μ := μ) (Y := Y) x`.
-- `ApproxWellSpecified`: uniform approximation by `gLin`, with a fixed error
-  tolerance `ε` at every [profile](jargon_profile.md).
-  Intuition: the model is uniformly close to truth, with bounded approximation
-  error under the experimental design distribution `μ`.
-  Formal: `∀ x, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε`.
-- `ApproxWellSpecifiedAE`: the same approximation requirement, but only
-  [almost everywhere](jargon_almost_everywhere.md) under the attribute
-  distribution `ν`.
-  Intuition: approximation may fail on a `ν`-null set with no
-  [population](jargon_population.md) impact.
-  Formal: `∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε`.
 - `ApproxOracleAE`: a two-stage approximation assumption: a flexible score
   approximates the true target `gStar`, and the model score approximates the
   flexible score, both [almost everywhere](jargon_almost_everywhere.md) under
@@ -550,6 +539,13 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## WellSpecifiedFromNoInteractions
 
+- `FullMainEffectsTerms`: the term basis `φ` is rich enough to represent any
+  additive main-effect surface (intercept plus per-attribute effects). This is
+  the "full set of main-effect terms" condition used to derive
+  [well-specification](jargon_well_specified.md) from `NoInteractions`.
+  Intuition: the regression terms are expressive enough to match any additive
+  causal surface. Formal:
+  `∀ μ0 main, ∃ β, ∀ x, gLin β φ x = μ0 + ∑ k, main k (x k)`.
 - `NoInteractions`: existence of an additive representation, formalizing the
   "no interactions" assumption used to justify
   [well-specification](jargon_well_specified.md).
@@ -558,64 +554,11 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   Formal:
   `∃ (μ0 : ℝ) (main : ∀ k : K, V k → ℝ),
     ∀ x : Profile K V, gStar (μ := μ) (Y := Y) x = μ0 + ∑ k : K, main k (x k)`.
-
-## PaperOLSConsistency
-
-- `PaperOLSLLNA`: entrywise [LLN](jargon_lln.md) for the sample Gram matrix and
-  cross moment vector, [converging](jargon_convergence.md) to
-  [population](jargon_population.md) targets for the paper basis (sample
-  sequences under the experimental design distribution `μ`, targets under `ν`).
-  - `PaperOLSLLNA.gram_tendsto`: entrywise LLN for the Gram matrix.
-    Intuition: sample regressor covariances converge to
-    [population](jargon_population.md) covariances.
-    Formal:
-    `∀ i j, Tendsto
-      (fun n => gramMatrix (A := A) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) n i j)
-      atTop
-      (nhds (attrGram (ν := ν) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j))`.
-  - `PaperOLSLLNA.cross_tendsto`: entrywise LLN for the cross moments.
-    Intuition: sample regressor-outcome correlations converge to
-    [population](jargon_population.md) values.
-    Formal:
-    `∀ i, Tendsto
-      (fun n => crossVec (A := A) (Y := Yobs)
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) n i)
-      atTop
-      (nhds (attrCross (ν := ν) (g := gStar (μ := μ) (Y := Y))
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))`.
-- `PaperOLSInverseStability`: stability of the inverse Gram entries, ensuring
-  [convergence](jargon_convergence.md) of the sample inverse to the
-  [population](jargon_population.md) inverse.
-  - `PaperOLSInverseStability.gramInv_tendsto`: entrywise inverse-gram convergence.
-    Intuition: the inverse design matrix stabilizes.
-    Formal:
-    `∀ i j, Tendsto
-      (fun n => (gramMatrix (A := A)
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) n)⁻¹ i j)
-      atTop
-      (nhds ((attrGram (ν := ν)
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j))`.
-- `PaperOLSIdentifiability`: the normal equations with
-  [population](jargon_population.md) moments identify the target
-  [parameter](jargon_parameter.md) `θ0`.
-  Intuition: the [population](jargon_population.md) linear system has a unique
-  solution equal to the target.
+- `ApproxNoInteractions`: approximate additivity of `gStar` within `ε` of a
+  main-effects surface.
+  Intuition: interactions are small enough that an additive model is uniformly
+  close to the causal target.
   Formal:
-  `θ0 =
-    (attrGram (ν := ν) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
-      (attrCross (ν := ν) (g := gStar (μ := μ) (Y := Y))
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))`.
-- `PaperOLSMomentAssumptions`: almost-everywhere (over sample paths) version of
-  the [population](jargon_population.md) moment assumptions, applied to the
-  realized sample sequences.
-  Intuition: for almost every sample path under the experimental design
-  distribution `μ`, the [population](jargon_population.md)-moment assumptions
-  (under `ν`) apply to the realized sequence.
-  Formal:
-  `∀ᵐ ω ∂μ,
-    OLSMomentAssumptionsOfAttr
-      (ν := ν)
-      (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
-      (g := gStar (μ := μ) (Y := Y))
-      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-      θ0`.
+  `∃ (μ0 : ℝ) (main : ∀ k : K, V k → ℝ),
+    ∀ x : Profile K V,
+      |gStar (μ := μ) (Y := Y) x - (μ0 + ∑ k : K, main k (x k))| ≤ ε`.

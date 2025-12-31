@@ -90,6 +90,23 @@ theorem sd_component_consistent [ProbMeasureAssumptions μ]
     iidAssumptions_Zcomp (μ := μ) (A := A) (g := g) h
   simpa using (sdHatZ_tendsto_ae (μ := μ) (Z := Zcomp (A := A) (g := g)) hIID)
 
+theorem sd_component_consistent_of_design [ProbMeasureAssumptions μ]
+    (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
+    (h : ConjointDesignAssumptions (μ := μ) (A := A) (Y := Y) (Yobs := Yobs))
+    (g : Attr → ℝ)
+    (hMeas : Measurable g)
+    (hIntSq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
+        atTop
+        (nhds (designSDZ (μ := μ) (Zcomp (A := A) (g := g)))) := by
+  have hPop : DesignAttrIID (μ := μ) A :=
+    DesignAttrIID.of_randomization_stream (μ := μ) (A := A) (Y := Y) h.streamRand
+  have hScore : ScoreAssumptions (μ := μ) (A := A) (g := g) :=
+    ⟨hPop, hMeas, hIntSq⟩
+  exact sd_component_consistent (μ := μ) (A := A) (g := g) hScore
+
 theorem sd_component_consistent_of_bounded [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hPop : DesignAttrIID (μ := μ) A)

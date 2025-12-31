@@ -308,6 +308,29 @@ dep_fmt <- fmt_matrix(dep_mat, diag_omit = TRUE)
 knitr::kable(cbind(Count = assump_count, assump_fmt), align = "l")
 ```
 
+```{r assumption-xlsx, echo=FALSE}
+assump_tbl <- data.frame(
+  Assumption = rownames(assump_fmt),
+  Count = assump_count,
+  assump_fmt,
+  check.names = FALSE
+)
+
+out_dir <- "dependency_tables_files"
+if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+out_xlsx <- file.path(out_dir, "assumption_matrix.xlsx")
+
+if (requireNamespace("writexl", quietly = TRUE)) {
+  writexl::write_xlsx(assump_tbl, out_xlsx)
+} else if (requireNamespace("openxlsx", quietly = TRUE)) {
+  openxlsx::write.xlsx(assump_tbl, out_xlsx, overwrite = TRUE)
+} else {
+  out_csv <- file.path(out_dir, "assumption_matrix.csv")
+  write.csv(assump_tbl, out_csv, row.names = FALSE)
+  warning("Package 'writexl' or 'openxlsx' is required to write assumption_matrix.xlsx; wrote CSV instead.")
+}
+```
+
 ## Auto-generated theorem dependency matrix
 
 ```{r dependency-table, echo=FALSE}

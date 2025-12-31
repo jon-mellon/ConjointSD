@@ -111,9 +111,32 @@ theorem paper_ols_lln_of_score_assumptions_ae
             (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
               * gStar (μ := μ) (Y := Y) a)) :
     ∀ᵐ ω ∂μ,
-      PaperOLSLLNA
-        (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-        (A := fun n => Aω n ω) (Yobs := fun n => Yobsω n ω) := by
+      (∀ i j,
+        Tendsto
+          (fun n =>
+            gramMatrix
+              (A := fun k => Aω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n i j)
+          atTop
+          (nhds
+            (attrGram
+              (ν := ν)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)))
+      ∧
+      (∀ i,
+        Tendsto
+          (fun n =>
+            crossVec
+              (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n i)
+          atTop
+          (nhds
+            (attrCross
+              (ν := ν)
+              (g := gStar (μ := μ) (Y := Y))
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
   classical
   have hgram : ∀ i j, ∀ᵐ ω ∂μ,
       Tendsto
@@ -275,40 +298,90 @@ theorem paper_ols_lln_of_score_assumptions_ae
   refine (hgram_all.and hcross_all).mono ?_
   intro ω hω
   rcases hω with ⟨hgramω, hcrossω⟩
-  exact { gram_tendsto := hgramω, cross_tendsto := hcrossω }
+  exact ⟨hgramω, hcrossω⟩
 
 variable {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
 
 omit [ProbMeasureAssumptions μ] [ProbMeasureAssumptions ν] in
-theorem paper_ols_moment_assumptions_of_lln_fullrank_ae
+theorem paper_ols_attr_moments_of_lln_fullrank_ae
     (θ0 : PaperTerm Main Inter → ℝ)
-    (hLLN : ∀ᵐ ω ∂μ,
-      PaperOLSLLNA
-        (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-        (A := fun n => Aω n ω) (Yobs := fun n => Yobsω n ω))
-    (hInv : ∀ᵐ ω ∂μ,
-      PaperOLSInverseStability
-        (ν := ν) (fMain := fMain) (fInter := fInter)
-        (A := fun n => Aω n ω))
-    (hId : PaperOLSIdentifiability
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter) θ0) :
-    PaperOLSMomentAssumptions
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      θ0 Aω Yobsω := by
+    (hLLN :
+      ∀ᵐ ω ∂μ,
+        (∀ i j,
+          Tendsto
+            (fun n =>
+              gramMatrix
+                (A := fun k => Aω k ω)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                n i j)
+            atTop
+            (nhds
+              (attrGram
+                (ν := ν)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)))
+        ∧
+        (∀ i,
+          Tendsto
+            (fun n =>
+              crossVec
+                (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                n i)
+            atTop
+            (nhds
+              (attrCross
+                (ν := ν)
+                (g := gStar (μ := μ) (Y := Y))
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))))
+    (hInv :
+      ∀ᵐ ω ∂μ,
+        ∀ i j,
+          Tendsto
+            (fun n =>
+              (gramMatrix
+                (A := fun k => Aω k ω)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                n)⁻¹ i j)
+            atTop
+            (nhds
+              ((attrGram
+                (ν := ν)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
+    (hId :
+      θ0 =
+        (attrGram
+          (ν := ν)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
+          (attrCross
+            (ν := ν)
+            (g := gStar (μ := μ) (Y := Y))
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))) :
+    ∀ᵐ ω ∂μ,
+      OLSMomentAssumptionsOfAttr
+        (ν := ν)
+        (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
+        (g := gStar (μ := μ) (Y := Y))
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        θ0 := by
   refine (hLLN.and hInv).mono ?_
   intro ω hω
   rcases hω with ⟨hLLNω, hInvω⟩
   refine
-    { gramInv_tendsto := hInvω.gramInv_tendsto
-      cross_tendsto := hLLNω.cross_tendsto
+    { gramInv_tendsto := hInvω
+      cross_tendsto := hLLNω.2
       theta0_eq := hId }
 
 omit [ProbMeasureAssumptions μ] [ProbMeasureAssumptions ν] in
 theorem theta_tendsto_of_paper_ols_moments_ae
     (θ0 : PaperTerm Main Inter → ℝ)
-    (hMom : PaperOLSMomentAssumptions
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      θ0 Aω Yobsω) :
+    (hMom :
+      ∀ᵐ ω ∂μ,
+        OLSMomentAssumptionsOfAttr
+          (ν := ν)
+          (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          θ0) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (fun n =>
@@ -332,9 +405,14 @@ theorem theta_tendsto_of_paper_ols_moments_ae
 omit [ProbMeasureAssumptions μ] in
 theorem GEstimationAssumptions_of_paper_ols_moments_ae
     (θ0 : PaperTerm Main Inter → ℝ)
-    (hMom : PaperOLSMomentAssumptions
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      θ0 Aω Yobsω)
+    (hMom :
+      ∀ᵐ ω ∂μ,
+        OLSMomentAssumptionsOfAttr
+          (ν := ν)
+          (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          θ0)
     (hCont :
       FunctionalContinuityAssumptions
         (ν := ν)
@@ -497,9 +575,14 @@ theorem GEstimationAssumptions_of_paper_ols_moments_total_ae
     {B : Type*} [Fintype B] [DecidableEq B]
     (blk : PaperTerm Main Inter → B)
     (θ0 : PaperTerm Main Inter → ℝ)
-    (hMom : PaperOLSMomentAssumptions
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      θ0 Aω Yobsω)
+    (hMom :
+      ∀ᵐ ω ∂μ,
+        OLSMomentAssumptionsOfAttr
+          (ν := ν)
+          (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
+          (g := gStar (μ := μ) (Y := Y))
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+          θ0)
     (hCont :
       FunctionalContinuityAssumptions
         (ν := ν)

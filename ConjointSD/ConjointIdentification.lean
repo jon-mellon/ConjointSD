@@ -171,6 +171,38 @@ lemma positivity_of_singleShot
       _ = ν {x} := hmap
   simpa [hpreimage] using h.ν_pos x
 
+lemma ConjointIdAssumptions.of_design
+    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    {A : ℕ → Ω → Attr} {Y : Attr → Ω → ℝ} {Yobs : Ω → ℝ}
+    (h : ConjointDesignAssumptions (μ := μ) (A := A) (Y := Y) (Yobs := Yobs)) :
+    ConjointIdAssumptions (μ := μ) (X := A 0) (Y := Y) (Yobs := Yobs) := by
+  have hRand :
+      ConjointRandomizationMechanism (μ := μ) (X := A 0) (Y := Y) := by
+    rcases h.streamRand.exists_randomization with
+      ⟨R, instR, U, f, hmeasU, hmeasf, hAeq, hindep, hident, hUindepY⟩
+    letI : MeasurableSpace R := instR
+    refine ⟨R, instR, U 0, f, hmeasU 0, hmeasf, ?_, ?_⟩
+    · ext ω
+      simpa [hAeq 0]
+    · intro x
+      simpa using hUindepY 0 x
+  have hSingleShot :
+      ConjointSingleShotDesign (μ := μ) (ν := Measure.map (A 0) μ)
+        (X := A 0) (Y := Y) (Yobs := Yobs) := by
+    refine
+      { rand := hRand
+        lawX := rfl
+        ν_pos := h.ν_pos
+        measYobs := h.measYobs
+        measY := h.measY
+        consistency := h.consistency
+        bounded := h.bounded }
+  have hIdRand :
+      ConjointIdRandomized (μ := μ) (X := A 0) (Y := Y) (Yobs := Yobs) :=
+    ConjointIdRandomized.of_singleShot
+      (μ := μ) (ν := Measure.map (A 0) μ) (h := hSingleShot)
+  exact ConjointIdAssumptions.of_randomized (μ := μ) (h := hIdRand)
+
 
 section
 /-- If the factorization holds, the event-conditional mean equals the unconditional mean. -/
