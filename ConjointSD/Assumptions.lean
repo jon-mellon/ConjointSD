@@ -163,21 +163,6 @@ structure DecompAssumptions (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) :
 
 end SDDecomposition
 
-section VarianceDecomposition
-
-variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω)
-
-variable {Attr : Type*}
-variable {B : Type*} [Fintype B]
-
-/-- Integrability assumptions for block functions and their products. -/
-structure BlockIntegrable (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) : Prop where
-  intX : ∀ b, Integrable (fun ω => g b (A 0 ω)) μ
-  intMul : ∀ b c, Integrable (fun ω => g b (A 0 ω) * g c (A 0 ω)) μ
-
-end VarianceDecomposition
-
 section EstimatedG
 
 variable {Attr : Type*} [MeasurableSpace Attr]

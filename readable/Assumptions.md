@@ -200,19 +200,6 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 
 ## VarianceDecomposition
 
-- `BlockIntegrable`: [integrability](jargon_integrable.md) of each block score
-  `g b(A 0)` and every product `g b(A 0) * g c(A 0)`. These are the minimal
-  conditions to define block [means](jargon_mean.md) and
-  [covariances](jargon_covariance.md) used in
-  [variance](jargon_variance.md) decomposition under the experimental design
-  distribution `μ`.
-  - `BlockIntegrable.intX`: integrability of each block score.
-    Intuition: block means are finite.
-    Formal: `∀ b, Integrable (fun ω => g b (A 0 ω)) μ`.
-  - `BlockIntegrable.intMul`: integrability of each block-product.
-    Intuition: block covariances are finite.
-    Formal: `∀ b c, Integrable (fun ω => g b (A 0 ω) * g c (A 0 ω)) μ`.
-
 ## EstimatedG
 
 - `GEstimationAssumptions`: [convergence](jargon_convergence.md) of
