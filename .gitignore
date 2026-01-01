@@ -1,3 +1,5 @@
 /.lake
 .Rproj.user
 dependency_tables.html
+.Rhistory
+.DS_Store
