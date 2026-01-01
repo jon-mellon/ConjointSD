@@ -14,6 +14,7 @@ Note: the social status paper contains no AI written text. This repository, by c
 - [Lean docs index](readable/lean_index.md): readable summaries of each Lean file.
 - [Jargon index](readable/jargon_index.md): short definitions of technical terms.
 - [Proven statements](proven_statements.md): key proved theorems with assumptions.
+- [Assumptions](readable/Assumptions.md): narrative list of standing assumptions.
 - [Project map](project_map.md): dependency-oriented overview of the Lean modules.
 - [Proof gaps](gaps.md): known open gaps between the paper and the formalization.
 - [Dependency tables](dependency_tables.md): generated tables for Lean dependency summaries.
