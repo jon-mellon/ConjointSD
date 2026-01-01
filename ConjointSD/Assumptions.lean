@@ -246,6 +246,36 @@ variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
 variable [DecidableEq (PaperTerm Main Inter)]
 
 /--
+Observation-noise assumptions for OLS cross moments: the feature-weighted
+noise averages converge to zero along sample paths.
+
+This is a mean-zero/noise-LLN condition relative to the true score `gStar`,
+stated directly in terms of the empirical cross term.
+-/
+structure ObservationNoiseAssumptions
+    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    {Term : Type*}
+    (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
+    (φ : Term → Attr → ℝ) : Prop where
+  condMean_zero :
+    ∀ i a,
+      condMean (μ := μ)
+          (fun ω => Yobs i ω - gStar (μ := μ) (Y := Y) (A i ω))
+          (eventX (X := A i) a)
+        = 0
+  noise_lln :
+    ∀ i,
+      ∀ᵐ ω ∂μ,
+        Tendsto
+          (fun n : ℕ =>
+            ((n : ℝ)⁻¹) *
+              ∑ k ∈ Finset.range n,
+                φ i (A k ω)
+                  * (Yobs k ω - gStar (μ := μ) (Y := Y) (A k ω)))
+          atTop
+          (nhds 0)
+
+/--
 Paper OLS design-side assumptions that are sufficient to derive the LLN hypotheses
 for the Gram and cross moments used in OLS consistency.
 
@@ -260,7 +290,10 @@ structure PaperOLSDesignAssumptions
     (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
     (ν : Measure Attr)
     (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
-  yobs_eq : ∀ n ω, Yobs n ω = gStar (μ := μ) (Y := Y) (A n ω)
+  obs_noise :
+    ObservationNoiseAssumptions
+      (μ := μ) (A := A) (Y := Y) (Yobs := Yobs)
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
   meas_fMain : ∀ m, Measurable (fMain m)
   meas_fInter : ∀ i, Measurable (fInter i)
   bound_fMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C

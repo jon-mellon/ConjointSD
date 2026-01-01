@@ -440,7 +440,7 @@ Formalization (math):
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
-(`PaperOLSDesignAssumptions`), full‑rank, well‑specification, and bounded/measurable
+(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, well‑specification, and bounded/measurable
 features, block and total
 [sequential consistency](readable/jargon_sequential_consistency.md) holds
 almost surely over training draws for the [term](readable/jargon_term.md) model.
@@ -461,7 +461,7 @@ Block and total `totalErr` go to 0 sequentially under design‑side OLS assumpti
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
-(`PaperOLSDesignAssumptions`), full‑rank, and
+(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, and
 [well-specification](readable/jargon_well_specified.md), the total sequential
 [consistency](readable/jargon_consistency.md) target is the
 [standard deviation](readable/jargon_standard_deviation.md) of `gStar`.
@@ -482,7 +482,7 @@ For a.e. training draw, `attrSD ν gTotal = attrSD ν gStar(μexp)` under design
 File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
-(`PaperOLSDesignAssumptions`), the full‑rank condition (`PaperOLSFullRankAssumptions`), and
+(`PaperOLSDesignAssumptions`, including observation-noise LLN), the full‑rank condition (`PaperOLSFullRankAssumptions`), and
 well‑specification, the total
 sequential [consistency](readable/jargon_consistency.md) result holds a.e. over
 training draws, and the total-score [standard deviation](readable/jargon_standard_deviation.md)
@@ -532,6 +532,37 @@ Formalization (Lean name): `paper_ols_fullRank_of_orthogonal`
 Formalization (math):
 Orthogonal/nondegenerate feature moments imply `IsUnit (attrGram ν φPaper)`.
 
+## paper ols orthogonal of design (PaperOLSConsistency)
+
+File: `ConjointSD/PaperOLSConsistency.lean`
+
+Statement: If the paper feature map is orthogonal under the design attribute law
+`Measure.map (A 0) μ` and the design/target Gram moments match, then the same
+orthogonality holds under the target `ν`.
+
+Intuition: the transport assumption equates each feature cross moment under the
+design and target laws, so orthogonality carries over.
+
+Formalization (Lean name): `paper_ols_orthogonal_of_design`
+
+Formalization (math):
+Design‑law orthogonality plus `gram_eq` implies `PaperOLSOrthogonalAssumptions` under `ν`.
+
+## paper ols fullRank of design orthogonal (PaperOLSConsistency)
+
+File: `ConjointSD/PaperOLSConsistency.lean`
+
+Statement: If the paper feature map is orthogonal under the design attribute law
+`Measure.map (A 0) μ` and the design/target Gram moments match, then the target
+population Gram matrix is invertible (full‑rank).
+
+Intuition: transport of orthogonality to `ν` yields a diagonal, nondegenerate Gram.
+
+Formalization (Lean name): `paper_ols_fullRank_of_design_orthogonal`
+
+Formalization (math):
+Design‑law orthogonality plus `gram_eq` implies `IsUnit (attrGram ν φPaper)`.
+
 ## paper ols fullRank of posDef (PaperOLSConsistency)
 
 File: `ConjointSD/PaperOLSConsistency.lean`
@@ -552,7 +583,7 @@ Formalization (math):
 File: `ConjointSD/PaperOLSConsistency.lean`
 
 Statement: Under design IID (`DesignAttrIID`), the paper’s design-side bundle
-(`PaperOLSDesignAssumptions`), full‑rank, and well‑specification (so the normal equations hold), the OLS moment assumptions
+(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, and well‑specification (so the normal equations hold), the OLS moment assumptions
 (`OLSMomentAssumptionsOfAttr`) hold almost everywhere for the paper’s
 term set and causal estimand `gStar`.
 

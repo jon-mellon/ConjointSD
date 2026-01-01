@@ -277,25 +277,30 @@ Reader mapping to standard OLS assumptions:
     [population](jargon_population.md) value. Formal:
     `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
       (nhds (attrCross (ν := ν) (g := g) (φ := φ) i))`.
+- `ObservationNoiseAssumptions`: a paper-facing noise bundle that asserts the
+  feature-weighted outcome noise averages to 0 along sample paths, relative to
+  the causal score `gStar`. It also records a conditional-mean formulation
+  (event-wise `condMean` on `A i = a`) to make the intended mean-zero noise
+  story explicit. The LLN is stated directly for the noise cross term
+  `φ(A k) * (Yobs k - gStar (A k))`, and is used to replace the noiseless
+  identity `Yobs = gStar ∘ A` in the design-side OLS bundle.
 - `PaperOLSDesignAssumptions`: a paper-specific bundle that is strong enough to
   *derive* the OLS LLN hypotheses for Gram and cross moments from the
   experimental design once combined with a separate `DesignAttrIID` assumption.
   It packages measurability and boundedness of the paper feature map `φPaper`,
-  boundedness of the conjoint causal estimand `gStar`, the identification link
-  `Yobs = gStar ∘ A`, and equality of the design and target Gram/cross moments
-  (so LLN limits can be expressed under `ν`).
+  boundedness of the conjoint causal estimand `gStar`, the observation-noise
+  LLN needed for the cross moment, and equality of the design and target
+  Gram/cross moments (so LLN limits can be expressed under `ν`).
   - `PaperOLSDesignAssumptions.meas_fMain` / `meas_fInter`: measurability of
     the main/interaction feature maps.
   - `PaperOLSDesignAssumptions.bound_fMain` / `bound_fInter`: boundedness of
     each feature map (used to get integrability and LLN).
   - `PaperOLSDesignAssumptions.meas_gStar` / `bound_gStar`: measurability and
     boundedness of the conjoint causal estimand.
-  - `PaperOLSDesignAssumptions.yobs_eq`: observed outcomes equal the causal
-    estimand evaluated at the realized attributes. This fixes the
-    data-generating process for outcomes as `Yobs = gStar ∘ A` with no outcome
-    noise or extra dependence on `ω` beyond the attribute draw. It is not a
-    model-inclusion or estimation statement; well-specification assumptions are
-    separate and concern whether the chosen feature map can represent `gStar`.
+  - `PaperOLSDesignAssumptions.obs_noise`: an `ObservationNoiseAssumptions`
+    instance specialized to the paper feature map `φPaper`, ensuring the
+    noise cross term averages to 0 and the cross-moment LLN targets
+    `attrCross ν gStar φPaper`.
   - `PaperOLSDesignAssumptions.gram_eq` / `cross_eq`: the design Gram/cross
     moments match the target moments under `ν`.
 - `PaperOLSFullRankAssumptions`: a minimal full‑rank condition for the

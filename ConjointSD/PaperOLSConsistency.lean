@@ -542,9 +542,86 @@ lemma scoreAssumptions_cross_of_design
       hPop hmeas hbound
 
 omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions ν] in
+lemma crossVec_eq_meanHatZ_add_noise
+    {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
+    (ω : Ω) (i : PaperTerm Main Inter) :
+    (fun n =>
+      crossVec
+        (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        n i)
+      =
+    (fun n =>
+      meanHatZ
+          (Z := Zcomp
+            (A := Aω)
+            (g := fun a =>
+              (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+                * gStar (μ := μ) (Y := Y) a))
+          n ω
+        +
+      ((n : ℝ)⁻¹) *
+        ∑ k ∈ Finset.range n,
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω)
+            * (Yobsω k ω - gStar (μ := μ) (Y := Y) (Aω k ω))) := by
+  classical
+  let gCross : Attr → ℝ :=
+    fun a =>
+      (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+        * gStar (μ := μ) (Y := Y) a
+  funext n
+  have hsum_yobs :
+      (∑ k : Fin n,
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω) * Yobsω k ω)
+        =
+      ∑ k ∈ Finset.range n,
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω) * Yobsω k ω := by
+    simpa using
+      (Fin.sum_univ_eq_sum_range (n := n)
+        (fun k =>
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω) * Yobsω k ω))
+  have hsum_cross :
+      ∑ k ∈ Finset.range n,
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω) * Yobsω k ω
+        =
+      ∑ k ∈ Finset.range n,
+          gCross (Aω k ω)
+        +
+      ∑ k ∈ Finset.range n,
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω)
+            * (Yobsω k ω - gStar (μ := μ) (Y := Y) (Aω k ω)) := by
+    calc
+      ∑ k ∈ Finset.range n,
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω) * Yobsω k ω
+          =
+        ∑ k ∈ Finset.range n,
+          ((φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+              (Aω k ω) * gStar (μ := μ) (Y := Y) (Aω k ω)
+            +
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+            (Aω k ω)
+            * (Yobsω k ω - gStar (μ := μ) (Y := Y) (Aω k ω))) := by
+          refine Finset.sum_congr rfl ?_
+          intro k hk
+          ring
+      _ = _ := by
+          simp [Finset.sum_add_distrib, gCross]
+  simp [crossVec, meanHatZ, Zcomp, gCross, smul_eq_mul, hsum_yobs, hsum_cross, mul_add]
+
+omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions ν] in
 theorem paper_ols_lln_of_score_assumptions_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hYobs : ∀ n ω, Yobsω n ω = gStar (μ := μ) (Y := Y) (Aω n ω))
+    (hNoise :
+      ObservationNoiseAssumptions
+        (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
     (hScoreGram :
       ∀ i j,
         ScoreAssumptions
@@ -675,6 +752,18 @@ theorem paper_ols_lln_of_score_assumptions_ae
             (nhds (designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross)))) :=
       meanHatZ_tendsto_ae_of_score
         (μ := μ) (A := Aω) (g := gCross) (hScoreCross i)
+    have hnoise :
+        ∀ᵐ ω ∂μ,
+          Tendsto
+            (fun n : ℕ =>
+              ((n : ℝ)⁻¹) *
+                ∑ k ∈ Finset.range n,
+                  (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+                    (Aω k ω)
+                    * (Yobsω k ω - gStar (μ := μ) (Y := Y) (Aω k ω)))
+            atTop
+            (nhds 0) :=
+      hNoise.noise_lln i
     have hpop :
         designMeanZ (μ := μ) (Z := Zcomp (A := Aω) (g := gCross))
           =
@@ -683,8 +772,9 @@ theorem paper_ols_lln_of_score_assumptions_ae
         (μ := μ) (A := Aω) (g := gCross)
         (hA0 := (hScoreCross i).designAttrIID.measA 0)
         (hg := (hScoreCross i).meas_g)
-    refine hmean.mono ?_
+    refine (hmean.and hnoise).mono ?_
     intro ω hω
+    rcases hω with ⟨hω, hωnoise⟩
     have hω' :
         Tendsto
           (fun n =>
@@ -700,15 +790,44 @@ theorem paper_ols_lln_of_score_assumptions_ae
             n i)
           =
         (fun n =>
-          meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω) := by
-      funext n
-      have hsum :
-          (∑ k : Fin n, gCross (Aω k ω))
-            =
-          ∑ k ∈ Finset.range n, gCross (Aω k ω) := by
-        simpa using (Fin.sum_univ_eq_sum_range (n := n) (fun k => gCross (Aω k ω)))
-      simp [crossVec, meanHatZ, Zcomp, gCross, smul_eq_mul, hYobs, hsum]
-    simpa [attrCross, gCross, hcross_eq] using hω'
+          meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω
+            +
+          ((n : ℝ)⁻¹) *
+            ∑ k ∈ Finset.range n,
+              (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+                (Aω k ω)
+                * (Yobsω k ω - gStar (μ := μ) (Y := Y) (Aω k ω))) := by
+      simpa [gCross] using
+        (crossVec_eq_meanHatZ_add_noise
+          (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
+          (Aω := Aω) (Yobsω := Yobsω) ω i)
+    have hsum_tendsto :
+        Tendsto
+          (fun n =>
+            meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω
+              +
+            ((n : ℝ)⁻¹) *
+              ∑ k ∈ Finset.range n,
+                (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+                  (Aω k ω)
+                  * (Yobsω k ω - gStar (μ := μ) (Y := Y) (Aω k ω)))
+          atTop
+          (nhds (attrMean (Measure.map (Aω 0) μ) gCross + 0)) :=
+      hω'.add hωnoise
+    have hsum_tendsto' :
+        Tendsto
+          (fun n =>
+            meanHatZ (Z := Zcomp (A := Aω) (g := gCross)) n ω
+              +
+            ((n : ℝ)⁻¹) *
+              ∑ k ∈ Finset.range n,
+                (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i)
+                  (Aω k ω)
+                  * (Yobsω k ω - gStar (μ := μ) (Y := Y) (Aω k ω)))
+          atTop
+          (nhds (attrMean (Measure.map (Aω 0) μ) gCross)) := by
+      simpa using hsum_tendsto
+    simpa [attrCross, gCross, hcross_eq] using hsum_tendsto'
   have hgram_all : ∀ᵐ ω ∂μ, ∀ i j, Tendsto
       (fun n =>
         gramMatrix
@@ -815,7 +934,7 @@ theorem paper_ols_lln_of_design_ae
     paper_ols_lln_of_score_assumptions_ae
       (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (Aω := Aω) (Yobsω := Yobsω)
-      (hYobs := hDesign.yobs_eq)
+      (hNoise := hDesign.obs_noise)
       (hScoreGram := hScoreGram) (hScoreCross := hScoreCross)
   refine hLLN.mono ?_
   intro ω hω
@@ -982,6 +1101,78 @@ theorem paper_ols_fullRank_of_orthogonal
               (ν := ν)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))).2
           hDetUnit }
+
+theorem paper_ols_orthogonal_of_design
+    {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hOrth :
+      PaperOLSOrthogonalAssumptions
+        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter)) :
+    PaperOLSOrthogonalAssumptions
+      (ν := ν) (fMain := fMain) (fInter := fInter) := by
+  refine { gram_diag := ?_, gram_pos := ?_ }
+  · intro i j hij
+    have hEq :
+        attrMean (ν := ν)
+            (fun a =>
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+                *
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)
+          =
+        attrMean (ν := Measure.map (Aω 0) μ)
+            (fun a =>
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+                *
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a) := by
+      simpa [attrGram] using (hDesign.gram_eq i j).symm
+    calc
+      attrMean (ν := ν)
+          (fun a =>
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+              *
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)
+          =
+        attrMean (ν := Measure.map (Aω 0) μ)
+          (fun a =>
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+              *
+            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a) := hEq
+      _ = 0 := hOrth.gram_diag i j hij
+  · intro i
+    have hEq :
+        attrMean (ν := ν)
+            (fun a =>
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+                *
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+          =
+        attrMean (ν := Measure.map (Aω 0) μ)
+            (fun a =>
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
+                *
+              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a) := by
+      simpa [attrGram] using (hDesign.gram_eq i i).symm
+    simpa [hEq] using hOrth.gram_pos i
+
+theorem paper_ols_fullRank_of_design_orthogonal
+    {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
+        (ν := ν) (fMain := fMain) (fInter := fInter))
+    (hOrth :
+      PaperOLSOrthogonalAssumptions
+        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter)) :
+    PaperOLSFullRankAssumptions
+      (ν := ν) (fMain := fMain) (fInter := fInter) :=
+  paper_ols_fullRank_of_orthogonal
+    (ν := ν) (fMain := fMain) (fInter := fInter)
+    (hOrth := paper_ols_orthogonal_of_design
+      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (Aω := Aω) (Yobsω := Yobsω) hDesign hOrth)
 
 theorem paper_ols_fullRank_of_posDef
     (hPos :

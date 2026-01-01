@@ -9,13 +9,15 @@ Key definition:
 
 Assumption package:
 - The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets and the normal equations identify `theta0`.
-- `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from existing `ScoreAssumptions` and a (strong) noiseless link `Yobs = gStar ∘ A` on sample paths, with the attribute moments computed under `Measure.map (A 0) μ` for the experimental design.
-- `PaperOLSDesignAssumptions` packages bounded/measurable features, bounded `gStar`, and equality of design vs target Gram/cross moments, while `DesignAttrIID` is supplied separately. From these:
+- `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from existing `ScoreAssumptions` plus an `ObservationNoiseAssumptions` bundle that makes the feature-weighted noise term converge to 0, so the cross moment still targets `gStar` under `Measure.map (A 0) μ`. The algebraic split of the cross moment is factored into `crossVec_eq_meanHatZ_add_noise`.
+- `PaperOLSDesignAssumptions` packages bounded/measurable features, bounded `gStar`, the observation-noise LLN, and equality of design vs target Gram/cross moments, while `DesignAttrIID` is supplied separately. From these:
   - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the target `ν`.
   - `paper_ols_attr_moments_of_design_ae` combines that LLN with inverse‑Gram stability and identification to yield `OLSMomentAssumptionsOfAttr` a.e.
 - `PaperOLSFullRankAssumptions` is the explicit full‑rank premise that feeds the derivation of inverse‑Gram stability and identification (`hInv`/`hId`) from the design; the normal equations are now derived from well‑specification plus bounded/measurable features.
 - `paper_ols_gramInv_tendsto_of_design_ae` derives inverse‑Gram convergence a.e. from the design bundle plus `PaperOLSFullRankAssumptions`.
 - `paper_ols_fullRank_of_orthogonal` derives the full‑rank condition from an orthogonality/variation assumption on the paper features (`PaperOLSOrthogonalAssumptions`).
+- `paper_ols_orthogonal_of_design` transports orthogonality from the design attribute law `Measure.map (A 0) μ` to the target `ν` using the `gram_eq` transport in `PaperOLSDesignAssumptions`.
+- `paper_ols_fullRank_of_design_orthogonal` combines that transport with `paper_ols_fullRank_of_orthogonal` to get full‑rank under `ν` from design‑side orthogonality.
 - `paper_ols_fullRank_of_posDef` derives the full‑rank condition from positive definiteness of the Gram matrix (`PaperOLSPosDefAssumptions`).
 - `paper_ols_theta0_eq_of_normal_eq` derives the identification equation `θ0 = (attrGram)⁻¹ * attrCross` from the normal‑equation identity and full‑rank.
 - `paper_ols_normal_eq_of_wellSpecified` derives the normal‑equation identity from well‑specification plus bounded/measurable paper features.
