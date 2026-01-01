@@ -27,7 +27,7 @@ Intuition: If draws are i.i.d., the sample moments stabilize, so the sample
 Formalization (Lean name): `sdHatZ tendsto ae`
 
 Formalization (math):
-`sdHatZ(Z) -> designSDZ(Z)` a.e. for score processes derived from `ScoreAssumptions`.
+`sdHatZ(Z) -> designSDZ(Z)` a.e. for score processes derived from `DesignAttrIID` plus `ScoreAssumptions`.
 
 ## sd component consistent (SDDecompositionFromConjoint)
 
@@ -455,6 +455,27 @@ Formalization (Lean name): `paper sd blocks and total sequential consistency ae 
 
 Formalization (math):
 Block and total `totalErr` go to 0 sequentially under design‑side OLS assumptions.
+
+## paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions (PaperWrappers)
+
+File: `ConjointSD/PaperWrappers.lean`
+
+Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
+(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, and
+the no‑[interactions](readable/jargon_interaction.md) assumption plus a full
+main‑effects term basis for `φPaper`, there exists a coefficient vector `θ0`
+so block and total
+[sequential consistency](readable/jargon_sequential_consistency.md) holds
+almost surely over training draws.
+
+Intuition: No interactions pins the causal target to an additive main‑effects
+surface, the full main‑effects basis lets `φPaper` represent it, and the OLS
+design assumptions deliver the SD consistency chain.
+
+Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions`
+
+Formalization (math):
+`NoInteractions ∧ FullMainEffectsTerms φPaper -> ∃ θ0,` block and total `totalErr` go to 0 sequentially under design‑side OLS assumptions.
 
 ## paper sd total sequential consistency ae of paper ols gStar total (PaperWrappers)
 

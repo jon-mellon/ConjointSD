@@ -109,6 +109,16 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [population](jargon_population.md) differ only on events that never occur in
   the target [population](jargon_population.md). Formal:
   `∀ᵐ x ∂ν, gExp x = gPop x`.
+- `ApproxInvarianceAE`: the approximate transport condition that allows bounded
+  deviations on the target [population](jargon_population.md) support.
+  Intuition: the experiment score may differ from the target score by at most
+  `ε` on a set of probability one under `ν`, so target moments are only
+  perturbed by a controlled amount. Formal:
+  `∀ᵐ x ∂ν, |s x - t x| ≤ ε`.
+- `BoundedAE`: uniform boundedness on the target [population](jargon_population.md)
+  support. Intuition: scores stay within `C` almost everywhere under `ν`, so
+  moment bounds and approximation lemmas can use a global envelope. Formal:
+  `∀ᵐ x ∂ν, |s x| ≤ C`.
 ## BasicMeasure
 
 - `ProbMeasureAssumptions` (trivial): bundles `IsProbabilityMeasure κ` as an explicit
@@ -147,14 +157,15 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   `∀ i, Measurable (A i) ∧
     Pairwise (fun i j => IndepFun (A i) (A j) μexp) ∧
     ∀ i, IdentDistrib (A i) (A 0) μexp μexp`.
-- `ScoreAssumptions`: combines attribute-stream [i.i.d.](jargon_iid.md) properties (derived from
-  `ConjointRandomizationStream`) with [measurability](jargon_measurable.md) of
-  the score function `g`, plus [integrability](jargon_integrable.md) of
+- `ScoreAssumptions`: score-level [measurability](jargon_measurable.md) of
+  the score function `g` plus [integrability](jargon_integrable.md) of
   `g(A 0)^2` under the experimental design distribution `μexp`. Integrability of
-  `g(A 0)` is derived from the second-moment condition. This is the input
-  needed to apply the score-based [standard deviation](jargon_standard_deviation.md)
-  [LLN](jargon_lln.md) lemmas for the induced score process (e.g.,
-  `sdHatZ_tendsto_ae_of_score`).
+  `g(A 0)` is derived from the second-moment condition. [i.i.d.](jargon_iid.md)
+  properties of the attribute stream are now tracked separately in
+  `DesignAttrIID` and are typically derived from `ConjointRandomizationStream`.
+  The score-based [standard deviation](jargon_standard_deviation.md) [LLN](jargon_lln.md)
+  lemmas (e.g., `sdHatZ_tendsto_ae_of_score`) require both `DesignAttrIID` and
+  `ScoreAssumptions`.
   - `ScoreAssumptions.meas_g`: the score `g` is measurable, so `g(A i)` is
     measurable when composed with each `A i`. Intuition: the score must be a
     well-defined observable function of attributes. Formal: `Measurable g`.
@@ -188,6 +199,9 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   `w` so that weighted LLNs apply. This lets the weighted empirical
   [standard deviation](jargon_standard_deviation.md) of the estimated score
   [converge](jargon_convergence.md) to the target population SD target under `ν`.
+  - `SplitEvalWeightAssumptions.hIID`: i.i.d. assumptions for the evaluation
+    attribute stream `A` under `ρ`. Intuition: evaluation draws are stable and
+    independent enough to apply LLNs. Formal: `DesignAttrIID` for the evaluation law `ρ`.
   - `SplitEvalWeightAssumptions.hScore`: unweighted score assumptions for `gHat g θhat m`.
     Intuition: in practice, the estimated score looks like a stable outcome model on the
     evaluation sample (no obvious nonstationarity or design-induced artifacts).
@@ -209,16 +223,17 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     that discards essentially all evaluation observations).
     Formal: `designMeanZ` for the evaluation law `ρ` is nonzero.
 - `SplitEvalAssumptions`: the unweighted evaluation-stage assumptions used as part of
-  weighted setups. It still packages `ScoreAssumptions` for the fixed score.
+  weighted setups. It packages `DesignAttrIID` for the evaluation draws and
+  `ScoreAssumptions` for the fixed score.
   Intuition: the estimated score is stable enough on its own that sample averages
   behave like target population averages under `ν` when evaluated on the sample.
-  Formal: `ScoreAssumptions` for the evaluation law `ρ`.
+  Formal: `DesignAttrIID` and `ScoreAssumptions` for the evaluation law `ρ`.
 - `SplitEvalAssumptionsBounded`: alternative evaluation assumptions that replace
   the full `ScoreAssumptions` bundle with a stronger, more concrete checklist:
   [measurability](jargon_measurable.md) of the fixed evaluation score
   `gHat g θhat m`, and a global bound on that score. The attribute-stream
   i.i.d. properties are supplied separately (e.g., via `ConjointRandomizationStream`)
-  when converting to `ScoreAssumptions`. This is a stronger but easier-to-check
+  when converting to the full evaluation assumptions. This is a stronger but easier-to-check
   route to the same moment conditions under the evaluation law `ρ`.
   - `SplitEvalAssumptionsBounded.hMeas`: the estimated score is measurable.
     Intuition: the score is a valid observable function of attributes.
@@ -484,7 +499,7 @@ Reader mapping to standard OLS assumptions:
 ## ModelBridge
 
 - `ApproxOracleAE` (not used for consistency or identification): a two-stage approximation assumption: a flexible score
-  approximates the true target `gStar`, and the model score approximates the
+  approximates the experimental causal score `gStar`, and the model score approximates the
   flexible score, both [almost everywhere](jargon_almost_everywhere.md) under
   the attribute distribution `ν`.
   Intuition: use a rich intermediate score to bridge to the target.

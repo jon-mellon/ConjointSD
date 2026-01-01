@@ -1152,6 +1152,146 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_
 
 end SDSequentialConsistencyOLS
 
+section SDSequentialConsistencyOLSNoInteractions
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+variable {K : Type*} {V : K → Type*} [Fintype K]
+variable [∀ k : K, MeasurableSpace (V k)]
+variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
+variable {B : Type*} [Fintype B] [DecidableEq B]
+variable [DecidableEq (PaperTerm Main Inter)]
+
+variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+variable (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+variable (Aeval : ℕ → Ω → Profile K V)
+
+variable (ν : Measure (Profile K V)) [ProbMeasureAssumptions ν]
+variable (w : Profile K V → ℝ)
+
+variable (Y : Profile K V → Ω → ℝ)
+variable (fMain : Main → Profile K V → ℝ) (fInter : Inter → Profile K V → ℝ)
+variable (blk : PaperTerm Main Inter → B)
+
+theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions
+    (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
+    (hMomBlocks : ∀ ω m b,
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := Aeval) (ν := ν)
+        (w := w)
+        (s := gHat
+          (gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b)
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m))
+    (hMomTotal : ∀ ω m,
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := Aeval) (ν := ν)
+        (w := w)
+        (s := gHat
+          (gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m))
+    (hSplit :
+      ∀ ω m b,
+        SplitEvalWeightAssumptions
+          (ρ := ρ) (A := Aeval) (w := w)
+          (g := gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b)
+          (θhat := fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hSplitTotal :
+      ∀ ω m,
+        SplitEvalWeightAssumptions
+          (ρ := ρ) (A := Aeval) (w := w)
+          (g := gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+          (θhat := fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hPop : DesignAttrIID (κ := μexp) Atrain)
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μexp := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
+        (fMain := fMain) (fInter := fInter))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (xiAttr := kappaDesign (κ := μexp) (A := Atrain)) (fMain := fMain) (fInter := fInter))
+    (hTerms :
+      FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
+        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
+    (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
+    ∃ θ0 : PaperTerm Main Inter → ℝ,
+      ∀ᵐ ω ∂μexp,
+        ∃ M : ℕ,
+          ∀ m ≥ M,
+            (∀ b : B,
+              (∀ᵐ ω' ∂ρ,
+                ∀ᶠ n : ℕ in atTop,
+                  totalErr ρ Aeval (ν) w
+                    (gBlock
+                      (gB := fun b θ a =>
+                        gBlockTerm (blk := blk) (β := θ)
+                          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b)
+                    θ0
+                    (fun n =>
+                      olsThetaHat
+                        (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                        n)
+                    m n ω' < ε))
+            ∧
+            (∀ᵐ ω' ∂ρ,
+              ∀ᶠ n : ℕ in atTop,
+                totalErr ρ Aeval (ν) w
+                  (gTotalΘ
+                    (gB := fun b θ a =>
+                      gBlockTerm (blk := blk) (β := θ)
+                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+                  θ0
+                  (fun n =>
+                    olsThetaHat
+                      (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                      (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                  n)
+                  m n ω' < ε) := by
+  rcases
+      wellSpecified_of_noInteractions_of_fullMainEffects
+        (K := K) (V := V) (Term := PaperTerm Main Inter)
+        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+        (μexp := μexp) (Y := Y) hTerms hNoInt with
+    ⟨θ0, hspec⟩
+  refine ⟨θ0, ?_⟩
+  exact
+    paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae
+      (ρ := ρ) (μexp := μexp) (Aeval := Aeval) (ν := ν) (w := w)
+      (Y := Y) (fMain := fMain) (fInter := fInter) (blk := blk)
+      (Atrain := Atrain) (Yobs := Yobs) (θ0 := θ0)
+      (hMomBlocks := hMomBlocks) (hMomTotal := hMomTotal)
+      (hSplit := hSplit) (hSplitTotal := hSplitTotal)
+      (hPop := hPop) (hDesign := hDesign) (hFull := hFull) (hspec := hspec)
+      (ε := ε) (hε := hε)
+
+end SDSequentialConsistencyOLSNoInteractions
+
 section SDSequentialConsistencyNoTopo
 
 variable {Ω : Type*} [MeasurableSpace Ω]

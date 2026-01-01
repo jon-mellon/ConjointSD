@@ -11,8 +11,8 @@ Exact equality section:
 - The file proves this step by step: [mean](jargon_mean.md) -> [second moment](jargon_second_moment.md) -> [variance](jargon_variance.md) -> [standard deviation](jargon_standard_deviation.md).
 
 Approximate section:
-- Defines `ApproxInvarianceAE`: two score functions differ by at most epsilon almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)).
-- Defines `BoundedAE`: a uniform bound on a score function [almost everywhere](jargon_almost_everywhere.md).
+- Uses `ApproxInvarianceAE` from `Assumptions.lean`: two score functions differ by at most epsilon almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)).
+- Uses `BoundedAE` from `Assumptions.lean`: a uniform bound on a score function [almost everywhere](jargon_almost_everywhere.md).
 - Adds a triangle-inequality lemma to combine two [almost everywhere](jargon_almost_everywhere.md) approximation bounds into a single bound.
 - Adds [L2](jargon_l2.md)/[RMSE](jargon_rmse.md)-style lemmas: an `L2Approx` bound controls the difference in target human population means and SDs (via centered L2 norms).
 - Uses these to show that the difference in [means](jargon_mean.md) is at most epsilon.

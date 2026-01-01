@@ -37,7 +37,7 @@ lemma splitEvalAssumptions_of_bounded
     scoreAssumptions_of_bounded
       (μexp := ρ) (A := A) (g := gHat g θhat m)
       (hPop := hPop) (hMeas := h.hMeas) (hBound := h.hBound)
-  exact ⟨hScore⟩
+  exact ⟨hPop, hScore⟩
 
 lemma splitEvalAssumptions_of_bounded_of_stream
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
@@ -84,7 +84,7 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
             (Z := Zcomp (A := A) (g := gHat g θhat m))
             (W := Wcomp (A := A) (w := w)))) := by
     exact sdHatZW_tendsto_ae_of_score
-      (μexp := ρ) (A := A) (w := w) (g := gHat g θhat m)
+      (μexp := ρ) (A := A) (w := w) (g := gHat g θhat m) h.hIID
       (hWZ := h.hWeightScore) (hWZ2 := h.hWeightScoreSq) (hW := h.hWeight)
       (hW0 := h.hW0)
   have hEq :

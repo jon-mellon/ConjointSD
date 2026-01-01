@@ -109,6 +109,7 @@ import ConjointSD
 #print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_ae_of_NoInteractions
 
 
+
 -- Auto-generated DAG coverage: all ConjointSD theorems.
 #print ConjointSD.attrM2_tendsto_of_OLSConsistency
 #print ConjointSD.attrM2_tendsto_of_m2_tendsto
@@ -150,6 +151,7 @@ import ConjointSD
 #print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae
 #print ConjointSD.paper_ols_lln_of_design_ae
 #print ConjointSD.paper_ols_lln_of_score_assumptions_ae
+#print ConjointSD.paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions
 #print ConjointSD.sd_block_consistent
 #print ConjointSD.sd_component_consistent_of_bounded
 #print ConjointSD.status_event_pos
@@ -157,3 +159,4 @@ import ConjointSD
 #print ConjointSD.theta_tendsto_of_paper_ols_moments_ae
 #print ConjointSD.varProxy_sum_eq_sum_covRaw
 #print ConjointSD.wellSpecified_of_noInteractions
+#print ConjointSD.wellSpecified_of_noInteractions_of_fullMainEffects

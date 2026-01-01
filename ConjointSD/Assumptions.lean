@@ -37,7 +37,7 @@ attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforw
 for non-target attribute laws.
 -/
 
-/-- Convenient moment conditions on `s` under an attribute distribution `ν`. -/
+/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν`. -/
 structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (s : Attr → ℝ) : Prop where
   aemeas : AEMeasurable s ν
@@ -62,6 +62,14 @@ This is the minimal transport condition used to link experiment to population.
 -/
 def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
   ∀ᵐ x ∂ν, gExp x = gPop x
+
+/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
+def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
+  ∀ᵐ a ∂ν, |s a - t a| ≤ ε
+
+/-- Uniform bound on a score function, ν-a.e. -/
+def BoundedAE (ν : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
+  ∀ᵐ a ∂ν, |s a| ≤ C
 
 end Transport
 
@@ -89,19 +97,20 @@ structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
   indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
   identA : ∀ i, IdentDistrib (A i) (A 0) κ κ
 
-/-- Sufficient conditions to use score-based SD consistency lemmas on the induced score process. -/
+/-- Score-level measurability and second-moment conditions under the design law. -/
 structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions κ] :
     Prop where
-  designAttrIID : DesignAttrIID (κ := κ) A
   meas_g : Measurable g
   int_g0_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) κ
 
 namespace ScoreAssumptions
 
 theorem int_g0 {κ : Measure Ω} [ProbMeasureAssumptions κ] {Attr : Type*} [MeasurableSpace Attr]
-    {A : ℕ → Ω → Attr} {g : Attr → ℝ} (h : ScoreAssumptions (κ := κ) (A := A) g) :
+    {A : ℕ → Ω → Attr} {g : Attr → ℝ}
+    (hIID : DesignAttrIID (κ := κ) A)
+    (h : ScoreAssumptions (κ := κ) (A := A) g) :
     Integrable (fun ω => g (A 0 ω)) κ := by
-  have hmeasA0 : Measurable (A 0) := h.designAttrIID.measA 0
+  have hmeasA0 : Measurable (A 0) := hIID.measA 0
   have hmeas : AEStronglyMeasurable (fun ω => g (A 0 ω)) κ :=
     (h.meas_g.comp hmeasA0).aestronglyMeasurable
   have hmem2 : MemLp (fun ω => g (A 0 ω)) (2 : ENNReal) κ :=
@@ -135,6 +144,7 @@ structure SplitEvalAssumptions
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
+  hIID : DesignAttrIID (κ := ρ) A
   hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
 
 /--
@@ -146,6 +156,7 @@ structure SplitEvalWeightAssumptions
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
     (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
+  hIID : DesignAttrIID (κ := ρ) A
   hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
   hWeight : ScoreAssumptions (κ := ρ) (A := A) (g := w)
   hWeightScore :
@@ -464,8 +475,8 @@ section ApproximateOracle
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /--
-Two-stage approximation: a flexible score `gFlex` approximates the true target,
-and the model score `gModel` approximates `gFlex`, both ν-a.e.
+Two-stage approximation: a flexible score `gFlex` approximates the experimental
+causal score `gStar`, and the model score `gModel` approximates `gFlex`, both ν-a.e.
 -/
 def ApproxOracleAE
     (ν : Measure Attr)

@@ -7,11 +7,12 @@ This file handles the evaluation stage in a sample-splitting setup. It uses `Pro
 Key definitions:
 - `SplitEvalWeightAssumptions` bundles the weighted evaluation-stage assumptions needed to
   treat the [plug-in](jargon_plug_in.md) score at training index `m` as fixed and apply
-  weighted LLNs. It supplies score assumptions for `w`, `w * gHat`, and `w * (gHat)^2`,
-  plus a nonzero weight mean so ratios are well-defined.
+  weighted LLNs. It supplies `DesignAttrIID` for the evaluation draws, score assumptions
+  for `w`, `w * gHat`, and `w * (gHat)^2`, plus a nonzero weight mean so ratios are
+  well-defined.
 - `SplitEvalAssumptionsBounded` is a boundedness-based version of the unweighted score
   assumptions used inside the weighted bundles; i.i.d. properties for the evaluation
-  draws are supplied separately when converting to `ScoreAssumptions`.
+  draws are supplied separately when converting to the full evaluation assumptions.
 
 Main results:
 - `sdHat_fixed_m_tendsto_ae_attrSD` says: for fixed `m`, the *weighted* evaluation-stage

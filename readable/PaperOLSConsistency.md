@@ -9,7 +9,7 @@ Key definition:
 
 Assumption package:
 - The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets under `xiAttr`. In the core‑idea flow, those targets are the design pushforward law `kappaDesign`, with population transport handled separately.
-- `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from existing `ScoreAssumptions` plus an `ObservationNoiseAssumptions` bundle that makes the feature-weighted noise term converge to 0, so the cross moment still targets `gStar` under `kappaDesign`. The algebraic split of the cross moment is factored into `crossVec_eq_meanHatZ_add_noise`.
+- `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from `DesignAttrIID`, existing `ScoreAssumptions`, and an `ObservationNoiseAssumptions` bundle that makes the feature-weighted noise term converge to 0, so the cross moment still targets `gStar` under `kappaDesign`. The algebraic split of the cross moment is factored into `crossVec_eq_meanHatZ_add_noise`.
 - `PaperOLSDesignAssumptions` packages bounded/measurable features, bounded `gStar`, and the observation-noise LLN, while `DesignAttrIID` is supplied separately. From these:
   - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the design pushforward law `kappaDesign`.
   - `paper_ols_attr_moments_of_design_ae` combines that LLN with inverse‑Gram stability to yield `OLSMomentAssumptionsOfAttr` a.e. under the design law.
@@ -20,7 +20,7 @@ Assumption package:
 - `paper_ols_theta0_eq_of_normal_eq` derives the identification equation `θ0 = (attrGram)⁻¹ * attrCross` from the normal‑equation identity and full‑rank.
 - `paper_ols_normal_eq_of_wellSpecified` derives the normal‑equation identity from well‑specification plus bounded/measurable paper features.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN and inverse‑Gram stability into the a.e. `OLSMomentAssumptionsOfAttr` statement used by later theorems.
-- In the Gram/cross convergence proofs, empirical means are now routed through `meanHatZ_tendsto_ae_of_score`, keeping the flow explicitly tied to `ScoreAssumptions` rather than standalone IID bundles.
+- In the Gram/cross convergence proofs, empirical means are routed through `meanHatZ_tendsto_ae_of_score`, which now takes `DesignAttrIID` alongside `ScoreAssumptions`.
 
 Main results:
 - `theta_tendsto_of_paper_ols_moments_ae` gives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0`, given a separate identification equation for `theta0`.

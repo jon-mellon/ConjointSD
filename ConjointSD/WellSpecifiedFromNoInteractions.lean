@@ -95,6 +95,31 @@ theorem wellSpecified_of_noInteractions
             simpa using (hadd x).symm
 
 /--
+If `gStar` is additive and the term basis can express any main-effects surface,
+then the model is well-specified for some coefficient vector.
+-/
+theorem wellSpecified_of_noInteractions_of_fullMainEffects
+    {Term : Type*} [Fintype Term]
+    (φ : Term → Profile K V → ℝ)
+    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ)
+    (hTerms :
+      FullMainEffectsTerms (K := K) (V := V) (Term := Term) (φ := φ))
+    (h : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y)) :
+    ∃ β : Term → ℝ,
+      WellSpecified (Ω := Ω) (Attr := Profile K V) (Term := Term)
+        (μexp := μexp) (Y := Y) (β := β) (φ := φ) := by
+  classical
+  rcases h with ⟨α0, main, hadd⟩
+  rcases hTerms α0 main with ⟨β, hβ⟩
+  refine ⟨β, ?_⟩
+  intro x
+  calc
+    gLin (Attr := Profile K V) (Term := Term) (β := β) (φ := φ) x
+        = α0 + ∑ k : K, main k (x k) := hβ x
+    _ = gStar (μexp := μexp) (Y := Y) x := by
+        simpa using (hadd x).symm
+
+/--
 If `gStar` is approximately additive and the term features include the full
 set of main effects, then the model is approximately well-specified.
 -/

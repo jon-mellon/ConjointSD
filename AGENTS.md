@@ -14,6 +14,8 @@ No assumption may live outside of Assumptions.lean.
 
 No non-assumption content (e.g. anything derived) should be in Assumptions.lean.
 
+An assumption is *anything* the reader must buy in order to accept a theorem. 
+
 ## Proof rules
 
 No sorry, trivial, or other fudges. No compromising on the analytic goals for convenience.

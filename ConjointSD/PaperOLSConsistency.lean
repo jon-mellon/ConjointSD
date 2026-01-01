@@ -622,6 +622,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
       ObservationNoiseAssumptions
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+    (hIID : DesignAttrIID (κ := μexp) Aω)
     (hScoreGram :
       ∀ i j,
         ScoreAssumptions
@@ -689,14 +690,14 @@ theorem paper_ols_lln_of_score_assumptions_ae
             atTop
             (nhds (designMeanZ (κ := μexp) (Z := Zcomp (A := Aω) (g := gGram)))) :=
       meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := Aω) (g := gGram) (hScoreGram i j)
+        (μexp := μexp) (A := Aω) (g := gGram) hIID (hScoreGram i j)
     have hpop :
         designMeanZ (κ := μexp) (Z := Zcomp (A := Aω) (g := gGram))
           =
         attrMean (kappaDesign (κ := μexp) (A := Aω)) gGram :=
       designMeanZ_Zcomp_eq_attrMean
         (κ := μexp) (A := Aω) (g := gGram)
-        (hA0 := (hScoreGram i j).designAttrIID.measA 0)
+        (hA0 := hIID.measA 0)
         (hg := (hScoreGram i j).meas_g)
     refine hmean.mono ?_
     intro ω hω
@@ -751,7 +752,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
             atTop
             (nhds (designMeanZ (κ := μexp) (Z := Zcomp (A := Aω) (g := gCross)))) :=
       meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := Aω) (g := gCross) (hScoreCross i)
+        (μexp := μexp) (A := Aω) (g := gCross) hIID (hScoreCross i)
     have hnoise :
         ∀ᵐ ω ∂μexp,
           Tendsto
@@ -770,7 +771,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
         attrMean (kappaDesign (κ := μexp) (A := Aω)) gCross :=
       designMeanZ_Zcomp_eq_attrMean
         (κ := μexp) (A := Aω) (g := gCross)
-        (hA0 := (hScoreCross i).designAttrIID.measA 0)
+        (hA0 := hIID.measA 0)
         (hg := (hScoreCross i).meas_g)
     refine (hmean.and hnoise).mono ?_
     intro ω hω
@@ -934,7 +935,7 @@ theorem paper_ols_lln_of_design_ae
     paper_ols_lln_of_score_assumptions_ae
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
       (Aω := Aω) (Yobsω := Yobsω)
-      (hNoise := hDesign.obs_noise)
+      (hNoise := hDesign.obs_noise) (hIID := hPop)
       (hScoreGram := hScoreGram) (hScoreCross := hScoreCross)
   refine hLLN.mono ?_
   intro ω hω

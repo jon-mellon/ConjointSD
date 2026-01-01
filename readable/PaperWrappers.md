@@ -19,6 +19,7 @@ Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consis
 - Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only and blocks+total sequential [consistency](jargon_consistency.md) results.
 - For the paper term model, bounded/measurable features are used to derive functional continuity inside those OLS wrappers rather than requiring it as a premise.
 - Adds design-based OLS wrappers (`paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae`, `paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae`) that derive the plug-in moment assumptions and functional continuity a.e. from `DesignAttrIID` plus `PaperOLSDesignAssumptions`, along with the full‑rank condition (`PaperOLSFullRankAssumptions`). The normal equations are now derived from well‑specification and bounded/measurable features via `paper_ols_normal_eq_of_wellSpecified`.
+- Adds a no-[interactions](jargon_interaction.md) variant of the OLS design wrapper (`paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions`) that derives well-specification from `NoInteractions` + `FullMainEffectsTerms` for the paper feature map.
 
 Section 4: targeting the true [estimand](jargon_estimand.md)
 - Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the target human [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.

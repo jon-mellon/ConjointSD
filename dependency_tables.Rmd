@@ -160,6 +160,25 @@ def_is_prop <- vapply(defs, function(nm) {
 }, logical(1))
 assumption_defs <- defs[def_is_prop]
 
+assumptions_text <- readLines("ConjointSD/Assumptions.lean", warn = FALSE)
+assump_def_names <- sub("^\\s*def\\s+([A-Za-z0-9_\\.]+)\\b.*$", "\\1",
+                        grep("^\\s*def\\s+[A-Za-z0-9_\\.]+\\b", assumptions_text, value = TRUE))
+assump_def_names <- assump_def_names[nzchar(assump_def_names)]
+assump_prop_defs <- character(0)
+if (length(assump_def_names) > 0) {
+  for (nm in assump_def_names) {
+    idx <- grep(paste0("^\\s*def\\s+", nm, "\\b"), assumptions_text)
+    if (length(idx) == 0) next
+    start <- idx[1]
+    end <- length(assumptions_text)
+    next_idx <- grep("^\\s*(def|structure|theorem|lemma)\\s", assumptions_text[(start + 1):length(assumptions_text)])
+    if (length(next_idx) > 0) end <- start + next_idx[1] - 1
+    block <- paste(assumptions_text[start:end], collapse = " ")
+    if (grepl(":\\s*Prop\\b", block, perl = TRUE)) assump_prop_defs <- c(assump_prop_defs, nm)
+  }
+}
+assumption_defs <- sort(unique(c(assumption_defs, assump_prop_defs)))
+
 structure_field_assumptions <- unique(unlist(lapply(names(structure_info), function(s) {
   fields <- structure_info[[s]]$fields
   if (length(fields) == 0) return(character(0))
@@ -384,6 +403,161 @@ if (is.null(edges) || nrow(edges) == 0) {
   out_dir <- "dependency_tables_files"
   if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
   out_png <- file.path(out_dir, "theorem_dependency_dag.png")
+  rsvg::rsvg_png(charToRaw(svg), file = out_png)
+  knitr::include_graphics(out_png)
+}
+```
+
+## OLS SD consistency DAG (direct assumptions)
+
+```{r ols-sd-consistency-dag, echo=FALSE, fig.width=10, fig.height=8}
+if (!requireNamespace("DiagrammeR", quietly = TRUE) ||
+    !requireNamespace("DiagrammeRsvg", quietly = TRUE) ||
+    !requireNamespace("rsvg", quietly = TRUE)) {
+  stop("Packages 'DiagrammeR', 'DiagrammeRsvg', and 'rsvg' are required to plot the dependency DAG.")
+}
+
+ols_sd_core <- c(
+  "paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions",
+  "paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae",
+  "theta_tendsto_of_paper_ols_design_ae",
+  "theta_tendsto_of_paper_ols_moments",
+  "theta_tendsto_of_paper_ols_moments_ae",
+  "paper_ols_attr_moments_of_design_ae",
+  "paper_ols_gramInv_tendsto_of_design_ae",
+  "olsThetaHat_tendsto_of_attr_moments",
+  "olsThetaHat_tendsto_of_moment_assumptions_id",
+  "olsThetaHat_tendsto_of_moment_assumptions",
+  "paper_ols_normal_eq_of_wellSpecified",
+  "paper_ols_theta0_eq_of_normal_eq",
+  "gStar_eq_sum_blocks_of_WellSpecified",
+  "wellSpecified_of_noInteractions_of_fullMainEffects"
+)
+ols_sd_core <- ols_sd_core[ols_sd_core %in% all_names]
+target_thm <- "paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions"
+if (!(target_thm %in% ols_sd_core)) target_thm <- ols_sd_core[[1]]
+chain_nodes <- unique(c(target_thm, all_deps[[target_thm]]))
+chain_nodes <- chain_nodes[chain_nodes %in% ols_sd_core]
+
+dot_escape <- function(x) {
+  x <- gsub("\\\\", "\\\\\\\\", x)
+  gsub("\"", "\\\\\"", x)
+}
+
+edge_rows <- lapply(chain_nodes, function(thm) {
+  deps <- intersect(raw_deps[[thm]], chain_nodes)
+  if (length(deps) == 0) return(NULL)
+  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+})
+edges <- do.call(rbind, edge_rows)
+
+assump_edges <- lapply(chain_nodes, function(thm) {
+  block <- blocks[[thm]]
+  if (length(block) == 0) return(NULL)
+  text <- paste(block, collapse = "\n")
+  assumps <- character(0)
+  for (s in structures) {
+    if (grepl(paste0("ConjointSD.", s), text, fixed = TRUE)) {
+      for (s_hit in structure_closure(s, structure_nested)) {
+        fields <- structure_info[[s_hit]]$fields
+        if (length(fields) > 0) {
+          assumps <- c(assumps, paste(s_hit, fields))
+        }
+      }
+    }
+  }
+  for (nm in assumption_defs) {
+    if (grepl(paste0("ConjointSD.", nm), text, fixed = TRUE)) assumps <- c(assumps, nm)
+  }
+  assumps <- unique(assumps)
+  if (length(assumps) == 0) return(NULL)
+  data.frame(from = assumps, to = thm, stringsAsFactors = FALSE)
+})
+assump_edges <- do.call(rbind, assump_edges)
+
+assump_nodes <- character(0)
+if (!is.null(assump_edges) && nrow(assump_edges) > 0) {
+  assump_nodes <- sort(unique(assump_edges$from))
+}
+
+if ((is.null(edges) || nrow(edges) == 0) && length(assump_nodes) == 0) {
+  plot.new()
+  text(0.5, 0.5, "No OLS SD dependencies found.")
+} else {
+  pretty_core <- setNames(vapply(chain_nodes, pretty_name, character(1)), chain_nodes)
+  core_labels <- vapply(
+    chain_nodes,
+    function(nm) pretty_core[[nm]],
+    character(1)
+  )
+  core_nodes <- data.frame(
+    name = dot_escape(chain_nodes),
+    label = dot_escape(core_labels),
+    stringsAsFactors = FALSE
+  )
+
+  assump_labels <- vapply(
+    assump_nodes,
+    function(nm) nm,
+    character(1)
+  )
+  assump_nodes_df <- data.frame(
+    name = dot_escape(assump_nodes),
+    label = dot_escape(assump_labels),
+    stringsAsFactors = FALSE
+  )
+
+  final_node <- target_thm
+  node_lines <- c(
+    vapply(
+      seq_len(nrow(core_nodes)),
+      function(i) {
+        fill <- if (core_nodes$name[i] == dot_escape(final_node)) "#f2a5a5" else "#F7F7F7"
+        sprintf('"%s" [label="%s", fillcolor="%s"];', core_nodes$name[i], core_nodes$label[i], fill)
+      },
+      character(1)
+    ),
+    vapply(
+      seq_len(nrow(assump_nodes_df)),
+      function(i) {
+        sprintf('"%s" [label="%s", fillcolor="#8CC5FF"];', assump_nodes_df$name[i], assump_nodes_df$label[i])
+      },
+      character(1)
+    )
+  )
+
+  edge_lines <- character(0)
+  if (!is.null(edges) && nrow(edges) > 0) {
+    edge_lines <- c(
+      edge_lines,
+      sprintf('"%s" -> "%s";', dot_escape(edges$from), dot_escape(edges$to))
+    )
+  }
+  if (!is.null(assump_edges) && nrow(assump_edges) > 0) {
+    edge_lines <- c(
+      edge_lines,
+      sprintf('"%s" -> "%s";', dot_escape(assump_edges$from), dot_escape(assump_edges$to))
+    )
+  }
+
+  dot <- sprintf(
+    'digraph G {
+      graph [rankdir=LR, labelloc="t", fontsize=16, nodesep=0.15, ranksep=0.35];
+      node  [shape=box, style="rounded,filled", fillcolor="#F7F7F7", color="#444444", fontname="Helvetica", fontsize=10];
+      edge  [color="#666666", arrowsize=0.5];
+
+      %s
+
+      %s
+    }',
+    paste(node_lines, collapse = "\n"),
+    paste(edge_lines, collapse = "\n")
+  )
+  graph <- DiagrammeR::grViz(dot)
+  svg <- DiagrammeRsvg::export_svg(graph)
+  out_dir <- "dependency_tables_files"
+  if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+  out_png <- file.path(out_dir, "ols_sd_consistency_dag.png")
   rsvg::rsvg_png(charToRaw(svg), file = out_png)
   knitr::include_graphics(out_png)
 }

@@ -67,14 +67,6 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable (ν : Measure Attr)
 variable {s t u : Attr → ℝ}
 
-/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
-def ApproxInvarianceAE (s t : Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ᵐ a ∂ν, |s a - t a| ≤ ε
-
-/-- Uniform bound on a score function, ν-a.e. -/
-def BoundedAE (s : Attr → ℝ) (C : ℝ) : Prop :=
-  ∀ᵐ a ∂ν, |s a| ≤ C
-
 /-- Combine two ν-a.e. approximation bounds by triangle inequality. -/
 theorem approxInvarianceAE_triangle
     (ε₁ ε₂ : ℝ)

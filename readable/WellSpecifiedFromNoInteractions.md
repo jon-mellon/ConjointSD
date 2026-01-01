@@ -18,6 +18,7 @@ What is defined:
 
 Main theorem:
 - `wellSpecified_of_noInteractions` constructs a linear model (see [linear model](jargon_linear_model.md)) that exactly equals the causal target whenever `NoInteractions` holds.
+- `wellSpecified_of_noInteractions_of_fullMainEffects` derives well-specification for any term basis `φ` that satisfies `FullMainEffectsTerms`, using `NoInteractions`.
 - `approxWellSpecified_of_approxNoInteractions_of_fullMainEffects` derives approximate well-specification for any term basis `φ` that satisfies `FullMainEffectsTerms`, using `ApproxNoInteractions`.
 
 So the file [bridges](jargon_bridge.md) an intuitive causal assumption (additivity) to the formal [well-specified](jargon_well_specified.md) condition used later.

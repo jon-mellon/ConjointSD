@@ -158,7 +158,8 @@ theorem sequential_consistency_blocks_ae_of_bounded
         SplitEvalWeightAssumptions (ρ := ρ) (A := A) (w := w)
           (g := gBlock (gB := gB) b) (θhat := θhat) m :=
     fun m b =>
-      { hScore :=
+      { hIID := hPop
+        hScore :=
           (splitEvalAssumptions_of_bounded
             (ρ := ρ) (A := A) (hPop := hPop)
             (g := gBlock (gB := gB) b) (θhat := θhat) (m := m) (hSplit m b)).hScore
@@ -209,7 +210,8 @@ theorem sequential_consistency_total_ae_of_bounded
         SplitEvalWeightAssumptions (ρ := ρ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m :=
     fun m =>
-      { hScore :=
+      { hIID := hPop
+        hScore :=
           (splitEvalAssumptions_of_bounded
             (ρ := ρ) (A := A) (hPop := hPop)
             (g := gTotalΘ (gB := gB)) (θhat := θhat) (m := m) (hSplitTotal m)).hScore

@@ -56,10 +56,11 @@ lemma scoreAssumptions_of_bounded
       simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul
   have hint_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μexp :=
     integrable_of_bounded (μexp := μexp) hmeas_sq hbound_sq
-  exact ⟨hPop, hMeas, hint_sq⟩
+  exact ⟨hMeas, hint_sq⟩
 
 lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (h : ScoreAssumptions (κ := μexp) A g) :
     ∀ᵐ ω ∂μexp,
       Tendsto
@@ -69,23 +70,24 @@ lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
   let Z : ℕ → Ω → ℝ := Zcomp (A := A) (g := g)
   have hInd : Pairwise (fun i j => IndepFun (Z i) (Z j) μexp) := by
     intro i j hij
-    have hijA : IndepFun (A i) (A j) μexp := h.designAttrIID.indepA hij
+    have hijA : IndepFun (A i) (A j) μexp := hIID.indepA hij
     have : IndepFun (g ∘ (A i)) (g ∘ (A j)) μexp :=
       hijA.comp h.meas_g h.meas_g
     simpa [Z, Zcomp, Function.comp] using this
   have hId : ∀ i, IdentDistrib (Z i) (Z 0) μexp μexp := by
     intro i
-    have hiA : IdentDistrib (A i) (A 0) μexp μexp := h.designAttrIID.identA i
+    have hiA : IdentDistrib (A i) (A 0) μexp μexp := hIID.identA i
     have : IdentDistrib (g ∘ (A i)) (g ∘ (A 0)) μexp μexp :=
       hiA.comp h.meas_g
     simpa [Z, Zcomp, Function.comp] using this
   have hInt : Integrable (Z 0) μexp := by
-    simpa [Z, Zcomp] using h.int_g0
+    simpa [Z, Zcomp] using (ScoreAssumptions.int_g0 (hIID := hIID) (h := h))
   simpa [meanHatZ, designMeanZ, Z] using
     (ProbabilityTheory.strong_law_ae (μ := μexp) (X := Z) hInt hInd hId)
 
 lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (h : ScoreAssumptions (κ := μexp) A g) :
     ∀ᵐ ω ∂μexp,
       Tendsto
@@ -98,7 +100,7 @@ lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     simpa [Z, Zcomp, Zsq] using h.int_g0_sq
   have hInd : Pairwise (fun i j => IndepFun (Zsq i) (Zsq j) μexp) := by
     intro i j hij
-    have hijA : IndepFun (A i) (A j) μexp := h.designAttrIID.indepA hij
+    have hijA : IndepFun (A i) (A j) μexp := hIID.indepA hij
     have hijZ : IndepFun (g ∘ (A i)) (g ∘ (A j)) μexp :=
       hijA.comp h.meas_g h.meas_g
     have : IndepFun ((fun x : ℝ => x ^ 2) ∘ (g ∘ (A i)))
@@ -107,7 +109,7 @@ lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     simpa [Z, Zcomp, Zsq, Function.comp] using this
   have hId : ∀ i, IdentDistrib (Zsq i) (Zsq 0) μexp μexp := by
     intro i
-    have hiA : IdentDistrib (A i) (A 0) μexp μexp := h.designAttrIID.identA i
+    have hiA : IdentDistrib (A i) (A 0) μexp μexp := hIID.identA i
     have hiZ : IdentDistrib (g ∘ (A i)) (g ∘ (A 0)) μexp μexp :=
       hiA.comp h.meas_g
     have : IdentDistrib ((fun x : ℝ => x ^ 2) ∘ (g ∘ (A i)))
@@ -126,13 +128,15 @@ lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 
 lemma rmseHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (h : ScoreAssumptions (κ := μexp) A g) :
     ∀ᵐ ω ∂μexp,
       Tendsto
         (fun n : ℕ => rmseHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
         (nhds (designRMSEZ (κ := μexp) (Z := Zcomp (A := A) (g := g)))) := by
-  have hm2 := m2HatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) h
+  have hm2 :=
+    m2HatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) hIID h
   refine hm2.mono ?_
   intro ω hm2ω
   have hsqrt :
@@ -143,14 +147,17 @@ lemma rmseHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 
 lemma varHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (h : ScoreAssumptions (κ := μexp) A g) :
     ∀ᵐ ω ∂μexp,
       Tendsto
         (fun n : ℕ => varHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
         (nhds (designVarZ (κ := μexp) (Z := Zcomp (A := A) (g := g)))) := by
-  have hmean := meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) h
-  have hm2 := m2HatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) h
+  have hmean :=
+    meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) hIID h
+  have hm2 :=
+    m2HatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) hIID h
   refine (hmean.and hm2).mono ?_
   intro ω hω
   rcases hω with ⟨hmeanω, hm2ω⟩
@@ -172,13 +179,15 @@ lemma varHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 
 theorem sdHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (h : ScoreAssumptions (κ := μexp) A g) :
     ∀ᵐ ω ∂μexp,
       Tendsto
         (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
         (nhds (designSDZ (κ := μexp) (Zcomp (A := A) (g := g)))) := by
-  have hvar := varHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) h
+  have hvar :=
+    varHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) hIID h
   refine hvar.mono ?_
   intro ω hω
   have hsqrt :
@@ -190,6 +199,7 @@ theorem sdHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 
 lemma meanHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (hWZ : ScoreAssumptions (κ := μexp) A (fun a => w a * g a))
     (hW : ScoreAssumptions (κ := μexp) A w)
     (hW0 : designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := w)) ≠ 0) :
@@ -215,7 +225,8 @@ lemma meanHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
               (Z := fun i ω =>
                 Wcomp (A := A) (w := w) i ω * Zcomp (A := A) (g := g) i ω))) := by
     simpa [Wcomp, Zcomp] using
-      meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := fun a => w a * g a) hWZ
+      meanHatZ_tendsto_ae_of_score
+        (μexp := μexp) (A := A) (g := fun a => w a * g a) hIID hWZ
   have hmeanW :
       ∀ᵐ ω ∂μexp,
         Tendsto
@@ -223,7 +234,7 @@ lemma meanHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
           atTop
           (nhds (designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w)))) := by
     simpa [Wcomp, Zcomp] using
-      meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := w) hW
+      meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := w) hIID hW
   refine (hmeanWZ.and hmeanW).mono ?_
   intro ω hω
   rcases hω with ⟨hWZω, hWω⟩
@@ -250,6 +261,7 @@ lemma meanHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 
 lemma m2HatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (hWZ2 : ScoreAssumptions (κ := μexp) A (fun a => w a * (g a) ^ 2))
     (hW : ScoreAssumptions (κ := μexp) A w)
     (hW0 : designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := w)) ≠ 0) :
@@ -275,7 +287,8 @@ lemma m2HatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
               (Z := fun i ω =>
                 Wcomp (A := A) (w := w) i ω * (Zcomp (A := A) (g := g) i ω) ^ 2))) := by
     simpa [Wcomp, Zcomp] using
-      meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := fun a => w a * (g a) ^ 2) hWZ2
+      meanHatZ_tendsto_ae_of_score
+        (μexp := μexp) (A := A) (g := fun a => w a * (g a) ^ 2) hIID hWZ2
   have hmeanW :
       ∀ᵐ ω ∂μexp,
         Tendsto
@@ -283,7 +296,7 @@ lemma m2HatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
           atTop
           (nhds (designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w)))) := by
     simpa [Wcomp, Zcomp] using
-      meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := w) hW
+      meanHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := w) hIID hW
   refine (hmeanWZ2.and hmeanW).mono ?_
   intro ω hω
   rcases hω with ⟨hWZ2ω, hWω⟩
@@ -313,6 +326,7 @@ lemma m2HatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 
 lemma varHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (hWZ : ScoreAssumptions (κ := μexp) A (fun a => w a * g a))
     (hWZ2 : ScoreAssumptions (κ := μexp) A (fun a => w a * (g a) ^ 2))
     (hW : ScoreAssumptions (κ := μexp) A w)
@@ -327,9 +341,11 @@ lemma varHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
           (designVarZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
             (W := Wcomp (A := A) (w := w)))) := by
   have hmean :=
-    meanHatZW_tendsto_ae_of_score (μexp := μexp) (A := A) (w := w) (g := g) hWZ hW hW0
+    meanHatZW_tendsto_ae_of_score
+      (μexp := μexp) (A := A) (w := w) (g := g) hIID hWZ hW hW0
   have hm2 :=
-    m2HatZW_tendsto_ae_of_score (μexp := μexp) (A := A) (w := w) (g := g) hWZ2 hW hW0
+    m2HatZW_tendsto_ae_of_score
+      (μexp := μexp) (A := A) (w := w) (g := g) hIID hWZ2 hW hW0
   refine (hmean.and hm2).mono ?_
   intro ω hω
   rcases hω with ⟨hmeanω, hm2ω⟩
@@ -361,6 +377,7 @@ lemma varHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 
 theorem sdHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (hWZ : ScoreAssumptions (κ := μexp) A (fun a => w a * g a))
     (hWZ2 : ScoreAssumptions (κ := μexp) A (fun a => w a * (g a) ^ 2))
     (hW : ScoreAssumptions (κ := μexp) A w)
@@ -375,7 +392,8 @@ theorem sdHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
           (designSDZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
             (W := Wcomp (A := A) (w := w)))) := by
   have hvar :=
-    varHatZW_tendsto_ae_of_score (μexp := μexp) (A := A) (w := w) (g := g) hWZ hWZ2 hW hW0
+    varHatZW_tendsto_ae_of_score
+      (μexp := μexp) (A := A) (w := w) (g := g) hIID hWZ hWZ2 hW hW0
   refine hvar.mono ?_
   intro ω hω
   have hsqrt :
@@ -393,13 +411,14 @@ theorem sdHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
 /-- Consistency of the plug-in SD for a single component scoring rule g. -/
 theorem sd_component_consistent [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
+    (hIID : DesignAttrIID (κ := μexp) A)
     (h : ScoreAssumptions (κ := μexp) A g) :
     ∀ᵐ ω ∂μexp,
       Tendsto
         (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
         (nhds (designSDZ (κ := μexp) (Zcomp (A := A) (g := g)))) := by
-  simpa using sdHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) h
+  simpa using sdHatZ_tendsto_ae_of_score (μexp := μexp) (A := A) (g := g) hIID h
 
 theorem sd_component_consistent_of_bounded [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
@@ -415,7 +434,7 @@ theorem sd_component_consistent_of_bounded [ProbMeasureAssumptions μexp]
       ScoreAssumptions (κ := μexp) (A := A) (g := g) :=
     scoreAssumptions_of_bounded
       (μexp := μexp) (A := A) (g := g) (hPop := hPop) (hMeas := hMeas) (hBound := hBound)
-  exact sd_component_consistent (μexp := μexp) (A := A) (g := g) hScore
+  exact sd_component_consistent (μexp := μexp) (A := A) (g := g) hPop hScore
 
 /-!
 Finite-family “decomposition”: blocks/buckets b : B each have a scoring rule g b.
@@ -439,6 +458,6 @@ theorem sd_block_consistent [ProbMeasureAssumptions μexp]
     scoreAssumptions_of_bounded
       (μexp := μexp) (A := A) (g := g b)
       (hPop := h.designAttrIID) (hMeas := h.meas_g b) (hBound := h.bound_g b)
-  exact sd_component_consistent (μexp := μexp) (A := A) (g := g b) hb
+  exact sd_component_consistent (μexp := μexp) (A := A) (g := g b) h.designAttrIID hb
 
 end ConjointSD
