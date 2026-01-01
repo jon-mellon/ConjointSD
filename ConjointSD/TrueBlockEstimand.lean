@@ -35,14 +35,14 @@ If the conjoint causal estimand is well-specified by the linear-in-terms model
 theorem gStar_eq_sum_trueBlocks_of_WellSpecified
     {Ωe : Type*} [MeasurableSpace Ωe]
     (μe : Measure Ωe) (Y : Attr → Ωe → ℝ)
-    (hspec : WellSpecified (μ := μe) (Y := Y) (β := β0) (φ := φ)) :
-    gStar (μ := μe) (Y := Y)
+    (hspec : WellSpecified (μexp := μe) (Y := Y) (β := β0) (φ := φ)) :
+    gStar (μexp := μe) (Y := Y)
       =
     gTotal (B := B) (g := trueBlockScore (blk := blk) (β0 := β0) (φ := φ)) := by
   classical
   simpa [trueBlockScore] using
     (gStar_eq_sum_blocks_of_WellSpecified
-      (μ := μe) (Y := Y) (blk := blk) (β := β0) (φ := φ) hspec)
+      (μexp := μe) (Y := Y) (blk := blk) (β := β0) (φ := φ) hspec)
 
 end TrueBlockScore
 
@@ -56,7 +56,7 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {B : Type*} [Fintype B]
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
+variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
 variable (A : ℕ → Ω → Attr)
 
 variable {Θ : Type*} [TopologicalSpace Θ]
@@ -72,14 +72,14 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (w : Attr → ℝ)
     (hMom : ∀ m b,
-      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
     (hSplit : ∀ m b,
-      SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w)
+      SplitEvalWeightAssumptions (ρ := ρ) (A := A) (w := w)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
-      FunctionalContinuityAssumptions (ν := ν)
+      FunctionalContinuityAssumptions (xiAttr := ν)
         (g := gBlock (gB := gB) b) θ0)
     (hBlockSpec :
       ∀ b x,
@@ -90,9 +90,9 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
-          (∀ᵐ ω ∂μ,
+          (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr μ A ν w
+              totalErr ρ A ν w
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
           attrSD ν (gBlock (gB := gB) b θ0)
@@ -111,7 +111,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae
     simpa [gTrueB] using hBlockSpec b x
   simpa [gTrueB] using
     (paper_sd_blocks_sequential_consistency_to_true_target_ae
-      (μ := μ) (A := A) (ν := ν) (w := w) (hMom := hMom) (gB := gB) (θ0 := θ0) (θhat := θhat)
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMom) (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplit) (hθ := hθ) (hCont := hCont)
       (gTrueB := gTrueB) (hTrueB := hTrueB)
       (ε := ε) (hε := hε))
@@ -128,27 +128,27 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (w : Attr → ℝ)
     (hMom : ∀ m b,
-      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w)
         (s := gHat (gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b) θhat m))
     (hSplit : ∀ m b,
       SplitEvalWeightAssumptions
-        (μ := μ) (A := A) (w := w)
+        (ρ := ρ) (A := A) (w := w)
         (g := gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
         (θhat := θhat) m)
     (hθ : Tendsto θhat atTop (nhds θ0))
     (hCont : ∀ b : B,
       FunctionalContinuityAssumptions
-        (ν := ν)
+        (xiAttr := ν)
         (g := gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
         θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
-          (∀ᵐ ω ∂μ,
+          (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr μ A ν w
+              totalErr ρ A ν w
                 (gBlock (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) b)
                 θ0 θhat m n ω < ε)
           ∧
@@ -170,7 +170,7 @@ theorem paper_blocks_converge_to_trueBlockSDs_ae_of_gBTerm
     simpa [trueBlockScore] using h
   simpa using
     (paper_blocks_converge_to_trueBlockSDs_ae
-      (μ := μ) (A := A) (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
+      (ρ := ρ) (A := A) (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
       (blk := blk) (β0 := β0) (φ := φ) (ν := ν) (w := w) (hMom := hMom)
       (hSplit := hSplit) (hθ := hθ) (hCont := hCont)

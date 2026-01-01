@@ -4,7 +4,7 @@ Always follow these project rules when making changes:
 
 ## Big Picture Context
  
-Look in paper_highlights.md for excerpts from the paper that describe its analytic goals and approach and core_idea.md for the core thrust of the proof plan. 
+Look in paper_highlights.md for excerpts from the paper that describe its analytic goals and approach and core_idea.md for the core thrust of the proof plan. Do not edit core_idea.
 
 ## Assumptions (required)
 

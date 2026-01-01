@@ -11,16 +11,16 @@ Key pieces:
 - `olsThetaHat`: the closed-form normal-equation estimator based on `gramMatrix` and `crossVec`.
 
 Moment assumptions and [consistency](jargon_consistency.md):
-- `OLSMomentAssumptions` says the inverse Gram matrix and cross moments [converge](jargon_convergence.md) entrywise to limits, and that the true [parameter](jargon_parameter.md) equals the limit product.
-- `olsThetaHat_tendsto_of_moment_assumptions` proves the estimator [converges](jargon_convergence.md) to `theta0` under those assumptions.
+- `OLSMomentAssumptions` says the inverse Gram matrix and cross moments [converge](jargon_convergence.md) entrywise to limits.
+- `olsThetaHat_tendsto_of_moment_assumptions` proves the estimator [converges](jargon_convergence.md) to the limit product, and `olsThetaHat_tendsto_of_moment_assumptions_id` adds the separate identification equation to conclude convergence to `theta0`.
 
-Population versions:
-- `attrGram` and `attrCross` define target human [population](jargon_population.md) analogs of the Gram matrix and cross moments (under the attribute distribution).
-- `OLSMomentAssumptionsOfAttr` is the same [convergence](jargon_convergence.md) statement, but with target human population targets.
-- `olsThetaHat_tendsto_of_attr_moments` connects these to estimator [convergence](jargon_convergence.md).
- - `OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions` is a small adapter from target human population assumptions to the abstract limit form.
+Attribute‑distribution versions:
+- `attrGram` and `attrCross` define the Gram and cross moments under a generic attribute distribution `xiAttr` (use `kappaDesign` in the first-stage OLS setting).
+- `OLSMomentAssumptionsOfAttr` is the same [convergence](jargon_convergence.md) statement, but with limits pinned to `xiAttr` moments rather than abstract limits.
+- `olsThetaHat_tendsto_of_attr_moments` adds the identification equation to connect these limits to estimator [convergence](jargon_convergence.md).
+- `OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions` is a small adapter from `xiAttr`-based assumptions to the abstract limit form.
 
 Final [bridge](jargon_bridge.md):
-- `attrMean_tendsto_of_OLSConsistency` and `attrM2_tendsto_of_OLSConsistency` say that if an OLS sequence [converges](jargon_convergence.md) (via `Tendsto ols.θhat → θ0`) and the target human population functionals are [continuous](jargon_continuity.md), then the plug‑in [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) converge.
+- `attrMean_tendsto_of_OLSConsistency` and `attrM2_tendsto_of_OLSConsistency` say that if an OLS sequence [converges](jargon_convergence.md) (via `Tendsto ols.θhat → θ0`) and the `xiAttr` functionals are [continuous](jargon_continuity.md), then the plug‑in [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) converge.
 
 This file supplies the regression backbone used by the paper-level [consistency](jargon_consistency.md) results.

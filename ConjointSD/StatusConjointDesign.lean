@@ -145,12 +145,12 @@ theorem status_id_randomized
       ∀ p, Measurable (fun rt : Respondent × TaskSlot => Yresp p rt.fst rt.snd))
     (hmeasObs : Measurable (statusYobs (Yresp := Yresp)))
     (hbound : ∀ p r t, |Yresp p r t| ≤ 100) :
-    ConjointIdRandomized (μ := μStatus (μResp := μResp))
+    ConjointIdRandomized (μexp := μStatus (μResp := μResp))
       (X := statusX) (Y := statusY (Yresp := Yresp))
       (Yobs := statusYobs (Yresp := Yresp)) := by
   classical
   -- Notation shortcuts.
-  let μ := μStatus (μResp := μResp)
+  let μexp := μStatus (μResp := μResp)
   -- Measurability of `X` and the potential-outcome lift.
   have hXmeas : Measurable (statusX : StatusΩ Respondent → StatusProfile) := by
     simpa [StatusΩ, statusX] using
@@ -168,14 +168,14 @@ theorem status_id_randomized
     exact hbound p ω.fst.fst ω.fst.snd
   -- Ignorability: X depends only on the persona coordinate; Y depends only on respondent/task.
   have hign :
-      ∀ p, (statusX (Respondent := Respondent)) ⟂ᵢ[μ] (statusY (Yresp := Yresp) p) := by
+      ∀ p, (statusX (Respondent := Respondent)) ⟂ᵢ[μexp] (statusY (Yresp := Yresp) p) := by
     intro p
     -- Express preimages as rectangles and apply the product-measure factorization.
     refine
       (ProbabilityTheory.indepFun_iff_measure_inter_preimage_eq_mul
         (f := statusX (Respondent := Respondent))
         (g := statusY (Yresp := Yresp) p)
-        (μ := μ)).2 ?_
+        (μ := μexp)).2 ?_
     intro s t hs ht
     have hsRT :
         MeasurableSet {rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t} := by
@@ -192,7 +192,7 @@ theorem status_id_randomized
       ext ω; simp [statusY]
     -- Combine the rectangles and evaluate with `prod_prod`.
     calc
-      μ ((statusX (Respondent := Respondent)) ⁻¹' s
+      μexp ((statusX (Respondent := Respondent)) ⁻¹' s
             ∩ (statusY (Yresp := Yresp) p) ⁻¹' t)
           = μRT (μResp := μResp)
                 ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t})
@@ -221,19 +221,19 @@ theorem status_id_randomized
                 have hprod :=
                   (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
                     ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t}) s)
-                simp [μ, μStatus, μRT, hrect]
-      _ = μ ((statusX (Respondent := Respondent)) ⁻¹' s)
-              * μ ((statusY (Yresp := Yresp) p) ⁻¹' t) := by
+                simp [μexp, μStatus, μRT, hrect]
+      _ = μexp ((statusX (Respondent := Respondent)) ⁻¹' s)
+              * μexp ((statusY (Yresp := Yresp) p) ⁻¹' t) := by
                 -- Marginals: X depends only on the persona coordinate;
                 -- Y depends on respondent/task.
-                have hXmass : μ ((statusX (Respondent := Respondent)) ⁻¹' s) = νStatus s := by
+                have hXmass : μexp ((statusX (Respondent := Respondent)) ⁻¹' s) = νStatus s := by
                   have hprod :=
                     (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
                       (Set.univ : Set (Respondent × TaskSlot)) s)
                   have hμrt : (μRT (μResp := μResp)) Set.univ = 1 := measure_univ
-                  simp [μ, μStatus, μRT, hpreX]
+                  simp [μexp, μStatus, μRT, hpreX]
                 have hYmass :
-                    μ ((statusY (Yresp := Yresp) p) ⁻¹' t)
+                    μexp ((statusY (Yresp := Yresp) p) ⁻¹' t)
                       = μRT (μResp := μResp)
                           ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t}) := by
                   have hprod :=
@@ -241,7 +241,7 @@ theorem status_id_randomized
                       ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t})
                       (Set.univ : Set StatusProfile))
                   have hν : νStatus Set.univ = 1 := measure_univ
-                  simp [μ, μStatus, μRT, hpreY, hν]
+                  simp [μexp, μStatus, μRT, hpreY, hν]
                 simp [hXmass, hYmass, mul_comm]
   refine
     { measX := hXmeas
@@ -257,26 +257,26 @@ theorem status_event_pos
     (μResp : Measure Respondent) [ProbMeasureAssumptions μResp] :
     ∀ p, (μStatus (μResp := μResp)) (eventX (X := statusX) p) ≠ 0 := by
   classical
-  let μ := μStatus (μResp := μResp)
+  let μexp := μStatus (μResp := μResp)
   have hXmeas : Measurable (statusX : StatusΩ Respondent → StatusProfile) := by
     simpa [StatusΩ, statusX] using
       (measurable_snd : Measurable (fun ω : (Respondent × TaskSlot) × StatusProfile => ω.snd))
   have hlaw :
-      Measure.map (statusX (Respondent := Respondent)) μ = νStatus := by
+      Measure.map (statusX (Respondent := Respondent)) μexp = νStatus := by
     ext s hs
-    simp [μ, μStatus, μRT, statusX]
+    simp [μexp, μStatus, μRT, statusX]
   intro p
   have hset : MeasurableSet ({p} : Set StatusProfile) := measurableSet_singleton p
   have hmap_pre :
-      Measure.map (statusX (Respondent := Respondent)) μ {p} = μ (eventX (X := statusX) p) := by
+      Measure.map (statusX (Respondent := Respondent)) μexp {p} = μexp (eventX (X := statusX) p) := by
     have hpre :
         (statusX (Respondent := Respondent)) ⁻¹' {p} = eventX (X := statusX) p := by
       ext ω; simp [eventX]
     calc
-      Measure.map (statusX (Respondent := Respondent)) μ {p}
-          = μ ((statusX (Respondent := Respondent)) ⁻¹' {p}) := by
+      Measure.map (statusX (Respondent := Respondent)) μexp {p}
+          = μexp ((statusX (Respondent := Respondent)) ⁻¹' {p}) := by
               simpa using (Measure.map_apply hXmeas hset)
-      _ = μ (eventX (X := statusX) p) := by simpa [hpre]
+      _ = μexp (eventX (X := statusX) p) := by simpa [hpre]
   have hmass :
       νStatus {p} = (PMF.uniformOfFintype (α := StatusProfile)) p := by
     simpa [νStatus, hset] using
@@ -288,10 +288,10 @@ theorem status_event_pos
     exact (PMF.mem_support_iff
       (p := PMF.uniformOfFintype (α := StatusProfile)) (a := p)).1 hsupport'
   have hpreimage :
-      μ (eventX (X := statusX) p) = νStatus {p} := by
+      μexp (eventX (X := statusX) p) = νStatus {p} := by
     calc
-      μ (eventX (X := statusX) p)
-          = Measure.map (statusX (Respondent := Respondent)) μ {p} := by
+      μexp (eventX (X := statusX) p)
+          = Measure.map (statusX (Respondent := Respondent)) μexp {p} := by
               simpa using hmap_pre.symm
       _ = νStatus {p} := by simpa [hlaw]
   have hpos : νStatus {p} ≠ 0 := by
@@ -299,7 +299,7 @@ theorem status_event_pos
   intro hzero
   apply hpos
   calc
-    νStatus {p} = μ (eventX (X := statusX) p) := by
+    νStatus {p} = μexp (eventX (X := statusX) p) := by
       symm
       exact hpreimage
     _ = 0 := hzero

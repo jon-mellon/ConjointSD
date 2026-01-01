@@ -17,22 +17,22 @@ variable {Ω Attr Term : Type*} [MeasurableSpace Ω] [Fintype Term]
 
 /-- Well-specification: the causal estimand lies in the linear-in-terms model class. -/
 def WellSpecified
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (β : Term → ℝ) (φ : Term → Attr → ℝ) : Prop :=
-  ∀ x, gLin (β := β) (φ := φ) x = gStar (μ := μ) (Y := Y) x
+  ∀ x, gLin (β := β) (φ := φ) x = gStar (μexp := μexp) (Y := Y) x
 
 /-- Approximate well-specification: the estimand is within ε of the linear-in-terms model. -/
 def ApproxWellSpecified
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ x, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
+  ∀ x, |gLin (β := β) (φ := φ) x - gStar (μexp := μexp) (Y := Y) x| ≤ ε
 
-/-- Approximate well-specification on attribute-distribution support (ν-a.e.). -/
+/-- Approximate well-specification on target-population attribute support (ν-a.e.). -/
 def ApproxWellSpecifiedAE
     {Attr : Type*} [MeasurableSpace Attr]
-    (ν : Measure Attr) (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (ν : Measure Attr) (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μ := μ) (Y := Y) x| ≤ ε
+  ∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μexp := μexp) (Y := Y) x| ≤ ε
 
 end WellSpecified
 
@@ -94,10 +94,10 @@ If the estimand is well-specified by a linear-in-terms model, then it decomposes
 theorem gStar_eq_sum_blocks_of_WellSpecified
     {Ω Attr B Term : Type*}
     [MeasurableSpace Ω] [Fintype B] [Fintype Term] [DecidableEq B]
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
-    (hspec : WellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ)) :
-    gStar (μ := μ) (Y := Y)
+    (hspec : WellSpecified (μexp := μexp) (Y := Y) (β := β) (φ := φ)) :
+    gStar (μexp := μexp) (Y := Y)
       =
     gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) := by
   classical
@@ -108,7 +108,7 @@ theorem gStar_eq_sum_blocks_of_WellSpecified
       gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
     gLin_eq_gTotal_blocks (B := B) (Term := Term) (blk := blk) (β := β) (φ := φ)
   calc
-    gStar (μ := μ) (Y := Y) x
+    gStar (μexp := μexp) (Y := Y) x
         = gLin (β := β) (φ := φ) x := by
             simpa [WellSpecified] using (hspec x).symm
     _   = gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x := by
@@ -120,11 +120,11 @@ If the estimand is within ε of a linear-in-terms model, it is within ε of the 
 theorem gStar_approx_sum_blocks_of_ApproxWellSpecified
     {Ω Attr B Term : Type*}
     [MeasurableSpace Ω] [Fintype B] [Fintype Term] [DecidableEq B]
-    (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ)
-    (hspec : ApproxWellSpecified (μ := μ) (Y := Y) (β := β) (φ := φ) ε) :
+    (hspec : ApproxWellSpecified (μexp := μexp) (Y := Y) (β := β) (φ := φ) ε) :
     ∀ x,
-      |gStar (μ := μ) (Y := Y) x
+      |gStar (μexp := μexp) (Y := Y) x
         - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
         ≤ ε := by
   classical
@@ -143,17 +143,17 @@ theorem gStar_approx_sum_blocks_of_ApproxWellSpecified
   simpa [hlin, abs_sub_comm] using h
 
 /--
-AE version of the approximation bridge: if `gStar` is ε-close to the linear model ν-a.e.,
-then it is ε-close to the induced block sum ν-a.e.
+AE version of the approximation bridge: if `gStar` is ε-close to the linear model
+on target-population support (ν-a.e.), then it is ε-close to the induced block sum ν-a.e.
 -/
 theorem gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
     {Ω Attr B Term : Type*}
     [MeasurableSpace Ω] [MeasurableSpace Attr] [Fintype B] [Fintype Term] [DecidableEq B]
-    (ν : Measure Attr) (μ : Measure Ω) (Y : Attr → Ω → ℝ)
+    (ν : Measure Attr) (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ)
-    (hspec : ApproxWellSpecifiedAE (ν := ν) (μ := μ) (Y := Y) (β := β) (φ := φ) ε) :
+    (hspec : ApproxWellSpecifiedAE (ν := ν) (μexp := μexp) (Y := Y) (β := β) (φ := φ) ε) :
     ∀ᵐ x ∂ν,
-      |gStar (μ := μ) (Y := Y) x
+      |gStar (μexp := μexp) (Y := Y) x
         - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
         ≤ ε := by
   classical

@@ -10,7 +10,9 @@ Highlights:
 - Ordered-task helpers: `OrderedProfiles` and `permuteProfiles` for profile-order invariance
   assumptions.
 - Attribute-distribution and experimental design distribution moment functionals:
-  `attrMean`, `attrM2`, `attrVar`, `attrSD`, `meanHatZ`, `m2HatZ`, `varHatZ`,
+  `attrMean`, `attrM2`, `attrVar`, `attrSD` (all parameterized by a generic attribute
+  distribution `xiAttr`; use `ν` only for the target population in transport files),
+  `meanHatZ`, `m2HatZ`, `varHatZ`,
   `sdHatZ`, `rmseHatZ`, plus `designMeanZ`/`designM2Z`/`designVarZ`/`designSDZ`/`designRMSEZ`
   (see [mean](jargon_mean.md), [variance](jargon_variance.md),
   [standard deviation](jargon_standard_deviation.md), [RMSE](jargon_rmse.md)).

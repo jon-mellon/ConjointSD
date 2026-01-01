@@ -72,7 +72,11 @@ end ConjointOrder
 section PredictedSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω)
+variable (κ : Measure Ω)
+
+/-- Design pushforward attribute distribution: the law of `A 0` under `κ`. -/
+def kappaDesign {Attr : Type*} [MeasurableSpace Attr] (A : ℕ → Ω → Attr) : Measure Attr :=
+  Measure.map (A 0) κ
 
 /-- Empirical mean: (1/n) • ∑_{i<n} Z i ω. -/
 def meanHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
@@ -116,44 +120,44 @@ def varHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
 def sdHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   Real.sqrt (varHatZW (Z := Z) (W := W) n ω)
 
-/-- Experimental design distribution mean: ∫ Z 0 dμ. -/
+/-- Experimental design distribution mean: ∫ Z 0 dκ. -/
 def designMeanZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  ∫ ω, Z 0 ω ∂μ
+  ∫ ω, Z 0 ω ∂κ
 
-/-- Experimental design distribution second moment: ∫ (Z 0)^2 dμ. -/
+/-- Experimental design distribution second moment: ∫ (Z 0)^2 dκ. -/
 def designM2Z (Z : ℕ → Ω → ℝ) : ℝ :=
-  ∫ ω, (Z 0 ω) ^ 2 ∂μ
+  ∫ ω, (Z 0 ω) ^ 2 ∂κ
 
 /-- Experimental design distribution variance proxy: E[Z^2] - (E[Z])^2. -/
 def designVarZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  designM2Z (μ := μ) Z - (designMeanZ (μ := μ) Z) ^ 2
+  designM2Z (κ := κ) Z - (designMeanZ (κ := κ) Z) ^ 2
 
 /-- Experimental design distribution SD proxy: √(designVar). -/
 def designSDZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (designVarZ (μ := μ) Z)
+  Real.sqrt (designVarZ (κ := κ) Z)
 
 /-- Weighted design mean: (∫ W0 Z0)/(∫ W0). -/
 def designMeanZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  (designMeanZ (μ := μ) (Z := fun i ω => W i ω * Z i ω))
-    / (designMeanZ (μ := μ) (Z := W))
+  (designMeanZ (κ := κ) (Z := fun i ω => W i ω * Z i ω))
+    / (designMeanZ (κ := κ) (Z := W))
 
 /-- Weighted design second moment: (∫ W0 Z0^2)/(∫ W0). -/
 def designM2ZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  (designMeanZ (μ := μ) (Z := fun i ω => W i ω * (Z i ω) ^ 2))
-    / (designMeanZ (μ := μ) (Z := W))
+  (designMeanZ (κ := κ) (Z := fun i ω => W i ω * (Z i ω) ^ 2))
+    / (designMeanZ (κ := κ) (Z := W))
 
 /-- Weighted design variance proxy. -/
 def designVarZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  designM2ZW (μ := μ) (Z := Z) (W := W)
-    - (designMeanZW (μ := μ) (Z := Z) (W := W)) ^ 2
+  designM2ZW (κ := κ) (Z := Z) (W := W)
+    - (designMeanZW (κ := κ) (Z := Z) (W := W)) ^ 2
 
 /-- Weighted design SD proxy. -/
 def designSDZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (designVarZW (μ := μ) (Z := Z) (W := W))
+  Real.sqrt (designVarZW (κ := κ) (Z := Z) (W := W))
 
 /-- Experimental design distribution RMSE proxy: √(designM2). -/
 def designRMSEZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (designM2Z (μ := μ) Z)
+  Real.sqrt (designM2Z (κ := κ) Z)
 
 end PredictedSD
 
@@ -161,21 +165,21 @@ section Transport
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/-- Attribute-distribution mean for the target human population under `ν`. -/
-def attrMean (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
-  ∫ a, s a ∂ν
+/-- Attribute-distribution mean under `xiAttr` (generic attribute law). -/
+def attrMean (xiAttr : Measure Attr) (s : Attr → ℝ) : ℝ :=
+  ∫ a, s a ∂xiAttr
 
-/-- Attribute-distribution second moment for the target human population under `ν`. -/
-def attrM2 (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
-  ∫ a, (s a) ^ 2 ∂ν
+/-- Attribute-distribution second moment under `xiAttr`. -/
+def attrM2 (xiAttr : Measure Attr) (s : Attr → ℝ) : ℝ :=
+  ∫ a, (s a) ^ 2 ∂xiAttr
 
-/-- Attribute-distribution variance via `E[s^2] - (E[s])^2` under `ν`. -/
-def attrVar (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
-  attrM2 (ν := ν) s - (attrMean (ν := ν) s) ^ 2
+/-- Attribute-distribution variance via `E[s^2] - (E[s])^2` under `xiAttr`. -/
+def attrVar (xiAttr : Measure Attr) (s : Attr → ℝ) : ℝ :=
+  attrM2 (xiAttr := xiAttr) s - (attrMean (xiAttr := xiAttr) s) ^ 2
 
-/-- Attribute-distribution SD under `ν` (square root of `attrVar`). -/
-def attrSD (ν : Measure Attr) (s : Attr → ℝ) : ℝ :=
-  Real.sqrt (attrVar (ν := ν) s)
+/-- Attribute-distribution SD under `xiAttr` (square root of `attrVar`). -/
+def attrSD (xiAttr : Measure Attr) (s : Attr → ℝ) : ℝ :=
+  Real.sqrt (attrVar (xiAttr := xiAttr) s)
 
 end Transport
 
@@ -205,13 +209,13 @@ section RegressionConsistencyBridge
 
 variable {Attr Θ : Type*} [MeasurableSpace Attr]
 
-/-- Θ ↦ attribute-distribution mean induced by a parametric score `g : Θ → Attr → ℝ` under ν. -/
-def attrMeanΘ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
-  fun θ => attrMean ν (g θ)
+/-- Θ ↦ attribute-distribution mean induced by `g` under `xiAttr`. -/
+def attrMeanΘ (xiAttr : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
+  fun θ => attrMean xiAttr (g θ)
 
-/-- Θ ↦ attribute-distribution second moment induced by `g` under ν. -/
-def attrM2Θ (ν : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
-  fun θ => attrM2 ν (g θ)
+/-- Θ ↦ attribute-distribution second moment induced by `g` under `xiAttr`. -/
+def attrM2Θ (xiAttr : Measure Attr) (g : Θ → Attr → ℝ) : Θ → ℝ :=
+  fun θ => attrM2 xiAttr (g θ)
 
 /-- Block score at parameter θ for a fixed block index `b`. -/
 def blockScoreΘ {B : Type*}
@@ -265,21 +269,21 @@ def crossVec {Attr : Type u} {Term : Type v} [Fintype Term]
     let _ := (inferInstance : Fintype Term)
     exact fun i => (1 / (n : ℝ)) * ∑ k : Fin n, φ i (A k) * Y k
 
-/-- Attribute-distribution Gram matrix of the feature map under `ν`. -/
+/-- Attribute-distribution Gram matrix of the feature map under `xiAttr`. -/
 def attrGram {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
-    (ν : Measure Attr) (φ : Term → Attr → ℝ) : Matrix Term Term ℝ :=
+    (xiAttr : Measure Attr) (φ : Term → Attr → ℝ) : Matrix Term Term ℝ :=
   by
     classical
     let _ := (inferInstance : Fintype Term)
-    exact fun i j => attrMean ν (fun a => φ i a * φ j a)
+    exact fun i j => attrMean xiAttr (fun a => φ i a * φ j a)
 
-/-- Attribute-distribution cross moment between features and a true outcome score `g` under `ν`. -/
+/-- Attribute-distribution cross moment between features and `g` under `xiAttr`. -/
 def attrCross {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
-    (ν : Measure Attr) (g : Attr → ℝ) (φ : Term → Attr → ℝ) : Term → ℝ :=
+    (xiAttr : Measure Attr) (g : Attr → ℝ) (φ : Term → Attr → ℝ) : Term → ℝ :=
   by
     classical
     let _ := (inferInstance : Fintype Term)
-    exact fun i => attrMean ν (fun a => φ i a * g a)
+    exact fun i => attrMean xiAttr (fun a => φ i a * g a)
 
 end RegressionEstimator
 
@@ -291,17 +295,17 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 /-- Event that the shown profile equals `x`. -/
 def eventX (X : Ω → Attr) (x : Attr) : Set Ω := {ω | X ω = x}
 
-/-- Conditional mean on an event `s`: (∫ Z d(μ.restrict s)) / (μ s).toReal. -/
-def condMean (μ : Measure Ω) (Z : Ω → ℝ) (s : Set Ω) : ℝ :=
-  (∫ ω, Z ω ∂(μ.restrict s)) / (μ s).toReal
+/-- Conditional mean on an event `s`: (∫ Z d(κ.restrict s)) / (κ s).toReal. -/
+def condMean (κ : Measure Ω) (Z : Ω → ℝ) (s : Set Ω) : ℝ :=
+  (∫ ω, Z ω ∂(κ.restrict s)) / (κ s).toReal
 
 /-- Mean of a potential outcome under profile `x`. -/
-def potMean (μ : Measure Ω) (Y : Attr → Ω → ℝ) (x : Attr) : ℝ :=
-  ∫ ω, Y x ω ∂μ
+def potMean (κ : Measure Ω) (Y : Attr → Ω → ℝ) (x : Attr) : ℝ :=
+  ∫ ω, Y x ω ∂κ
 
 /-- AMCE between profiles `x` and `x'`. -/
-def amce (μ : Measure Ω) (Y : Attr → Ω → ℝ) (x x' : Attr) : ℝ :=
-  potMean (μ := μ) Y x' - potMean (μ := μ) Y x
+def amce (κ : Measure Ω) (Y : Attr → Ω → ℝ) (x x' : Attr) : ℝ :=
+  potMean (κ := κ) Y x' - potMean (κ := κ) Y x
 
 end ConjointIdentification
 
@@ -310,8 +314,8 @@ section ConjointEstimand
 variable {Ω Attr : Type*} [MeasurableSpace Ω]
 
 /-- Conjoint causal estimand as a function of profiles: `g⋆ x = E[Y(x)]`. -/
-def gStar (μ : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
-  fun x => potMean (μ := μ) Y x
+def gStar (μexp : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
+  fun x => potMean (κ := μexp) Y x
 
 end ConjointEstimand
 

@@ -10,26 +10,26 @@ noncomputable section
 namespace ConjointSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω)
+variable (μexp : Measure Ω)
 variable {Attr : Type*}
 
-variable {μ}
+variable {μexp}
 
-/-- `(μ s).toReal ≠ 0` from `μ s ≠ 0` under a finite measure. -/
-lemma toReal_ne_zero_of_ne_zero (μ : Measure Ω) [IsFiniteMeasure μ]
-    (s : Set Ω) (h : μ s ≠ 0) : (μ s).toReal ≠ 0 := by
+/-- `(μexp s).toReal ≠ 0` from `μexp s ≠ 0` under a finite measure. -/
+lemma toReal_ne_zero_of_ne_zero (μexp : Measure Ω) [IsFiniteMeasure μexp]
+    (s : Set Ω) (h : μexp s ≠ 0) : (μexp s).toReal ≠ 0 := by
   refine ENNReal.toReal_ne_zero.2 ?_
   refine ⟨h, ?_⟩
   simp
 
 /-- Derive the `rand` factorization from randomized strong ignorability. -/
 lemma rand_from_randomized
-    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
+    (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
     (x x0 : Attr) :
-    (∫ ω, Y x ω ∂(μ.restrict (eventX (X := X) x0)))
-      = (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ) := by
+    (∫ ω, Y x ω ∂(μexp.restrict (eventX (X := X) x0)))
+      = (μexp (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μexp) := by
   classical
   -- indicator of {X = x0} as a measurable function of X
   let φ : Attr → ℝ := fun a => if a = x0 then 1 else 0
@@ -40,22 +40,22 @@ lemma rand_from_randomized
     simpa [φ] using hconst.indicator (measurableSet_singleton x0)
   have hset : MeasurableSet s := by
     simpa [s] using h.measX (measurableSet_singleton x0)
-  have hInd_meas : AEStronglyMeasurable ind μ :=
+  have hInd_meas : AEStronglyMeasurable ind μexp :=
     (hφ_meas.comp h.measX).aestronglyMeasurable
-  have hY_meas : AEStronglyMeasurable (fun ω => Y x ω) μ :=
+  have hY_meas : AEStronglyMeasurable (fun ω => Y x ω) μexp :=
     (h.measY x).aestronglyMeasurable
-  have hIndY : (ind) ⟂ᵢ[μ] (fun ω => Y x ω) :=
+  have hIndY : (ind) ⟂ᵢ[μexp] (fun ω => Y x ω) :=
     (h.ignorability x).comp hφ_meas measurable_id
-  have hintY : Integrable (fun ω => Y x ω) μ := by
-    have _ : IsFiniteMeasure μ := by infer_instance
+  have hintY : Integrable (fun ω => Y x ω) μexp := by
+    have _ : IsFiniteMeasure μexp := by infer_instance
     obtain ⟨C, hC0, hC⟩ := h.bounded x
     refine Integrable.of_bound (hf := (h.measY x).aestronglyMeasurable) C ?_
-    refine ae_of_all μ ?_
+    refine ae_of_all μexp ?_
     intro ω
     have hCω := hC ω
     simpa [Real.norm_eq_abs] using hCω
-  have hintInd : Integrable ind μ := by
-    have hconst : Integrable (fun _ : Ω => (1 : ℝ)) μ := integrable_const _
+  have hintInd : Integrable ind μexp := by
+    have hconst : Integrable (fun _ : Ω => (1 : ℝ)) μexp := integrable_const _
     have hident :
         ind = Set.indicator s (fun _ => (1 : ℝ)) := by
       funext ω
@@ -65,12 +65,12 @@ lemma rand_from_randomized
     simpa [hident] using hconst.indicator hset
   have hprod := hIndY.integral_fun_mul_eq_mul_integral hInd_meas hY_meas
   have hrestrict :
-      (∫ ω, Y x ω ∂(μ.restrict s))
-        = ∫ ω, Set.indicator s (fun ω => Y x ω) ω ∂μ := by
-    have h' := integral_indicator (μ := μ) (s := s) (f := fun ω => Y x ω) hset
+      (∫ ω, Y x ω ∂(μexp.restrict s))
+        = ∫ ω, Set.indicator s (fun ω => Y x ω) ω ∂μexp := by
+    have h' := integral_indicator (μ := μexp) (s := s) (f := fun ω => Y x ω) hset
     simpa using h'.symm
   have hintInd' :
-      ∫ ω, ind ω ∂μ = (μ s).toReal := by
+      ∫ ω, ind ω ∂μexp = (μexp s).toReal := by
     have hident :
         ind = Set.indicator s (fun _ => (1 : ℝ)) := by
       funext ω
@@ -78,16 +78,16 @@ lemma rand_from_randomized
       · simp [ind, φ, s, hX]
       · simp [ind, φ, s, hX]
     calc
-      ∫ ω, ind ω ∂μ = ∫ ω, s.indicator (fun _ => (1 : ℝ)) ω ∂μ := by
+      ∫ ω, ind ω ∂μexp = ∫ ω, s.indicator (fun _ => (1 : ℝ)) ω ∂μexp := by
         simp [hident]
-      _ = ∫ ω in s, (1 : ℝ) ∂μ :=
-        integral_indicator (μ := μ) (s := s) (f := fun _ => (1 : ℝ)) hset
-      _ = (μ s).toReal := by
+      _ = ∫ ω in s, (1 : ℝ) ∂μexp :=
+        integral_indicator (μ := μexp) (s := s) (f := fun _ => (1 : ℝ)) hset
+      _ = (μexp s).toReal := by
         simp [integral_const, measureReal_def]
   calc
-    (∫ ω, Y x ω ∂(μ.restrict s))
-        = ∫ ω, Set.indicator s (fun ω => Y x ω) ω ∂μ := hrestrict
-    _ = ∫ ω, ind ω * Y x ω ∂μ := by
+    (∫ ω, Y x ω ∂(μexp.restrict s))
+        = ∫ ω, Set.indicator s (fun ω => Y x ω) ω ∂μexp := hrestrict
+    _ = ∫ ω, ind ω * Y x ω ∂μexp := by
           have hident :
               (fun ω => Set.indicator s (fun ω => Y x ω) ω)
                 = (fun ω => ind ω * Y x ω) := by
@@ -96,49 +96,49 @@ lemma rand_from_randomized
               · simp [ind, φ, s, hX]
               · simp [ind, φ, s, hX]
           simp [hident]
-    _ = (∫ ω, ind ω ∂μ) * (∫ ω, Y x ω ∂μ) := by
+    _ = (∫ ω, ind ω ∂μexp) * (∫ ω, Y x ω ∂μexp) := by
           simpa using hprod
-    _ = (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ) := by
+    _ = (μexp (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μexp) := by
           have hsset : s = eventX (X := X) x0 := by
             ext ω; simp [s, eventX]
-          have hs : μ s = μ (eventX (X := X) x0) := by simp [hsset]
+          have hs : μexp s = μexp (eventX (X := X) x0) := by simp [hsset]
           calc
-            (∫ ω, ind ω ∂μ) * (∫ ω, Y x ω ∂μ)
-                = (μ s).toReal * (∫ ω, Y x ω ∂μ) := by
+            (∫ ω, ind ω ∂μexp) * (∫ ω, Y x ω ∂μexp)
+                = (μexp s).toReal * (∫ ω, Y x ω ∂μexp) := by
               simp [hintInd']
-            _ = (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ) := by
+            _ = (μexp (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μexp) := by
               simp [hs]
 
 section
 /-- If the factorization holds, the event-conditional mean equals the unconditional mean. -/
 theorem condMean_eq_potMean_of_rand
-    [ProbMeasureAssumptions μ]
+    [ProbMeasureAssumptions μexp]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ)
     (x x0 : Attr)
-    (hpos : μ (eventX (X := X) x0) ≠ 0)
+    (hpos : μexp (eventX (X := X) x0) ≠ 0)
     (hrand :
-      (∫ ω, Y x ω ∂(μ.restrict (eventX (X := X) x0)))
-        = (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ)) :
-    condMean (μ := μ) (Y x) (eventX (X := X) x0) = potMean (μ := μ) Y x := by
-  letI : IsFiniteMeasure μ := by infer_instance
-  have hposR : (μ (eventX (X := X) x0)).toReal ≠ 0 :=
-    toReal_ne_zero_of_ne_zero (μ := μ) (eventX (X := X) x0) hpos
+      (∫ ω, Y x ω ∂(μexp.restrict (eventX (X := X) x0)))
+        = (μexp (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μexp)) :
+    condMean (κ := μexp) (Y x) (eventX (X := X) x0) = potMean (κ := μexp) Y x := by
+  letI : IsFiniteMeasure μexp := by infer_instance
+  have hposR : (μexp (eventX (X := X) x0)).toReal ≠ 0 :=
+    toReal_ne_zero_of_ne_zero (μexp := μexp) (eventX (X := X) x0) hpos
   unfold condMean potMean
-  -- numerator is `(μ s).toReal * (∫ Y)`; divide by `(μ s).toReal` to get `∫ Y`.
-  have hμ : (μ (eventX (X := X) x0)).toReal ≠ 0 := hposR
+  -- numerator is `(μexp s).toReal * (∫ Y)`; divide by `(μexp s).toReal` to get `∫ Y`.
+  have hμ : (μexp (eventX (X := X) x0)).toReal ≠ 0 := hposR
   calc
-    (∫ ω, Y x ω ∂(μ.restrict (eventX (X := X) x0)))
-        / (μ (eventX (X := X) x0)).toReal
-        = ((μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ))
-            / (μ (eventX (X := X) x0)).toReal := by
+    (∫ ω, Y x ω ∂(μexp.restrict (eventX (X := X) x0)))
+        / (μexp (eventX (X := X) x0)).toReal
+        = ((μexp (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μexp))
+            / (μexp (eventX (X := X) x0)).toReal := by
             simp [hrand]
-    _ = (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μ)
-            * (μ (eventX (X := X) x0)).toReal⁻¹ := by
+    _ = (μexp (eventX (X := X) x0)).toReal * (∫ ω, Y x ω ∂μexp)
+            * (μexp (eventX (X := X) x0)).toReal⁻¹ := by
             ring
-    _ = ∫ ω, Y x ω ∂μ := by field_simp [hμ]
+    _ = ∫ ω, Y x ω ∂μexp := by field_simp [hμ]
 
 /--
-Consistency implies: on the event `{X=x0}`, `Yobs = Y x0` holds a.e. under `μ.restrict`.
+Consistency implies: on the event `{X=x0}`, `Yobs = Y x0` holds a.e. under `μexp.restrict`.
 
 Important: in mathlib v4.26, `ae_restrict_iff` expects measurability of the *predicate-set*
 `{ω | p ω}`, not measurability of the event `s`. So we prove measurability of
@@ -150,7 +150,7 @@ theorem ae_restrict_consistency
     (hmeasYobs : Measurable Yobs)
     (hmeasYx0 : Measurable (Y x0))
     (hcons : ∀ ω, Yobs ω = Y (X ω) ω) :
-    (∀ᵐ ω ∂(μ.restrict (eventX (X := X) x0)), Yobs ω = Y x0 ω) := by
+    (∀ᵐ ω ∂(μexp.restrict (eventX (X := X) x0)), Yobs ω = Y x0 ω) := by
   -- Measurable predicate-set needed by `ae_restrict_iff`.
   have hpred : MeasurableSet {ω : Ω | Yobs ω = Y x0 ω} := by
     have hsub : Measurable (fun ω : Ω => Yobs ω - Y x0 ω) :=
@@ -164,8 +164,8 @@ theorem ae_restrict_consistency
         MeasurableSet ((fun ω : Ω => Yobs ω - Y x0 ω) ⁻¹' ({0} : Set ℝ)) :=
       hsub (measurableSet_singleton (0 : ℝ))
     simpa [hset] using hpre
-  -- Now use `ae_restrict_iff` in the direction: (ae on μ with implication) -> (ae on μ.restrict).
-  refine (ae_restrict_iff (μ := μ) (s := eventX (X := X) x0)
+  -- Now use `ae_restrict_iff` in the direction: (ae on μexp with implication) -> (ae on μexp.restrict).
+  refine (ae_restrict_iff (μ := μexp) (s := eventX (X := X) x0)
             (p := fun ω => Yobs ω = Y x0 ω) hpred).2 ?_
   refine ae_of_all _ ?_
   intro ω hω
@@ -177,53 +177,53 @@ end
 
 /-- Identification: observed conditional mean among `X=x0` equals `E[Y(x0)]`. -/
 theorem identified_potMean_from_condMean
-    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
+    (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
     (x0 : Attr)
-    (hpos : μ (eventX (X := X) x0) ≠ 0) :
-    condMean (μ := μ) Yobs (eventX (X := X) x0) = potMean (μ := μ) Y x0 := by
+    (hpos : μexp (eventX (X := X) x0) ≠ 0) :
+    condMean (κ := μexp) Yobs (eventX (X := X) x0) = potMean (κ := μexp) Y x0 := by
   have hae :
-    (∀ᵐ ω ∂(μ.restrict (eventX (X := X) x0)), Yobs ω = Y x0 ω) :=
-    ae_restrict_consistency (μ := μ) (X := X) (Y := Y) (Yobs := Yobs)
+    (∀ᵐ ω ∂(μexp.restrict (eventX (X := X) x0)), Yobs ω = Y x0 ω) :=
+    ae_restrict_consistency (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs)
       x0 (h.measYobs) (h.measY x0) (h.consistency)
   have hint :
-      (∫ ω, Yobs ω ∂(μ.restrict (eventX (X := X) x0)))
+      (∫ ω, Yobs ω ∂(μexp.restrict (eventX (X := X) x0)))
         =
-      (∫ ω, Y x0 ω ∂(μ.restrict (eventX (X := X) x0))) := by
+      (∫ ω, Y x0 ω ∂(μexp.restrict (eventX (X := X) x0))) := by
     exact integral_congr_ae hae
   have hrand :
-      (∫ ω, Y x0 ω ∂(μ.restrict (eventX (X := X) x0)))
+      (∫ ω, Y x0 ω ∂(μexp.restrict (eventX (X := X) x0)))
         =
-      (μ (eventX (X := X) x0)).toReal * (∫ ω, Y x0 ω ∂μ) :=
-    rand_from_randomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h x0 x0
+      (μexp (eventX (X := X) x0)).toReal * (∫ ω, Y x0 ω ∂μexp) :=
+    rand_from_randomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs) h x0 x0
   calc
-    condMean (μ := μ) Yobs (eventX (X := X) x0)
-        = (∫ ω, Y x0 ω ∂(μ.restrict (eventX (X := X) x0)))
-            / (μ (eventX (X := X) x0)).toReal := by
+    condMean (κ := μexp) Yobs (eventX (X := X) x0)
+        = (∫ ω, Y x0 ω ∂(μexp.restrict (eventX (X := X) x0)))
+            / (μexp (eventX (X := X) x0)).toReal := by
               simp [condMean, hint]
-    _   = potMean (μ := μ) Y x0 := by
-          exact condMean_eq_potMean_of_rand (μ := μ) (X := X) (Y := Y) x0 x0 hpos hrand
+    _   = potMean (κ := μexp) Y x0 := by
+          exact condMean_eq_potMean_of_rand (μexp := μexp) (X := X) (Y := Y) x0 x0 hpos hrand
 
 /-- Identification of AMCE as a difference of observed conditional means. -/
 theorem identified_amce_from_condMeans
-    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
-    (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0)
+    (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
+    (hpos : ∀ x, μexp (eventX (X := X) x) ≠ 0)
     (x x' : Attr) :
-    (condMean (μ := μ) Yobs (eventX (X := X) x')
-      - condMean (μ := μ) Yobs (eventX (X := X) x))
+    (condMean (κ := μexp) Yobs (eventX (X := X) x')
+      - condMean (κ := μexp) Yobs (eventX (X := X) x))
       =
-    amce (μ := μ) Y x x' := by
+    amce (κ := μexp) Y x x' := by
   unfold amce
   have hx' :
-      condMean (μ := μ) Yobs (eventX (X := X) x') = potMean (μ := μ) Y x' :=
-    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h
+      condMean (κ := μexp) Yobs (eventX (X := X) x') = potMean (κ := μexp) Y x' :=
+    identified_potMean_from_condMean (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs) h
       x' (hpos x')
   have hx :
-      condMean (μ := μ) Yobs (eventX (X := X) x) = potMean (μ := μ) Y x :=
-    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h
+      condMean (κ := μexp) Yobs (eventX (X := X) x) = potMean (κ := μexp) Y x :=
+    identified_potMean_from_condMean (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs) h
       x (hpos x)
   simp [hx', hx]
 
@@ -232,26 +232,26 @@ theorem identified_amce_from_condMeans
 -/
 
 /-- Design-identified score: observed conditional mean among units with `X = x`. -/
-def gExp (μ : Measure Ω) (X : Ω → Attr) (Yobs : Ω → ℝ) : Attr → ℝ :=
-  fun x => condMean (μ := μ) Yobs (eventX (X := X) x)
+def gExp (μexp : Measure Ω) (X : Ω → Attr) (Yobs : Ω → ℝ) : Attr → ℝ :=
+  fun x => condMean (κ := μexp) Yobs (eventX (X := X) x)
 
 /-- Causal score: potential-outcome mean under profile `x`. -/
-def gPot (μ : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
-  fun x => potMean (μ := μ) Y x
+def gPot (μexp : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
+  fun x => potMean (κ := μexp) Y x
 
 /--
 Under the conjoint identification assumptions, the observed conditional-mean score function
 equals the causal potential-mean score function (pointwise, hence as functions).
 -/
 theorem gExp_eq_gPot
-    [ProbMeasureAssumptions μ] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    (h : ConjointIdRandomized (μ := μ) (X := X) (Y := Y) (Yobs := Yobs))
-    (hpos : ∀ x, μ (eventX (X := X) x) ≠ 0) :
-    gExp (μ := μ) (X := X) (Yobs := Yobs) = gPot (μ := μ) (Y := Y) := by
+    (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
+    (hpos : ∀ x, μexp (eventX (X := X) x) ≠ 0) :
+    gExp (μexp := μexp) (X := X) (Yobs := Yobs) = gPot (μexp := μexp) (Y := Y) := by
   funext x
   simpa [gExp, gPot] using
-    identified_potMean_from_condMean (μ := μ) (X := X) (Y := Y) (Yobs := Yobs) h
+    identified_potMean_from_condMean (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs) h
       x (hpos x)
 
 section ProfileOrder
@@ -271,10 +271,10 @@ lemma potMean_invariant_of_noProfileOrder
     (Y : Task → OrderedProfiles J Attr → Ω → ℝ)
     (k : Task) (t : OrderedProfiles J Attr) (π : Equiv.Perm J)
     (h : NoProfileOrderEffects (Y := Y)) :
-    potMean (μ := μ) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y)
+    potMean (κ := μexp) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y)
         (permuteProfiles π t)
       =
-    potMean (μ := μ) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y) t := by
+    potMean (κ := μexp) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y) t := by
   simp [potMean, taskOutcome, h.permute k t π]
 
 end ProfileOrder

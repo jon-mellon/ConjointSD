@@ -129,7 +129,7 @@ moment [convergence](readable/jargon_convergence.md), the two-stage
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
 size then evaluation size), targeting the attribute-law SD under `ν` with
-`EvalWeightMatchesAttrMoments` matching weighted evaluation moments to `ν`.
+`EvalWeightMatchesPopMoments` matching weighted evaluation moments to `ν`.
 
 Intuition: First the fitted score stabilizes, then the evaluation
 [standard deviation](readable/jargon_standard_deviation.md) converges to the
@@ -187,7 +187,7 @@ under the target [distribution](readable/jargon_distribution.md) for the
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size), with `EvalWeightMatchesAttrMoments` tying weighted evaluation moments to `ν`.
+size then evaluation size), with `EvalWeightMatchesPopMoments` tying weighted evaluation moments to `ν`.
 
 Intuition: [parameter](readable/jargon_parameter.md)
 [convergence](readable/jargon_convergence.md) plus
@@ -247,7 +247,7 @@ File: `ConjointSD/PaperCoreEstimand.lean`
 Statement: The paper’s total [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) (plugging a [term](readable/jargon_term.md)
 model into the target human [population](readable/jargon_population.md) attribute
-[distribution](readable/jargon_distribution.md), with `EvalWeightMatchesAttrMoments` connecting
+[distribution](readable/jargon_distribution.md), with `EvalWeightMatchesPopMoments` connecting
 weighted evaluation moments to `ν`)
 [converges](readable/jargon_convergence.md) to the paper’s total
 [standard deviation](readable/jargon_standard_deviation.md) target.
@@ -552,19 +552,17 @@ Formalization (math):
 File: `ConjointSD/PaperOLSConsistency.lean`
 
 Statement: Under design IID (`DesignAttrIID`), the paper’s design-side bundle
-(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, and well‑specification (so the normal equations hold), the OLS moment assumptions
-(`OLSMomentAssumptionsOfAttr`) hold almost everywhere for the paper’s
-term set and causal estimand `gStar`.
+(`PaperOLSDesignAssumptions`, including observation-noise LLN) and full‑rank,
+the OLS moment assumptions (`OLSMomentAssumptionsOfAttr`) hold almost everywhere
+for the paper’s term set and causal estimand `gStar`.
 
 Intuition: bounded/measurable features and a design‑IID attribute stream give the
-Gram/cross LLNs; transport of those moments to the target `ν` plus invertibility
-and normal‑equation identification (derived from well‑specification) complete the OLS moment package.
+Gram/cross LLNs, and full‑rank provides inverse‑Gram stability.
 
 Formalization (Lean name): `paper_ols_attr_moments_of_design_ae`
 
 Formalization (math):
-`OLSMomentAssumptionsOfAttr` holds a.e. given design LLN, inverse Gram convergence,
-and identification under `ν`.
+`OLSMomentAssumptionsOfAttr` holds a.e. given design LLN and inverse Gram convergence.
 
 ## paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal (PaperWrappers)
 

@@ -9,7 +9,7 @@ experiment. Population quantities are defined using a target
 [distribution](jargon_distribution.md) for the target human population, which
 we call the *attribute distribution* (often denoted `ν`). Sample quantities are
 computed from the observed data, typically modeled with an *experimental design
-distribution* (often denoted `μ`). In the readable documentation, “population”
+distribution* (often denoted `μexp`). In the readable documentation, “population”
 always refers to the target human population, not to any generic probability
 measure.
 

@@ -25,48 +25,48 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
 
 lemma splitEvalAssumptions_of_bounded
-    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr)
-    (hPop : DesignAttrIID (μ := μ) A)
+    (hPop : DesignAttrIID (κ := ρ) A)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
-    (h : SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
-    SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m := by
+    (h : SplitEvalAssumptionsBounded (ρ := ρ) (A := A) (g := g) (θhat := θhat) m) :
+    SplitEvalAssumptions (ρ := ρ) (A := A) (g := g) (θhat := θhat) m := by
   have hScore :
-      ScoreAssumptions (μ := μ) (A := A) (g := gHat g θhat m) :=
+      ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m) :=
     scoreAssumptions_of_bounded
-      (μ := μ) (A := A) (g := gHat g θhat m)
+      (μexp := ρ) (A := A) (g := gHat g θhat m)
       (hPop := hPop) (hMeas := h.hMeas) (hBound := h.hBound)
   exact ⟨hScore⟩
 
 lemma splitEvalAssumptions_of_bounded_of_stream
-    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ)
-    (hStream : ConjointRandomizationStream (μ := μ) (A := A) (Y := Y))
+    (hStream : ConjointRandomizationStream (μexp := ρ) (A := A) (Y := Y))
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
-    (h : SplitEvalAssumptionsBounded (μ := μ) (A := A) (g := g) (θhat := θhat) m) :
-    SplitEvalAssumptions (μ := μ) (A := A) (g := g) (θhat := θhat) m := by
-  have hPop : DesignAttrIID (μ := μ) A :=
-    DesignAttrIID.of_randomization_stream (μ := μ) (A := A) (Y := Y) hStream
+    (h : SplitEvalAssumptionsBounded (ρ := ρ) (A := A) (g := g) (θhat := θhat) m) :
+    SplitEvalAssumptions (ρ := ρ) (A := A) (g := g) (θhat := θhat) m := by
+  have hPop : DesignAttrIID (κ := ρ) A :=
+    DesignAttrIID.of_randomization_stream (μexp := ρ) (A := A) (Y := Y) hStream
   exact splitEvalAssumptions_of_bounded
-    (μ := μ) (A := A) (hPop := hPop) (g := g) (θhat := θhat) (m := m) h
+    (ρ := ρ) (A := A) (hPop := hPop) (g := g) (θhat := θhat) (m := m) h
 
 /--
 For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converges a.s.
     to the population SD under weighted evaluation moments.
 -/
 theorem sdHat_fixed_m_tendsto_ae_attrSD
-    (μ : Measure Ω) [ProbMeasureAssumptions μ]
+    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr)
     (w : Attr → ℝ)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
-    (h : SplitEvalWeightAssumptions (μ := μ) (A := A) (w := w) (g := g) (θhat := θhat) m)
-    (hMom : EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+    (h : SplitEvalWeightAssumptions (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
+    (hMom : EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
       (w := w) (s := gHat g θhat m)) :
-    ∀ᵐ ω ∂μ,
+    ∀ᵐ ω ∂ρ,
       Tendsto
         (fun n : ℕ =>
           sdHatZW (Z := Zcomp (A := A) (g := gHat g θhat m))
@@ -74,59 +74,59 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
         atTop
         (nhds (attrSD ν (gHat g θhat m))) := by
   have hSDZ :
-      ∀ᵐ ω ∂μ,
+      ∀ᵐ ω ∂ρ,
         Tendsto
           (fun n : ℕ =>
             sdHatZW (Z := Zcomp (A := A) (g := gHat g θhat m))
               (W := Wcomp (A := A) (w := w)) n ω)
           atTop
-          (nhds (designSDZW (μ := μ)
+          (nhds (designSDZW (κ := ρ)
             (Z := Zcomp (A := A) (g := gHat g θhat m))
             (W := Wcomp (A := A) (w := w)))) := by
     exact sdHatZW_tendsto_ae_of_score
-      (μ := μ) (A := A) (w := w) (g := gHat g θhat m)
+      (μexp := ρ) (A := A) (w := w) (g := gHat g θhat m)
       (hWZ := h.hWeightScore) (hWZ2 := h.hWeightScoreSq) (hW := h.hWeight)
       (hW0 := h.hW0)
   have hEq :
-      designSDZW (μ := μ)
+      designSDZW (κ := ρ)
         (Z := Zcomp (A := A) (g := gHat g θhat m))
         (W := Wcomp (A := A) (w := w)) =
         attrSD ν (gHat g θhat m) :=
     by
       have hMeanW :
-          designMeanZ (μ := μ) (Z := Wcomp (A := A) (w := w)) =
-            attrMean (Measure.map (A 0) μ) w := by
+          designMeanZ (κ := ρ) (Z := Wcomp (A := A) (w := w)) =
+            attrMean (kappaDesign (κ := ρ) (A := A)) w := by
         simpa using
-          (designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A) (g := w)
+          (designMeanZ_Zcomp_eq_attrMean (κ := ρ) (A := A) (g := w)
             (hA0 := hMom.measA0) (hg := h.hWeight.meas_g))
       have hMeanWZ :
-          designMeanZ (μ := μ)
+          designMeanZ (κ := ρ)
               (Z := fun i ω =>
                 Wcomp (A := A) (w := w) i ω
                   * Zcomp (A := A) (g := gHat g θhat m) i ω) =
-            attrMean (Measure.map (A 0) μ) (fun a => w a * gHat g θhat m a) := by
+            attrMean (kappaDesign (κ := ρ) (A := A)) (fun a => w a * gHat g θhat m a) := by
         simpa using
-          (designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A)
+          (designMeanZ_Zcomp_eq_attrMean (κ := ρ) (A := A)
             (g := fun a => w a * gHat g θhat m a)
             (hA0 := hMom.measA0) (hg := h.hWeightScore.meas_g))
       have hM2WZ :
-          designMeanZ (μ := μ)
+          designMeanZ (κ := ρ)
               (Z := fun i ω =>
                 Wcomp (A := A) (w := w) i ω
                   * (Zcomp (A := A) (g := gHat g θhat m) i ω) ^ 2) =
-            attrMean (Measure.map (A 0) μ) (fun a => w a * (gHat g θhat m a) ^ 2) := by
+            attrMean (kappaDesign (κ := ρ) (A := A)) (fun a => w a * (gHat g θhat m a) ^ 2) := by
         simpa using
-          (designMeanZ_Zcomp_eq_attrMean (μ := μ) (A := A)
+          (designMeanZ_Zcomp_eq_attrMean (κ := ρ) (A := A)
             (g := fun a => w a * (gHat g θhat m a) ^ 2)
             (hA0 := hMom.measA0) (hg := h.hWeightScoreSq.meas_g))
       have hMean :
-          designMeanZW (μ := μ)
+          designMeanZW (κ := ρ)
               (Z := Zcomp (A := A) (g := gHat g θhat m))
               (W := Wcomp (A := A) (w := w)) =
             attrMean ν (gHat g θhat m) := by
         simp [designMeanZW, hMeanW, hMeanWZ, hMom.mean_eq, attrMean]
       have hM2 :
-          designM2ZW (μ := μ)
+          designM2ZW (κ := ρ)
               (Z := Zcomp (A := A) (g := gHat g θhat m))
               (W := Wcomp (A := A) (w := w)) =
             attrM2 ν (gHat g θhat m) := by

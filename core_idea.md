@@ -8,9 +8,9 @@ transporting social status variation.
   elicits bounded status judgments (0–100).
 - The experiment identifies the average status-assigning rule in the design via
   randomized assignment and standard identification logic.
-- The experimental status-assigning rule equals the real-world rule on the
-  target [population](readable/jargon_population.md) support (external validity,
-  i.e., ν-a.e. equality of score functions).
+- An external-validity assumption (ν-a.e. equality of score functions) is
+  required later to transport the experimental score to target-population
+  moments; it is not part of within-design identification.
 - The model is well specified: all relevant attributes are included and there
   are no meaningful [interaction](readable/jargon_interaction.md) effects, so a
   linear-in-terms model recovers the true rule.
@@ -19,7 +19,7 @@ transporting social status variation.
 - A separate evaluation sample is reweighted to match the target
   [population](readable/jargon_population.md)
   [distribution](readable/jargon_distribution.md) of attributes.
-- With no measurement error, weighted sample moments converge to the true
+- Weighted sample moments converge to the true
   [population](readable/jargon_population.md) moments.
 - Applying the estimated status-assigning rule to this weighted population
   sample yields a predicted status distribution whose

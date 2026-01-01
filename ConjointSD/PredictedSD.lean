@@ -7,7 +7,7 @@ noncomputable section
 namespace ConjointSD
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μ : Measure Ω)
+variable (κ : Measure Ω)
 
 /-- Measurable squaring map on ℝ. -/
 lemma measurable_sq : Measurable (fun x : ℝ => x ^ 2) := by

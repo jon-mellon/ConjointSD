@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/PaperCoreEstimand.lean](../ConjointSD/PaperCoreEstimand.lean)
 
-This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md). The consistency wrappers target the attribute distribution `ν` and use `EvalWeightMatchesAttrMoments` to relate weighted evaluation draws under the evaluation law `μ` to the target population moments. Causal scores (`gStar`) are tied to the experimental law `μexp`, matching the paper’s “fit on experiment, evaluate on population” pipeline.
+This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md). The consistency wrappers target the attribute distribution `ν` and use `EvalWeightMatchesPopMoments` to relate weighted evaluation draws under the evaluation law `ρ` to the target population moments. Causal scores (`gStar`) are tied to the experimental law `μexp`, matching the paper’s “fit on experiment, evaluate on population” pipeline.
 
 Part 1: core targets
 - `paperTrueBlockScore` and `paperTrueTotalScore` are the true [block](jargon_block.md) and total scores induced by the [term](jargon_term.md) model.

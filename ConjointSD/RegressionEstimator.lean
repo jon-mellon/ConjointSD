@@ -39,7 +39,7 @@ theorem olsThetaHat_tendsto_of_moment_assumptions
     Tendsto
       (fun n => olsThetaHat (A := A) (Y := Y) (φ := φ) n)
       atTop
-      (nhds θ0) := by
+      (nhds (h.gramInvLimit.mulVec h.crossLimit)) := by
   classical
   have hpoint :
       ∀ i,
@@ -72,40 +72,57 @@ theorem olsThetaHat_tendsto_of_moment_assumptions
     refine tendsto_pi_nhds.2 ?_
     intro i
     simpa using hpoint i
-  simpa [olsThetaHat, h.theta0_eq] using hfun
+  simpa [olsThetaHat] using hfun
+
+theorem olsThetaHat_tendsto_of_moment_assumptions_id
+    {Attr : Type u} {Term : Type v} [Fintype Term] [DecidableEq Term]
+    (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ) (θ0 : Term → ℝ)
+    (h : OLSMomentAssumptions (A := A) (Y := Y) (φ := φ) θ0)
+    (hId : θ0 = h.gramInvLimit.mulVec h.crossLimit) :
+    Tendsto
+      (fun n => olsThetaHat (A := A) (Y := Y) (φ := φ) n)
+      atTop
+      (nhds θ0) := by
+  simpa [hId] using
+    (olsThetaHat_tendsto_of_moment_assumptions
+      (A := A) (Y := Y) (φ := φ) (θ0 := θ0) h)
 
 /- Definitions and assumption packages live in ConjointSD.Defs / ConjointSD.Assumptions. -/
 
 /-- Convert attribute-distribution moment assumptions to sample-path moment assumptions. -/
 def OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
-    (ν : Measure Attr)
+    (xiAttr : Measure Attr)
     (A : ℕ → Attr) (Y : ℕ → ℝ)
     (g : Attr → ℝ) (φ : Term → Attr → ℝ)
     (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptionsOfAttr (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
+    (h : OLSMomentAssumptionsOfAttr (xiAttr := xiAttr) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
     OLSMomentAssumptions (A := A) (Y := Y) (φ := φ) θ0 :=
-  { gramInvLimit := (attrGram (ν := ν) (φ := φ))⁻¹
-    crossLimit := attrCross (ν := ν) (g := g) (φ := φ)
+  { gramInvLimit := (attrGram (xiAttr := xiAttr) (φ := φ))⁻¹
+    crossLimit := attrCross (xiAttr := xiAttr) (g := g) (φ := φ)
     gramInv_tendsto := h.gramInv_tendsto
-    cross_tendsto := h.cross_tendsto
-    theta0_eq := h.theta0_eq }
+    cross_tendsto := h.cross_tendsto }
 
 theorem olsThetaHat_tendsto_of_attr_moments
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
-    (ν : Measure Attr)
+    (xiAttr : Measure Attr)
     (A : ℕ → Attr) (Y : ℕ → ℝ)
     (g : Attr → ℝ) (φ : Term → Attr → ℝ)
     (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptionsOfAttr (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
+    (h : OLSMomentAssumptionsOfAttr (xiAttr := xiAttr) (A := A) (Y := Y) (g := g) (φ := φ) θ0)
+    (hId :
+      θ0 =
+        (attrGram (xiAttr := xiAttr) (φ := φ))⁻¹.mulVec
+          (attrCross (xiAttr := xiAttr) (g := g) (φ := φ))) :
     Tendsto
       (fun n => olsThetaHat (A := A) (Y := Y) (φ := φ) n)
       atTop
       (nhds θ0) :=
-  olsThetaHat_tendsto_of_moment_assumptions
+  olsThetaHat_tendsto_of_moment_assumptions_id
     (A := A) (Y := Y) (φ := φ) (θ0 := θ0)
     (h := OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions
-      (ν := ν) (A := A) (Y := Y) (g := g) (φ := φ) (θ0 := θ0) h)
+      (xiAttr := xiAttr) (A := A) (Y := Y) (g := g) (φ := φ) (θ0 := θ0) h)
+    (hId := hId)
 
 /--
 Bridge: if the OLS estimator sequence is consistent and the induced attribute-distribution
@@ -113,34 +130,34 @@ functionals are continuous at `θ0`, then the mean/second-moment targets converg
 -/
 theorem attrMean_tendsto_of_OLSConsistency
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
     (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
     {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
     (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
     (hCons : Tendsto ols.θhat atTop (nhds θ0))
-    (hCont : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
+    (hCont : FunctionalContinuityAssumptions (xiAttr := xiAttr) (g := g) θ0) :
     Tendsto
-      (fun n => attrMean ν (gHat g ols.θhat n))
+      (fun n => attrMean xiAttr (gHat g ols.θhat n))
       atTop
-      (nhds (attrMean ν (g θ0))) :=
+      (nhds (attrMean xiAttr (g θ0))) :=
   attrMean_tendsto_of_theta_tendsto
-    (ν := ν) (g := g) (θ0 := θ0) (θhat := ols.θhat)
+    (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := ols.θhat)
     hCons hCont
 
 theorem attrM2_tendsto_of_OLSConsistency
     {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
     (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
     {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
     (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
     (hCons : Tendsto ols.θhat atTop (nhds θ0))
-    (hCont : FunctionalContinuityAssumptions (ν := ν) (g := g) θ0) :
+    (hCont : FunctionalContinuityAssumptions (xiAttr := xiAttr) (g := g) θ0) :
     Tendsto
-      (fun n => attrM2 ν (gHat g ols.θhat n))
+      (fun n => attrM2 xiAttr (gHat g ols.θhat n))
       atTop
-      (nhds (attrM2 ν (g θ0))) :=
+      (nhds (attrM2 xiAttr (g θ0))) :=
   attrM2_tendsto_of_theta_tendsto
-    (ν := ν) (g := g) (θ0 := θ0) (θhat := ols.θhat)
+    (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := ols.θhat)
     hCons hCont
 
 end ConjointSD

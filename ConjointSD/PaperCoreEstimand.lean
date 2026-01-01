@@ -88,7 +88,7 @@ variable {B : Type*} [Fintype B] [DecidableEq B]
 variable {Term : Type*} [Fintype Term]
 variable {Θ : Type*} [TopologicalSpace Θ]
 
-variable (μ : Measure Ω) [ProbMeasureAssumptions μ]
+variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
 variable (A : ℕ → Ω → Attr)
 variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 
@@ -96,7 +96,7 @@ variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
 def paperTotalSDEst
     (w : Attr → ℝ) (blk : Term → B) (βOf : Θ → Term → ℝ) (φ : Term → Attr → ℝ)
     (θhat : ℕ → Θ) (m n : ℕ) (ω : Ω) : ℝ :=
-  sdEst μ A w
+  sdEst ρ A w
     (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
     θhat m n ω
 
@@ -112,28 +112,28 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
     (hβ : βOf θ0 = β0)
     (w : Attr → ℝ)
     (hMomEval : ∀ m,
-      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w)
         (s := gHat (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))) θhat m))
     (hSplitTotal :
       ∀ m,
         SplitEvalWeightAssumptions
-          (μ := μ) (A := A) (w := w)
+          (ρ := ρ) (A := A) (w := w)
           (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
           (θhat := θhat) m)
     (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions
-        (ν := ν)
+        (xiAttr := ν)
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
-        (∀ᵐ ω ∂μ,
+        (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
             abs
-              (paperTotalSDEst (μ := μ) (A := A)
+              (paperTotalSDEst (ρ := ρ) (A := A)
                 (w := w) (blk := blk) (βOf := βOf) (φ := φ)
                 (θhat := θhat) m n ω
                 - paperTotalSD (ν := ν) (blk := blk) (β0 := β0) (φ := φ))
@@ -148,7 +148,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
     intro a
     simp [paperTrueTotalScore, paperTrueBlockScore, trueBlockScore, gTotalΘ, gBTerm, hβ]
   rcases paper_sd_total_sequential_consistency_to_true_target_ae
-      (μ := μ) (A := A) (ν := ν) (w := w) (hMomEval := hMomEval)
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMomEval := hMomEval)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
@@ -194,36 +194,36 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
     (w : Attr → ℝ)
     (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
     (Y : Attr → Ω → ℝ)
-    (hspec : WellSpecified (μ := μexp) (Y := Y) (β := β) (φ := φ))
+    (hspec : WellSpecified (μexp := μexp) (Y := Y) (β := β) (φ := φ))
     (hMomEval : ∀ m,
-      EvalWeightMatchesAttrMoments (μ := μ) (A := A) (ν := ν)
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w)
         (s := gHat (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))) θhat m))
     (hSplitTotal :
       ∀ m,
         SplitEvalWeightAssumptions
-          (μ := μ) (A := A) (w := w)
+          (ρ := ρ) (A := A) (w := w)
           (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
           (θhat := θhat) m)
     (hθ : Tendsto θhat atTop (nhds θ0))
     (hContTotal :
       FunctionalContinuityAssumptions
-        (ν := ν)
+        (xiAttr := ν)
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
         θ0)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
-        (∀ᵐ ω ∂μ,
+        (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr μ A ν w
+            totalErr ρ A ν w
               (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
               θ0 θhat m n ω < ε)
         ∧
         attrSD (ν)
             (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0)
           =
-        attrSD (ν) (gStar (μ := μexp) (Y := Y)) := by
+        attrSD (ν) (gStar (μexp := μexp) (Y := Y)) := by
   have hTotalModel :
       ∀ x,
         gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)) θ0 x
@@ -235,7 +235,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm
         (blk := blk) (βOf := βOf) (φ := φ) (θ0 := θ0) x)
   rcases
     paper_sd_total_sequential_consistency_to_gStar_ae_of_WellSpecified
-      (μ := μ) (A := A) (ν := ν) (w := w) (hMomEval := hMomEval) (μexp := μexp)
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMomEval := hMomEval) (μexp := μexp)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
       (Y := Y) (blk := blk) (β := β) (φ := φ)

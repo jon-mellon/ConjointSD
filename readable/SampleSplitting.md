@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/SampleSplitting.lean](../ConjointSD/SampleSplitting.lean)
 
-This file handles the evaluation stage in a sample-splitting setup. It uses `ProbMeasureAssumptions` for the target attribute distribution `ν` and assumes `EvalWeightMatchesAttrMoments` so the *weighted* evaluation draw `A 0` under the evaluation law `μ` matches the target mean/second moment for the score being evaluated. The training data that produced `θhat` is not modeled here.
+This file handles the evaluation stage in a sample-splitting setup. It uses `ProbMeasureAssumptions` for the target attribute distribution `ν` and assumes `EvalWeightMatchesPopMoments` so the *weighted* evaluation draw `A 0` under the evaluation law `ρ` matches the target mean/second moment for the score being evaluated. The training data that produced `θhat` is not modeled here.
 
 Key definitions:
 - `SplitEvalWeightAssumptions` bundles the weighted evaluation-stage assumptions needed to
