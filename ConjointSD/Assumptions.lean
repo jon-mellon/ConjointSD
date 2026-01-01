@@ -280,15 +280,12 @@ Paper OLS design-side assumptions that are sufficient to derive the LLN hypothes
 for the Gram and cross moments used in OLS consistency.
 
 These bundle measurability/boundedness of the paper feature map and boundedness
-of the conjoint causal estimand `gStar`, plus the transport needed to swap the
-design attribute distribution with `ν` for Gram/cross targets. The design IID
-assumption is kept separate (as `DesignAttrIID`) and passed explicitly to lemmas
-that need it.
+of the conjoint causal estimand `gStar`. The design IID assumption is kept
+separate (as `DesignAttrIID`) and passed explicitly to lemmas that need it.
 -/
 structure PaperOLSDesignAssumptions
     (μ : Measure Ω) [ProbMeasureAssumptions μ]
     (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
-    (ν : Measure Attr)
     (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
   obs_noise :
     ObservationNoiseAssumptions
@@ -300,26 +297,6 @@ structure PaperOLSDesignAssumptions
   bound_fInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C
   meas_gStar : Measurable (gStar (μ := μ) (Y := Y))
   bound_gStar : ∃ C, 0 ≤ C ∧ ∀ a, |gStar (μ := μ) (Y := Y) a| ≤ C
-  gram_eq :
-    ∀ i j,
-      attrGram
-          (ν := Measure.map (A 0) μ)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j
-        =
-      attrGram
-          (ν := ν)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j
-  cross_eq :
-    ∀ i,
-      attrCross
-          (ν := Measure.map (A 0) μ)
-          (g := gStar (μ := μ) (Y := Y))
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
-        =
-      attrCross
-          (ν := ν)
-          (g := gStar (μ := μ) (Y := Y))
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i
 
 /-!
 Additional design-side assumptions used to derive full-rank and identification

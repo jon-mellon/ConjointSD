@@ -8,7 +8,8 @@ Bridge between:
   the induced score process `Zcomp (A := A) (g := g)`
   (designMeanZ/designM2Z/designVarZ/designSDZ).
 
-Assumption: `A 0` has law `ν` under `μ`, i.e. `Measure.map (A 0) μ = ν`.
+We work with the pushforward attribute law `Measure.map (A 0) μ` induced by the
+design distribution `μ`.
 
 Implementation note:
 In this mathlib version, `MeasureTheory.integral_map` uses the argument name `φ` for the map.

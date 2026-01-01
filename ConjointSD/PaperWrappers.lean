@@ -1041,10 +1041,10 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (fMain := fMain) (fInter := fInter))
     (hFull :
       PaperOLSFullRankAssumptions
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (ν := Measure.map (Atrain 0) μexp) (fMain := fMain) (fInter := fInter))
     (hspec :
       WellSpecified
         (μ := μexp)
@@ -1096,7 +1096,7 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_
           atTop
           (nhds θ0) :=
     theta_tendsto_of_paper_ols_design_ae
-      (μ := μexp) (ν := ν) (Y := Y)
+      (μ := μexp) (Y := Y)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
       hPop hDesign hFull hspec
@@ -1237,10 +1237,10 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (fMain := fMain) (fInter := fInter))
     (hFull :
       PaperOLSFullRankAssumptions
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (ν := Measure.map (Atrain 0) μexp) (fMain := fMain) (fInter := fInter))
     (hspec :
       WellSpecified
         (μ := μexp)
@@ -1285,7 +1285,7 @@ theorem paper_sd_total_sequential_consistency_ae_of_paper_ols_gStar_total
           atTop
           (nhds θ0) :=
     theta_tendsto_of_paper_ols_design_ae
-      (μ := μexp) (ν := ν) (Y := Y)
+      (μ := μexp) (Y := Y)
       (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
       hPop hDesign hFull hspec

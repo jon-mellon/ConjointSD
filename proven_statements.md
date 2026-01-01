@@ -532,37 +532,6 @@ Formalization (Lean name): `paper_ols_fullRank_of_orthogonal`
 Formalization (math):
 Orthogonal/nondegenerate feature moments imply `IsUnit (attrGram ν φPaper)`.
 
-## paper ols orthogonal of design (PaperOLSConsistency)
-
-File: `ConjointSD/PaperOLSConsistency.lean`
-
-Statement: If the paper feature map is orthogonal under the design attribute law
-`Measure.map (A 0) μ` and the design/target Gram moments match, then the same
-orthogonality holds under the target `ν`.
-
-Intuition: the transport assumption equates each feature cross moment under the
-design and target laws, so orthogonality carries over.
-
-Formalization (Lean name): `paper_ols_orthogonal_of_design`
-
-Formalization (math):
-Design‑law orthogonality plus `gram_eq` implies `PaperOLSOrthogonalAssumptions` under `ν`.
-
-## paper ols fullRank of design orthogonal (PaperOLSConsistency)
-
-File: `ConjointSD/PaperOLSConsistency.lean`
-
-Statement: If the paper feature map is orthogonal under the design attribute law
-`Measure.map (A 0) μ` and the design/target Gram moments match, then the target
-population Gram matrix is invertible (full‑rank).
-
-Intuition: transport of orthogonality to `ν` yields a diagonal, nondegenerate Gram.
-
-Formalization (Lean name): `paper_ols_fullRank_of_design_orthogonal`
-
-Formalization (math):
-Design‑law orthogonality plus `gram_eq` implies `IsUnit (attrGram ν φPaper)`.
-
 ## paper ols fullRank of posDef (PaperOLSConsistency)
 
 File: `ConjointSD/PaperOLSConsistency.lean`

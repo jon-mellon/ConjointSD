@@ -13,8 +13,6 @@ import ConjointSD
 #print ConjointSD.functionalContinuity_gBlockTerm_of_bounded
 #print ConjointSD.paper_ols_gramInv_tendsto_of_design_ae
 #print ConjointSD.paper_ols_fullRank_of_orthogonal
-#print ConjointSD.paper_ols_orthogonal_of_design
-#print ConjointSD.paper_ols_fullRank_of_design_orthogonal
 #print ConjointSD.paper_ols_fullRank_of_posDef
 #print ConjointSD.paper_ols_theta0_eq_of_normal_eq
 #print ConjointSD.paper_ols_normal_eq_of_wellSpecified

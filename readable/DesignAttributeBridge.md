@@ -10,12 +10,12 @@ Setup:
 - `Zcomp` is the composed process `g (A i)`.
 
 Main [bridges](jargon_bridge.md):
-- If `A 0` has [distribution](jargon_distribution.md) `nu`, then the experimental-design [mean](jargon_mean.md) of `g(A 0)` under the sample space equals the mean of `g` under `nu`.
+- The experimental-design [mean](jargon_mean.md) of `g(A 0)` under the sample space equals the mean of `g` under the pushforward attribute distribution `Measure.map (A 0) μ`.
 - The same is shown for the [second moment](jargon_second_moment.md), then [variance](jargon_variance.md), then [standard deviation](jargon_standard_deviation.md).
 
 How the proofs work:
 - They use a change-of-variables formula for [integrals](jargon_integral.md), so [measurability](jargon_measurable.md) conditions are checked (see [measurable](jargon_measurable.md)).
 - [Variance](jargon_variance.md) and [standard deviation](jargon_standard_deviation.md) are reduced to [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) via their definitions.
 
-This lets later files replace abstract experimental-design limits with the paper-facing
-`attr*` targets.
+This lets later files replace abstract experimental-design limits with the `attr*`
+targets under the pushforward attribute distribution `Measure.map (A 0) μ`.

@@ -864,14 +864,14 @@ theorem paper_ols_lln_of_score_assumptions_ae
   rcases hω with ⟨hgramω, hcrossω⟩
   exact ⟨hgramω, hcrossω⟩
 
-omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions ν] in
+omit [DecidableEq (PaperTerm Main Inter)] in
 theorem paper_ols_lln_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (hPop : DesignAttrIID (μ := μ) Aω)
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter)) :
+        (fMain := fMain) (fInter := fInter)) :
     ∀ᵐ ω ∂μ,
       (∀ i j,
         Tendsto
@@ -883,7 +883,7 @@ theorem paper_ols_lln_of_design_ae
           atTop
           (nhds
             (attrGram
-              (ν := ν)
+              (ν := Measure.map (Aω 0) μ)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)))
       ∧
       (∀ i,
@@ -896,7 +896,7 @@ theorem paper_ols_lln_of_design_ae
           atTop
           (nhds
             (attrCross
-              (ν := ν)
+              (ν := Measure.map (Aω 0) μ)
               (g := gStar (μ := μ) (Y := Y))
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
   have hmeasφ :
@@ -939,11 +939,7 @@ theorem paper_ols_lln_of_design_ae
   refine hLLN.mono ?_
   intro ω hω
   rcases hω with ⟨hgram, hcross⟩
-  refine ⟨?_, ?_⟩
-  · intro i j
-    simpa [hDesign.gram_eq i j] using hgram i j
-  · intro i
-    simpa [hDesign.cross_eq i] using hcross i
+  exact ⟨hgram, hcross⟩
 
 theorem paper_ols_gramInv_tendsto_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
@@ -951,10 +947,10 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (fMain := fMain) (fInter := fInter))
     (hFull :
       PaperOLSFullRankAssumptions
-        (ν := ν) (fMain := fMain) (fInter := fInter)) :
+        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter)) :
     ∀ᵐ ω ∂μ,
       ∀ i j,
         Tendsto
@@ -966,38 +962,38 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
           atTop
           (nhds
             ((attrGram
-              (ν := ν)
+              (ν := Measure.map (Aω 0) μ)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)) := by
   have hLLN :=
     paper_ols_lln_of_design_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (Aω := Aω) (Yobsω := Yobsω) hPop hDesign
   have hdet :
       IsUnit
         (attrGram
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det :=
     (Matrix.isUnit_iff_isUnit_det
       (A :=
         attrGram
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))).1
       hFull.gram_isUnit
   have hdet' :
       (attrGram
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det ≠ 0 :=
     hdet.ne_zero
   have hcont :
       ContinuousAt Ring.inverse
         (attrGram
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).det := by
     simpa [Ring.inverse] using (continuousAt_inv₀ hdet')
   have hcontInv :
       ContinuousAt Inv.inv
         (attrGram
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
     continuousAt_matrix_inv _ hcont
   refine hLLN.mono ?_
@@ -1013,7 +1009,7 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
         atTop
         (nhds
           (attrGram
-            (ν := ν)
+            (ν := Measure.map (Aω 0) μ)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))) := by
     refine tendsto_pi_nhds.2 ?_
     intro i
@@ -1030,7 +1026,7 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
         atTop
         (nhds
           ((attrGram
-            (ν := ν)
+            (ν := Measure.map (Aω 0) μ)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹)) :=
     (hcontInv.tendsto).comp hGramω
   have hInvω' := tendsto_pi_nhds.1 hInvω
@@ -1101,78 +1097,6 @@ theorem paper_ols_fullRank_of_orthogonal
               (ν := ν)
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))).2
           hDetUnit }
-
-theorem paper_ols_orthogonal_of_design
-    {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hDesign :
-      PaperOLSDesignAssumptions
-        (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hOrth :
-      PaperOLSOrthogonalAssumptions
-        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter)) :
-    PaperOLSOrthogonalAssumptions
-      (ν := ν) (fMain := fMain) (fInter := fInter) := by
-  refine { gram_diag := ?_, gram_pos := ?_ }
-  · intro i j hij
-    have hEq :
-        attrMean (ν := ν)
-            (fun a =>
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-                *
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)
-          =
-        attrMean (ν := Measure.map (Aω 0) μ)
-            (fun a =>
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-                *
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a) := by
-      simpa [attrGram] using (hDesign.gram_eq i j).symm
-    calc
-      attrMean (ν := ν)
-          (fun a =>
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-              *
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)
-          =
-        attrMean (ν := Measure.map (Aω 0) μ)
-          (fun a =>
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-              *
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a) := hEq
-      _ = 0 := hOrth.gram_diag i j hij
-  · intro i
-    have hEq :
-        attrMean (ν := ν)
-            (fun a =>
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-                *
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
-          =
-        attrMean (ν := Measure.map (Aω 0) μ)
-            (fun a =>
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-                *
-              φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a) := by
-      simpa [attrGram] using (hDesign.gram_eq i i).symm
-    simpa [hEq] using hOrth.gram_pos i
-
-theorem paper_ols_fullRank_of_design_orthogonal
-    {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hDesign :
-      PaperOLSDesignAssumptions
-        (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
-    (hOrth :
-      PaperOLSOrthogonalAssumptions
-        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter)) :
-    PaperOLSFullRankAssumptions
-      (ν := ν) (fMain := fMain) (fInter := fInter) :=
-  paper_ols_fullRank_of_orthogonal
-    (ν := ν) (fMain := fMain) (fInter := fInter)
-    (hOrth := paper_ols_orthogonal_of_design
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (Aω := Aω) (Yobsω := Yobsω) hDesign hOrth)
 
 theorem paper_ols_fullRank_of_posDef
     (hPos :
@@ -1332,21 +1256,25 @@ theorem paper_ols_attr_moments_of_design_ae
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (fMain := fMain) (fInter := fInter))
     (hFull :
       PaperOLSFullRankAssumptions
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter))
     (hspec :
       WellSpecified
         (μ := μ) (Y := Y) (β := θ0)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :
     ∀ᵐ ω ∂μ,
       OLSMomentAssumptionsOfAttr
-        (ν := ν)
+        (ν := Measure.map (Aω 0) μ)
         (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
         (g := gStar (μ := μ) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
         θ0 := by
+  have hA0 : Measurable (Aω 0) := hPop.measA 0
+  letI : ProbMeasureAssumptions (Measure.map (Aω 0) μ) :=
+    probMeasureAssumptions_map_of_measurable
+      (μ := μ) (A := Aω) (hA0 := hA0)
   have hLLN :
       ∀ᵐ ω ∂μ,
         (∀ i j,
@@ -1359,24 +1287,24 @@ theorem paper_ols_attr_moments_of_design_ae
             atTop
             (nhds
               (attrGram
-                (ν := ν)
+                (ν := Measure.map (Aω 0) μ)
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i j)))
         ∧
         (∀ i,
           Tendsto
             (fun n =>
-              crossVec
+            crossVec
                 (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
                 n i)
             atTop
             (nhds
               (attrCross
-                (ν := ν)
+                (ν := Measure.map (Aω 0) μ)
                 (g := gStar (μ := μ) (Y := Y))
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) :=
     paper_ols_lln_of_design_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (Aω := Aω) (Yobsω := Yobsω) hPop hDesign
   have hInv :
       ∀ᵐ ω ∂μ,
@@ -1390,34 +1318,34 @@ theorem paper_ols_attr_moments_of_design_ae
             atTop
             (nhds
               ((attrGram
-                (ν := ν)
+                (ν := Measure.map (Aω 0) μ)
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)) :=
     paper_ols_gramInv_tendsto_of_design_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (Aω := Aω) (Yobsω := Yobsω) hPop hDesign hFull
   have hId :
       θ0 =
         (attrGram
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹.mulVec
           (attrCross
-            (ν := ν)
+            (ν := Measure.map (Aω 0) μ)
             (g := gStar (μ := μ) (Y := Y))
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
     paper_ols_theta0_eq_of_normal_eq
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (ν := Measure.map (Aω 0) μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) hFull
       (paper_ols_normal_eq_of_wellSpecified
         (μ := μ) (Y := Y)
         (Attr := Attr) (Main := Main) (Inter := Inter)
         (fMain := fMain) (fInter := fInter)
-        (ν := ν) (θ0 := θ0)
+        (ν := Measure.map (Aω 0) μ) (θ0 := θ0)
         hDesign.meas_fMain hDesign.meas_fInter
         hDesign.bound_fMain hDesign.bound_fInter
         hspec)
   exact
     paper_ols_attr_moments_of_lln_fullrank_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (ν := Measure.map (Aω 0) μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
       hLLN hInv hId
 
@@ -1459,10 +1387,10 @@ theorem theta_tendsto_of_paper_ols_design_ae
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (fMain := fMain) (fInter := fInter))
     (hFull :
       PaperOLSFullRankAssumptions
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter))
     (hspec :
       WellSpecified
         (μ := μ) (Y := Y) (β := θ0)
@@ -1479,18 +1407,18 @@ theorem theta_tendsto_of_paper_ols_design_ae
   have hMom :
       ∀ᵐ ω ∂μ,
         OLSMomentAssumptionsOfAttr
-          (ν := ν)
+          (ν := Measure.map (Aω 0) μ)
           (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
           (g := gStar (μ := μ) (Y := Y))
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
           θ0 :=
     paper_ols_attr_moments_of_design_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
       hPop hDesign hFull hspec
   exact
     theta_tendsto_of_paper_ols_moments_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (ν := Measure.map (Aω 0) μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω) hMom
 
 omit [ProbMeasureAssumptions μ] in
@@ -1588,10 +1516,10 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (fMain := fMain) (fInter := fInter))
     (hFull :
       PaperOLSFullRankAssumptions
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter))
     (hspec :
       WellSpecified
         (μ := μ) (Y := Y) (β := θ0)
@@ -1624,7 +1552,7 @@ theorem attrMean_tendsto_of_paper_ols_design_ae
           atTop
           (nhds θ0) :=
     theta_tendsto_of_paper_ols_design_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
       hPop hDesign hFull hspec
   refine hθ.mono ?_
@@ -1648,10 +1576,10 @@ theorem attrM2_tendsto_of_paper_ols_design_ae
     (hDesign :
       PaperOLSDesignAssumptions
         (μ := μ) (A := Aω) (Y := Y) (Yobs := Yobsω)
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (fMain := fMain) (fInter := fInter))
     (hFull :
       PaperOLSFullRankAssumptions
-        (ν := ν) (fMain := fMain) (fInter := fInter))
+        (ν := Measure.map (Aω 0) μ) (fMain := fMain) (fInter := fInter))
     (hspec :
       WellSpecified
         (μ := μ) (Y := Y) (β := θ0)
@@ -1684,7 +1612,7 @@ theorem attrM2_tendsto_of_paper_ols_design_ae
           atTop
           (nhds θ0) :=
     theta_tendsto_of_paper_ols_design_ae
-      (μ := μ) (ν := ν) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μ := μ) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
       hPop hDesign hFull hspec
   refine hθ.mono ?_
