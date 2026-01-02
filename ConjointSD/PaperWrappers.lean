@@ -104,36 +104,7 @@ theorem paper_identifies_potMean_from_condMean_status
 end StatusIdentification
 
 /-!
-## 2) Regression/terms-to-block decomposition wrapper
--/
-
-section ModelToBlocks
-
-variable {Ω : Type*} [MeasurableSpace Ω]
-variable {Attr : Type*}
-variable {B : Type*} [Fintype B]
-variable {Term : Type*} [Fintype Term] [DecidableEq B]
-
-variable (μexp : Measure Ω)
-variable (Y : Attr → Ω → ℝ)
-variable (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
-
-/--
-If the causal estimand is well-specified by a linear-in-terms model, it decomposes
-as the sum of block scores induced by `blk`.
--/
-theorem paper_gStar_eq_sum_blocks_of_WellSpecified
-    (hspec : WellSpecified (μexp := μexp) (Y := Y) (β := β) (φ := φ)) :
-    gStar (μexp := μexp) (Y := Y)
-      =
-    gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
-  gStar_eq_sum_blocks_of_WellSpecified
-    (μexp := μexp) (Y := Y) (blk := blk) (β := β) (φ := φ) hspec
-
-end ModelToBlocks
-
-/-!
-## 3) Route-2 sequential SD consistency wrappers (blocks + total)
+## 2) Route-2 sequential SD consistency wrappers (blocks + total)
 -/
 
 section SDSequentialConsistency
@@ -930,15 +901,48 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
           =
         gStar (μexp := μexp) (Y := Y) x := by
     have hBlocks :
-        gStar (μexp := μexp) (Y := Y)
-          =
         gTotal
           (B := B)
           (g := gBlockTerm (blk := blk) (β := θ0)
-            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) :=
-      gStar_eq_sum_blocks_of_WellSpecified
-        (μexp := μexp) (Y := Y) (blk := blk) (β := θ0)
-        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) hspec
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
+          =
+        gStar (μexp := μexp) (Y := Y) := by
+      classical
+      funext x
+      have hLinBlocks :
+          gLin (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+            =
+          gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) :=
+        gLin_eq_gTotal_blocks
+          (B := B)
+          (Term := PaperTerm Main Inter)
+          (blk := blk)
+          (β := θ0)
+          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+      have hLinBlocksX :
+          gTotal
+              (B := B)
+              (g := gBlockTerm (blk := blk) (β := θ0)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
+            =
+          gLin (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) x := by
+        simpa using congrArg (fun f => f x) hLinBlocks.symm
+      calc
+        gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
+            =
+          gLin (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) x := hLinBlocksX
+        _ =
+          gStar (μexp := μexp) (Y := Y) x := by
+            simpa [WellSpecified] using hspec x
     refine ae_of_all _ ?_
     intro x
     have hBlocksx :
@@ -948,7 +952,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
               (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
           =
         gStar (μexp := μexp) (Y := Y) x := by
-      simpa using congrArg (fun f => f x) hBlocks.symm
+      simpa using congrArg (fun f => f x) hBlocks
     calc
       gTotalΘ
           (gB := fun b θ a =>

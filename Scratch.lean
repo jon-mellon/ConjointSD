@@ -65,7 +65,6 @@ import ConjointSD
 
 -- Model bridge.
 #print ConjointSD.gLin_eq_gTotal_blocks
-#print ConjointSD.gStar_eq_sum_blocks_of_WellSpecified
 #print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
 #print ConjointSD.approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 
@@ -77,7 +76,6 @@ import ConjointSD
 #print ConjointSD.paper_identifies_potMean_from_condMean
 #print ConjointSD.paper_identifies_amce_from_condMeans
 #print ConjointSD.paper_identifies_potMean_from_condMean_status
-#print ConjointSD.paper_gStar_eq_sum_blocks_of_WellSpecified
 #print ConjointSD.paper_sd_blocks_sequential_consistency_ae
 #print ConjointSD.paper_sd_total_sequential_consistency_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae

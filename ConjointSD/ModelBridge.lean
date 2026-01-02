@@ -88,33 +88,6 @@ theorem gLin_eq_gTotal_blocks
   simpa using h.symm
 
 /--
-If the estimand is well-specified by a linear-in-terms model, then it decomposes into blocks
-(using the chosen term-to-block assignment).
--/
-theorem gStar_eq_sum_blocks_of_WellSpecified
-    {Ω Attr B Term : Type*}
-    [MeasurableSpace Ω] [Fintype B] [Fintype Term] [DecidableEq B]
-    (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
-    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
-    (hspec : WellSpecified (μexp := μexp) (Y := Y) (β := β) (φ := φ)) :
-    gStar (μexp := μexp) (Y := Y)
-      =
-    gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) := by
-  classical
-  funext x
-  have hblocks :
-      gLin (β := β) (φ := φ)
-        =
-      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
-    gLin_eq_gTotal_blocks (B := B) (Term := Term) (blk := blk) (β := β) (φ := φ)
-  calc
-    gStar (μexp := μexp) (Y := Y) x
-        = gLin (β := β) (φ := φ) x := by
-            simpa [WellSpecified] using (hspec x).symm
-    _   = gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x := by
-            simpa using congrArg (fun f => f x) hblocks
-
-/--
 AE version of the approximation bridge: if `gStar` is ε-close to the linear model
 on target-population support (ν-a.e.), then it is ε-close to the induced block sum ν-a.e.
 -/
