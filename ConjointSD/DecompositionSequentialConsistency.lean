@@ -24,7 +24,7 @@ section
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
-variable {Θ : Type*} [TopologicalSpace Θ]
+variable {Θ : Type*}
 variable {B : Type*} [Fintype B]
 
 /-- A block score family parameterized by θ. -/

@@ -92,7 +92,7 @@ variable (A : ℕ → Attr) (Yobs : ℕ → ℝ)
 
 variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
 
-omit [DecidableEq (PaperTerm Main Inter)] in
+omit [DecidableEq (PaperTerm Main Inter)] [Fintype Main] [Fintype Inter] in
 lemma measurable_phiPaper
     (hmeasMain : ∀ m, Measurable (fMain m))
     (hmeasInter : ∀ i, Measurable (fInter i)) :
@@ -100,7 +100,7 @@ lemma measurable_phiPaper
   intro t
   cases t with
   | none =>
-      simpa [φPaper] using (measurable_const : Measurable (fun _ : Attr => (1 : ℝ)))
+      simp [φPaper]
   | some s =>
       cases s with
       | inl m =>
@@ -108,7 +108,7 @@ lemma measurable_phiPaper
       | inr i =>
           simpa [φPaper] using hmeasInter i
 
-omit [DecidableEq (PaperTerm Main Inter)] in
+omit [DecidableEq (PaperTerm Main Inter)] [MeasurableSpace Attr] [Fintype Main] [Fintype Inter] in
 lemma bounded_phiPaper
     (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
     (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
@@ -237,7 +237,7 @@ lemma bounded_φBlock
     intro a
     simp [φBlock, htb]
 
-omit [DecidableEq (PaperTerm Main Inter)] in
+omit [DecidableEq (PaperTerm Main Inter)] [MeasurableSpace Attr] in
 lemma gBlockTerm_eq_gLin_φBlock
     {B : Type*} [Fintype B] [DecidableEq B]
     (blk : PaperTerm Main Inter → B) (b : B) (θ : PaperTerm Main Inter → ℝ) :
@@ -328,7 +328,7 @@ theorem blockFunctionalContinuity_gBlockTerm_of_bounded
       (xiAttr := xiAttr) (blk := blk) (b := b) (θ0 := θ0)
       hmeasMain hmeasInter hboundMain hboundInter
 
-omit [DecidableEq (PaperTerm Main Inter)] in
+omit [DecidableEq (PaperTerm Main Inter)] [MeasurableSpace Attr] in
 lemma bounded_mul
     {f g : Attr → ℝ}
     (hf : ∃ C, 0 ≤ C ∧ ∀ a, |f a| ≤ C)
@@ -344,7 +344,7 @@ lemma bounded_mul
     mul_le_mul hf' hg' (abs_nonneg _) hCf0
   simpa [abs_mul] using hmul
 
-omit [DecidableEq (PaperTerm Main Inter)] in
+omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions μexp] in
 theorem paper_ols_normal_eq_of_wellSpecified
     (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
     (θ0 : PaperTerm Main Inter → ℝ)
@@ -450,7 +450,7 @@ theorem paper_ols_normal_eq_of_wellSpecified
               * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
           refine Finset.sum_congr rfl ?_
           intro t ht
-          simp [mul_comm, mul_left_comm, mul_assoc]
+          simp [mul_comm]
         _ = ∑ t, θ0 t * φCross t a := by
           rfl
         _ = gLin (β := θ0) (φ := φCross) a := by
@@ -481,7 +481,7 @@ theorem paper_ols_normal_eq_of_wellSpecified
             * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
       refine Finset.sum_congr rfl ?_
       intro t ht
-      simp [mul_comm, mul_left_comm, mul_assoc]
+      simp [mul_comm]
     _ =
       attrCross
         (xiAttr := xiAttr)
@@ -489,7 +489,8 @@ theorem paper_ols_normal_eq_of_wellSpecified
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i := by
       simpa using hCrossEq.symm
 
-omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions xiAttr] in
+omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions xiAttr]
+  [MeasurableSpace Attr] [ProbMeasureAssumptions μexp] in
 lemma crossVec_eq_meanHatZ_add_noise
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (ω : Ω) (i : PaperTerm Main Inter) :
@@ -1010,6 +1011,7 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
   have hEntry := (tendsto_pi_nhds.1 hRow) j
   simpa using hEntry
 
+omit [ProbMeasureAssumptions μexp] [ProbMeasureAssumptions xiAttr] in
 theorem paper_ols_theta0_eq_of_normal_eq
     (θ0 : PaperTerm Main Inter → ℝ)
     (hFull :
@@ -1211,7 +1213,9 @@ theorem paper_ols_attr_moments_of_design_ae
       (Aω := Aω) (Yobsω := Yobsω) hRand hDesign hFull
   exact
     paper_ols_attr_moments_of_lln_fullrank_ae
-      (μexp := μexp) (xiAttr := kappaDesign (κ := μexp) (A := Aω)) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μexp := μexp)
+      (xiAttr := kappaDesign (κ := μexp) (A := Aω))
+      (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
       hLLN hInv
 
@@ -1269,7 +1273,9 @@ theorem theta_tendsto_of_paper_ols_design_ae
             (g := gStar (μexp := μexp) (Y := Y))
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))) :=
     paper_ols_theta0_eq_of_normal_eq
-      (μexp := μexp) (xiAttr := kappaDesign (κ := μexp) (A := Aω)) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (μexp := μexp)
+      (xiAttr := kappaDesign (κ := μexp) (A := Aω))
+      (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) hFull
       (paper_ols_normal_eq_of_wellSpecified
         (μexp := μexp) (Y := Y)

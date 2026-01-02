@@ -191,7 +191,7 @@ lemma attrVar_eq_integral_centered
       _ = (∫ a, (s a) ^ 2 ∂ν - ∫ a, (2 * ηs) * s a ∂ν) + ηs ^ 2 := by
               simp [hconst_int, hsub]
       _ = (∫ a, (s a) ^ 2 ∂ν - 2 * ηs * ∫ a, s a ∂ν) + ηs ^ 2 := by
-              simpa [hmul_int]
+              simp [hmul_int]
       _ = ∫ a, (s a) ^ 2 ∂ν - 2 * ηs * ∫ a, s a ∂ν + ηs ^ 2 := by
               ring
       _ = ∫ a, (s a) ^ 2 ∂ν - ηs ^ 2 := by
@@ -216,11 +216,11 @@ lemma attrSD_eq_l2_centered
   have hvar :
       attrVar ν s = ∫ a, (s a - attrMean ν s) ^ 2 ∂ν :=
     attrVar_eq_integral_centered (ν := ν) (s := s) hs hs2
-  have habs :
-      (∫ a, |s a - attrMean ν s| ^ 2 ∂ν)
-        = ∫ a, (s a - attrMean ν s) ^ 2 ∂ν := by
-    simp [abs_sq]
-  simp [attrSD, hvar, habs]
+  calc
+    attrSD ν s = Real.sqrt (∫ a, (s a - attrMean ν s) ^ 2 ∂ν) := by
+      simp [attrSD, hvar]
+    _ = Real.sqrt (∫ a, |s a - attrMean ν s| ^ 2 ∂ν) := by
+      simp
 
 end L2Centering
 
@@ -305,14 +305,9 @@ lemma sqrt_integral_sq_eq_eLpNorm
     calc
       ENNReal.toReal (eLpNorm s (2 : ENNReal) ν)
           = ENNReal.toReal (ENNReal.ofReal ((∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)))) := by
-              simpa [hnorm]
+              simp [hnorm]
       _ = (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
               exact ENNReal.toReal_ofReal hnonneg
-  have hnorm_abs :
-      (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ))
-        =
-      (∫ a, |s a| ^ 2 ∂ν) ^ (1 / (2 : ℝ)) := by
-    simp [Real.norm_eq_abs]
   have hsqrt :
       Real.sqrt (∫ a, |s a| ^ 2 ∂ν) = (∫ a, |s a| ^ 2 ∂ν) ^ (1 / (2 : ℝ)) := by
     simp [Real.sqrt_eq_rpow]
@@ -320,7 +315,7 @@ lemma sqrt_integral_sq_eq_eLpNorm
     Real.sqrt (∫ a, |s a| ^ 2 ∂ν)
         = (∫ a, |s a| ^ 2 ∂ν) ^ (1 / (2 : ℝ)) := hsqrt
     _ = (∫ a, ‖s a‖ ^ (2 : ℝ) ∂ν) ^ (1 / (2 : ℝ)) := by
-          simpa [hnorm_abs] using rfl
+          simp [Real.norm_eq_abs]
     _ = ENNReal.toReal (eLpNorm s (2 : ENNReal) ν) := by
           symm
           exact htoReal
@@ -490,19 +485,20 @@ theorem attrSD_diff_le_of_L2Approx
         + ENNReal.toReal (eLpNorm (fun _ : Attr => ηs - ηt) (2 : ENNReal) ν) := by
     have hMem : MemLp (fun a => s a - t a) (2 : ENNReal) ν := by
       simpa using hL2.1
-    simpa [ηs, ηt] using (l2_centered_triangle_eLpNorm (ν := ν) (s := s) (t := t) hMem)
+    simpa [ηs, ηt] using
+      (l2_centered_triangle_eLpNorm (ν := ν) (s := s) (t := t) hMem)
   have hconst :
       ENNReal.toReal (eLpNorm (fun _ : Attr => ηs - ηt) (2 : ENNReal) ν) = |ηs - ηt| := by
     have h0 : (2 : ENNReal) ≠ 0 := by norm_num
     have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp
     have hμ : (ν Set.univ) = 1 := by
-      simpa using (measure_univ : ν Set.univ = 1)
+      simp
     have hconst' :=
       eLpNorm_const' (μ := ν) (p := (2 : ENNReal)) (c := ηs - ηt) h0 htop
     calc
       ENNReal.toReal (eLpNorm (fun _ : Attr => ηs - ηt) (2 : ENNReal) ν)
           = ENNReal.toReal (‖ηs - ηt‖ₑ * ν Set.univ ^ (1 / ENNReal.toReal (2 : ENNReal))) := by
-              simpa [hconst']
+              simp [hconst']
       _ = ENNReal.toReal (‖ηs - ηt‖ₑ) := by
               simp [hμ]
       _ = |ηs - ηt| := by

@@ -581,7 +581,8 @@ variable (Y : Profile K V → Ω → ℝ)
 variable (fMain : Main → Profile K V → ℝ) (fInter : Inter → Profile K V → ℝ)
 variable (blk : PaperTerm Main Inter → B)
 
-theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+theorem
+    paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
     (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
@@ -636,7 +637,8 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
                     (gBlock
                       (gB := fun b θ a =>
                         gBlockTerm (blk := blk) (β := θ)
-                          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                          (φ :=
+                            φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                       b)
                     θ0
                     (fun n =>
@@ -650,12 +652,14 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
                   (gBlock
                     (gB := fun b θ a =>
                       gBlockTerm (blk := blk) (β := θ)
-                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                        (φ :=
+                          φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                     b θ0)
                 =
                 attrSD (ν)
                   (gBlockTerm (blk := blk) (β := θ0)
-                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b) := by
+                    (φ :=
+                      φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b) := by
   rcases
       wellSpecified_of_noInteractions_of_fullMainEffects
         (K := K) (V := V) (Term := PaperTerm Main Inter)
@@ -749,7 +753,8 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
       (hPlug := fun b => hPlugBlocks' b)
       (gTrueB := fun b =>
         gBlockTerm (blk := blk) (β := θ0)
-          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b)
+          (φ :=
+            φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b)
       (hTrueB := hTrueB)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
@@ -757,7 +762,8 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
   intro m hm b
   exact hM m hm b
 
-theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+theorem
+    paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
     (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
@@ -812,7 +818,8 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
                   (gTotalΘ
                     (gB := fun b θ a =>
                       gBlockTerm (blk := blk) (β := θ)
-                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+                        (φ :=
+                          φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
                   θ0
                   (fun n =>
                     olsThetaHat
@@ -825,7 +832,8 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
                 (gTotalΘ
                   (gB := fun b θ a =>
                     gBlockTerm (blk := blk) (β := θ)
-                      (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                      (φ :=
+                        φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                   θ0)
               =
               attrSD (ν) gTrue := by
@@ -840,7 +848,8 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
         (g := gTotalΘ
           (gB := fun b θ a =>
             gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+              (φ :=
+                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
         θ0 :=
     functionalContinuity_gTotalΘ_of_bounded
       (Attr := Profile K V) (Main := Main) (Inter := Inter)
@@ -936,10 +945,12 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
         gTotal
             (B := B)
             (g := gBlockTerm (blk := blk) (β := θ0)
-              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
+              (φ :=
+                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
             =
           gLin (β := θ0)
-              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) x := hLinBlocksX
+              (φ :=
+                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) x := hLinBlocksX
         _ =
           gStar (μexp := μexp) (Y := Y) x := by
             simpa [WellSpecified] using hspec x
@@ -949,7 +960,8 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
         gTotal
             (B := B)
             (g := gBlockTerm (blk := blk) (β := θ0)
-              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
+              (φ :=
+                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
           =
         gStar (μexp := μexp) (Y := Y) x := by
       simpa using congrArg (fun f => f x) hBlocks

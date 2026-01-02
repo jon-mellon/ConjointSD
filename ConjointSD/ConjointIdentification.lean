@@ -164,9 +164,14 @@ theorem ae_restrict_consistency
         MeasurableSet ((fun ω : Ω => Yobs ω - Y x0 ω) ⁻¹' ({0} : Set ℝ)) :=
       hsub (measurableSet_singleton (0 : ℝ))
     simpa [hset] using hpre
-  -- Now use `ae_restrict_iff` in the direction: (ae on μexp with implication) -> (ae on μexp.restrict).
-  refine (ae_restrict_iff (μ := μexp) (s := eventX (X := X) x0)
-            (p := fun ω => Yobs ω = Y x0 ω) hpred).2 ?_
+  -- Now use `ae_restrict_iff` in the direction:
+  -- (ae on μexp with implication) -> (ae on μexp.restrict).
+  refine
+    (ae_restrict_iff
+        (μ := μexp)
+        (s := eventX (X := X) x0)
+        (p := fun ω => Yobs ω = Y x0 ω)
+        hpred).2 ?_
   refine ae_of_all _ ?_
   intro ω hω
   -- hω : ω ∈ {ω | X ω = x0}  i.e. X ω = x0

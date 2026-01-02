@@ -268,15 +268,17 @@ theorem status_event_pos
   intro p
   have hset : MeasurableSet ({p} : Set StatusProfile) := measurableSet_singleton p
   have hmap_pre :
-      Measure.map (statusX (Respondent := Respondent)) μexp {p} = μexp (eventX (X := statusX) p) := by
+      Measure.map (statusX (Respondent := Respondent)) μexp {p}
+        =
+      μexp (eventX (X := statusX) p) := by
     have hpre :
         (statusX (Respondent := Respondent)) ⁻¹' {p} = eventX (X := statusX) p := by
       ext ω; simp [eventX]
     calc
       Measure.map (statusX (Respondent := Respondent)) μexp {p}
           = μexp ((statusX (Respondent := Respondent)) ⁻¹' {p}) := by
-              simpa using (Measure.map_apply hXmeas hset)
-      _ = μexp (eventX (X := statusX) p) := by simpa [hpre]
+              exact (Measure.map_apply hXmeas hset)
+      _ = μexp (eventX (X := statusX) p) := by simp [hpre]
   have hmass :
       νStatus {p} = (PMF.uniformOfFintype (α := StatusProfile)) p := by
     simpa [νStatus, hset] using
@@ -292,8 +294,8 @@ theorem status_event_pos
     calc
       μexp (eventX (X := statusX) p)
           = Measure.map (statusX (Respondent := Respondent)) μexp {p} := by
-              simpa using hmap_pre.symm
-      _ = νStatus {p} := by simpa [hlaw]
+              simp [hmap_pre]
+      _ = νStatus {p} := by simp [hlaw]
   have hpos : νStatus {p} ≠ 0 := by
     simpa [hmass] using hsupport
   intro hzero

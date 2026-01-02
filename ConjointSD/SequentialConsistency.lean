@@ -31,7 +31,7 @@ section
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
-variable {Θ : Type*} [TopologicalSpace Θ]
+variable {Θ : Type*}
 
 /-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/
 def sdEst
@@ -160,7 +160,8 @@ theorem trainErr_tendsto_zero
 Step (3): sequential ε–M–eventually-in-n consistency (a.e. over ω).
 
 Assumptions:
-- `hSplit : ∀ m, SplitEvalWeightAssumptionsBounded ... m` gives evaluation-stage conditions for each m.
+- `hSplit : ∀ m, SplitEvalWeightAssumptionsBounded ... m` gives evaluation-stage
+  conditions for each m.
 - `hPlug` gives direct plug-in mean and second-moment convergence under `ν`.
 
 Conclusion:
@@ -173,9 +174,11 @@ theorem sequential_consistency_ae
     (w : Attr → ℝ)
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
-    (hMom : ∀ m, EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-      (w := w) (s := gHat g θhat m))
+      SplitEvalWeightAssumptionsBounded
+        (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
+    (hMom : ∀ m,
+      EvalWeightMatchesPopMoments
+        (ρ := ρ) (A := A) (ν := ν) (w := w) (s := gHat g θhat m))
     (hPlug : PlugInMomentAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,

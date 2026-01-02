@@ -50,6 +50,7 @@ Lean helper pages with plain-language definitions.
 - [Pushforward](jargon_pushforward.md)
 - [Profile](jargon_profile.md)
 - [Random variable](jargon_random_variable.md)
+- [Randomization](jargon_randomization.md)
 - [Regression](jargon_regression.md)
 - [RMSE (root mean square error)](jargon_rmse.md)
 - [Second moment](jargon_second_moment.md)
@@ -57,7 +58,9 @@ Lean helper pages with plain-language definitions.
 - [Standard deviation](jargon_standard_deviation.md)
 - [Term](jargon_term.md)
 - [Theorem](jargon_theorem.md)
+- [Transport (external validity)](jargon_transport.md)
 - [Variance](jargon_variance.md)
+- [Weighting (reweighting)](jargon_weighting.md)
 - [Well-specified](jargon_well_specified.md)
 
 Back to [Lean docs index](lean_index.md).

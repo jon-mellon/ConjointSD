@@ -80,6 +80,7 @@ lemma functionalContinuity_of_eq
           simp [attrM2Θ, hEqθ]
     simpa [hm2] using h.cont_m2
 
+omit [MeasurableSpace Attr] in
 lemma bounded_mul_of_bounded
     {f g : Attr → ℝ}
     (hf : ∃ C, 0 ≤ C ∧ ∀ a, |f a| ≤ C)

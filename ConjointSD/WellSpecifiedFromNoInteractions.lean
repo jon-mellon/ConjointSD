@@ -102,7 +102,7 @@ theorem approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
         - gStar (μexp := μexp) (Y := Y) x|
         =
       |gStar (μexp := μexp) (Y := Y) x - (α0 + ∑ k : K, main k (x k))| := by
-        simpa [hlin, abs_sub_comm]
+        simp [hlin, abs_sub_comm]
     _ ≤ ε := happrox x
 
 end
