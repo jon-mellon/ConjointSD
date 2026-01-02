@@ -78,7 +78,7 @@ theorem totalErr_tendsto_trainErr_fixed_m
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (m : ℕ)
     (h :
-      SplitEvalWeightAssumptions (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
+      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
     (hMom : EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
       (w := w) (s := gHat g θhat m)) :
     ∀ᵐ ω ∂ρ,
@@ -160,7 +160,7 @@ theorem trainErr_tendsto_zero
 Step (3): sequential ε–M–eventually-in-n consistency (a.e. over ω).
 
 Assumptions:
-- `hSplit : ∀ m, SplitEvalWeightAssumptions ... m` gives evaluation-stage conditions for each m.
+- `hSplit : ∀ m, SplitEvalWeightAssumptionsBounded ... m` gives evaluation-stage conditions for each m.
 - `hPlug` gives direct plug-in mean and second-moment convergence under `ν`.
 
 Conclusion:
@@ -173,7 +173,7 @@ theorem sequential_consistency_ae
     (w : Attr → ℝ)
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m,
-      SplitEvalWeightAssumptions (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
+      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
     (hMom : ∀ m, EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
       (w := w) (s := gHat g θhat m))
     (hPlug : PlugInMomentAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))

@@ -228,6 +228,15 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Intuition: the reweighting scheme has nonzero mass overall (no degenerate weighting
     that discards essentially all evaluation observations).
     Formal: `designMeanZ` for the evaluation law `ρ` is nonzero.
+- `SplitEvalWeightAssumptionsBounded`: boundedness-based weighted evaluation assumptions.
+  This replaces score/integrability conditions with explicit bounds on the estimated score
+  and on the weights, and then derives the needed moment conditions.
+  - `SplitEvalWeightAssumptionsBounded.hIID`: i.i.d. assumptions for the evaluation draws.
+  - `SplitEvalWeightAssumptionsBounded.hMeasG` / `hBoundG`: measurability and boundedness of
+    `gHat g θhat m`.
+  - `SplitEvalWeightAssumptionsBounded.hMeasW` / `hBoundW`: measurability and boundedness of
+    the weights `w`.
+  - `SplitEvalWeightAssumptionsBounded.hW0`: the weight mean is nonzero.
 - `SplitEvalWeightAssumptionsNoIID`: the weighted evaluation assumptions without the IID
   component, used when IID is derived elsewhere (e.g. from randomized assignment).
   It packages the same score/weight moment conditions as `SplitEvalWeightAssumptions`,

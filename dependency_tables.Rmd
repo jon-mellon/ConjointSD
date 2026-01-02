@@ -73,6 +73,9 @@ structure_lines <- lines_all[grepl("^structure ConjointSD\\.", lines_all)]
 structures <- unique(sub("^structure ConjointSD\\.([^.{ ]+).*$", "\\1", structure_lines))
 structures <- structures[structures != ""]
 
+# Drop structure names that appear as theorem prefixes (e.g. ScoreAssumptions.int_g0).
+theorems <- setdiff(theorems, structures)
+
 # Definitions printed from Scratch.lean (for non-structure assumptions).
 def_lines <- lines_all[grepl("^def ConjointSD\\.", lines_all)]
 defs <- unique(sub("^def ConjointSD\\.([^.{ ]+).*$", "\\1", def_lines))

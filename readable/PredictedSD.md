@@ -12,4 +12,4 @@ Definitions:
 - `measurable_sq` provides a reusable measurability lemma for the squaring map on ℝ.
 
 Main results:
-- LLN-based SD consistency is handled in `SDDecompositionFromConjoint.lean`, where IID comes from `DesignAttrIID` (often derived from `ConjointRandomizationStream`) alongside `ScoreAssumptions`.
+- LLN-based SD consistency is handled in `SDDecompositionFromConjoint.lean`, where IID comes from `DesignAttrIID` (often derived from `ConjointRandomizationStream`) alongside boundedness/measurability of the score functions.

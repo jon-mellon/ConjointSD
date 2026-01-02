@@ -14,7 +14,7 @@ Section 2: model to [blocks](jargon_block.md)
 Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md)
 - Provides paper-facing statements that block [standard deviations](jargon_standard_deviation.md) and total standard deviation are sequentially [consistent](jargon_consistency.md) (see [sequential consistency](jargon_sequential_consistency.md) and [consistency](jargon_consistency.md)).
 - Provides generic wrappers that accept `PlugInMomentAssumptions` as an input, but the end-to-end OLS wrappers now **derive** those plug‑in moment assumptions from OLS coefficient convergence plus functional continuity under `ν` (no parallel route).
-- Includes bounded variants, now explicitly requiring `EvalAttrIID` for evaluation draws rather than the design-side IID bundle.
+- The main end-to-end chain now assumes boundedness for the evaluation score/weights and derives the needed score-level integrability from those bounds (rather than assuming `ScoreAssumptions` directly).
 - Adds total-score wrappers that take explicit plug‑in moment convergence bundles (used by the generic results).
 - Adds [OLS](jargon_ols.md)-based wrappers that use the paper OLS assumptions to derive `θhat → θ0`, then derive plug‑in moment convergence under `ν` from bounded/measurable paper features.
 - Adds randomization-based sequential-consistency wrappers that derive IID for the evaluation draws from a randomization stream (via `SplitEvalWeightAssumptionsNoIID`) instead of assuming it directly. The end‑to‑end paper OLS wrappers now use the direct IID evaluation bundle (`SplitEvalWeightAssumptions`) rather than the randomized evaluation stream.

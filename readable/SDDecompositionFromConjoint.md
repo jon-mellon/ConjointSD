@@ -7,14 +7,14 @@ This file connects a sequence of attribute draws to [standard deviation](jargon_
 Key definitions:
 - `DesignAttrIID` packages IID assumptions for the attribute process `A` (see [iid](jargon_iid.md)).
 - `Zcomp` composes attributes with a score function: `Z i = g (A i)`.
-- `ScoreAssumptions` adds [measurability](jargon_measurable.md) and a second-moment condition for `g`; [integrability](jargon_integrable.md) of `g(A 0)` is derived under a probability measure.
+- `ScoreAssumptions` still packages [measurability](jargon_measurable.md) and a second-moment condition, but the LLN lemmas in this file now take measurability + boundedness and derive those moments internally.
 
 Main results:
 - If `g` is bounded, then the second-moment and [integrable](jargon_integrable.md) conditions hold automatically.
-- `meanHatZ_tendsto_ae_of_score`, `m2HatZ_tendsto_ae_of_score`, and `sdHatZ_tendsto_ae_of_score` apply the [LLN](jargon_lln.md) to score processes from `DesignAttrIID` plus `ScoreAssumptions`.
-- `meanHatZW_tendsto_ae_of_score`, `m2HatZW_tendsto_ae_of_score`, and `sdHatZW_tendsto_ae_of_score` provide weighted analogues for evaluation weights.
+- `meanHatZ_tendsto_ae_of_score`, `m2HatZ_tendsto_ae_of_score`, and `sdHatZ_tendsto_ae_of_score` apply the [LLN](jargon_lln.md) to score processes from `DesignAttrIID` plus boundedness/measurability.
+- `meanHatZW_tendsto_ae_of_score`, `m2HatZW_tendsto_ae_of_score`, and `sdHatZW_tendsto_ae_of_score` provide weighted analogues using bounded scores and weights.
 - `sd_component_consistent` proves the empirical [standard deviation](jargon_standard_deviation.md) of `g(A i)` [converges](jargon_convergence.md) to the target attribute-distribution [SD](jargon_standard_deviation.md).
-- `sd_component_consistent_of_bounded` is a convenient bounded version.
+- `sd_component_consistent_of_bounded` is a convenient wrapper with the same boundedness inputs.
 
 Block version:
 - `DecompAssumptions` bundles boundedness and [measurability](jargon_measurable.md) for all [blocks](jargon_block.md).

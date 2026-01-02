@@ -43,8 +43,6 @@ import ConjointSD
 -- Decomposition sequential consistency.
 #print ConjointSD.sequential_consistency_blocks_ae
 #print ConjointSD.sequential_consistency_total_ae
-#print ConjointSD.sequential_consistency_blocks_ae_of_bounded
-#print ConjointSD.sequential_consistency_total_ae_of_bounded
 
 -- Identification.
 #print ConjointSD.condMean_eq_potMean_of_rand
@@ -86,10 +84,8 @@ import ConjointSD
 #print ConjointSD.paper_gStar_eq_sum_blocks_of_WellSpecified
 #print ConjointSD.paper_sd_blocks_sequential_consistency_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_ae_of_randomization
-#print ConjointSD.paper_sd_blocks_sequential_consistency_ae_of_bounded
 #print ConjointSD.paper_sd_total_sequential_consistency_ae
 #print ConjointSD.paper_sd_total_sequential_consistency_ae_of_randomization
-#print ConjointSD.paper_sd_total_sequential_consistency_ae_of_bounded
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae_of_randomization
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae
@@ -106,8 +102,6 @@ import ConjointSD
 
 
 -- Auto-generated DAG coverage: all ConjointSD theorems.
-#print ConjointSD.attrM2_tendsto_of_paper_ols_design_ae
-#print ConjointSD.attrMean_tendsto_of_paper_ols_design_ae
 #print ConjointSD.attrVar_tendsto_of_mean_m2_tendsto
 #print ConjointSD.derive_m2_tendsto
 #print ConjointSD.derive_m2_tendsto_blocks
@@ -115,12 +109,8 @@ import ConjointSD
 #print ConjointSD.derive_mean_tendsto_blocks
 #print ConjointSD.designMeanZ_Zcomp_eq_attrMean
 #print ConjointSD.functionalContinuity_gPaper_of_bounded
-#print ConjointSD.functionalContinuity_gTotal
 #print ConjointSD.gLin_eq_additive
-#print ConjointSD.gPaper_eq_gTotal
 #print ConjointSD.gTotal
-#print ConjointSD.int1
-#print ConjointSD.int_g0
 #print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae
 #print ConjointSD.paper_ols_lln_of_design_ae
 #print ConjointSD.paper_ols_lln_of_score_assumptions_ae

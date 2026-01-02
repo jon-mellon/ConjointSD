@@ -660,20 +660,24 @@ theorem paper_ols_lln_of_score_assumptions_ae
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
     (hIID : DesignAttrIID (κ := μexp) Aω)
-    (hScoreGram :
+    (hMeasGram :
       ∀ i j,
-        ScoreAssumptions
-          (κ := μexp) (A := Aω)
-          (g := fun a =>
-            (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
-              * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)))
-    (hScoreCross :
+        Measurable (fun a =>
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)))
+    (hBoundGram :
+      ∀ i j, ∃ C, 0 ≤ C ∧ ∀ a,
+        |(φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)| ≤ C)
+    (hMeasCross :
       ∀ i,
-        ScoreAssumptions
-          (κ := μexp) (A := Aω)
-          (g := fun a =>
-            (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
-              * gStar (μexp := μexp) (Y := Y) a)) :
+        Measurable (fun a =>
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * gStar (μexp := μexp) (Y := Y) a))
+    (hBoundCross :
+      ∀ i, ∃ C, 0 ≤ C ∧ ∀ a,
+        |(φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * gStar (μexp := μexp) (Y := Y) a| ≤ C) :
     ∀ᵐ ω ∂μexp,
       (∀ i j,
         Tendsto
@@ -727,7 +731,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
             atTop
             (nhds (designMeanZ (κ := μexp) (Z := Zcomp (A := Aω) (g := gGram)))) :=
       meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := Aω) (g := gGram) hIID (hScoreGram i j)
+        (μexp := μexp) (A := Aω) (g := gGram) hIID (hMeasGram i j) (hBoundGram i j)
     have hpop :
         designMeanZ (κ := μexp) (Z := Zcomp (A := Aω) (g := gGram))
           =
@@ -735,7 +739,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
       designMeanZ_Zcomp_eq_attrMean
         (κ := μexp) (A := Aω) (g := gGram)
         (hA0 := hIID.measA 0)
-        (hg := (hScoreGram i j).meas_g)
+        (hg := hMeasGram i j)
     refine hmean.mono ?_
     intro ω hω
     have hω' :
@@ -789,7 +793,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
             atTop
             (nhds (designMeanZ (κ := μexp) (Z := Zcomp (A := Aω) (g := gCross)))) :=
       meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := Aω) (g := gCross) hIID (hScoreCross i)
+        (μexp := μexp) (A := Aω) (g := gCross) hIID (hMeasCross i) (hBoundCross i)
     have hnoise :
         ∀ᵐ ω ∂μexp,
           Tendsto
@@ -809,7 +813,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
       designMeanZ_Zcomp_eq_attrMean
         (κ := μexp) (A := Aω) (g := gCross)
         (hA0 := hIID.measA 0)
-        (hg := (hScoreCross i).meas_g)
+        (hg := hMeasCross i)
     refine (hmean.and hnoise).mono ?_
     intro ω hω
     rcases hω with ⟨hω, hωnoise⟩
@@ -950,34 +954,51 @@ theorem paper_ols_lln_of_design_ae
         ∀ a, |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a| ≤ C :=
     bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
       hDesign.bound_fMain hDesign.bound_fInter
-  have hScoreGram :
+  have hMeasGram :
       ∀ i j,
-        ScoreAssumptions
-          (κ := μexp) (A := Aω)
-          (g := fun a =>
-            (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
-              * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)) :=
-    fun i j =>
-      scoreAssumptions_gram_of_design
-        (μexp := μexp) (Aω := Aω) (fMain := fMain) (fInter := fInter)
-        hPop hmeasφ hboundφ i j
-  have hScoreCross :
+        Measurable (fun a =>
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)) :=
+    fun i j => (hmeasφ i).mul (hmeasφ j)
+  have hBoundGram :
+      ∀ i j, ∃ C, 0 ≤ C ∧ ∀ a,
+        |(φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)| ≤ C := by
+    intro i j
+    obtain ⟨Ci, hCi0, hCi⟩ := hboundφ i
+    obtain ⟨Cj, hCj0, hCj⟩ := hboundφ j
+    refine ⟨Ci * Cj, mul_nonneg hCi0 hCj0, ?_⟩
+    intro a
+    have hmul : |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a|
+        * |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a| ≤ Ci * Cj :=
+      mul_le_mul (hCi a) (hCj a) (abs_nonneg _) hCi0
+    simpa [abs_mul] using hmul
+  have hMeasCross :
       ∀ i,
-        ScoreAssumptions
-          (κ := μexp) (A := Aω)
-          (g := fun a =>
-            (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
-              * gStar (μexp := μexp) (Y := Y) a) :=
-    fun i =>
-      scoreAssumptions_cross_of_design
-        (μexp := μexp) (Aω := Aω) (Y := Y) (fMain := fMain) (fInter := fInter)
-        hPop hmeasφ hboundφ hDesign.meas_gStar hDesign.bound_gStar i
+        Measurable (fun a =>
+          (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * gStar (μexp := μexp) (Y := Y) a) :=
+    fun i => (hmeasφ i).mul hDesign.meas_gStar
+  have hBoundCross :
+      ∀ i, ∃ C, 0 ≤ C ∧ ∀ a,
+        |(φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
+            * gStar (μexp := μexp) (Y := Y) a| ≤ C := by
+    intro i
+    obtain ⟨Ci, hCi0, hCi⟩ := hboundφ i
+    obtain ⟨Cg, hCg0, hCg⟩ := hDesign.bound_gStar
+    refine ⟨Ci * Cg, mul_nonneg hCi0 hCg0, ?_⟩
+    intro a
+    have hmul : |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a|
+        * |gStar (μexp := μexp) (Y := Y) a| ≤ Ci * Cg :=
+      mul_le_mul (hCi a) (hCg a) (abs_nonneg _) hCi0
+    simpa [abs_mul] using hmul
   have hLLN :=
     paper_ols_lln_of_score_assumptions_ae
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
       (Aω := Aω) (Yobsω := Yobsω)
       (hNoise := hDesign.obs_noise) (hIID := hPop)
-      (hScoreGram := hScoreGram) (hScoreCross := hScoreCross)
+      (hMeasGram := hMeasGram) (hBoundGram := hBoundGram)
+      (hMeasCross := hMeasCross) (hBoundCross := hBoundCross)
   refine hLLN.mono ?_
   intro ω hω
   rcases hω with ⟨hgram, hcross⟩

@@ -202,6 +202,22 @@ structure SplitEvalAssumptionsBounded
   hMeas : Measurable (gHat g θhat m)
   hBound : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
 
+/--
+Weighted-evaluation assumptions under boundedness, for a fixed training index `m`.
+These let us derive score-level integrability assumptions for `gHat`, `w`, and
+their weighted combinations.
+-/
+structure SplitEvalWeightAssumptionsBounded
+    (ρ : Measure Ω) (A : ℕ → Ω → Attr)
+    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ) : Prop where
+  hIID : EvalAttrIID (κ := ρ) A
+  hMeasG : Measurable (gHat g θhat m)
+  hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
+  hMeasW : Measurable w
+  hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C
+  hW0 : designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
+
 end SampleSplitting
 
 section RegressionConsistencyBridge

@@ -91,20 +91,18 @@ Subassumptions:
 **Intuition**: after reweighting, the evaluation sample is representative of the target
 population for the block scores.
 
-### 8) Weighted evaluation score/weight conditions (with IID)
-**Assumption**: `SplitEvalWeightAssumptions` (for every block score and every `m`).
+### 8) Weighted evaluation boundedness (with IID)
+**Assumption**: `SplitEvalWeightAssumptionsBounded` (for every block score and every `m`).
 
 **Meaning**:
 Subassumptions:
 - `hIID`: `EvalAttrIID` for the evaluation draws.
-- `hScore`: score assumptions for `gHat g θhat m`.
-- `hWeight`: score assumptions for weights `w`.
-- `hWeightScore`: score assumptions for `w * gHat`.
-- `hWeightScoreSq`: score assumptions for `w * (gHat)^2`.
+- `hMeasG` / `hBoundG`: measurability and boundedness of `gHat g θhat m`.
+- `hMeasW` / `hBoundW`: measurability and boundedness of the weights `w`.
 - `hW0`: nonzero weight mean (`designMeanZ ≠ 0`).
 
-**Intuition**: the weighted evaluation process has enough integrability and stability to
-apply weighted LLNs, and IID is assumed directly for the evaluation draws.
+**Intuition**: boundedness of the score and weights lets us derive the score‑level
+integrability conditions needed for the weighted LLNs, while IID is assumed directly.
 
 ### 9) External validity (transport)
 **Assumption**: `InvarianceAE`.
@@ -180,7 +178,7 @@ Formally:
 
 We combine:
 - `EvalWeightMatchesPopMoments` for each block score and each `m`,
-- `SplitEvalWeightAssumptions` for each block score and each `m`.
+- `SplitEvalWeightAssumptionsBounded` for each block score and each `m`.
 
 This yields block‑level sequential consistency of the weighted SD estimator.
 

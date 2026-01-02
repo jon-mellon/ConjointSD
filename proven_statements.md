@@ -38,13 +38,11 @@ empirical [standard deviation](readable/jargon_standard_deviation.md) of
 `g(A i)` [converges](readable/jargon_convergence.md) to the
 [standard deviation](readable/jargon_standard_deviation.md) under the target
 [distribution](readable/jargon_distribution.md) for the
-[population](readable/jargon_population.md) when the score process satisfies
-[ScoreAssumptions](readable/Assumptions.md).
+[population](readable/jargon_population.md) when `g` is measurable and bounded.
 
-Intuition: Once you view each `g(A i)` as a real-valued i.i.d. sequence, the
-standard [standard deviation](readable/jargon_standard_deviation.md)
-[consistency](readable/jargon_consistency.md) result applies to the induced
-score process.
+Intuition: Once you view each `g(A i)` as a real-valued i.i.d. sequence, boundedness
+gives the required moments and the standard [standard deviation](readable/jargon_standard_deviation.md)
+[consistency](readable/jargon_consistency.md) result applies.
 
 Formalization (Lean name): `sd component consistent`
 
@@ -123,9 +121,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under randomized assignment, OLS design assumptions, and no-interactions/full-main-effects identification, the block components of the paper score have sequentially consistent SD estimates that target the true block scores derived from the model fit. IID is assumed for the evaluation draws, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
+Statement: Under randomized assignment, OLS design assumptions, and no-interactions/full-main-effects identification, the block components of the paper score have sequentially consistent SD estimates that target the true block scores derived from the model fit. IID and boundedness of the evaluation score/weights are assumed, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
 
-Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; together with IID and weighted moment matching, this gives sequential consistency for each block score.
+Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; boundedness of the evaluation score/weights supplies the needed moment conditions for weighted LLNs, giving sequential consistency for each block score.
 
 Formalization (Lean name): `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 
