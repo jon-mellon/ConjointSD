@@ -3,7 +3,7 @@
 Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 
 - Theorems in chain: 38
-- Theorems not in chain: 52
+- Theorems not in chain: 51
 - Assumptions required: 30
 - Assumptions not required: 16
 - Theorems not used by any other theorem: 24
@@ -98,7 +98,6 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - derive_mean_tendsto
 - derive_mean_tendsto_blocks
 - functionalContinuity_gPaper_of_bounded
-- gLin_eq_additive
 - sd_block_consistent
 - status_event_pos
 - status_id_randomized

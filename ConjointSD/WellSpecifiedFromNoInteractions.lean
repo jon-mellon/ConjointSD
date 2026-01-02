@@ -48,18 +48,6 @@ def φMain (main : ∀ k : K, V k → ℝ) : Term K → Profile K V → ℝ
   | none    => fun _ => 1
   | some k  => fun x => main k (x k)
 
-/-- The resulting `gLin` is exactly `α0 + ∑ k, main k (x k)`. -/
-  theorem gLin_eq_additive
-      (α0 : ℝ) (main : ∀ k : K, V k → ℝ) (x : Profile K V) :
-      gLin (Attr := Profile K V) (Term := Term K)
-          (β := βMain (K := K) α0)
-          (φ := φMain (K := K) (V := V) main) x
-        =
-      α0 + ∑ k : K, main k (x k) := by
-    classical
-    -- Split the `Option K` sum into the `none` term plus the `some k` terms.
-    simp [gLin, βMain, φMain, Fintype.sum_option]
-
 /-!
 ## Main bridge theorem: NoInteractions ⟹ WellSpecified
 -/

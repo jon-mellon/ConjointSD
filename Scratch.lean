@@ -93,7 +93,6 @@ import ConjointSD
 -- Auto-generated DAG coverage: all ConjointSD theorems.
 #print ConjointSD.attrVar_tendsto_of_mean_m2_tendsto
 #print ConjointSD.designMeanZ_Zcomp_eq_attrMean
-#print ConjointSD.gLin_eq_additive
 #print ConjointSD.gTotal
 #print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae
 #print ConjointSD.paper_ols_lln_of_design_ae
