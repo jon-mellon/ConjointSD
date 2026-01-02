@@ -3,10 +3,10 @@
 Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 
 - Theorems in chain: 38
-- Theorems not in chain: 54
+- Theorems not in chain: 52
 - Assumptions required: 30
 - Assumptions not required: 16
-- Theorems not used by any other theorem: 26
+- Theorems not used by any other theorem: 24
 
 ## Assumptions required
 
@@ -63,7 +63,6 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 ## Theorems not in chain
 
 - functionalContinuity_gTotalΘ_of_bounded
-- sdHatZ_tendsto_ae_of_score
 - sequential_consistency_total_ae
 - sequential_consistency_blocks_ae_of_bounded
 - sequential_consistency_total_ae_of_bounded
@@ -80,13 +79,11 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - attrVar_diff_le_of_approx_ae
 - attrSD_diff_le_of_approx_ae
 - gLin_eq_gTotal_blocks
-- gStar_eq_sum_blocks_of_WellSpecified
 - gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
 - approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 - paper_identifies_potMean_from_condMean
 - paper_identifies_amce_from_condMeans
 - paper_identifies_potMean_from_condMean_status
-- paper_gStar_eq_sum_blocks_of_WellSpecified
 - paper_sd_blocks_sequential_consistency_ae_of_bounded
 - paper_sd_total_sequential_consistency_ae
 - paper_sd_total_sequential_consistency_ae_of_bounded
@@ -113,7 +110,6 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 - paper_identifies_amce_from_condMeans
 - paper_identifies_potMean_from_condMean_status
-- paper_gStar_eq_sum_blocks_of_WellSpecified
 - paper_sd_blocks_sequential_consistency_ae_of_bounded
 - paper_sd_total_sequential_consistency_ae_of_bounded
 - paper_sd_blocks_sequential_consistency_to_approx_target_ae

@@ -28,7 +28,6 @@ import ConjointSD
 #print ConjointSD.DesignAttrIID.of_randomization_stream
 -- Core SD and decomposition.
 #print ConjointSD.meanHatZ_tendsto_ae_of_score
-#print ConjointSD.sdHatZ_tendsto_ae_of_score
 #print ConjointSD.sdHatZW_tendsto_ae_of_score
 
 -- Sample splitting (evaluation stage).

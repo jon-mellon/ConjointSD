@@ -208,28 +208,6 @@ lemma varHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     hm2ω.sub hmean2
   simpa [varHatZ, designVarZ] using this
 
-theorem sdHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
-    (hMeas : Measurable g)
-    (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
-    ∀ᵐ ω ∂μexp,
-      Tendsto
-        (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
-        atTop
-        (nhds (designSDZ (κ := μexp) (Zcomp (A := A) (g := g)))) := by
-  have hvar :=
-    varHatZ_tendsto_ae_of_score
-      (μexp := μexp) (A := A) (g := g) hIID hMeas hBound
-  refine hvar.mono ?_
-  intro ω hω
-  have hsqrt :
-      Tendsto Real.sqrt
-        (nhds (designVarZ (κ := μexp) (Z := Zcomp (A := A) (g := g))))
-        (nhds (Real.sqrt (designVarZ (κ := μexp) (Z := Zcomp (A := A) (g := g))))) :=
-    (Real.continuous_sqrt.continuousAt).tendsto
-  simpa [sdHatZ, designSDZ] using (hsqrt.comp hω)
-
 lemma meanHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)

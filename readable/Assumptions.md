@@ -170,7 +170,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   `DesignAttrIID` (design) or `EvalAttrIID` (evaluation), and are typically
   derived from `ConjointRandomizationStream` on the design side.
   The score-based [standard deviation](jargon_standard_deviation.md) [LLN](jargon_lln.md)
-  lemmas (e.g., `sdHatZ_tendsto_ae_of_score`) require both `DesignAttrIID` and
+  lemmas (e.g., `m2HatZ_tendsto_ae_of_score`) require both `DesignAttrIID` and
   `ScoreAssumptions`.
   - `ScoreAssumptions.meas_g`: the score `g` is measurable, so `g(A i)` is
     measurable when composed with each `A i`. Intuition: the score must be a

@@ -9,7 +9,7 @@ Section 1: identification
 - Adds status-conjoint identification wrappers and derives positivity from the single-shot design before applying the generic identification results.
 
 Section 2: model to [blocks](jargon_block.md)
-- Wraps the result that a [well-specified](jargon_well_specified.md) linear model implies the causal score equals the sum of block scores (see [linear model](jargon_linear_model.md) and [block](jargon_block.md)).
+- Uses the block decomposition bridge from `ConjointSD/ModelBridge.lean` inside the end-to-end wrappers (see [linear model](jargon_linear_model.md) and [block](jargon_block.md)).
 
 Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md)
 - Provides paper-facing statements that block [standard deviations](jargon_standard_deviation.md) and total standard deviation are sequentially [consistent](jargon_consistency.md) (see [sequential consistency](jargon_sequential_consistency.md) and [consistency](jargon_consistency.md)).
