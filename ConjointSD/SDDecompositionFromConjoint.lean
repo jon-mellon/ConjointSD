@@ -28,36 +28,6 @@ lemma integrable_of_bounded
   have hC' := hC ω
   simpa [Real.norm_eq_abs] using hC'
 
-lemma scoreAssumptions_of_bounded
-    [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hPop : DesignAttrIID (κ := μexp) A)
-    (hMeas : Measurable g)
-    (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
-    ScoreAssumptions (κ := μexp) A g := by
-  obtain ⟨C, hC0, hC⟩ := hBound
-  have hmeasA0 : Measurable (A 0) := hPop.measA 0
-  have hmeas_gA0 : Measurable (fun ω => g (A 0 ω)) := hMeas.comp hmeasA0
-  have hbound_gA0 : ∃ C, 0 ≤ C ∧ ∀ ω, |g (A 0 ω)| ≤ C := by
-    refine ⟨C, hC0, ?_⟩
-    intro ω
-    exact hC (A 0 ω)
-  have hint_gA0 : Integrable (fun ω => g (A 0 ω)) μexp :=
-    integrable_of_bounded (μexp := μexp) hmeas_gA0 hbound_gA0
-  have hmeas_sq : Measurable (fun ω => (g (A 0 ω)) ^ 2) := by
-    simpa [pow_two] using (hmeas_gA0.mul hmeas_gA0)
-  have hbound_sq : ∃ C2, 0 ≤ C2 ∧ ∀ ω, |(g (A 0 ω)) ^ 2| ≤ C2 := by
-    refine ⟨C ^ 2, ?_, ?_⟩
-    · nlinarith
-    · intro ω
-      have hCω : |g (A 0 ω)| ≤ C := hC (A 0 ω)
-      have hmul : |g (A 0 ω)| * |g (A 0 ω)| ≤ C * C :=
-        mul_le_mul hCω hCω (abs_nonneg _) hC0
-      simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul
-  have hint_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) μexp :=
-    integrable_of_bounded (μexp := μexp) hmeas_sq hbound_sq
-  exact ⟨hMeas, hint_sq⟩
-
 lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)

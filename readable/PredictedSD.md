@@ -9,7 +9,6 @@ Definitions:
 - `meanHatZW`, `m2HatZW`, `varHatZW`, `sdHatZW` are weighted empirical analogues that use a weight stream `W i` (e.g., evaluation weights based on attributes).
 - `designMeanZ`, `designM2Z`, `designVarZ`, `designSDZ`, `designRMSEZ` are the corresponding experimental-design quantities, with `designSDZ` being the design-distribution [standard deviation](jargon_standard_deviation.md).
 - `designMeanZW`, `designM2ZW`, `designVarZW`, `designSDZW` are the weighted design-distribution quantities, defined as ratios of weighted integrals.
-- `measurable_sq` provides a reusable measurability lemma for the squaring map on ℝ.
 
 Main results:
 - LLN-based SD consistency is handled in `SDDecompositionFromConjoint.lean`, where IID comes from `DesignAttrIID` (often derived from `ConjointRandomizationStream`) alongside boundedness/measurability of the score functions.
