@@ -21,6 +21,20 @@ reuse and extend the wording from `readable/Assumptions.md`.
 **Intuition**: the experimental assignment is genuinely randomized, which supplies IID‑style
 structure for the training design and supports identification of the model.
 
+**Formal statement (Lean)**:
+```lean
+structure ConjointRandomizationStream
+    [MeasurableSpace Attr] (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) : Prop where
+  exists_randomization :
+    ∃ (R : Type 0) (_ : MeasurableSpace R) (U : ℕ → Ω → R) (f : R → Attr),
+      (∀ i, Measurable (U i)) ∧
+      Measurable f ∧
+      (∀ i, A i = fun ω => f (U i ω)) ∧
+      Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧
+      (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
+      ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
+```
+
 ### 2) IID evaluation stream
 **Assumption**: `EvalAttrIID` for `Aeval` (packaged inside `SplitEvalWeightAssumptions`).
 
@@ -31,6 +45,14 @@ structure for the training design and supports identification of the model.
 
 **Intuition**: the evaluation sample is a random sample of people/profiles, so IID is an
 assumption about the sampling process, not about experimental randomization.
+
+**Formal statement (Lean)**:
+```lean
+structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
+  measA : ∀ i, Measurable (A i)
+  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
+  identA : ∀ i, IdentDistrib (A i) (A 0) κ κ
+```
 
 ### 3) Paper OLS design bundle
 **Assumption**: `PaperOLSDesignAssumptions`.
@@ -45,6 +67,47 @@ Subassumptions:
 **Intuition**: the paper’s feature map and the true score are stable and bounded, so the
 normal‑equation and LLN arguments are legitimate.
 
+**Formal statement (Lean)**:
+```lean
+structure ObservationNoiseAssumptions
+    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    {Term : Type*}
+    (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
+    (φ : Term → Attr → ℝ) : Prop where
+  condMean_zero :
+    ∀ i a,
+      condMean (κ := μexp)
+          (fun ω => Yobs i ω - gStar (μexp := μexp) (Y := Y) (A i ω))
+          (eventX (X := A i) a)
+        = 0
+  noise_lln :
+    ∀ i,
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n : ℕ =>
+            ((n : ℝ)⁻¹) *
+              ∑ k ∈ Finset.range n,
+                φ i (A k ω)
+                  * (Yobs k ω - gStar (μexp := μexp) (Y := Y) (A k ω)))
+          atTop
+          (nhds 0)
+
+structure PaperOLSDesignAssumptions
+    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+  obs_noise :
+    ObservationNoiseAssumptions
+      (μexp := μexp) (A := A) (Y := Y) (Yobs := Yobs)
+      (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+  meas_fMain : ∀ m, Measurable (fMain m)
+  meas_fInter : ∀ i, Measurable (fInter i)
+  bound_fMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C
+  bound_fInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C
+  meas_gStar : Measurable (gStar (μexp := μexp) (Y := Y))
+  bound_gStar : ∃ C, 0 ≤ C ∧ ∀ a, |gStar (μexp := μexp) (Y := Y) a| ≤ C
+```
+
 ### 4) Full‑rank design
 **Assumption**: `PaperOLSFullRankAssumptions`.
 
@@ -54,6 +117,18 @@ Subassumption:
 - `gram_isUnit`: the Gram matrix is a unit (invertible).
 
 **Intuition**: the regression is identifiable (no collinearity under the design distribution).
+
+**Formal statement (Lean)**:
+```lean
+structure PaperOLSFullRankAssumptions
+    (xiAttr : Measure Attr)
+    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+  gram_isUnit :
+    IsUnit
+      (attrGram
+        (xiAttr := xiAttr)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
+```
 
 ### 5) Full main‑effects basis
 **Assumption**: `FullMainEffectsTerms`.
@@ -66,6 +141,18 @@ Subassumptions (as encoded by `FullMainEffectsTerms`):
 
 **Intuition**: if the world is additive, the model class is expressive enough to match it.
 
+**Formal statement (Lean)**:
+```lean
+def FullMainEffectsTerms
+    (φ : Term → Profile K V → ℝ) : Prop :=
+  ∀ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
+    ∃ β : Term → ℝ,
+      ∀ x : Profile K V,
+        gLin (Attr := Profile K V) (Term := Term) (β := β) (φ := φ) x
+          =
+        α0 + ∑ k : K, main k (x k)
+```
+
 ### 6) No interactions
 **Assumption**: `NoInteractions`.
 
@@ -76,6 +163,14 @@ Subassumptions (as encoded by `NoInteractions`):
 - the causal score can be written as a sum of main‑effect contributions only.
 
 **Intuition**: there are no interaction terms in the true status‑assigning function.
+
+**Formal statement (Lean)**:
+```lean
+def NoInteractions
+    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
+  ∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
+    ∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)
+```
 
 ### 7) Weighted evaluation moments
 **Assumption**: `EvalWeightMatchesPopMoments` (for every block score and every `m`).
@@ -91,6 +186,25 @@ Subassumptions:
 **Intuition**: after reweighting, the evaluation sample is representative of the target
 population for the block scores.
 
+**Formal statement (Lean)**:
+```lean
+structure EvalWeightMatchesPopMoments
+    {Ω : Type*} [MeasurableSpace Ω]
+    (ρ : Measure Ω) (A : ℕ → Ω → Attr)
+    (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+  measA0 : Measurable (A 0)
+  mean_eq :
+    (∫ a, w a * s a ∂kappaDesign (κ := ρ) (A := A)) /
+      (∫ a, w a ∂kappaDesign (κ := ρ) (A := A))
+      =
+    attrMean ν s
+  m2_eq :
+    (∫ a, w a * (s a) ^ 2 ∂kappaDesign (κ := ρ) (A := A)) /
+      (∫ a, w a ∂kappaDesign (κ := ρ) (A := A))
+      =
+    attrM2 ν s
+```
+
 ### 8) Weighted evaluation boundedness (with IID)
 **Assumption**: `SplitEvalWeightAssumptionsBounded` (for every block score and every `m`).
 
@@ -104,6 +218,20 @@ Subassumptions:
 **Intuition**: boundedness of the score and weights lets us derive the score‑level
 integrability conditions needed for the weighted LLNs, while IID is assumed directly.
 
+**Formal statement (Lean)**:
+```lean
+structure SplitEvalWeightAssumptionsBounded
+    (ρ : Measure Ω) (A : ℕ → Ω → Attr)
+    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ) : Prop where
+  hIID : EvalAttrIID (κ := ρ) A
+  hMeasG : Measurable (gHat g θhat m)
+  hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
+  hMeasW : Measurable w
+  hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C
+  hW0 : designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
+```
+
 ### 9) External validity (transport)
 **Assumption**: `InvarianceAE`.
 
@@ -112,6 +240,12 @@ integrability conditions needed for the weighted LLNs, while IID is assumed dire
 
 **Intuition**: the experimental score function transports to the population support.
 
+**Formal statement (Lean)**:
+```lean
+def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
+  ∀ᵐ x ∂ν, gExp x = gPop x
+```
+
 ### 10) Epsilon positivity
 **Assumption**: `EpsilonAssumptions`.
 
@@ -119,6 +253,12 @@ integrability conditions needed for the weighted LLNs, while IID is assumed dire
 - `EpsilonAssumptions.pos`: `0 < ε`.
 
 **Intuition**: standard technical positivity for convergence bounds.
+
+**Formal statement (Lean)**:
+```lean
+structure EpsilonAssumptions (ε : ℝ) : Prop where
+  pos : 0 < ε
+```
 
 ## 1) Start with randomized assignment
 
@@ -198,3 +338,82 @@ The final block‑level result is:
 
 It asserts that, under the assumptions listed at the top, the weighted evaluation SDs
 for **each block component** converge (sequentially) to the true population block SDs.
+
+**Formal statement (Lean)**:
+```lean
+theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+    (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
+    (hRand :
+      ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
+    (hMomBlocks : ∀ ω m b,
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := Aeval) (ν := ν)
+        (w := w)
+        (s := gHat
+          (gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+            b)
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m))
+    (hSplitBlocks :
+      ∀ ω m b,
+        SplitEvalWeightAssumptionsBounded
+          (ρ := ρ) (A := Aeval) (w := w)
+          (g := gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+            b)
+          (θhat := fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μexp := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
+        (fMain := fMain) (fInter := fInter))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (xiAttr := kappaDesign (κ := μexp) (A := Atrain)) (fMain := fMain) (fInter := fInter))
+    (hTerms :
+      FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
+        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
+    (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
+    ∃ θ0 : PaperTerm Main Inter → ℝ,
+      ∀ᵐ ω ∂μexp,
+        ∃ M : ℕ,
+          ∀ m ≥ M,
+            ∀ b : B,
+              (∀ᵐ ω' ∂ρ,
+                ∀ᶠ n : ℕ in atTop,
+                  totalErr ρ Aeval (ν) w
+                    (gBlock
+                      (gB := fun b θ a =>
+                        gBlockTerm (blk := blk) (β := θ)
+                          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                      b)
+                    θ0
+                    (fun n =>
+                      olsThetaHat
+                        (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                        n)
+                    m n ω' < ε)
+              ∧
+              attrSD (ν)
+                  (gBlock
+                    (gB := fun b θ a =>
+                      gBlockTerm (blk := blk) (β := θ)
+                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                    b θ0)
+                =
+                attrSD (ν)
+                  (gBlockTerm (blk := blk) (β := θ0)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b)
+```
