@@ -11,6 +11,7 @@ This file compiles independently and is meant to be imported by your paper wrapp
 -/
 
 import ConjointSD.RegressionConsistencyBridge
+import ConjointSD.DecompositionSequentialConsistency
 
 open Filter MeasureTheory
 open scoped Topology
@@ -48,6 +49,25 @@ theorem derive_m2_tendsto
       (nhds (attrM2 xiAttr (g θ0))) :=
   attrM2_tendsto_of_theta_tendsto
     (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := θhat) hθ hcont
+
+/-!
+## Bundled plug-in assumptions from θhat → θ0
+-/
+
+/-- Bundle mean + second-moment convergence into `PlugInMomentAssumptions`. -/
+theorem plugInMomentAssumptions_of_theta_tendsto
+    {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
+    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hcont : FunctionalContinuityAssumptions (xiAttr := xiAttr) g θ0) :
+    PlugInMomentAssumptions (ν := xiAttr) (g := g) (θ0 := θ0) (θhat := θhat) :=
+  ⟨
+    attrMean_tendsto_of_theta_tendsto
+      (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := θhat) hθ hcont,
+    attrM2_tendsto_of_theta_tendsto
+      (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := θhat) hθ hcont
+  ⟩
 
 /--
 Route-2: derive mean convergence for each block score from
@@ -97,5 +117,26 @@ by
       (θhat := θhat)
       hθ
       (hcont.cont b)
+
+/-- Bundle blockwise mean + second-moment convergence into `PlugInMomentAssumptions`. -/
+theorem plugInMomentAssumptions_blocks_of_theta_tendsto
+    {Attr Θ B : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ] [Fintype B]
+    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
+    (hθ : Tendsto θhat atTop (nhds θ0))
+    (hcont : BlockFunctionalContinuityAssumptions (xiAttr := xiAttr) gB θ0) :
+    ∀ b : B,
+      PlugInMomentAssumptions
+        (ν := xiAttr)
+        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) := by
+  intro b
+  refine
+    plugInMomentAssumptions_of_theta_tendsto
+      (xiAttr := xiAttr)
+      (g := gBlock (gB := gB) b)
+      (θ0 := θ0) (θhat := θhat)
+      hθ
+      ?_
+  simpa [gBlock] using hcont.cont b
 
 end ConjointSD

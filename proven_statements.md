@@ -123,9 +123,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under randomized assignment, OLS design assumptions, and no-interactions/full-main-effects identification, the block components of the paper score have sequentially consistent SD estimates that target the true block scores derived from the model fit, with IID assumed for the evaluation draws and plug‑in moment convergence assumed directly.
+Statement: Under randomized assignment, OLS design assumptions, and no-interactions/full-main-effects identification, the block components of the paper score have sequentially consistent SD estimates that target the true block scores derived from the model fit. IID is assumed for the evaluation draws, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
 
-Intuition: The evaluation stage is disciplined by IID and weighted moment matching, while plug‑in mean/second‑moment convergence is assumed as a direct input; this yields sequential consistency for each block score.
+Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; together with IID and weighted moment matching, this gives sequential consistency for each block score.
 
 Formalization (Lean name): `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 

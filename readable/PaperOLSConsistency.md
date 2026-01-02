@@ -23,7 +23,7 @@ Assumption package:
 Main results:
 - `theta_tendsto_of_paper_ols_design_ae` derives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0` from `ConjointRandomizationStream`, `PaperOLSDesignAssumptions`, and the full‑rank condition, with normal equations derived from well‑specification.
 - `gPaper_eq_gTotalΘ_blocks` identifies the paper score with the block-sum total score (for any `blk`), so the OLS path can feed into the block/total [standard deviation](jargon_standard_deviation.md) chain.
-- `functionalContinuity_gPaper_of_bounded` and `functionalContinuity_gTotalΘ_of_bounded` derive the required functional [continuity](jargon_continuity.md) for the paper score and total block score directly from bounded/measurable features.
+- `functionalContinuity_gPaper_of_bounded`, `functionalContinuity_gTotalΘ_of_bounded`, and `functionalContinuity_gBlockTerm_of_bounded` derive the required functional [continuity](jargon_continuity.md) for the paper score, total block score, and individual block scores directly from bounded/measurable features. The bundled `blockFunctionalContinuity_gBlockTerm_of_bounded` packages these per-block continuity facts for all blocks.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the normal equations (derived from well‑specification when needed) under the attribute distribution in use.
 
 This file is the link from [regression](jargon_regression.md) / [OLS](jargon_ols.md) [consistency](jargon_consistency.md) to the [plug-in](jargon_plug_in.md) moment assumptions used in the [standard deviation](jargon_standard_deviation.md) consistency proofs.

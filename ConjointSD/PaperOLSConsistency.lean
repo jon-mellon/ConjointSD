@@ -205,6 +205,55 @@ def φBlock
     else 0
 
 omit [DecidableEq (PaperTerm Main Inter)] in
+lemma measurable_φBlock
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (blk : PaperTerm Main Inter → B) (b : B)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i)) :
+    ∀ t,
+      Measurable (φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t) := by
+  intro t
+  by_cases htb : blk t = b
+  · have hEq :
+        φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t
+          =
+        φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t := by
+        funext a
+        simp [φBlock, htb]
+    simpa [hEq] using
+      (measurable_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+        hmeasMain hmeasInter t)
+  · have hEq :
+        φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t
+          =
+        (fun _ : Attr => (0 : ℝ)) := by
+        funext a
+        simp [φBlock, htb]
+    simpa [hEq] using
+      (measurable_const : Measurable (fun _ : Attr => (0 : ℝ)))
+
+omit [DecidableEq (PaperTerm Main Inter)] in
+lemma bounded_φBlock
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (blk : PaperTerm Main Inter → B) (b : B)
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
+    ∀ t,
+      ∃ C, 0 ≤ C ∧
+        ∀ a, |φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t a| ≤ C := by
+  intro t
+  by_cases htb : blk t = b
+  · obtain ⟨C, hC0, hC⟩ :=
+      bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+        hboundMain hboundInter t
+    refine ⟨C, hC0, ?_⟩
+    intro a
+    simpa [φBlock, htb] using hC a
+  · refine ⟨0, by norm_num, ?_⟩
+    intro a
+    simp [φBlock, htb]
+
+omit [DecidableEq (PaperTerm Main Inter)] in
 lemma gBlockTerm_eq_gLin_φBlock
     {B : Type*} [Fintype B] [DecidableEq B]
     (blk : PaperTerm Main Inter → B) (b : B) (θ : PaperTerm Main Inter → ℝ) :
@@ -216,6 +265,84 @@ lemma gBlockTerm_eq_gLin_φBlock
   classical
   funext a
   simp [gBlockTerm, gLin, φBlock]
+
+omit [DecidableEq (PaperTerm Main Inter)] in
+theorem functionalContinuity_gBlockTerm_of_bounded
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (blk : PaperTerm Main Inter → B) (b : B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
+    FunctionalContinuityAssumptions (xiAttr := xiAttr)
+      (g := fun θ =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b)
+      θ0 := by
+  have hmeasφ :
+      ∀ t,
+        Measurable
+          (φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t) :=
+    measurable_φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      (blk := blk) (b := b) hmeasMain hmeasInter
+  have hboundφ :
+      ∀ t, ∃ C, 0 ≤ C ∧
+        ∀ a, |φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t a| ≤ C :=
+    bounded_φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      (blk := blk) (b := b) hboundMain hboundInter
+  have hContLin :
+      FunctionalContinuityAssumptions (xiAttr := xiAttr)
+        (g := fun θ =>
+          gLin (β := θ)
+            (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b))
+        θ0 :=
+    functionalContinuity_gLin_of_bounded
+      (xiAttr := xiAttr)
+      (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b)
+      hmeasφ hboundφ θ0
+  refine
+    functionalContinuity_of_eq
+      (xiAttr := xiAttr)
+      (g := fun θ =>
+        gLin (β := θ)
+          (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b))
+      (g' := fun θ =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b)
+      (θ0 := θ0)
+      ?_
+      hContLin
+  intro θ a
+  have hEq :=
+    gBlockTerm_eq_gLin_φBlock
+      (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk) (b := b) (θ := θ)
+  exact (congrArg (fun f => f a) hEq).symm
+
+omit [DecidableEq (PaperTerm Main Inter)] in
+theorem blockFunctionalContinuity_gBlockTerm_of_bounded
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (blk : PaperTerm Main Inter → B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
+    BlockFunctionalContinuityAssumptions (xiAttr := xiAttr)
+      (gB := fun b θ a =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
+      θ0 := by
+  refine ⟨?_⟩
+  intro b
+  simpa using
+    functionalContinuity_gBlockTerm_of_bounded
+      (Attr := Attr) (Main := Main) (Inter := Inter)
+      (fMain := fMain) (fInter := fInter)
+      (xiAttr := xiAttr) (blk := blk) (b := b) (θ0 := θ0)
+      hmeasMain hmeasInter hboundMain hboundInter
 
 omit [DecidableEq (PaperTerm Main Inter)] in
 lemma bounded_mul

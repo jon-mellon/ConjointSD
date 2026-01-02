@@ -10,7 +10,7 @@ closest to the manuscript:
 2) Regression / term model bridge to block decomposition (well-specification implies the
    causal estimand decomposes as a sum of block scores).
 
-3) Route-2 sequential consistency for SDs (via θhat → θ0 + continuity at θ0):
+3) Sequential consistency for SDs, with plug-in moments derived from OLS:
    - per-block SDs are sequentially consistent (single M for all blocks, finite B),
    - total-score SD is sequentially consistent,
    - combined statement (blocks + total) with a single M.
@@ -30,6 +30,7 @@ import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.SampleSplitting
 import ConjointSD.TargetEquivalence
 import ConjointSD.PaperOLSConsistency
+import ConjointSD.DeriveGEstimationAssumptions
 import ConjointSD.WellSpecifiedFromNoInteractions
 
 open Filter MeasureTheory ProbabilityTheory
@@ -867,24 +868,6 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
               (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
               n) m)
-    (hPlugBlocks :
-      ∀ θ0,
-        WellSpecified (μexp := μexp) (Y := Y) θ0
-          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) →
-          ∀ ω b,
-            PlugInMomentAssumptions
-              (ν := ν)
-              (g := gBlock
-                (gB := fun b θ a =>
-                  gBlockTerm (blk := blk) (β := θ)
-                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
-                b)
-              (θ0 := θ0)
-              (θhat := fun n =>
-                olsThetaHat
-                  (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
-                  (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
-                  n))
     (hDesign :
       PaperOLSDesignAssumptions
         (μexp := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
@@ -934,8 +917,36 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
         (μexp := μexp) (Y := Y) hTerms hNoInt with
     ⟨θ0, hspec⟩
+  have hContBlocks :
+      BlockFunctionalContinuityAssumptions (xiAttr := ν)
+        (gB := fun b θ a =>
+          gBlockTerm (blk := blk) (β := θ)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+        θ0 :=
+    blockFunctionalContinuity_gBlockTerm_of_bounded
+      (Attr := Profile K V) (Main := Main) (Inter := Inter)
+      (fMain := fMain) (fInter := fInter)
+      (xiAttr := ν) (blk := blk) (θ0 := θ0)
+      hDesign.meas_fMain hDesign.meas_fInter
+      hDesign.bound_fMain hDesign.bound_fInter
+  have hTheta :
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n)
+          atTop
+          (nhds θ0) :=
+    theta_tendsto_of_paper_ols_design_ae
+      (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
+      hRand hDesign hFull hspec
+  refine ⟨θ0, ?_⟩
+  filter_upwards [hTheta] with ω hThetaω
   have hPlugBlocks' :
-      ∀ ω b,
+      ∀ b : B,
         PlugInMomentAssumptions
           (ν := ν)
           (g := gBlock
@@ -949,10 +960,19 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
               (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
               n) :=
-    hPlugBlocks θ0 hspec
-  refine ⟨θ0, ?_⟩
-  refine ae_of_all _ ?_
-  intro ω
+    plugInMomentAssumptions_blocks_of_theta_tendsto
+      (xiAttr := ν)
+      (gB := fun b θ a =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+      (θ0 := θ0)
+      (θhat := fun n =>
+        olsThetaHat
+          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+          n)
+      hThetaω
+      hContBlocks
   have hTrueB :
       ∀ b : B,
         InvarianceAE
@@ -981,7 +1001,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
           n)
       (hSplit := hSplitBlocks ω)
-      (hPlug := fun b => hPlugBlocks' ω b)
+      (hPlug := fun b => hPlugBlocks' b)
       (gTrueB := fun b =>
         gBlockTerm (blk := blk) (β := θ0)
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b)
@@ -1022,23 +1042,6 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
               (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
               n) m)
-    (hPlugTotal :
-      ∀ θ0,
-        WellSpecified (μexp := μexp) (Y := Y) θ0
-          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) →
-          ∀ ω,
-            PlugInMomentAssumptions
-              (ν := ν)
-              (g := gTotalΘ
-                (gB := fun b θ a =>
-                  gBlockTerm (blk := blk) (β := θ)
-                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
-              (θ0 := θ0)
-              (θhat := fun n =>
-                olsThetaHat
-                  (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
-                  (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
-                  n))
     (hDesign :
       PaperOLSDesignAssumptions
         (μexp := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
@@ -1087,24 +1090,62 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
         (μexp := μexp) (Y := Y) hTerms hNoInt with
     ⟨θ0, hspec⟩
-  have hPlugTotal' :
-      ∀ ω,
-        PlugInMomentAssumptions
-          (ν := ν)
-          (g := gTotalΘ
-            (gB := fun b θ a =>
-              gBlockTerm (blk := blk) (β := θ)
-                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
-          (θ0 := θ0)
-          (θhat := fun n =>
+  have hContTotal :
+      FunctionalContinuityAssumptions (xiAttr := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+        θ0 :=
+    functionalContinuity_gTotalΘ_of_bounded
+      (Attr := Profile K V) (Main := Main) (Inter := Inter)
+      (fMain := fMain) (fInter := fInter)
+      (xiAttr := ν) (blk := blk) (θ0 := θ0)
+      hDesign.meas_fMain hDesign.meas_fInter
+      hDesign.bound_fMain hDesign.bound_fInter
+  have hTheta :
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n =>
             olsThetaHat
               (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
               (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
-              n) :=
-    hPlugTotal θ0 hspec
+              n)
+          atTop
+          (nhds θ0) :=
+    theta_tendsto_of_paper_ols_design_ae
+      (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
+      (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
+      hRand hDesign hFull hspec
   refine ⟨θ0, ?_⟩
-  refine ae_of_all _ ?_
-  intro ω
+  filter_upwards [hTheta] with ω hThetaω
+  have hPlugTotal' :
+      PlugInMomentAssumptions
+        (ν := ν)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+        (θ0 := θ0)
+        (θhat := fun n =>
+          olsThetaHat
+            (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+            n) :=
+    plugInMomentAssumptions_of_theta_tendsto
+      (xiAttr := ν)
+      (g := gTotalΘ
+        (gB := fun b θ a =>
+          gBlockTerm (blk := blk) (β := θ)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+      (θ0 := θ0)
+      (θhat := fun n =>
+        olsThetaHat
+          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+          n)
+      hThetaω
+      hContTotal
   have hStarEq :
       ∀ᵐ x ∂ν,
         gTotalΘ
@@ -1172,7 +1213,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_des
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
           n)
       (hSplitTotal := hSplitTotal ω)
-      (hPlugTotal := hPlugTotal' ω)
+      (hPlugTotal := hPlugTotal')
       (gTrue := gTrue) (hTrue := hTrue)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩

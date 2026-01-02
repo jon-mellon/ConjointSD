@@ -149,7 +149,7 @@ We assume:
 - `wellSpecified_of_noInteractions_of_fullMainEffects` derives well‑specification of
   the paper linear model.
 
-## 4) Build the OLS moment convergence chain (optional)
+## 4) Build the OLS moment convergence chain
 
 Key steps (theorem nodes in order):
 - `paper_ols_gramInv_tendsto_of_design_ae`: Gram inverse converges a.e. along training paths.
@@ -161,16 +161,20 @@ Key steps (theorem nodes in order):
 - `theta_tendsto_of_paper_ols_design_ae`: assembles the chain to give `thetaHat → theta0` a.e.
 
 **Intuition**: random design + boundedness give moment convergence; well‑specification pins the
-limit to `theta0`; therefore OLS converges. In the current Route‑1 proof, we do **not**
-use this chain to derive plug‑in moments; it is kept as a separate justification pathway.
+limit to `theta0`; therefore OLS converges. We then push this convergence through the
+plug‑in functionals using continuity at `θ0`, yielding the needed moment convergence.
 
-## 5) Route 1: plug‑in moment convergence (assumed)
+## 5) Derive plug‑in moment convergence from OLS
 
-The sequential‑consistency chain now assumes plug‑in mean and second‑moment convergence
-directly, via `PlugInMomentAssumptions` for each block score.
+We derive the plug‑in assumptions (mean + second moment under `ν`) from:
+- `theta_tendsto_of_paper_ols_design_ae` (OLS consistency),
+- boundedness/measurability of the paper features (gives functional continuity under `ν`).
 
-Key component:
-- `PlugInMomentAssumptions` for each block score (mean + second‑moment convergence under `ν`).
+Formally:
+- `functionalContinuity_gBlockTerm_of_bounded` and
+  `blockFunctionalContinuity_gBlockTerm_of_bounded` give continuity of block scores at `θ0`,
+- `plugInMomentAssumptions_blocks_of_theta_tendsto` converts `θhat → θ0` into
+  `PlugInMomentAssumptions` for each block score.
 
 ## 6) Weighted evaluation (block SD targets)
 
