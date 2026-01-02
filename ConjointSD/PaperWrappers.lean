@@ -111,7 +111,7 @@ section SDSequentialConsistency
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
-variable {Θ : Type*} [TopologicalSpace Θ]
+variable {Θ : Type*}
 variable {B : Type*} [Fintype B]
 
 variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
@@ -581,6 +581,7 @@ variable (Y : Profile K V → Ω → ℝ)
 variable (fMain : Main → Profile K V → ℝ) (fInter : Inter → Profile K V → ℝ)
 variable (blk : PaperTerm Main Inter → B)
 
+set_option linter.style.longLine false
 theorem
     paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
     (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
@@ -762,6 +763,9 @@ theorem
   intro m hm b
   exact hM m hm b
 
+set_option linter.style.longLine true
+
+set_option linter.style.longLine false
 theorem
     paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
     (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
@@ -1009,7 +1013,9 @@ theorem
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
   intro m hm
-  exact hM m hm
+    exact hM m hm
+
+set_option linter.style.longLine true
 
 end SDSequentialConsistencyOLSNoInteractions
 

@@ -297,7 +297,10 @@ theorem status_event_pos
               simp [hmap_pre]
       _ = νStatus {p} := by simp [hlaw]
   have hpos : νStatus {p} ≠ 0 := by
-    simpa [hmass] using hsupport
+    intro hzero
+    have hzero' := hzero
+    simp [hmass] at hzero'
+    exact hsupport hzero'
   intro hzero
   apply hpos
   calc

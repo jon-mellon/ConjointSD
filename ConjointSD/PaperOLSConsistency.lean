@@ -188,7 +188,7 @@ def φBlock
     then φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a
     else 0
 
-omit [DecidableEq (PaperTerm Main Inter)] in
+omit [DecidableEq (PaperTerm Main Inter)] [Fintype Main] [Fintype Inter] in
 lemma measurable_φBlock
     {B : Type*} [Fintype B] [DecidableEq B]
     (blk : PaperTerm Main Inter → B) (b : B)
@@ -213,10 +213,9 @@ lemma measurable_φBlock
         (fun _ : Attr => (0 : ℝ)) := by
         funext a
         simp [φBlock, htb]
-    simpa [hEq] using
-      (measurable_const : Measurable (fun _ : Attr => (0 : ℝ)))
+    simp [hEq]
 
-omit [DecidableEq (PaperTerm Main Inter)] in
+omit [DecidableEq (PaperTerm Main Inter)] [MeasurableSpace Attr] [Fintype Main] [Fintype Inter] in
 lemma bounded_φBlock
     {B : Type*} [Fintype B] [DecidableEq B]
     (blk : PaperTerm Main Inter → B) (b : B)
@@ -450,7 +449,7 @@ theorem paper_ols_normal_eq_of_wellSpecified
               * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
           refine Finset.sum_congr rfl ?_
           intro t ht
-          simp [mul_comm]
+          ring
         _ = ∑ t, θ0 t * φCross t a := by
           rfl
         _ = gLin (β := θ0) (φ := φCross) a := by
@@ -481,7 +480,7 @@ theorem paper_ols_normal_eq_of_wellSpecified
             * φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a) := by
       refine Finset.sum_congr rfl ?_
       intro t ht
-      simp [mul_comm]
+      ring
     _ =
       attrCross
         (xiAttr := xiAttr)
