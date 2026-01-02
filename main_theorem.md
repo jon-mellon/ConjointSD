@@ -1,7 +1,8 @@
-# Main theorem narrative (block SD only)
+# Main theorem narrative ([block](readable/jargon_block.md) [SD](readable/jargon_standard_deviation.md) only)
 
-This document walks through the **block‑level** end‑to‑end theorem chain. The target is the
-block components of the total score, not the total score itself. The final wrapper is:
+This document walks through the **block‑level** end‑to‑end [theorem](readable/jargon_theorem.md) chain.
+The target is the [block](readable/jargon_block.md) components of the total score, not the total
+score itself. The final wrapper is:
 `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`.
 
 ## Assumptions the reader must accept
@@ -9,17 +10,20 @@ block components of the total score, not the total score itself. The final wrapp
 This is the full set of assumptions required by the block‑level wrapper. The descriptions
 reuse and extend the wording from `readable/Assumptions.md`.
 
-### 1) Randomized assignment (training design)
+### 1) [Randomized assignment](readable/jargon_randomization.md) (training design)
 **Assumption**: `ConjointRandomizationStream` for `Atrain`.
 
 **Meaning**:
-- There exist randomization variables `U i` and a measurable map `f` such that
+- There exist randomization variables `U i` and a [measurable](readable/jargon_measurable.md) map `f` such that
   `Atrain i = f (U i)` for all `i`.
-- `U i` is measurable for each `i`, and the `U i` are i.i.d. across indices.
-- Each `U i` is independent of every potential outcome `Y x`.
+- `U i` is [measurable](readable/jargon_measurable.md) for each `i`, and the `U i` are
+  [IID](readable/jargon_iid.md) across [indices](readable/jargon_index.md).
+- Each `U i` is [independent](readable/jargon_independent.md) of every
+  [potential outcome](readable/jargon_potential_outcome.md) `Y x`.
 
-**Intuition**: the experimental assignment is genuinely randomized, which supplies IID‑style
-structure for the training design and supports identification of the model.
+**Intuition**: the experimental assignment is genuinely randomized, which supplies
+[IID](readable/jargon_iid.md)‑style structure for the training design and supports
+[identification](readable/jargon_identification.md) of the model.
 
 **Formal statement (Lean)**:
 ```lean
@@ -34,7 +38,8 @@ structure ConjointRandomizationStream
       (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
       ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
 ```
-**English version**: there is a randomization variable sequence `U i` and a measurable map `f`
+**English version**: there is a randomization variable sequence `U i` and a
+[measurable](readable/jargon_measurable.md) map `f`
 so that each `A i` is generated as `f (U i)`; the `U i` are measurable, i.i.d. across indices,
 and each `U i` is independent of every potential outcome `Y x` under `μexp`.
 
