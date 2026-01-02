@@ -252,16 +252,6 @@ def taskOutcome (k : Task) (Y : Task → OrderedProfiles J Attr → Ω → ℝ) 
     OrderedProfiles J Attr → Ω → ℝ :=
   fun t ω => Y k t ω
 
-lemma potMean_invariant_of_noProfileOrder
-    (Y : Task → OrderedProfiles J Attr → Ω → ℝ)
-    (k : Task) (t : OrderedProfiles J Attr) (π : Equiv.Perm J)
-    (h : NoProfileOrderEffects (Y := Y)) :
-    potMean (κ := μexp) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y)
-        (permuteProfiles π t)
-      =
-    potMean (κ := μexp) (Y := taskOutcome (Task := Task) (J := J) (Attr := Attr) k Y) t := by
-  simp [potMean, taskOutcome, h.permute k t π]
-
 end ProfileOrder
 
 end ConjointSD

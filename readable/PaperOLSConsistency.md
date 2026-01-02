@@ -19,6 +19,7 @@ Assumption package:
 - `paper_ols_normal_eq_of_wellSpecified` derives the normal‑equation identity from well‑specification plus bounded/measurable paper features.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN and inverse‑Gram stability into the a.e. `OLSMomentAssumptionsOfAttr` statement used by later theorems.
 - In the Gram/cross convergence proofs, empirical means are routed through `meanHatZ_tendsto_ae_of_score`, which now takes `DesignAttrIID` plus boundedness/measurability.
+- Design-based `ScoreAssumptions` for Gram/cross terms are derived inline rather than via separate helper lemmas.
 
 Main results:
 - `theta_tendsto_of_paper_ols_design_ae` derives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0` from `ConjointRandomizationStream`, `PaperOLSDesignAssumptions`, and the full‑rank condition, with normal equations derived from well‑specification.

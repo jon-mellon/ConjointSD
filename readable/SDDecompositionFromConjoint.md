@@ -12,6 +12,7 @@ Key definitions:
 Main results:
 - If `g` is bounded, then the second-moment and [integrable](jargon_integrable.md) conditions hold automatically.
 - `meanHatZ_tendsto_ae_of_score` and `m2HatZ_tendsto_ae_of_score` apply the [LLN](jargon_lln.md) to score processes from `DesignAttrIID` plus boundedness/measurability.
+- Convergence results for derived RMSE/variance estimators are handled by combining the mean and second-moment limits rather than standalone lemmas.
 - `meanHatZW_tendsto_ae_of_score`, `m2HatZW_tendsto_ae_of_score`, and `sdHatZW_tendsto_ae_of_score` provide weighted analogues using bounded scores and weights.
 
 Block version:

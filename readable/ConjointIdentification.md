@@ -18,9 +18,6 @@ Main logical steps:
 2) Use that factorization to show the [conditional mean](jargon_conditional_mean.md) among `X = x0` equals the potential [mean](jargon_mean.md) for `x0`.
 3) Use consistency to replace `Yobs` with `Y x0` inside the conditional mean.
 4) Combine the above to identify `amce` as a difference of observed [conditional means](jargon_conditional_mean.md).
-5) If task outcomes are order-invariant, a short bridge lemma shows the potential mean
-   is invariant under profile-order permutations.
-
 Final result:
 - The file defines `gExp` (the observed [conditional mean](jargon_conditional_mean.md) score) and `gPot` (the causal score) for use in identification statements.
 

@@ -22,8 +22,4 @@ Main results:
   to the target human [population](jargon_population.md) [SD](jargon_standard_deviation.md)
   of the [plug-in](jargon_plug_in.md) score, using boundedness-based evaluation assumptions
   and the weighted moment match.
-- `splitEvalWeightAssumptions_of_stream` derives `SplitEvalWeightAssumptions` from
-  `SplitEvalWeightAssumptionsNoIID` when IID is obtained from a
-  `ConjointRandomizationStream`.
-
 This file is the building [block](jargon_block.md) for the two-stage (m then n) [convergence](jargon_convergence.md) results.
