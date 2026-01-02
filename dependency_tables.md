@@ -837,7 +837,7 @@ fullMainEffects</th>
 </tr>
 <tr>
 <td style="text-align: left;">BoundedAE</td>
-<td style="text-align: left;">16</td>
+<td style="text-align: left;">14</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -906,8 +906,8 @@ fullMainEffects</th>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -2863,7 +2863,7 @@ zero</td>
 </tr>
 <tr>
 <td style="text-align: left;">OLSMomentAssumptions cross tendsto</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2932,8 +2932,8 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2951,7 +2951,7 @@ zero</td>
 </tr>
 <tr>
 <td style="text-align: left;">OLSMomentAssumptions crossLimit</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3020,8 +3020,8 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3039,7 +3039,7 @@ zero</td>
 </tr>
 <tr>
 <td style="text-align: left;">OLSMomentAssumptions gramInv tendsto</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3108,8 +3108,8 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3127,7 +3127,7 @@ zero</td>
 </tr>
 <tr>
 <td style="text-align: left;">OLSMomentAssumptions gramInvLimit</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3196,8 +3196,8 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3216,7 +3216,7 @@ zero</td>
 <tr>
 <td style="text-align: left;">OLSMomentAssumptionsOfAttr cross
 tendsto</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3285,8 +3285,8 @@ tendsto</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3305,7 +3305,7 @@ tendsto</td>
 <tr>
 <td style="text-align: left;">OLSMomentAssumptionsOfAttr gramInv
 tendsto</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3374,8 +3374,8 @@ tendsto</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3834,8 +3834,19 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 </tr>
 <tr>
-<td style="text-align: left;">PaperOLSFullRankAssumptions isProb</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">PlugInMomentAssumptions isProb</td>
+<td style="text-align: left;">23</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3847,40 +3858,10 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3904,6 +3885,201 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+</tr>
+<tr>
+<td style="text-align: left;">PlugInMomentAssumptions m2 tendsto</td>
+<td style="text-align: left;">23</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+</tr>
+<tr>
+<td style="text-align: left;">PlugInMomentAssumptions mean tendsto</td>
+<td style="text-align: left;">23</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -4104,12 +4280,12 @@ isUnit</td>
 
 ## Theorem dependency DAG
 
-<img src="dependency_tables_files/theorem_dependency_dag.png" width="3355" />
+<img src="dependency_tables_files/theorem_dependency_dag.png" width="3549" />
 
 ## OLS SD consistency DAG (direct assumptions)
 
-<img src="dependency_tables_files/ols_sd_consistency_dag.png" width="2428" />
+<img src="dependency_tables_files/ols_sd_consistency_dag.png" width="2153" />
 
 ## OLS SD block consistency DAG (direct assumptions)
 
-<img src="dependency_tables_files/ols_sd_block_consistency_dag.png" width="2456" />
+<img src="dependency_tables_files/ols_sd_block_consistency_dag.png" width="2191" />

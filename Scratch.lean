@@ -4,6 +4,7 @@ import ConjointSD
 
 #print ConjointSD.ScoreAssumptions.int_g0
 #print ConjointSD.EvalAttrIID
+#print ConjointSD.PlugInMomentAssumptions
 #print ConjointSD.SplitEvalAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
 #print ConjointSD.attrMean_tendsto_of_theta_tendsto

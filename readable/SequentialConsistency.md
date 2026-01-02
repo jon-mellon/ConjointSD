@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/SequentialConsistency.lean](../ConjointSD/SequentialConsistency.lean)
 
-This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes raw `Tendsto θhat atTop (nhds θ0)` plus continuity to derive plug‑in moment convergence. The target is the attribute-distribution SD under `ν`, with `EvalWeightMatchesPopMoments` matching weighted evaluation moments under `ρ`. The training distribution that produces `θhat` is left abstract.
+This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν`, with `EvalWeightMatchesPopMoments` matching weighted evaluation moments under `ρ`. The training distribution that produces `θhat` is left abstract.
 It uses the notion of [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md).
 
 Definitions:
@@ -13,5 +13,5 @@ Definitions:
 
 Main logic (three steps):
 1) For fixed `m`, as `n` grows, `totalErr` [converges](jargon_convergence.md) to `trainErr` for almost all outcomes (see [almost everywhere](jargon_almost_everywhere.md)).
-2) As `m` grows, `trainErr` goes to 0, using parameter convergence + continuity to derive the plug‑in moment [convergence](jargon_convergence.md).
+2) As `m` grows, `trainErr` goes to 0, using the assumed plug‑in mean/second‑moment [convergence](jargon_convergence.md).
 3) Combine the two to show: for any epsilon, there is an `M` so that for all `m >= M`, the evaluation error becomes less than epsilon for large enough `n` ([almost everywhere](jargon_almost_everywhere.md)).

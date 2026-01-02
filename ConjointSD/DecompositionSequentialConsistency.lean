@@ -48,10 +48,9 @@ theorem sequential_consistency_blocks_ae
     (hMom : ∀ m b,
       EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hCont : ∀ b : B,
-      FunctionalContinuityAssumptions (xiAttr := ν)
-        (g := gBlock (gB := gB) b) θ0)
+    (hPlug : ∀ b : B,
+      PlugInMomentAssumptions (ν := ν)
+        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -75,7 +74,7 @@ theorem sequential_consistency_blocks_ae
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
         (hMom := fun m => hMom m b)
-        (hθ := hθ) (hCont := hCont b)
+        (hPlug := hPlug b)
         (ε := ε) (hε := hε))
   choose Mb hMb using hEach
   let M : ℕ := (Finset.univ : Finset B).sup Mb
@@ -102,10 +101,9 @@ theorem sequential_consistency_total_ae
     (hMom : ∀ m,
       EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hContTotal :
-      FunctionalContinuityAssumptions (xiAttr := ν)
-        (g := gTotalΘ (gB := gB)) θ0)
+    (hPlugTotal :
+      PlugInMomentAssumptions (ν := ν)
+        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -118,7 +116,7 @@ theorem sequential_consistency_total_ae
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
       (hMom := hMom)
-      (hθ := hθ) (hCont := hContTotal)
+      (hPlug := hPlugTotal)
       (ε := ε) (hε := hε))
 
 theorem sequential_consistency_blocks_ae_of_bounded
@@ -141,10 +139,9 @@ theorem sequential_consistency_blocks_ae_of_bounded
     (hMom : ∀ m b,
       EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hCont : ∀ b : B,
-      FunctionalContinuityAssumptions (xiAttr := ν)
-        (g := gBlock (gB := gB) b) θ0)
+    (hPlug : ∀ b : B,
+      PlugInMomentAssumptions (ν := ν)
+        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -171,7 +168,7 @@ theorem sequential_consistency_blocks_ae_of_bounded
     sequential_consistency_blocks_ae
       (ρ := ρ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplit') (hMom := hMom) (hθ := hθ) (hCont := hCont) (ε := ε) (hε := hε)
+      (hSplit := hSplit') (hMom := hMom) (hPlug := hPlug) (ε := ε) (hε := hε)
 
 theorem sequential_consistency_total_ae_of_bounded
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
@@ -194,10 +191,9 @@ theorem sequential_consistency_total_ae_of_bounded
     (hMom : ∀ m,
       EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
         (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hContTotal :
-      FunctionalContinuityAssumptions (xiAttr := ν)
-        (g := gTotalΘ (gB := gB)) θ0)
+    (hPlugTotal :
+      PlugInMomentAssumptions (ν := ν)
+        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -223,7 +219,7 @@ theorem sequential_consistency_total_ae_of_bounded
     sequential_consistency_total_ae
       (ρ := ρ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotal') (hMom := hMom) (hθ := hθ) (hContTotal := hContTotal)
+      (hSplitTotal := hSplitTotal') (hMom := hMom) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
 
 end

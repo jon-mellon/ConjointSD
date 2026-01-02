@@ -273,6 +273,13 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   - `FunctionalContinuityAssumptions.cont_m2`: second-moment functional is continuous at `θ0`.
     Intuition: the scale of the score changes smoothly with parameters.
     Formal: `ContinuousAt (attrM2Θ (xiAttr := xiAttr) g) θ0`.
+- `PlugInMomentAssumptions`: direct plug-in convergence of the attribute-distribution
+  mean and second moment under `ν` for `gHat g θhat n`. This is the Route‑1 input:
+  we assume moment convergence outright, without relying on parameter continuity.
+  - `PlugInMomentAssumptions.mean_tendsto`: mean convergence to the oracle mean.
+    Formal: `Tendsto (fun n => attrMean ν (gHat g θhat n)) atTop (nhds (attrMean ν (g θ0)))`.
+  - `PlugInMomentAssumptions.m2_tendsto`: second-moment convergence to the oracle second moment.
+    Formal: `Tendsto (fun n => attrM2 ν (gHat g θhat n)) atTop (nhds (attrM2 ν (g θ0)))`.
 - `BlockFunctionalContinuityAssumptions`: the blockwise version of functional
   continuity, requiring the above assumptions for each block score under the
   attribute distribution `xiAttr`.

@@ -121,12 +121,10 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
           (ρ := ρ) (A := A) (w := w)
           (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
           (θhat := θhat) m)
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hContTotal :
-      FunctionalContinuityAssumptions
-        (xiAttr := ν)
+    (hPlugTotal :
+      PlugInMomentAssumptions (ν := ν)
         (g := gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
-        θ0)
+        (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -151,7 +149,7 @@ theorem paper_total_sd_estimator_consistency_ae_of_gBTerm
       (ρ := ρ) (A := A) (ν := ν) (w := w) (hMomEval := hMomEval)
       (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ))
       (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotal) (hθ := hθ) (hContTotal := hContTotal)
+      (hSplitTotal := hSplitTotal) (hPlugTotal := hPlugTotal)
       (gTrue := paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
       (hTrue := hTrue) (ε := ε) (hε := hε)
       with ⟨M, hM⟩

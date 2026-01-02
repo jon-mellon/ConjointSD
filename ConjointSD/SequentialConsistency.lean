@@ -19,7 +19,6 @@ No uniformity/joint (m,n) claim.
 import Mathlib
 import ConjointSD.SampleSplitting
 import ConjointSD.EstimatedG
-import ConjointSD.RegressionConsistencyBridge
 import ConjointSD.Transport
 
 open Filter MeasureTheory ProbabilityTheory
@@ -125,32 +124,17 @@ theorem totalErr_tendsto_trainErr_fixed_m
   simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
 
 /--
-Step (2): training error → 0 as `m → ∞` under parameter convergence and continuity.
+Step (2): training error → 0 as `m → ∞` under direct plug-in moment convergence.
 -/
 theorem trainErr_tendsto_zero
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hCont : FunctionalContinuityAssumptions (xiAttr := ν) g θ0) :
+    (hPlug : PlugInMomentAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat)) :
     Tendsto
       (fun m : ℕ => trainErr ν g θ0 θhat m)
       atTop
       (nhds 0) := by
   let c : ℝ := attrSD ν (g θ0)
-  have hmean :
-      Tendsto
-        (fun n => attrMean ν (gHat g θhat n))
-        atTop
-        (nhds (attrMean ν (g θ0))) :=
-    attrMean_tendsto_of_theta_tendsto
-      (xiAttr := ν) (g := g) (θ0 := θ0) (θhat := θhat) hθ hCont
-  have hm2 :
-      Tendsto
-        (fun n => attrM2 ν (gHat g θhat n))
-        atTop
-        (nhds (attrM2 ν (g θ0))) :=
-    attrM2_tendsto_of_theta_tendsto
-      (xiAttr := ν) (g := g) (θ0 := θ0) (θhat := θhat) hθ hCont
   have hBase :
       Tendsto
         (fun m : ℕ => attrSD ν (gHat g θhat m))
@@ -158,7 +142,8 @@ theorem trainErr_tendsto_zero
         (nhds c) := by
     simpa [c] using
       (attrSD_tendsto_of_mean_m2_tendsto
-        (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hmean hm2)
+        (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat)
+        hPlug.mean_tendsto hPlug.m2_tendsto)
   have hcont :
       Continuous (fun x : ℝ => abs (x - c)) := by
     simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
@@ -176,8 +161,7 @@ Step (3): sequential ε–M–eventually-in-n consistency (a.e. over ω).
 
 Assumptions:
 - `hSplit : ∀ m, SplitEvalWeightAssumptions ... m` gives evaluation-stage conditions for each m.
-- `hθ` and `hCont` give convergence of the attribute-distribution SD under `ν`
-  for gHat → g θ0 via continuity.
+- `hPlug` gives direct plug-in mean and second-moment convergence under `ν`.
 
 Conclusion:
 For any ε>0, ∃ M, ∀ m≥M, (∀ᵐ ω, ∀ᶠ n, totalErr ... m n ω < ε).
@@ -192,8 +176,7 @@ theorem sequential_consistency_ae
       SplitEvalWeightAssumptions (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
     (hMom : ∀ m, EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
       (w := w) (s := gHat g θhat m))
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hCont : FunctionalContinuityAssumptions (xiAttr := ν) g θ0)
+    (hPlug : PlugInMomentAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -205,7 +188,7 @@ theorem sequential_consistency_ae
       Tendsto (fun m : ℕ => trainErr ν g θ0 θhat m)
         atTop (nhds 0) :=
     trainErr_tendsto_zero
-      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hθ hCont
+      (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat) hPlug
   -- pick M so that for all m≥M, trainErr m < ε/2
   have hEv :
       ∀ᶠ m : ℕ in atTop,

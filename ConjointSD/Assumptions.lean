@@ -221,6 +221,24 @@ structure FunctionalContinuityAssumptions
   cont_mean : ContinuousAt (attrMeanΘ (xiAttr := xiAttr) g) θ0
   cont_m2   : ContinuousAt (attrM2Θ   (xiAttr := xiAttr) g) θ0
 
+/--
+Direct plug-in moment convergence assumptions for a score `g θhat n` under `ν`.
+This is the Route-1 input for sequential consistency: mean and second moment converge
+without invoking parameter continuity.
+-/
+structure PlugInMomentAssumptions
+    (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
+  mean_tendsto :
+    Tendsto
+      (fun n => attrMean ν (gHat g θhat n))
+      atTop
+      (nhds (attrMean ν (g θ0)))
+  m2_tendsto :
+    Tendsto
+      (fun n => attrM2 ν (gHat g θhat n))
+      atTop
+      (nhds (attrM2 ν (g θ0)))
+
 /-- Continuity assumptions for each block score at `θ0`. -/
 structure BlockFunctionalContinuityAssumptions
     {B : Type*}
