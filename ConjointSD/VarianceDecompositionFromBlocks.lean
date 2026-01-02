@@ -33,47 +33,6 @@ def covRaw (X Y : Ω → ℝ) : ℝ :=
 def varProxy (X : Ω → ℝ) : ℝ :=
   (∫ ω, (X ω) ^ 2 ∂μexp) - (∫ ω, X ω ∂μexp) ^ 2
 
-omit [Fintype B] in
-theorem blockIntegrable_of_bounded [ProbMeasureAssumptions μexp]
-    {Attr : Type*} [MeasurableSpace Attr]
-    {A : ℕ → Ω → Attr} {g : B → Attr → ℝ}
-    (hA : Measurable (A 0))
-    (hMeas : ∀ b, Measurable (g b))
-    (hBound : ∀ b, ∃ C, 0 ≤ C ∧ ∀ a, |g b a| ≤ C) :
-    BlockIntegrable (μexp := μexp) (A := A) (g := g) := by
-  classical
-  refine ⟨?_, ?_⟩
-  · intro b
-    obtain ⟨C, hC0, hC⟩ := hBound b
-    have hMeas' : AEStronglyMeasurable (fun ω => g b (A 0 ω)) μexp :=
-      (hMeas b).comp hA |>.aestronglyMeasurable
-    refine Integrable.of_bound (hf := hMeas') C ?_
-    refine ae_of_all μexp ?_
-    intro ω
-    have hCω := hC (A 0 ω)
-    simpa [Real.norm_eq_abs] using hCω
-  · intro b c
-    obtain ⟨Cb, hCb0, hCb⟩ := hBound b
-    obtain ⟨Cc, _hCc0, hCc⟩ := hBound c
-    have hMeas' :
-        AEStronglyMeasurable (fun ω => g b (A 0 ω) * g c (A 0 ω)) μexp := by
-      have hb : Measurable (fun ω => g b (A 0 ω)) := (hMeas b).comp hA
-      have hc : Measurable (fun ω => g c (A 0 ω)) := (hMeas c).comp hA
-      exact (hb.mul hc).aestronglyMeasurable
-    refine Integrable.of_bound (hf := hMeas') (Cb * Cc) ?_
-    refine ae_of_all μexp ?_
-    intro ω
-    have hb := hCb (A 0 ω)
-    have hc := hCc (A 0 ω)
-    have hmul : ‖g b (A 0 ω) * g c (A 0 ω)‖ ≤ Cb * Cc := by
-      calc
-        ‖g b (A 0 ω) * g c (A 0 ω)‖
-            = |g b (A 0 ω) * g c (A 0 ω)| := by simp
-        _ = |g b (A 0 ω)| * |g c (A 0 ω)| := by simp [abs_mul]
-        _ ≤ Cb * Cc := by
-              exact mul_le_mul hb hc (abs_nonneg _) hCb0
-    simpa using hmul
-
 theorem varProxy_sum_eq_sum_covRaw
     (A : ℕ → Ω → Attr) (g : B → Attr → ℝ)
     (h : BlockIntegrable (μexp := μexp) (A := A) (g := g)) :

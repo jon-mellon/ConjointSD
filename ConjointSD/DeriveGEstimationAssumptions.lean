@@ -64,8 +64,16 @@ theorem derive_mean_tendsto_blocks
         (fun n => attrMean xiAttr (gHat (blockScoreΘ (gB := gB) b) θhat n))
         atTop
         (nhds (attrMean xiAttr (blockScoreΘ (gB := gB) b θ0))) :=
-  block_attrMean_tendsto_of_theta_tendsto
-    (xiAttr := xiAttr) (gB := gB) (θ0 := θ0) (θhat := θhat) hθ hcont
+by
+  intro b
+  exact
+    attrMean_tendsto_of_theta_tendsto
+      (xiAttr := xiAttr)
+      (g := blockScoreΘ (gB := gB) b)
+      (θ0 := θ0)
+      (θhat := θhat)
+      hθ
+      (hcont.cont b)
 
 /-- Route-2: derive second-moment convergence for each block score. -/
 theorem derive_m2_tendsto_blocks
@@ -79,7 +87,15 @@ theorem derive_m2_tendsto_blocks
         (fun n => attrM2 xiAttr (gHat (blockScoreΘ (gB := gB) b) θhat n))
         atTop
         (nhds (attrM2 xiAttr (blockScoreΘ (gB := gB) b θ0))) :=
-  block_attrM2_tendsto_of_theta_tendsto
-    (xiAttr := xiAttr) (gB := gB) (θ0 := θ0) (θhat := θhat) hθ hcont
+by
+  intro b
+  exact
+    attrM2_tendsto_of_theta_tendsto
+      (xiAttr := xiAttr)
+      (g := blockScoreΘ (gB := gB) b)
+      (θ0 := θ0)
+      (θhat := θhat)
+      hθ
+      (hcont.cont b)
 
 end ConjointSD

@@ -46,56 +46,6 @@ theorem attrM2_tendsto_of_theta_tendsto
   simpa [gHat, attrM2Θ] using (hcont.cont_m2.tendsto.comp hθ)
 
 /-!
-## Blocks: continuity assumptions and resulting moment convergence per block
--/
-
-/-- Route-2 bridge for blocks: θhat → θ0 plus continuity per block gives
-mean convergence per block. -/
-theorem block_attrMean_tendsto_of_theta_tendsto
-    {Attr Θ B : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ] [Fintype B]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
-    (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hcont : BlockFunctionalContinuityAssumptions (xiAttr := xiAttr) gB θ0) :
-    ∀ b : B,
-      Tendsto
-        (fun n => attrMean xiAttr (gHat (blockScoreΘ (gB := gB) b) θhat n))
-        atTop
-        (nhds (attrMean xiAttr (blockScoreΘ (gB := gB) b θ0))) := by
-  let _ := (inferInstance : Fintype B)
-  intro b
-  exact
-    attrMean_tendsto_of_theta_tendsto
-      (xiAttr := xiAttr)
-      (g := blockScoreΘ (gB := gB) b)
-      (θ0 := θ0)
-      (θhat := θhat)
-      hθ
-      (hcont.cont b)
-
-theorem block_attrM2_tendsto_of_theta_tendsto
-    {Attr Θ B : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ] [Fintype B]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
-    (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hθ : Tendsto θhat atTop (nhds θ0))
-    (hcont : BlockFunctionalContinuityAssumptions (xiAttr := xiAttr) gB θ0) :
-    ∀ b : B,
-      Tendsto
-        (fun n => attrM2 xiAttr (gHat (blockScoreΘ (gB := gB) b) θhat n))
-        atTop
-        (nhds (attrM2 xiAttr (blockScoreΘ (gB := gB) b θ0))) := by
-  let _ := (inferInstance : Fintype B)
-  intro b
-  exact
-    attrM2_tendsto_of_theta_tendsto
-      (xiAttr := xiAttr)
-      (g := blockScoreΘ (gB := gB) b)
-      (θ0 := θ0)
-      (θhat := θhat)
-      hθ
-      (hcont.cont b)
-
-/-!
 ## Deriving functional continuity for linear models
 -/
 

@@ -9,7 +9,6 @@ Key definitions:
 - `covRaw`: a raw [covariance](jargon_covariance.md) formula `E[XY] - E[X]E[Y]`.
 - `varProxy`: a [variance](jargon_variance.md) formula `E[X^2] - (E[X])^2`.
 - `BlockIntegrable`: the [integrable](jargon_integrable.md) conditions needed so all these averages exist.
-- `blockIntegrable_of_bounded`: derives `BlockIntegrable` from bounded block scores plus measurability.
 
 Main theorem:
 - `varProxy_sum_eq_sum_covRaw` shows that the [variance](jargon_variance.md) proxy of the total score equals the double sum of [covariances](jargon_covariance.md) across all pairs of [blocks](jargon_block.md).

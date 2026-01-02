@@ -26,34 +26,6 @@ open MeasureTheory
 variable {Attr : Type u} [MeasurableSpace Attr]
 variable {Θ : Type v}
 
-theorem attrMean_tendsto_of_mean_tendsto
-    {ν : Measure Attr} [ProbMeasureAssumptions ν]
-    {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
-    (hmean :
-      Tendsto
-        (fun n => attrMean ν (gHat g θhat n))
-        atTop
-        (nhds (attrMean ν (g θ0)))) :
-    Tendsto
-      (fun n => attrMean ν (gHat g θhat n))
-      atTop
-      (nhds (attrMean ν (g θ0))) :=
-  hmean
-
-theorem attrM2_tendsto_of_m2_tendsto
-    {ν : Measure Attr} [ProbMeasureAssumptions ν]
-    {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
-    (hm2 :
-      Tendsto
-        (fun n => attrM2 ν (gHat g θhat n))
-        atTop
-        (nhds (attrM2 ν (g θ0)))) :
-    Tendsto
-      (fun n => attrM2 ν (gHat g θhat n))
-      atTop
-      (nhds (attrM2 ν (g θ0))) :=
-  hm2
-
 /-- Derived: attribute-distribution variance convergence under ν for the plug-in score. -/
 theorem attrVar_tendsto_of_mean_m2_tendsto
     {ν : Measure Attr} [ProbMeasureAssumptions ν]

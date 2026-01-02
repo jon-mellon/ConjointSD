@@ -124,40 +124,4 @@ theorem olsThetaHat_tendsto_of_attr_moments
       (xiAttr := xiAttr) (A := A) (Y := Y) (g := g) (φ := φ) (θ0 := θ0) h)
     (hId := hId)
 
-/--
-Bridge: if the OLS estimator sequence is consistent and the induced attribute-distribution
-functionals are continuous at `θ0`, then the mean/second-moment targets converge.
--/
-theorem attrMean_tendsto_of_OLSConsistency
-    {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
-    (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
-    {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
-    (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
-    (hCons : Tendsto ols.θhat atTop (nhds θ0))
-    (hCont : FunctionalContinuityAssumptions (xiAttr := xiAttr) (g := g) θ0) :
-    Tendsto
-      (fun n => attrMean xiAttr (gHat g ols.θhat n))
-      atTop
-      (nhds (attrMean xiAttr (g θ0))) :=
-  attrMean_tendsto_of_theta_tendsto
-    (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := ols.θhat)
-    hCons hCont
-
-theorem attrM2_tendsto_of_OLSConsistency
-    {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
-    (g : (Term → ℝ) → Attr → ℝ) (θ0 : Term → ℝ)
-    {A : ℕ → Attr} {Y : ℕ → ℝ} {φ : Term → Attr → ℝ}
-    (ols : OLSSequence (A := A) (Y := Y) (φ := φ))
-    (hCons : Tendsto ols.θhat atTop (nhds θ0))
-    (hCont : FunctionalContinuityAssumptions (xiAttr := xiAttr) (g := g) θ0) :
-    Tendsto
-      (fun n => attrM2 xiAttr (gHat g ols.θhat n))
-      atTop
-      (nhds (attrM2 xiAttr (g θ0))) :=
-  attrM2_tendsto_of_theta_tendsto
-    (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := ols.θhat)
-    hCons hCont
-
 end ConjointSD

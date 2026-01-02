@@ -20,7 +20,4 @@ Attribute‑distribution versions:
 - `olsThetaHat_tendsto_of_attr_moments` adds the identification equation to connect these limits to estimator [convergence](jargon_convergence.md).
 - `OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions` is a small adapter from `xiAttr`-based assumptions to the abstract limit form.
 
-Final [bridge](jargon_bridge.md):
-- `attrMean_tendsto_of_OLSConsistency` and `attrM2_tendsto_of_OLSConsistency` say that if an OLS sequence [converges](jargon_convergence.md) (via `Tendsto ols.θhat → θ0`) and the `xiAttr` functionals are [continuous](jargon_continuity.md), then the plug‑in [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) converge.
-
 This file supplies the regression backbone used by the paper-level [consistency](jargon_consistency.md) results.
