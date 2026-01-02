@@ -305,47 +305,6 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
       (s := gBlock (gB := gB) b θ0) (t := gTrueB b) (hTrueB b)
   exact ⟨hCons, hEq⟩
 
-theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_randomization
-    (Y : Attr → Ω → ℝ)
-    (hRand : ConjointRandomizationStream (μexp := ρ) (A := A) (Y := Y))
-    (hMom : ∀ m b,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
-    (hSplitBounded : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-        (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν := ν)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
-    (gTrueB : B → Attr → ℝ)
-    (hTrueB : ∀ b, InvarianceAE (ν := ν) (gBlock (gB := gB) b θ0) (gTrueB b))
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        ∀ b : B,
-          (∀ᵐ ω ∂ρ,
-            ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A (ν) w
-                (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
-          ∧
-          attrSD (ν) (gBlock (gB := gB) b θ0)
-            = attrSD (ν) (gTrueB b) := by
-  rcases paper_sd_blocks_sequential_consistency_ae_of_randomization
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (Y := Y) (hRand := hRand)
-      (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hMom := hMom) (hSplitBounded := hSplitBounded) (hPlug := hPlug)
-      (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm b
-  have hCons := hM m hm b
-  have hEq :
-      attrSD (ν) (gBlock (gB := gB) b θ0)
-        = attrSD (ν) (gTrueB b) :=
-    attrSD_congr_ae
-      (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b) (hTrueB b)
-  exact ⟨hCons, hEq⟩
-
 /-!
 ## 4b) Approximate targets: carry an explicit misspecification bound
 -/

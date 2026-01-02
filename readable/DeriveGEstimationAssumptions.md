@@ -10,8 +10,6 @@ What it does:
 - Concludes plug‑in [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) convergence needed for [plug-in](jargon_plug_in.md) [consistency](jargon_consistency.md).
 
 Key steps:
-- `derive_mean_tendsto` and `derive_m2_tendsto` give plug‑in mean/second‑moment convergence for a single score.
-- `derive_mean_tendsto_blocks` and `derive_m2_tendsto_blocks` do the same for block scores.
-- `plugInMomentAssumptions_of_theta_tendsto` and `plugInMomentAssumptions_blocks_of_theta_tendsto` package those convergence statements into `PlugInMomentAssumptions` bundles (single score or per‑block).
+- `plugInMomentAssumptions_of_theta_tendsto` and `plugInMomentAssumptions_blocks_of_theta_tendsto` package mean and second‑moment convergence into `PlugInMomentAssumptions` bundles (single score or per‑block).
 
 In short, the file is a thin wrapper: it reuses the more general [bridge](jargon_bridge.md) theorem and specializes it to the paper-friendly form.

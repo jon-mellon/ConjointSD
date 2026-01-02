@@ -501,42 +501,4 @@ theorem sd_component_consistent [ProbMeasureAssumptions μexp]
   simpa using
     sdHatZ_tendsto_ae_of_score
       (μexp := μexp) (A := A) (g := g) hIID hMeas hBound
-
-theorem sd_component_consistent_of_bounded [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hPop : DesignAttrIID (κ := μexp) A)
-    (hMeas : Measurable g)
-    (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
-    ∀ᵐ ω ∂μexp,
-      Tendsto
-        (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
-        atTop
-        (nhds (designSDZ (κ := μexp) (Zcomp (A := A) (g := g)))) := by
-  exact
-    sd_component_consistent
-      (μexp := μexp) (A := A) (g := g) hPop hMeas hBound
-
-/-!
-Finite-family “decomposition”: blocks/buckets b : B each have a scoring rule g b.
-We prove consistency of the plug-in SD for each block, and allow boundedness to
-discharge the integrability requirements automatically.
--/
-
-variable {B : Type*}
-
-/-- SD consistency for any chosen block b. -/
-theorem sd_block_consistent [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (g : B → Attr → ℝ)
-    (h : DecompAssumptions (κ := μexp) (B := B) A g)
-    (b : B) :
-    ∀ᵐ ω ∂μexp,
-      Tendsto
-        (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g b)) n ω)
-        atTop
-        (nhds (designSDZ (κ := μexp) (Zcomp (A := A) (g := g b)))) := by
-  exact
-    sd_component_consistent
-      (μexp := μexp) (A := A) (g := g b)
-      h.designAttrIID (h.meas_g b) (h.bound_g b)
-
 end ConjointSD

@@ -127,31 +127,6 @@ lemma bounded_phiPaper
           simpa [φPaper] using hboundInter i
 
 omit [DecidableEq (PaperTerm Main Inter)] in
-theorem functionalContinuity_gPaper_of_bounded
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
-    (θ0 : PaperTerm Main Inter → ℝ)
-    (hmeasMain : ∀ m, Measurable (fMain m))
-    (hmeasInter : ∀ i, Measurable (fInter i))
-    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
-    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
-    FunctionalContinuityAssumptions (xiAttr := xiAttr)
-      (g := fun θ =>
-        gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ) θ0 := by
-  have hmeasφ :
-      ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
-    measurable_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
-      hmeasMain hmeasInter
-  have hboundφ :
-      ∀ t, ∃ C, 0 ≤ C ∧
-        ∀ a, |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a| ≤ C :=
-    bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
-      hboundMain hboundInter
-  simpa [gPaper] using
-    (functionalContinuity_gLin_of_bounded
-      (xiAttr := xiAttr) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-      hmeasφ hboundφ θ0)
-
-omit [DecidableEq (PaperTerm Main Inter)] in
 theorem functionalContinuity_gTotalΘ_of_bounded
     {B : Type*} [Fintype B] [DecidableEq B]
     (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
@@ -167,15 +142,24 @@ theorem functionalContinuity_gTotalΘ_of_bounded
           gBlockTerm (blk := blk) (β := θ)
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
       θ0 := by
+  have hmeasφ :
+      ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
+    measurable_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      hmeasMain hmeasInter
+  have hboundφ :
+      ∀ t, ∃ C, 0 ≤ C ∧
+        ∀ a, |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a| ≤ C :=
+    bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      hboundMain hboundInter
   have hContPaper :
       FunctionalContinuityAssumptions (xiAttr := xiAttr)
         (g := fun θ =>
-          gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ) θ0 :=
-    functionalContinuity_gPaper_of_bounded
-      (Attr := Attr) (Main := Main) (Inter := Inter)
-      (fMain := fMain) (fInter := fInter)
-      (xiAttr := xiAttr) (θ0 := θ0)
-      hmeasMain hmeasInter hboundMain hboundInter
+          gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ) θ0 := by
+    simpa [gPaper] using
+      (functionalContinuity_gLin_of_bounded
+        (xiAttr := xiAttr)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        hmeasφ hboundφ θ0)
   refine
     functionalContinuity_of_eq
       (xiAttr := xiAttr)
