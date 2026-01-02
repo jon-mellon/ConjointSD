@@ -177,32 +177,6 @@ theorem paper_sd_blocks_sequential_consistency_ae
       (hSplit := hSplitBounded) (hMom := hMom) (hPlug := hPlug)
       (ε := ε) (hε := hε)
 
-theorem paper_sd_blocks_sequential_consistency_ae_of_randomization
-    (Y : Attr → Ω → ℝ)
-    (hRand : ConjointRandomizationStream (μexp := ρ) (A := A) (Y := Y))
-    (hMom : ∀ m b,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
-    (hSplitBounded : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-        (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν := ν)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        ∀ b : B,
-          (∀ᵐ ω ∂ρ,
-            ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A ν w
-                (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
-  exact
-    paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hMom := hMom) (hSplitBounded := hSplitBounded) (hPlug := hPlug)
-      (ε := ε) (hε := hε)
-
 /-- Paper-facing: total-score SD is sequentially consistent. -/
 theorem paper_sd_total_sequential_consistency_ae
     (hMom : ∀ m,
@@ -227,32 +201,6 @@ theorem paper_sd_total_sequential_consistency_ae
       (ρ := ρ) (A := A) (ν := ν) (w := w)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotalBounded) (hMom := hMom) (hPlugTotal := hPlugTotal)
-      (ε := ε) (hε := hε)
-
-theorem paper_sd_total_sequential_consistency_ae_of_randomization
-    (Y : Attr → Ω → ℝ)
-    (hRand : ConjointRandomizationStream (μexp := ρ) (A := A) (Y := Y))
-    (hMom : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (hSplitTotalBounded :
-      ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-          (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ᵐ ω ∂ρ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A ν w
-              (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
-  exact
-    paper_sd_total_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hMom := hMom) (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
 
 /-!
@@ -464,49 +412,6 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
       (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMomEval)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
-      (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm
-  have hCons := hM m hm
-  have hEq :
-      attrSD (ν) (gTotalΘ (gB := gB) θ0)
-        = attrSD (ν) gTrue :=
-    attrSD_congr_ae
-      (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
-  exact ⟨hCons, hEq⟩
-
-theorem paper_sd_total_sequential_consistency_to_true_target_ae_of_randomization
-    (Y : Attr → Ω → ℝ)
-    (hRand : ConjointRandomizationStream (μexp := ρ) (A := A) (Y := Y))
-    (hMomEval : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (hSplitTotalBounded :
-      ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-          (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
-    (gTrue : Attr → ℝ)
-    (hTrue :
-      InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ᵐ ω ∂ρ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
-              (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
-        ∧
-        attrSD (ν) (gTotalΘ (gB := gB) θ0)
-          = attrSD (ν) gTrue := by
-  rcases paper_sd_total_sequential_consistency_ae_of_randomization
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (Y := Y) (hRand := hRand)
-      (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hMom := hMomEval) (hSplitTotalBounded := hSplitTotalBounded)
-      (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩

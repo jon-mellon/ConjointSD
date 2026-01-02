@@ -12,7 +12,6 @@ Part 1: core targets
 
 Part 2: the main estimator
 - `paperTotalSDEst` is the weighted evaluation-stage [standard deviation](jargon_standard_deviation.md) estimator for the total score induced by the term model.
-- `paper_total_sd_estimator_consistency_ae_of_gBTerm` proves the estimator is [sequentially [consistent](jargon_consistency.md)](jargon_sequential_consistency.md) for the paper's total [standard deviation](jargon_standard_deviation.md) target, assuming coefficient identification, bounded evaluation score/weights (`SplitEvalWeightAssumptionsBounded`), and plug‑in moment convergence (`PlugInMomentAssumptions`).
 
 Part 3: [bridge](jargon_bridge.md) to the causal target
 - `gTotalTheta_eq_gTotal_gBTerm` shows how the total score at `theta0` matches the term-based total score.

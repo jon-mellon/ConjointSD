@@ -24,10 +24,6 @@ output of `Scratch.lean`.
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
@@ -39,16 +35,20 @@ output of `Scratch.lean`.
 <col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
+<col style="width: 1%" />
+<col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
+<col style="width: 1%" />
 <col style="width: 0%" />
+<col style="width: 1%" />
+<col style="width: 1%" />
 <col style="width: 0%" />
-<col style="width: 0%" />
-<col style="width: 0%" />
+<col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 0%" />
 <col style="width: 1%" />
@@ -61,21 +61,17 @@ output of `Scratch.lean`.
 <col style="width: 1%" />
 <col style="width: 1%" />
 <col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
-<col style="width: 1%" />
 <col style="width: 2%" />
 <col style="width: 2%" />
 <col style="width: 2%" />
 <col style="width: 1%" />
-<col style="width: 3%" />
-<col style="width: 3%" />
+<col style="width: 2%" />
+<col style="width: 2%" />
 <col style="width: 1%" />
-<col style="width: 0%" />
+<col style="width: 4%" />
+<col style="width: 4%" />
+<col style="width: 1%" />
+<col style="width: 1%" />
 <col style="width: 0%" />
 <col style="width: 1%" />
 <col style="width: 0%" />
@@ -148,8 +144,6 @@ ApproxWellSpecified</th>
 ApproxWellSpecifiedAE</th>
 <th style="text-align: left;">approxWellSpecified of
 approxNoInteractions of fullMainEffects</th>
-<th style="text-align: left;">paper total sd estimator consistency ae of
-gBTerm</th>
 <th style="text-align: left;">paper identifies potMean from
 condMean</th>
 <th style="text-align: left;">paper identifies amce from condMeans</th>
@@ -159,12 +153,8 @@ status</th>
 WellSpecified</th>
 <th style="text-align: left;">paper sd blocks sequential consistency
 ae</th>
-<th style="text-align: left;">paper sd blocks sequential consistency ae
-of randomization</th>
 <th style="text-align: left;">paper sd total sequential consistency
 ae</th>
-<th style="text-align: left;">paper sd total sequential consistency ae
-of randomization</th>
 <th style="text-align: left;">paper sd blocks sequential consistency to
 true target ae</th>
 <th style="text-align: left;">paper sd blocks sequential consistency to
@@ -173,8 +163,6 @@ approx target ae</th>
 approx target ae</th>
 <th style="text-align: left;">paper sd total sequential consistency to
 true target ae</th>
-<th style="text-align: left;">paper sd total sequential consistency to
-true target ae of randomization</th>
 <th style="text-align: left;">paper sd total sequential consistency to
 gStar approx ae of ApproxWellSpecifiedAE</th>
 <th style="text-align: left;">paper sd total sequential consistency to
@@ -252,7 +240,6 @@ fullMainEffects</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -260,11 +247,8 @@ fullMainEffects</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -344,10 +328,6 @@ fullMainEffects</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -402,10 +382,6 @@ fullMainEffects</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -502,12 +478,8 @@ fullMainEffects</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -583,12 +555,8 @@ fullMainEffects</th>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -622,10 +590,6 @@ cont</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -746,12 +710,8 @@ cont</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -820,13 +780,9 @@ cont</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -901,13 +857,9 @@ cont</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -982,13 +934,9 @@ cont</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1063,13 +1011,9 @@ cont</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1144,13 +1088,9 @@ cont</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1225,13 +1165,9 @@ cont</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1258,7 +1194,7 @@ cont</td>
 <tr>
 <td style="text-align: left;">ConjointRandomizationStream exists
 randomization</td>
-<td style="text-align: left;">9</td>
+<td style="text-align: left;">6</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1313,14 +1249,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
@@ -1339,7 +1271,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">DesignAttrIID identA</td>
-<td style="text-align: left;">28</td>
+<td style="text-align: left;">24</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1388,14 +1320,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1420,7 +1348,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">DesignAttrIID indepA</td>
-<td style="text-align: left;">28</td>
+<td style="text-align: left;">24</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1469,14 +1397,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1501,7 +1425,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">DesignAttrIID measA</td>
-<td style="text-align: left;">28</td>
+<td style="text-align: left;">24</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1550,14 +1474,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1582,7 +1502,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">EvalAttrIID identA</td>
-<td style="text-align: left;">19</td>
+<td style="text-align: left;">15</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1631,14 +1551,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1663,7 +1579,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">EvalAttrIID indepA</td>
-<td style="text-align: left;">19</td>
+<td style="text-align: left;">15</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1712,14 +1628,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1744,7 +1656,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">EvalAttrIID measA</td>
-<td style="text-align: left;">19</td>
+<td style="text-align: left;">15</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1793,14 +1705,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1825,7 +1733,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">EvalWeightMatchesPopMoments measA0</td>
-<td style="text-align: left;">19</td>
+<td style="text-align: left;">15</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -1874,14 +1782,10 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -1968,10 +1872,6 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -1987,7 +1887,7 @@ randomization</td>
 </tr>
 <tr>
 <td style="text-align: left;">InvarianceAE</td>
-<td style="text-align: left;">18</td>
+<td style="text-align: left;">16</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2036,19 +1936,15 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2142,10 +2038,6 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 </tr>
 <tr>
 <td style="text-align: left;">NoInteractions</td>
@@ -2166,10 +2058,6 @@ randomization</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2292,10 +2180,6 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2329,10 +2213,6 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2455,10 +2335,6 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -2491,10 +2367,6 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2617,10 +2489,6 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
@@ -2653,10 +2521,6 @@ zero</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2779,10 +2643,6 @@ tendsto</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2817,10 +2677,6 @@ tendsto</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2943,10 +2799,6 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -2980,10 +2832,6 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3105,10 +2953,6 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3142,10 +2986,6 @@ fInter</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3268,10 +3108,6 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3288,7 +3124,7 @@ isUnit</td>
 </tr>
 <tr>
 <td style="text-align: left;">PlugInMomentAssumptions m2 tendsto</td>
-<td style="text-align: left;">20</td>
+<td style="text-align: left;">16</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3337,14 +3173,10 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3369,7 +3201,7 @@ isUnit</td>
 </tr>
 <tr>
 <td style="text-align: left;">PlugInMomentAssumptions mean tendsto</td>
-<td style="text-align: left;">20</td>
+<td style="text-align: left;">16</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3418,14 +3250,10 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3451,10 +3279,6 @@ isUnit</td>
 <tr>
 <td style="text-align: left;">ScoreAssumptions int g0 sq</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3605,15 +3429,11 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
-<td style="text-align: left;">❌</td>
 </tr>
 <tr>
 <td style="text-align: left;">SplitEvalWeightAssumptionsBounded
 hBoundW</td>
-<td style="text-align: left;">19</td>
+<td style="text-align: left;">15</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3662,14 +3482,10 @@ hBoundW</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3695,7 +3511,7 @@ hBoundW</td>
 <tr>
 <td style="text-align: left;">SplitEvalWeightAssumptionsBounded
 hMeasW</td>
-<td style="text-align: left;">19</td>
+<td style="text-align: left;">15</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3744,14 +3560,10 @@ hMeasW</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
-<td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
 <td style="text-align: left;">✅</td>
@@ -3781,7 +3593,7 @@ hMeasW</td>
 
 ## Theorem dependency DAG
 
-<img src="dependency_tables_files/theorem_dependency_dag.png" width="3284" />
+<img src="dependency_tables_files/theorem_dependency_dag.png" width="2544" />
 
 ## OLS SD consistency DAG (direct assumptions)
 
