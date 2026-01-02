@@ -34,6 +34,9 @@ structure ConjointRandomizationStream
       (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
       ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
 ```
+**English version**: there is a randomization variable sequence `U i` and a measurable map `f`
+so that each `A i` is generated as `f (U i)`; the `U i` are measurable, i.i.d. across indices,
+and each `U i` is independent of every potential outcome `Y x` under `μexp`.
 
 ### 2) IID evaluation stream
 **Assumption**: `EvalAttrIID` for `Aeval`.
@@ -53,6 +56,8 @@ structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
   indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
   identA : ∀ i, IdentDistrib (A i) (A 0) κ κ
 ```
+**English version**: each evaluation draw `A i` is measurable; any two distinct draws are
+independent; and every draw has the same distribution as `A 0` under `κ`.
 
 ### 3) Paper OLS design bundle
 **Assumption**: `PaperOLSDesignAssumptions`.
@@ -107,6 +112,9 @@ structure PaperOLSDesignAssumptions
   meas_gStar : Measurable (gStar (μexp := μexp) (Y := Y))
   bound_gStar : ∃ C, 0 ≤ C ∧ ∀ a, |gStar (μexp := μexp) (Y := Y) a| ≤ C
 ```
+**English version**: the paper feature map has measurable, uniformly bounded main and
+interaction components; the true causal score `gStar` is measurable and uniformly bounded;
+and the observation noise has zero conditional mean and satisfies a feature-weighted LLN.
 
 ### 4) Full‑rank design
 **Assumption**: `PaperOLSFullRankAssumptions`.
@@ -129,6 +137,8 @@ structure PaperOLSFullRankAssumptions
         (xiAttr := xiAttr)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
 ```
+**English version**: the Gram matrix of the paper feature map under the attribute law
+`xiAttr` is invertible.
 
 ### 5) Full main‑effects basis
 **Assumption**: `FullMainEffectsTerms`.
@@ -152,6 +162,9 @@ def FullMainEffectsTerms
           =
         α0 + ∑ k : K, main k (x k)
 ```
+**English version**: for any intercept `α0` and any collection of per-attribute main
+effects, there exists coefficients `β` so that `gLin` exactly reproduces the additive
+surface `α0 + Σ_k main k (x k)` for all profiles `x`.
 
 ### 6) No interactions
 **Assumption**: `NoInteractions`.
@@ -171,6 +184,8 @@ def NoInteractions
   ∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
     ∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)
 ```
+**English version**: there exists an intercept and per-attribute main effects so that the
+true causal score `gStar` is exactly additive in attributes for every profile.
 
 ### 7) Weighted evaluation moments
 **Assumption**: `EvalWeightMatchesPopMoments` (for every block score and every `m`).
@@ -204,6 +219,8 @@ structure EvalWeightMatchesPopMoments
       =
     attrM2 ν s
 ```
+**English version**: for the evaluation sample, the weight-normalized mean and second
+moment of score `s` match the population mean and second moment under `ν`.
 
 ### 8) Weighted evaluation boundedness (with IID)
 **Assumption**: `SplitEvalWeightAssumptionsBounded` (for every block score and every `m`).
@@ -231,6 +248,9 @@ structure SplitEvalWeightAssumptionsBounded
   hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C
   hW0 : designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
 ```
+**English version**: the evaluation attributes are IID; both the fitted score `gHat` and
+weights `w` are measurable and uniformly bounded; and the mean of the weight process is
+nonzero.
 
 ### 9) External validity (transport)
 **Assumption**: `InvarianceAE`.
@@ -245,6 +265,8 @@ structure SplitEvalWeightAssumptionsBounded
 def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
   ∀ᵐ x ∂ν, gExp x = gPop x
 ```
+**English version**: the experimental score and population target score agree for
+`ν`-almost every attribute profile.
 
 ### 10) Epsilon positivity
 **Assumption**: `EpsilonAssumptions`.
@@ -259,6 +281,7 @@ def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
 structure EpsilonAssumptions (ε : ℝ) : Prop where
   pos : 0 < ε
 ```
+**English version**: the tolerance parameter `ε` is strictly positive.
 
 ## 1) Start with randomized assignment
 
@@ -417,3 +440,8 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
                   (gBlockTerm (blk := blk) (β := θ0)
                     (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b)
 ```
+**English version**: there exists a coefficient vector `θ0` such that, for `μexp`‑almost
+every training path `ω`, there is a cutoff `M` where for all `m ≥ M` and every block `b`,
+the weighted evaluation error `totalErr` is eventually below `ε` along `ρ`‑almost every
+evaluation path, and the population SD of the model block score at `θ0` equals the
+population SD of the true block term.

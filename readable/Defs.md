@@ -12,7 +12,7 @@ Highlights:
 - Attribute-distribution and experimental design distribution moment functionals:
   `attrMean`, `attrM2`, `attrVar`, `attrSD` (all parameterized by a generic attribute
   distribution `xiAttr`; use `ν` only for the target population in transport files),
-  `meanHatZ`, `m2HatZ`,
+  `meanHatZ`,
   `designMeanZ`/`designM2Z`/`designVarZ`/`designSDZ`
   (see [mean](jargon_mean.md), [variance](jargon_variance.md),
   [standard deviation](jargon_standard_deviation.md)).

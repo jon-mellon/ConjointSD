@@ -77,10 +77,6 @@ def kappaDesign {Attr : Type*} [MeasurableSpace Attr] (A : ℕ → Ω → Attr) 
 def meanHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   ((n : ℝ)⁻¹) • (Finset.sum (Finset.range n) fun i => Z i ω)
 
-/-- Empirical second moment: (1/n) • ∑_{i<n} (Z i ω)^2. -/
-def m2HatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  ((n : ℝ)⁻¹) • (Finset.sum (Finset.range n) fun i => (Z i ω) ^ 2)
-
 /-- Weights evaluated along a draw stream `A`. -/
 def Wcomp {Attr : Type*} (A : ℕ → Ω → Attr) (w : Attr → ℝ) : ℕ → Ω → ℝ :=
   fun i ω => w (A i ω)
