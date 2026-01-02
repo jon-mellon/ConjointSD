@@ -221,25 +221,6 @@ Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
 `attrSD ν (gTotalΘ gB θ0) = attrSD ν gTrue`.
 
-## paper sd total sequential consistency to gPot ae of identification (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: If the model targets the observed score and the observed score equals
-the causal score, then the sequential
-[standard deviation](readable/jargon_standard_deviation.md)
-[consistency](readable/jargon_consistency.md) target is the causal score.
-
-Intuition: Identification turns the observed score into the causal score, so the
-[standard deviation](readable/jargon_standard_deviation.md) equality under the
-target [distribution](readable/jargon_distribution.md) transfers to `gPot`.
-
-Formalization (Lean name): `paper sd total sequential consistency to gPot ae of identification`
-
-Formalization (math):
-Sequential consistency for `gTotalΘ gB`, plus
-`attrSD ν (gTotalΘ gB θ0) = attrSD ν (gPot μexp Y)`.
-
 ## paper total sd estimator consistency ae of gBTerm (PaperCoreEstimand)
 
 File: `ConjointSD/PaperCoreEstimand.lean`
@@ -260,27 +241,6 @@ Formalization (Lean name): `paper total sd estimator consistency ae of gBTerm`
 
 Formalization (math):
 `|paperTotalSDEst μ A w blk βOf φ θhat m n - paperTotalSD ν blk β0 φ| < ε` a.e. eventually.
-
-## paper sd total sequential consistency to gStar ae of gBTerm (PaperCoreEstimand)
-
-File: `ConjointSD/PaperCoreEstimand.lean`
-
-Statement: If the [term](readable/jargon_term.md) model is
-[well specified](readable/jargon_well_specified.md)
-for `gStar`, then the sequential
-[standard deviation](readable/jargon_standard_deviation.md)
-[consistency](readable/jargon_consistency.md) target can be stated for the
-`gStar` [standard deviation](readable/jargon_standard_deviation.md).
-
-Intuition: Well specification identifies the causal score with the model score,
-so the [standard deviation](readable/jargon_standard_deviation.md) target under
-the target [distribution](readable/jargon_distribution.md) transfers to `gStar`.
-
-Formalization (Lean name): `paper sd total sequential consistency to gStar ae of gBTerm`
-
-Formalization (math):
-Sequential consistency for `gTotalΘ (gBTerm ...)`, plus
-`attrSD ν (gTotalΘ (gBTerm ...) θ0) = attrSD ν (gStar μexp Y)`.
 
 ## attrSD diff le of L2Approx (TargetEquivalence)
 
@@ -435,110 +395,6 @@ Formalization (Lean name): `paper sd total sequential consistency to gStar appro
 Formalization (math):
 `|attrSD ν gTotal - attrSD ν gStar(μexp)| ≤ bound`.
 
-## paper sd blocks and total sequential consistency ae of paper ols design ae (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
-(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, well‑specification, and bounded/measurable
-features, block and total
-[sequential consistency](readable/jargon_sequential_consistency.md) holds
-almost surely over training draws for the [term](readable/jargon_term.md) model.
-
-Intuition: design‑side OLS assumptions yield raw parameter convergence and
-moment convergence along a.e. training paths, and bounded features supply
-functional continuity, together driving the
-[standard deviation](readable/jargon_standard_deviation.md)
-[consistency](readable/jargon_consistency.md) chain.
-
-Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols design ae`
-
-Formalization (math):
-Block and total `totalErr` go to 0 sequentially under design‑side OLS assumptions.
-
-## paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
-(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, and
-the no‑[interactions](readable/jargon_interaction.md) assumption plus a full
-main‑effects term basis for `φPaper`, there exists a coefficient vector `θ0`
-so block and total
-[sequential consistency](readable/jargon_sequential_consistency.md) holds
-almost surely over training draws.
-
-Intuition: No interactions pins the causal target to an additive main‑effects
-surface, the full main‑effects basis lets `φPaper` represent it, and the OLS
-design assumptions deliver the SD consistency chain.
-
-Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions`
-
-Formalization (math):
-`NoInteractions ∧ FullMainEffectsTerms φPaper -> ∃ θ0,` block and total `totalErr` go to 0 sequentially under design‑side OLS assumptions.
-
-## paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions of randomization (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: Under randomized assignment of attributes, the paper’s design-side OLS bundle,
-full‑rank, no‑[interactions](readable/jargon_interaction.md), and a full main‑effects term
-basis for `φPaper`, there exists a coefficient vector `θ0` so block and total
-[sequential consistency](readable/jargon_sequential_consistency.md) holds almost surely.
-
-Intuition: Randomized assignment yields the IID design condition, which together with the
-paper OLS assumptions and no‑[interactions](readable/jargon_interaction.md) yields a
-well‑specified additive model and the SD consistency chain.
-
-Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions of randomization`
-
-Formalization (math):
-`ConjointRandomizationStream ∧ NoInteractions ∧ FullMainEffectsTerms φPaper -> ∃ θ0,` block and total `totalErr` go to 0 sequentially under the paper OLS design assumptions.
-
-## paper sd total sequential consistency ae of paper ols gStar total (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
-(`PaperOLSDesignAssumptions`, including observation-noise LLN), full‑rank, and
-[well-specification](readable/jargon_well_specified.md), the total sequential
-[consistency](readable/jargon_consistency.md) target is the
-[standard deviation](readable/jargon_standard_deviation.md) of `gStar`.
-
-Intuition: design‑side OLS assumptions yield raw parameter convergence and
-bounded-feature continuity, and
-[well-specification](readable/jargon_well_specified.md) transfers the
-[standard deviation](readable/jargon_standard_deviation.md) target to the causal
-score.
-
-Formalization (Lean name): `paper sd total sequential consistency ae of paper ols gStar total`
-
-Formalization (math):
-For a.e. training draw, `attrSD ν gTotal = attrSD ν gStar(μexp)` under design‑side OLS assumptions and well‑spec.
-
-## paper sd total sequential consistency ae of paper ols design total ae (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: Under design IID (`DesignAttrIID`), the paper’s design-side OLS bundle
-(`PaperOLSDesignAssumptions`, including observation-noise LLN), the full‑rank condition (`PaperOLSFullRankAssumptions`), and
-well‑specification, the total
-sequential [consistency](readable/jargon_consistency.md) result holds a.e. over
-training draws, and the total-score [standard deviation](readable/jargon_standard_deviation.md)
-target equals the `gStar` target.
-
-Intuition: the design‑side assumptions yield raw parameter convergence (with
-normal equations derived from well‑specification and bounded features) and
-bounded-feature continuity along almost all training sample paths, so the
-sequential consistency chain can be applied without separately assuming
-plug‑in moment convergence or functional continuity.
-
-Formalization (Lean name): `paper_sd_total_sequential_consistency_ae_of_paper_ols_design_total_ae`
-
-Formalization (math):
-For a.e. training draw, total `totalErr` goes to 0 sequentially and
-`attrSD ν gTotal = attrSD ν gStar(μexp)`.
-
 ## paper ols normal eq of wellSpecified (PaperOLSConsistency)
 
 File: `ConjointSD/PaperOLSConsistency.lean`
@@ -556,36 +412,6 @@ Formalization (math):
 Normal equations for the population OLS coefficients follow from
 `gStar = gLin θ0` and bounded/measurable features.
 
-## paper ols fullRank of orthogonal (PaperOLSConsistency)
-
-File: `ConjointSD/PaperOLSConsistency.lean`
-
-Statement: If the paper feature map is orthogonal under `ν` and each feature has
-nonzero second moment, then the population Gram matrix is invertible (full‑rank).
-
-Intuition: orthogonality makes the Gram matrix diagonal, and nonzero diagonal
-entries make the determinant nonzero.
-
-Formalization (Lean name): `paper_ols_fullRank_of_orthogonal`
-
-Formalization (math):
-Orthogonal/nondegenerate feature moments imply `IsUnit (attrGram ν φPaper)`.
-
-## paper ols fullRank of posDef (PaperOLSConsistency)
-
-File: `ConjointSD/PaperOLSConsistency.lean`
-
-Statement: If the population Gram matrix of the paper feature map is positive
-definite, then it is invertible (full‑rank).
-
-Intuition: positive definiteness implies all nonzero vectors have positive
-quadratic form, so the matrix is invertible.
-
-Formalization (Lean name): `paper_ols_fullRank_of_posDef`
-
-Formalization (math):
-`(attrGram ν φPaper).PosDef` implies `IsUnit (attrGram ν φPaper)`.
-
 ## paper ols attr moments of design ae (PaperOLSConsistency)
 
 File: `ConjointSD/PaperOLSConsistency.lean`
@@ -602,44 +428,6 @@ Formalization (Lean name): `paper_ols_attr_moments_of_design_ae`
 
 Formalization (math):
 `OLSMomentAssumptionsOfAttr` holds a.e. given design LLN and inverse Gram convergence.
-
-## paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: If raw parameter convergence and
-`FunctionalContinuityAssumptions` hold and the model is
-[well-specified](readable/jargon_well_specified.md) for `gStar`, the total
-[standard deviation](readable/jargon_standard_deviation.md) target is the
-`gStar` [standard deviation](readable/jargon_standard_deviation.md).
-
-Intuition: functional continuity plus θ-hat convergence drive the same
-[standard deviation](readable/jargon_standard_deviation.md) target transfer as
-plug‑in moment convergence.
-
-Formalization (Lean name): `paper sd total sequential consistency to gStar ae of WellSpecified of hGTotal`
-
-Formalization (math):
-`attrSD ν gTotal = attrSD ν gStar(μexp)` under θ-hat convergence,
-`FunctionalContinuityAssumptions`, and well-spec.
-
-## paper sd total sequential consistency to gStar ae of NoInteractions (PaperWrappers)
-
-File: `ConjointSD/PaperWrappers.lean`
-
-Statement: Under the no-[interactions](readable/jargon_interaction.md)
-assumption, the total
-[standard deviation](readable/jargon_standard_deviation.md) target is the
-`gStar` [standard deviation](readable/jargon_standard_deviation.md).
-
-Intuition: No-[interactions](readable/jargon_interaction.md) implies
-[well-specification](readable/jargon_well_specified.md), which transfers the
-[standard deviation](readable/jargon_standard_deviation.md) target to `gStar`.
-
-Formalization (Lean name): `paper sd total sequential consistency to gStar ae of NoInteractions`
-
-Formalization (math):
-`attrSD ν gTotal = attrSD ν gStar(μexp)` under no-interactions.
 
 ## paper sd total sequential consistency to true target ae of paper ols design ae of NoInteractions of randomization (PaperWrappers)
 

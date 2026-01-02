@@ -15,8 +15,6 @@ Assumption package:
   - `paper_ols_attr_moments_of_design_ae` combines that LLN with inverse‑Gram stability to yield `OLSMomentAssumptionsOfAttr` a.e. under the design law.
 - `PaperOLSFullRankAssumptions` is the explicit full‑rank premise that feeds the derivation of inverse‑Gram stability and identification (`hInv`/`hId`) from the design; the normal equations are now derived from well‑specification plus bounded/measurable features.
 - `paper_ols_gramInv_tendsto_of_design_ae` derives inverse‑Gram convergence a.e. from the design bundle plus `PaperOLSFullRankAssumptions`.
-- `paper_ols_fullRank_of_orthogonal` derives the full‑rank condition from an orthogonality/variation assumption on the paper features (`PaperOLSOrthogonalAssumptions`).
-- `paper_ols_fullRank_of_posDef` derives the full‑rank condition from positive definiteness of the Gram matrix (`PaperOLSPosDefAssumptions`).
 - `paper_ols_theta0_eq_of_normal_eq` derives the identification equation `θ0 = (attrGram)⁻¹ * attrCross` from the normal‑equation identity and full‑rank.
 - `paper_ols_normal_eq_of_wellSpecified` derives the normal‑equation identity from well‑specification plus bounded/measurable paper features.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN and inverse‑Gram stability into the a.e. `OLSMomentAssumptionsOfAttr` statement used by later theorems.

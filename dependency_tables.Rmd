@@ -420,7 +420,6 @@ if (!requireNamespace("DiagrammeR", quietly = TRUE) ||
 ols_sd_core <- c(
   "paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization",
   "paper_sd_total_sequential_consistency_to_true_target_ae",
-  "paper_sd_total_sequential_consistency_ae_of_hGTotal",
   "theta_tendsto_of_paper_ols_design_ae",
   "theta_tendsto_of_paper_ols_moments",
   "theta_tendsto_of_paper_ols_moments_ae",

@@ -16,6 +16,5 @@ Part 2: the main estimator
 
 Part 3: [bridge](jargon_bridge.md) to the causal target
 - `gTotalTheta_eq_gTotal_gBTerm` shows how the total score at `theta0` matches the term-based total score.
-- `paper_sd_total_sequential_consistency_to_gStar_ae_of_gBTerm` then targets the causal score `gStar` when the term model is [well-specified](jargon_well_specified.md).
 
 Overall, this file packages the paper's target quantities and shows the main estimator [converges](jargon_convergence.md) to them under the stated assumptions.

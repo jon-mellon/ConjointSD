@@ -28,4 +28,4 @@ transporting social status variation.
 
 Under these assumptions, the estimated model converges to the true status
 assignment function, and the predicted population status dispersion converges
-to the true dispersion.
+to the true dispersion including for subcomponents that can be decomposed from the additive status scoring function.
