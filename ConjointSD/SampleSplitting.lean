@@ -24,23 +24,6 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
 
-lemma splitEvalAssumptions_of_bounded
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
-    (A : ℕ → Ω → Attr)
-    (hPop : EvalAttrIID (κ := ρ) A)
-    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ)
-    (h : SplitEvalAssumptionsBounded (ρ := ρ) (A := A) (g := g) (θhat := θhat) m) :
-    SplitEvalAssumptions (ρ := ρ) (A := A) (g := g) (θhat := θhat) m := by
-  have hPop' : DesignAttrIID (κ := ρ) A :=
-    { measA := hPop.measA, indepA := hPop.indepA, identA := hPop.identA }
-  have hScore :
-      ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m) :=
-    scoreAssumptions_of_bounded
-      (μexp := ρ) (A := A) (g := gHat g θhat m)
-      (hPop := hPop') (hMeas := h.hMeas) (hBound := h.hBound)
-  exact ⟨hPop, hScore⟩
-
 /--
 For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converges a.s.
     to the population SD under weighted evaluation moments.

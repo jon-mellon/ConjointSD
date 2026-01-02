@@ -95,63 +95,6 @@ lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
   simpa [meanHatZ, designMeanZ, Z] using
     (ProbabilityTheory.strong_law_ae (μ := μexp) (X := Z) hInt hInd hId)
 
-lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
-    (hMeas : Measurable g)
-    (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
-    ∀ᵐ ω ∂μexp,
-      Tendsto
-        (fun n : ℕ => m2HatZ (Z := Zcomp (A := A) (g := g)) n ω)
-        atTop
-        (nhds (designM2Z (κ := μexp) (Z := Zcomp (A := A) (g := g)))) := by
-  let Z : ℕ → Ω → ℝ := Zcomp (A := A) (g := g)
-  let Zsq : ℕ → Ω → ℝ := fun i ω => (Z i ω) ^ 2
-  have hInt : Integrable (Zsq 0) μexp := by
-    obtain ⟨C, hC0, hC⟩ := hBound
-    have hmeasA0 : Measurable (A 0) := hIID.measA 0
-    have hmeas_gA0 : Measurable (fun ω => g (A 0 ω)) := hMeas.comp hmeasA0
-    have hmeas_sq : Measurable (fun ω => (g (A 0 ω)) ^ 2) := by
-      simpa [pow_two] using (hmeas_gA0.mul hmeas_gA0)
-    have hbound_sq : ∃ C2, 0 ≤ C2 ∧ ∀ ω, |(g (A 0 ω)) ^ 2| ≤ C2 := by
-      refine ⟨C ^ 2, ?_, ?_⟩
-      · nlinarith
-      · intro ω
-        have hCω : |g (A 0 ω)| ≤ C := hC (A 0 ω)
-        have hmul : |g (A 0 ω)| * |g (A 0 ω)| ≤ C * C :=
-          mul_le_mul hCω hCω (abs_nonneg _) hC0
-        simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul
-    have hInt' : Integrable (fun ω => (g (A 0 ω)) ^ 2) μexp :=
-      integrable_of_bounded (μexp := μexp) hmeas_sq hbound_sq
-    simpa [Z, Zcomp, Zsq] using hInt'
-  have hInd : Pairwise (fun i j => IndepFun (Zsq i) (Zsq j) μexp) := by
-    intro i j hij
-    have hijA : IndepFun (A i) (A j) μexp := hIID.indepA hij
-    have hijZ : IndepFun (g ∘ (A i)) (g ∘ (A j)) μexp :=
-      hijA.comp hMeas hMeas
-    have : IndepFun ((fun x : ℝ => x ^ 2) ∘ (g ∘ (A i)))
-        ((fun x : ℝ => x ^ 2) ∘ (g ∘ (A j))) μexp :=
-      hijZ.comp measurable_sq measurable_sq
-    simpa [Z, Zcomp, Zsq, Function.comp] using this
-  have hId : ∀ i, IdentDistrib (Zsq i) (Zsq 0) μexp μexp := by
-    intro i
-    have hiA : IdentDistrib (A i) (A 0) μexp μexp := hIID.identA i
-    have hiZ : IdentDistrib (g ∘ (A i)) (g ∘ (A 0)) μexp μexp :=
-      hiA.comp hMeas
-    have : IdentDistrib ((fun x : ℝ => x ^ 2) ∘ (g ∘ (A i)))
-        ((fun x : ℝ => x ^ 2) ∘ (g ∘ (A 0))) μexp μexp :=
-      hiZ.comp measurable_sq
-    simpa [Z, Zcomp, Zsq, Function.comp] using this
-  have hslln :
-      ∀ᵐ ω ∂μexp,
-        Tendsto
-          (fun n : ℕ =>
-            ((n : ℝ)⁻¹) • (Finset.sum (Finset.range n) fun i => Zsq i ω))
-          atTop
-          (nhds (∫ ω, Zsq 0 ω ∂μexp)) :=
-    ProbabilityTheory.strong_law_ae (μ := μexp) (X := Zsq) hInt hInd hId
-  simpa [m2HatZ, designM2Z, Zsq] using hslln
-
 lemma meanHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
