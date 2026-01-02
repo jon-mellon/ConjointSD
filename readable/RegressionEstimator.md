@@ -6,7 +6,6 @@ This file formalizes an [OLS](jargon_ols.md)-style [regression](jargon_regressio
 
 Key pieces:
 - `empiricalRisk`: the average squared error for a [linear model](jargon_linear_model.md) on the first `n` samples.
-- `OLSSequence`: a sequence of [parameter](jargon_parameter.md) estimates that minimize the empirical risk at each `n`.
 - `gramMatrix` and `crossVec`: the empirical matrices used in the normal equations.
 - `olsThetaHat`: the closed-form normal-equation estimator based on `gramMatrix` and `crossVec`.
 

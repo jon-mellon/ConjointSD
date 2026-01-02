@@ -19,7 +19,7 @@ Main logical steps:
 3) Use consistency to replace `Yobs` with `Y x0` inside the conditional mean.
 4) Combine the above to identify `amce` as a difference of observed [conditional means](jargon_conditional_mean.md).
 Final result:
-- The file defines `gExp` (the observed [conditional mean](jargon_conditional_mean.md) score) and `gPot` (the causal score) for use in identification statements.
+- The file defines `gExp` (the observed [conditional mean](jargon_conditional_mean.md) score) for use in identification statements.
 
 In plain [terms](jargon_term.md): under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function (given a separate positivity assumption for the conditioning events).
 

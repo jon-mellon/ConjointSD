@@ -179,55 +179,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     finite variance and supports LLN steps for SD consistency. Intuition: the
     score cannot have explosive tails if we want stable dispersion estimates.
     Formal: `Integrable (fun ω => (g (A 0 ω)) ^ 2) μexp`.
-- `DecompAssumptions`: bundles attribute-stream [i.i.d.](jargon_iid.md) properties (derived from
-  `ConjointRandomizationStream`), [measurability](jargon_measurable.md) of each
-  [block](jargon_block.md) score `g b`, and a uniform [boundedness](jargon_boundedness.md) condition for
-  every block. Boundedness guarantees all required moments and simplifies
-  [variance](jargon_variance.md) decomposition arguments. Concretely, there is
-  a single constant `C` with `|g b(A i)| ≤ C` for all blocks `b` (and all draws
-  `i`), so every block score is uniformly bounded. This gives integrability of
-  each `g b` and every product `g b * g c`, ensures covariances exist, and lets
-  you apply dominated-convergence or LLN-style steps without checking separate
-  tail conditions for each block. These assumptions live on the sample draw
-  process `A` under the experimental design distribution `μexp`.
-  - `DecompAssumptions.meas_g`: each block score is measurable.
-    Intuition: each block score is a valid observable function.
-    Formal: `∀ b, Measurable (g b)`.
-  - `DecompAssumptions.bound_g`: uniform [boundedness](jargon_boundedness.md) across blocks.
-    Intuition: no block has arbitrarily large magnitude, ensuring all block moments exist.
-    Formal: `∀ b, ∃ C, 0 ≤ C ∧ ∀ a, |g b a| ≤ C`.
-
 ## SampleSplitting
 
-- `SplitEvalWeightAssumptions`: weighted evaluation-stage assumptions for sample splitting.
-  For a fixed training index `m`, the estimated score `gHat g θhat m` is treated as
-  a fixed [score](jargon_score.md), and the evaluation draws are paired with weights
-  `w` so that weighted LLNs apply. This lets the weighted empirical
-  [standard deviation](jargon_standard_deviation.md) of the estimated score
-  [converge](jargon_convergence.md) to the target population SD target under `ν`.
-  - `SplitEvalWeightAssumptions.hIID`: i.i.d. assumptions for the evaluation
-    attribute stream `A` under `ρ`. Intuition: evaluation draws are stable and
-    independent enough to apply LLNs. Formal: `EvalAttrIID` for the evaluation law `ρ`.
-  - `SplitEvalWeightAssumptions.hScore`: unweighted score assumptions for `gHat g θhat m`.
-    Intuition: in practice, the estimated score looks like a stable outcome model on the
-    evaluation sample (no obvious nonstationarity or design-induced artifacts).
-    Formal: `ScoreAssumptions` for the evaluation law `ρ`.
-  - `SplitEvalWeightAssumptions.hWeight`: score assumptions for the weights `w`.
-    Intuition: the weighting scheme is well-behaved in the evaluation sample (no extreme
-    weights concentrated on a handful of profiles).
-    Formal: `ScoreAssumptions` for the evaluation law `ρ`.
-  - `SplitEvalWeightAssumptions.hWeightScore`: score assumptions for the weighted score `w * gHat`.
-    Intuition: after reweighting, the score remains stable enough that averages converge
-    in the evaluation sample (no explosive tail behavior driven by weights).
-    Formal: `ScoreAssumptions` for the evaluation law `ρ`.
-  - `SplitEvalWeightAssumptions.hWeightScoreSq`: score assumptions for `w * (gHat)^2`.
-    Intuition: reweighting does not create extreme dispersion in the score, so variance
-    estimates are meaningful.
-    Formal: `ScoreAssumptions` for the evaluation law `ρ`.
-  - `SplitEvalWeightAssumptions.hW0`: the weight mean is nonzero so ratios are well-defined.
-    Intuition: the reweighting scheme has nonzero mass overall (no degenerate weighting
-    that discards essentially all evaluation observations).
-    Formal: `designMeanZ` for the evaluation law `ρ` is nonzero.
 - `SplitEvalWeightAssumptionsBounded`: boundedness-based weighted evaluation assumptions.
   This replaces score/integrability conditions with explicit bounds on the estimated score
   and on the weights, and then derives the needed moment conditions.
@@ -237,34 +190,6 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   - `SplitEvalWeightAssumptionsBounded.hMeasW` / `hBoundW`: measurability and boundedness of
     the weights `w`.
   - `SplitEvalWeightAssumptionsBounded.hW0`: the weight mean is nonzero.
-- `SplitEvalWeightAssumptionsNoIID`: the weighted evaluation assumptions without the IID
-  component, used when IID is derived elsewhere (e.g. from randomized assignment).
-  It packages the same score/weight moment conditions as `SplitEvalWeightAssumptions`,
-  but omits the explicit `EvalAttrIID` requirement.
-  - `SplitEvalWeightAssumptionsNoIID.hScore`: unweighted score assumptions for `gHat g θhat m`.
-  - `SplitEvalWeightAssumptionsNoIID.hWeight`: score assumptions for the weights `w`.
-  - `SplitEvalWeightAssumptionsNoIID.hWeightScore`: score assumptions for the weighted score `w * gHat`.
-  - `SplitEvalWeightAssumptionsNoIID.hWeightScoreSq`: score assumptions for `w * (gHat)^2`.
-  - `SplitEvalWeightAssumptionsNoIID.hW0`: the weight mean is nonzero so ratios are well-defined.
-- `SplitEvalAssumptions`: the unweighted evaluation-stage assumptions used as part of
-  weighted setups. It packages `EvalAttrIID` for the evaluation draws and
-  `ScoreAssumptions` for the fixed score.
-  Intuition: the estimated score is stable enough on its own that sample averages
-  behave like target population averages under `ν` when evaluated on the sample.
-  Formal: `EvalAttrIID` and `ScoreAssumptions` for the evaluation law `ρ`.
-- `SplitEvalAssumptionsBounded`: alternative evaluation assumptions that replace
-  the full `ScoreAssumptions` bundle with a stronger, more concrete checklist:
-  [measurability](jargon_measurable.md) of the fixed evaluation score
-  `gHat g θhat m`, and a global bound on that score. The attribute-stream
-  i.i.d. properties are supplied separately (e.g., via `ConjointRandomizationStream`)
-  when converting to the full evaluation assumptions. This is a stronger but easier-to-check
-  route to the same moment conditions under the evaluation law `ρ`.
-  - `SplitEvalAssumptionsBounded.hMeas`: the estimated score is measurable.
-    Intuition: the score is a valid observable function of attributes.
-    Formal: `Measurable (gHat g θhat m)`.
-  - `SplitEvalAssumptionsBounded.hBound`: uniform boundedness of the score.
-    Intuition: bounded scores guarantee finite moments without extra tail work.
-    Formal: `∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C`.
 
 ## RegressionConsistencyBridge
 
@@ -445,25 +370,6 @@ Reader mapping to standard OLS assumptions:
   The [normal equations](jargon_normal_equations.md) are now derived from
   [well-specification](jargon_well_specified.md) and bounded/measurable paper
   features in `ConjointSD/PaperOLSConsistency.lean`.
-- `PaperOLSOrthogonalAssumptions`: an interpretable feature‑variation condition
-  implying full‑rank. It says off‑diagonal feature cross moments vanish and
-  each feature has nonzero second moment under `xiAttr`, so the [Gram matrix](jargon_gram_matrix.md) is
-  diagonal with nonzero entries.
-  - `PaperOLSOrthogonalAssumptions.gram_diag`: off‑diagonal cross moments are 0.
-    Intuition: under `xiAttr`, attributes are arranged so features do not
-    co-vary (e.g., randomized or mutually independent design).
-    Formal: `attrGram (xiAttr := xiAttr) (φ := φPaper ...) i j = 0` for `i ≠ j`.
-  - `PaperOLSOrthogonalAssumptions.gram_pos`: diagonal moments are nonzero.
-    Intuition: each feature actually varies under `xiAttr`; no attribute is constant.
-    Formal: `attrGram (xiAttr := xiAttr) (φ := φPaper ...) i i ≠ 0`.
-- `PaperOLSPosDefAssumptions`: a more general feature‑variation condition that
-  directly asserts the `xiAttr` [Gram matrix](jargon_gram_matrix.md) is positive definite.
-  - `PaperOLSPosDefAssumptions.gram_posdef`: the [Gram matrix](jargon_gram_matrix.md) is `PosDef`, which
-    implies full‑rank in `PaperOLSConsistency.lean`.
-    Intuition: the feature set has enough independent variation to pin down causal
-    effects without redundancy.
-    Formal: `PosDef (attrGram (xiAttr := xiAttr) (φ := φPaper ...))`.
-
 ## EvaluationWeights
 - `EvalWeightMatchesPopMoments`: evaluation-weight transport assumption. It
   says the weighted mean/second moment of the evaluation draw `A 0` under `ρ`
@@ -496,12 +402,6 @@ Reader mapping to standard OLS assumptions:
   `∃ R U f, (∀ i, Measurable (U i)) ∧ Measurable f ∧ (∀ i, A i = fun ω => f (U i ω)) ∧
     Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧ (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
     ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)`.
-- `NoProfileOrderEffects`: formalizes Assumption 2 by requiring potential outcomes
-  for a task to be invariant under permutations of the profile order, under the
-  experimental design distribution `μexp`. (Hainmueller Assumption 2)
-  - `NoProfileOrderEffects.permute`: invariance to permutations of profile order.
-    Intuition: only the set of profiles matters, not their ordering.
-    Formal: `∀ k t (π : Equiv.Perm J), Y k (permuteProfiles π t) = Y k t`.
 - `ConjointIdRandomized`: a randomized-design variant under a probability
   measure `μexp` (experimental design distribution). It assumes
   [measurable](jargon_measurable.md) assignment,

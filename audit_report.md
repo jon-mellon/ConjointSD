@@ -48,16 +48,12 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - ApproxOracleAE
 - AttrMomentAssumptions aemeas
 - AttrMomentAssumptions int2
-- BlockIntegrable intMul
-- BlockIntegrable intX
 - ConjointIdRandomized bounded
 - ConjointIdRandomized consistency
 - ConjointIdRandomized ignorability
 - ConjointIdRandomized measX
 - ConjointIdRandomized measY
 - ConjointIdRandomized measYobs
-- DecompAssumptions bound_g
-- DecompAssumptions meas_g
 - L2Approx
 
 ## Theorems not in chain
@@ -101,7 +97,6 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - sd_block_consistent
 - status_event_pos
 - status_id_randomized
-- varProxy_sum_eq_sum_covRaw
 
 ## Theorems not used by any other theorem
 
@@ -122,4 +117,3 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - derive_mean_tendsto_blocks
 - functionalContinuity_gPaper_of_bounded
 - sd_block_consistent
-- varProxy_sum_eq_sum_covRaw

@@ -7,28 +7,6 @@ formalization. The list is curated to cover identification,
 [consistency](readable/jargon_consistency.md),
 transport, and model-to-target bridges.
 
-## sdHatZ tendsto ae (PredictedSD)
-
-File: `ConjointSD/PredictedSD.lean`
-
-Statement: Under [IID](readable/jargon_iid.md) and moment assumptions, the
-empirical [standard deviation](readable/jargon_standard_deviation.md) of a real
-process [converges](readable/jargon_convergence.md) almost everywhere to the
-[standard deviation](readable/jargon_standard_deviation.md) under the target
-[distribution](readable/jargon_distribution.md) for the
-[population](readable/jargon_population.md).
-
-Intuition: If draws are i.i.d., the sample moments stabilize, so the sample
-[standard deviation](readable/jargon_standard_deviation.md) approaches the true
-[standard deviation](readable/jargon_standard_deviation.md) under the target
-[distribution](readable/jargon_distribution.md) for the
-[population](readable/jargon_population.md).
-
-Formalization (Lean name): `sdHatZ tendsto ae`
-
-Formalization (math):
-`sdHatZ(Z) -> designSDZ(Z)` a.e. for score processes derived from `DesignAttrIID` plus `ScoreAssumptions`.
-
 ## attrSD congr ae (TargetEquivalence)
 
 File: `ConjointSD/TargetEquivalence.lean`
@@ -116,7 +94,7 @@ Formalization (Lean name): `sequential consistency ae`
 
 Formalization (math):
 `sdEst w m n -> attrSD nu (g theta0)` sequentially, under
-`SplitEvalWeightAssumptions` and `PlugInMomentAssumptions`.
+`SplitEvalWeightAssumptionsBounded` and `PlugInMomentAssumptions`.
 
 ## paper identifies potMean from condMean (PaperWrappers)
 
@@ -196,25 +174,6 @@ Sequential consistency for `gTotalΘ gB`, plus
 `attrSD ν (gTotalΘ gB θ0) = attrSD ν gTrue`.
 
 ## paper total sd estimator consistency ae of gBTerm (PaperCoreEstimand)
-
-File: `ConjointSD/PaperCoreEstimand.lean`
-
-Statement: The paper’s total [standard deviation](readable/jargon_standard_deviation.md)
-[estimator](readable/jargon_estimator.md) (plugging a [term](readable/jargon_term.md)
-model into the target human [population](readable/jargon_population.md) attribute
-[distribution](readable/jargon_distribution.md), with `EvalWeightMatchesPopMoments` connecting
-weighted evaluation moments to `ν`)
-[converges](readable/jargon_convergence.md) to the paper’s total
-[standard deviation](readable/jargon_standard_deviation.md) target.
-
-Intuition: This is the paper-facing version of
-[sequential consistency](readable/jargon_sequential_consistency.md), specialized
-to the [term](readable/jargon_term.md) model used in the manuscript.
-
-Formalization (Lean name): `paper total sd estimator consistency ae of gBTerm`
-
-Formalization (math):
-`|paperTotalSDEst μ A w blk βOf φ θhat m n - paperTotalSD ν blk β0 φ| < ε` a.e. eventually.
 
 ## attrSD diff le of L2Approx (TargetEquivalence)
 

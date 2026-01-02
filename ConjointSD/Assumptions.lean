@@ -132,12 +132,6 @@ end ScoreAssumptions
 
 variable {B : Type*}
 
-/-- Bundle assumptions for all blocks at once. -/
-structure DecompAssumptions (A : ℕ → Ω → Attr) (g : B → Attr → ℝ) : Prop where
-  designAttrIID : DesignAttrIID (κ := κ) A
-  meas_g : ∀ b, Measurable (g b)
-  bound_g : ∀ b, ∃ C, 0 ≤ C ∧ ∀ a, |g b a| ≤ C
-
 end SDDecomposition
 
 section SampleSplitting
@@ -145,62 +139,6 @@ section SampleSplitting
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
-
-/--
-Assumptions needed to evaluate the empirical SD of the score `gHat g θhat m`
-on draws `A n` from the evaluation process.
--/
-structure SplitEvalAssumptions
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
-    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
-  hIID : EvalAttrIID (κ := ρ) A
-  hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
-
-/--
-Weighted-evaluation assumptions for a fixed training index `m`.
-
-These package the IID/integrability conditions needed to apply weighted LLNs.
--/
-structure SplitEvalWeightAssumptions
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
-    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
-  hIID : EvalAttrIID (κ := ρ) A
-  hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
-  hWeight : ScoreAssumptions (κ := ρ) (A := A) (g := w)
-  hWeightScore :
-    ScoreAssumptions (κ := ρ) (A := A)
-      (g := fun a => w a * gHat g θhat m a)
-  hWeightScoreSq :
-    ScoreAssumptions (κ := ρ) (A := A)
-      (g := fun a => w a * (gHat g θhat m a) ^ 2)
-  hW0 :
-    designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
-
-/-- Weighted-evaluation assumptions without IID, for cases where IID is derived. -/
-structure SplitEvalWeightAssumptionsNoIID
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
-    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
-  hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
-  hWeight : ScoreAssumptions (κ := ρ) (A := A) (g := w)
-  hWeightScore :
-    ScoreAssumptions (κ := ρ) (A := A)
-      (g := fun a => w a * gHat g θhat m a)
-  hWeightScoreSq :
-    ScoreAssumptions (κ := ρ) (A := A)
-      (g := fun a => w a * (gHat g θhat m a) ^ 2)
-  hW0 :
-    designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
-
-/-- Boundedness-based assumptions for evaluation at a fixed training index `m`. -/
-structure SplitEvalAssumptionsBounded
-    (ρ : Measure Ω) (A : ℕ → Ω → Attr)
-    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
-  hMeas : Measurable (gHat g θhat m)
-  hBound : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
 
 /--
 Weighted-evaluation assumptions under boundedness, for a fixed training index `m`.
@@ -390,36 +328,6 @@ structure PaperOLSFullRankAssumptions
         (xiAttr := xiAttr)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
 
-structure PaperOLSPosDefAssumptions
-    (xiAttr : Measure Attr)
-    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
-  gram_posdef :
-    (attrGram
-        (xiAttr := xiAttr)
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))).PosDef
-
-structure PaperOLSOrthogonalAssumptions
-    (xiAttr : Measure Attr)
-    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
-  gram_diag :
-    ∀ i j, i ≠ j →
-      attrMean
-          (xiAttr := xiAttr)
-          (fun a =>
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-              *
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) j a)
-        = 0
-  gram_pos :
-    ∀ i,
-      attrMean
-          (xiAttr := xiAttr)
-          (fun a =>
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a
-              *
-            φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) i a)
-        ≠ 0
-
 end PaperOLSDesign
 
 section SurveyWeights
@@ -457,14 +365,6 @@ section ConjointIdentification
 variable {Ω : Type*} [MeasurableSpace Ω]
 variable (μexp : Measure Ω)
 variable {Attr : Type*} [MeasurableSpace Attr]
-
-/--
-Assumption 2 (no profile-order effects within a task): permuting the order of
-profiles within a task does not change the task-level potential outcome.
--/
-structure NoProfileOrderEffects
-    {Task J Attr : Type*} (Y : Task → OrderedProfiles J Attr → Ω → ℝ) : Prop where
-  permute : ∀ k t (π : Equiv.Perm J), Y k (permuteProfiles π t) = Y k t
 
 /--
 Randomization mechanism for an attribute stream `A i`.

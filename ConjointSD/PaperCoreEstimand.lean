@@ -76,30 +76,4 @@ theorem paperTotalSD_def
 
 end CoreEstimand
 
-/-!
-## Main paper estimator: evaluation-stage SD for the term-induced total score
--/
-
-section MainEstimator
-
-variable {Ω : Type*} [MeasurableSpace Ω]
-variable {Attr : Type*} [MeasurableSpace Attr]
-variable {B : Type*} [Fintype B] [DecidableEq B]
-variable {Term : Type*} [Fintype Term]
-variable {Θ : Type*} [TopologicalSpace Θ]
-
-variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
-variable (A : ℕ → Ω → Attr)
-variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
-
-/-- Paper’s main SD estimator: evaluation-stage SD for the term-induced total score. -/
-def paperTotalSDEst
-    (w : Attr → ℝ) (blk : Term → B) (βOf : Θ → Term → ℝ) (φ : Term → Attr → ℝ)
-    (θhat : ℕ → Θ) (m n : ℕ) (ω : Ω) : ℝ :=
-  sdEst ρ A w
-    (gTotalΘ (gB := gBTerm (blk := blk) (βOf := βOf) (φ := φ)))
-    θhat m n ω
-
-end MainEstimator
-
 end ConjointSD

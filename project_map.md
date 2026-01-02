@@ -25,7 +25,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Identification and design
 
-- [ConjointSD/ConjointIdentification.lean](readable/ConjointIdentification.md) formalizes conjoint identification assumptions and derives observed-[mean](readable/jargon_mean.md) identification of [potential outcomes](readable/jargon_potential_outcome.md) and [AMCE](readable/jargon_amce.md); defines `gExp`/`gPot` for score-level identification statements.
+- [ConjointSD/ConjointIdentification.lean](readable/ConjointIdentification.md) formalizes conjoint identification assumptions and derives observed-[mean](readable/jargon_mean.md) identification of [potential outcomes](readable/jargon_potential_outcome.md) and [AMCE](readable/jargon_amce.md); defines `gExp` for score-level identification statements.
 - [ConjointSD/StatusConjointDesign.lean](readable/StatusConjointDesign.md) encodes the specific status-conjoint randomization (uniform over [profiles](readable/jargon_profile.md)/tasks) and proves it satisfies `ConjointIdRandomized`, plus an explicit positivity lemma for assignments.
 
 ## Estimation and sequential consistency

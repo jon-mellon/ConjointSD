@@ -90,14 +90,6 @@ def m2HatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
 def varHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   m2HatZ (Z := Z) n ω - (meanHatZ (Z := Z) n ω) ^ 2
 
-/-- Plug-in empirical SD proxy: √(varHat). -/
-def sdHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  Real.sqrt (varHatZ (Z := Z) n ω)
-
-/-- Empirical RMSE proxy: √(m2Hat). -/
-def rmseHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  Real.sqrt (m2HatZ (Z := Z) n ω)
-
 /-- Weights evaluated along a draw stream `A`. -/
 def Wcomp {Attr : Type*} (A : ℕ → Ω → Attr) (w : Attr → ℝ) : ℕ → Ω → ℝ :=
   fun i ω => w (A i ω)
@@ -154,10 +146,6 @@ def designVarZW (Z W : ℕ → Ω → ℝ) : ℝ :=
 /-- Weighted design SD proxy. -/
 def designSDZW (Z W : ℕ → Ω → ℝ) : ℝ :=
   Real.sqrt (designVarZW (κ := κ) (Z := Z) (W := W))
-
-/-- Experimental design distribution RMSE proxy: √(designM2). -/
-def designRMSEZ (Z : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (designM2Z (κ := κ) Z)
 
 end PredictedSD
 
@@ -236,18 +224,6 @@ def empiricalRisk {Attr : Type u} {Term : Type v} [Fintype Term]
     (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ)
     (n : ℕ) (β : Term → ℝ) : ℝ :=
   (1 / (n : ℝ)) * ∑ i : Fin n, (Y i - gLin (β := β) (φ := φ) (A i)) ^ 2
-
-/--
-An OLS estimator sequence for the linear-in-terms model: each `θhat n` minimizes
-the empirical risk based on the first `n` samples.
--/
-structure OLSSequence {Attr : Type u} {Term : Type v} [Fintype Term]
-    (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ) : Type (max u v) where
-  /-- The coefficient estimate at sample size `n`. -/
-  θhat : ℕ → Term → ℝ
-  is_minimizer :
-    ∀ n β, empiricalRisk (A := A) (Y := Y) (φ := φ) n (θhat n)
-      ≤ empiricalRisk (A := A) (Y := Y) (φ := φ) n β
 
 /--
 Empirical Gram matrix of the feature map for the first `n` samples.

@@ -9,12 +9,6 @@ Key definitions:
   treat the [plug-in](jargon_plug_in.md) score at training index `m` as fixed and apply
   weighted LLNs. It supplies `EvalAttrIID` for the evaluation draws, boundedness and
   measurability for `w` and `gHat`, plus a nonzero weight mean so ratios are well-defined.
-- `SplitEvalWeightAssumptionsNoIID` is the same bundle without the IID component, for
-  cases where IID is derived separately (e.g. from randomized assignment).
-- `SplitEvalAssumptionsBounded` is a boundedness-based version of the unweighted score
-  assumptions used inside the weighted bundles; i.i.d. properties for the evaluation
-  draws are supplied separately when converting to the full evaluation assumptions.
-
 Main results:
 - `sdHat_fixed_m_tendsto_ae_attrSD` says: for fixed `m`, the *weighted* evaluation-stage
   [standard deviation](jargon_standard_deviation.md) [estimator](jargon_estimator.md)

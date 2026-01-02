@@ -36,7 +36,7 @@ structure ConjointRandomizationStream
 ```
 
 ### 2) IID evaluation stream
-**Assumption**: `EvalAttrIID` for `Aeval` (packaged inside `SplitEvalWeightAssumptions`).
+**Assumption**: `EvalAttrIID` for `Aeval`.
 
 **Meaning** (subassumptions):
 - `EvalAttrIID.measA`: each `Aeval i` is measurable.
@@ -264,7 +264,7 @@ structure EpsilonAssumptions (ε : ℝ) : Prop where
 
 We assume randomized assignment for the training stream, and IID for the evaluation stream:
 - `ConjointRandomizationStream` for `Atrain`.
-- IID for `Aeval` (via `SplitEvalWeightAssumptions`).
+- IID for `Aeval`.
 
 **Formal bridge**:
 - `DesignAttrIID.of_randomization_stream` derives IID for the training design only.

@@ -227,31 +227,8 @@ theorem identified_amce_from_condMeans
       x (hpos x)
   simp [hx', hx]
 
-/-!
-## Identified score function (design-mean) equals causal score function (potential mean)
--/
-
 /-- Design-identified score: observed conditional mean among units with `X = x`. -/
 def gExp (μexp : Measure Ω) (X : Ω → Attr) (Yobs : Ω → ℝ) : Attr → ℝ :=
   fun x => condMean (κ := μexp) Yobs (eventX (X := X) x)
-
-/-- Causal score: potential-outcome mean under profile `x`. -/
-def gPot (μexp : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
-  fun x => potMean (κ := μexp) Y x
-
-section ProfileOrder
-
-variable {Task J Attr : Type*}
-
-/-!
-Bridge for Assumption 2: order-invariant task outcomes induce order-invariant
-potential means for the ordered profile lists.
--/
-
-def taskOutcome (k : Task) (Y : Task → OrderedProfiles J Attr → Ω → ℝ) :
-    OrderedProfiles J Attr → Ω → ℝ :=
-  fun t ω => Y k t ω
-
-end ProfileOrder
 
 end ConjointSD
