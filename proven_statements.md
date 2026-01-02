@@ -641,6 +641,28 @@ Formalization (Lean name): `paper sd total sequential consistency to gStar ae of
 Formalization (math):
 `attrSD ν gTotal = attrSD ν gStar(μexp)` under no-interactions.
 
+## paper sd total sequential consistency to true target ae of paper ols design ae of NoInteractions of randomization (PaperWrappers)
+
+File: `ConjointSD/PaperWrappers.lean`
+
+Statement: Under randomized assignment, the paper OLS design assumptions,
+full main-effects terms, and no-interactions, there exists a coefficient
+vector `theta0` such that the weighted plug‑in SD for the total score
+converges and equals the population SD of the true target score `gTrue`,
+assuming `InvarianceAE` between `gStar` and `gTrue`.
+
+Intuition: randomization and OLS assumptions identify the additive
+status‑assigning rule in the experiment; the external‑validity assumption
+transports that rule to the population, so the weighted evaluation SD
+converges to the true population SD.
+
+Formalization (Lean name):
+`paper sd total sequential consistency to true target ae of paper ols design ae of NoInteractions of randomization`
+
+Formalization (math):
+Sequential consistency of `attrSD ν (gTotalΘ θ0)` plus `InvarianceAE` yields
+`attrSD ν (gTotalΘ θ0) = attrSD ν gTrue` a.e.
+
 ## Dependency tables
 
 The dependency matrices live in `dependency_tables.md`.

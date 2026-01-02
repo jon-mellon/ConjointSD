@@ -1,6 +1,6 @@
 # Main theorem narrative (end-to-end)
 
-This document walks through the end-to-end theorem chain that starts from randomized assignment and ends with sequential consistency of block and total predicted SDs for the paper OLS model. It is written to mirror the flow of `core_idea.md` while pointing to the formal nodes used in the chain.
+This document walks through the end-to-end theorem chain that starts from randomized assignment and ends with sequential consistency of the predicted population SD for the paper OLS model. It is written to mirror the flow of `core_idea.md` while pointing to the formal nodes used in the chain.
 
 ## 1) Start with randomized assignment
 
@@ -53,25 +53,50 @@ Key steps (theorem nodes in order):
 
 ## 6) Weighted evaluation sample (transport to the population)
 
-The evaluation stage uses **weights** to align the evaluation sample with the target population distribution.\n+
-Key objects:\n+- `w : Attr → ℝ` are the evaluation weights.\n+- `Aeval : ℕ → Ω → Attr` are evaluation draws.\n+- `ν` is the target population attribute distribution.\n+\n+Two assumption bundles encode the weighted transport:\n+\n+1) `EvalWeightMatchesPopMoments`:\n+   - This says the **weighted** evaluation moments match the population moments.\n+   - Concretely, the weighted mean and weighted second moment under the evaluation draw equal `attrMean ν` and `attrM2 ν`.\n+\n+2) `SplitEvalWeightAssumptions`:\n+   - This bundles IID/integrability conditions for the weighted evaluation process.\n+   - It ensures the weighted LLNs used in sequential consistency are valid for the weighted score process.\n+\n+**Intuition**:\n+- The evaluation sample may not be distributed like the population, so we reweight it.\n+- These assumptions make the weighted sample behave as if it were drawn from `ν`, so plug‑in SD estimates target the population SD.\n+
-## 7) Translate parameter convergence into SD consistency
+The evaluation stage uses **weights** to align the evaluation sample with the target population distribution.
 
-This uses the evaluation-stage results and continuity arguments:\n+- `paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae` takes `thetaHat -> theta0` and the weighted evaluation assumptions (`EvalWeightMatchesPopMoments`, `SplitEvalWeightAssumptions`) to conclude block and total SD sequential consistency.\n+\n+**Intuition**:\n+- Once the fitted coefficients stabilize, the weighted plug‑in [standard deviation](readable/jargon_standard_deviation.md) estimates stabilize too, both for each [block](readable/jargon_block.md) and for the total score.
+Key objects:
+- `w : Attr → ℝ` are the evaluation weights.
+- `Aeval : ℕ → Ω → Attr` are evaluation draws.
+- `ν` is the target population attribute distribution.
 
-## 8) End-to-end wrapper (randomization all the way through)
+Two assumption bundles encode the weighted transport:
+
+1) `EvalWeightMatchesPopMoments`:
+   - This says the **weighted** evaluation moments match the population moments.
+   - Concretely, the weighted mean and weighted second moment under the evaluation draw equal `attrMean ν` and `attrM2 ν`.
+
+2) `SplitEvalWeightAssumptions`:
+   - This bundles IID/integrability conditions for the weighted evaluation process.
+   - It ensures the weighted LLNs used in sequential consistency are valid for the weighted score process.
+
+**Intuition**:
+- The evaluation sample may not be distributed like the population, so we reweight it.
+- These assumptions make the weighted sample behave as if it were drawn from `ν`, so plug‑in SD estimates target the population SD.
+
+## 7) Add the external-validity link
+
+The transport step needs a direct equality of score functions on the target support:
+- `InvarianceAE (ν := ν) (gStar (μexp := μexp) (Y := Y)) gTrue`.
+
+**Intuition**:
+- The experimental score function agrees with the population score function almost everywhere under `ν`.
+- This is the explicit external-validity assumption in `core_idea.md`.
+
+## 8) End-to-end wrapper (randomization to population SD)
 
 Finally, the full end-to-end result:
-- `paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`.
+- `paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`.
 
 **What it does**:
 - Starts from `ConjointRandomizationStream`.
 - Derives `DesignAttrIID`.
 - Uses `NoInteractions` + `FullMainEffectsTerms` to derive well-specification and choose `theta0`.
-- Applies the OLS design chain and the SD consistency chain.
+- Uses OLS convergence + weighted evaluation to get SD consistency for `gTotalΘ θ0`.
+- Uses `InvarianceAE` to move from `gStar` to the true population score `gTrue`.
 
 **Conclusion (plain language)**:
-There exists a coefficient vector `theta0` such that, with randomized assignment and the paper OLS design assumptions, the estimated block-level and total predicted status dispersions converge to their targets (sequentially in training and evaluation sizes).
+There exists a coefficient vector `theta0` such that, with randomized assignment, the paper OLS design assumptions, and external validity, the weighted plug‑in SD converges to the population SD of the true score function.
 
 ## Where this matches core_idea
 
