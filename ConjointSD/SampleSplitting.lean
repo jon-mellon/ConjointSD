@@ -27,16 +27,18 @@ variable {Θ : Type*}
 lemma splitEvalAssumptions_of_bounded
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr)
-    (hPop : DesignAttrIID (κ := ρ) A)
+    (hPop : EvalAttrIID (κ := ρ) A)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ)
     (h : SplitEvalAssumptionsBounded (ρ := ρ) (A := A) (g := g) (θhat := θhat) m) :
     SplitEvalAssumptions (ρ := ρ) (A := A) (g := g) (θhat := θhat) m := by
+  have hPop' : DesignAttrIID (κ := ρ) A :=
+    { measA := hPop.measA, indepA := hPop.indepA, identA := hPop.identA }
   have hScore :
       ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m) :=
     scoreAssumptions_of_bounded
       (μexp := ρ) (A := A) (g := gHat g θhat m)
-      (hPop := hPop) (hMeas := h.hMeas) (hBound := h.hBound)
+      (hPop := hPop') (hMeas := h.hMeas) (hBound := h.hBound)
   exact ⟨hPop, hScore⟩
 
 lemma splitEvalAssumptions_of_bounded_of_stream
@@ -47,10 +49,34 @@ lemma splitEvalAssumptions_of_bounded_of_stream
     (m : ℕ)
     (h : SplitEvalAssumptionsBounded (ρ := ρ) (A := A) (g := g) (θhat := θhat) m) :
     SplitEvalAssumptions (ρ := ρ) (A := A) (g := g) (θhat := θhat) m := by
-  have hPop : DesignAttrIID (κ := ρ) A :=
+  have hPopDesign : DesignAttrIID (κ := ρ) A :=
     DesignAttrIID.of_randomization_stream (μexp := ρ) (A := A) (Y := Y) hStream
+  have hPop : EvalAttrIID (κ := ρ) A :=
+    { measA := hPopDesign.measA, indepA := hPopDesign.indepA, identA := hPopDesign.identA }
   exact splitEvalAssumptions_of_bounded
     (ρ := ρ) (A := A) (hPop := hPop) (g := g) (θhat := θhat) (m := m) h
+
+lemma splitEvalWeightAssumptions_of_stream
+    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+    (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ)
+    (hStream : ConjointRandomizationStream (μexp := ρ) (A := A) (Y := Y))
+    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ)
+    (h : SplitEvalWeightAssumptionsNoIID
+      (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m) :
+    SplitEvalWeightAssumptions
+      (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m := by
+  have hPopDesign : DesignAttrIID (κ := ρ) A :=
+    DesignAttrIID.of_randomization_stream (μexp := ρ) (A := A) (Y := Y) hStream
+  have hPop : EvalAttrIID (κ := ρ) A :=
+    { measA := hPopDesign.measA, indepA := hPopDesign.indepA, identA := hPopDesign.identA }
+  exact
+    { hIID := hPop
+      hScore := h.hScore
+      hWeight := h.hWeight
+      hWeightScore := h.hWeightScore
+      hWeightScoreSq := h.hWeightScoreSq
+      hW0 := h.hW0 }
 
 /--
 For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converges a.s.
@@ -83,8 +109,10 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
           (nhds (designSDZW (κ := ρ)
             (Z := Zcomp (A := A) (g := gHat g θhat m))
             (W := Wcomp (A := A) (w := w)))) := by
+    have hPop : DesignAttrIID (κ := ρ) A :=
+      { measA := h.hIID.measA, indepA := h.hIID.indepA, identA := h.hIID.identA }
     exact sdHatZW_tendsto_ae_of_score
-      (μexp := ρ) (A := A) (w := w) (g := gHat g θhat m) h.hIID
+      (μexp := ρ) (A := A) (w := w) (g := gHat g θhat m) hPop
       (hWZ := h.hWeightScore) (hWZ2 := h.hWeightScoreSq) (hW := h.hWeight)
       (hW0 := h.hW0)
   have hEq :

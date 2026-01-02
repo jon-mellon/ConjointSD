@@ -51,7 +51,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Paper-facing wrappers and estimands
 
-- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), target-equivalence wrappers (exact and approximate, including two-stage oracle bounds), weighted-target transfer lemmas, `hGTotal`-based total-score variants, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; central hub for exported statements.
+- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), target-equivalence wrappers (exact and approximate, including two-stage oracle bounds), weighted-target transfer lemmas, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; now also depends on `SampleSplitting` to derive evaluation IID from randomization; central hub for exported statements.
 - [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core [estimands](readable/jargon_estimand.md) ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
 
 ## Tooling

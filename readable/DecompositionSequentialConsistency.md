@@ -11,6 +11,6 @@ Key definitions:
 Main results:
 - `sequential_consistency_blocks_ae` shows that for a finite set of [blocks](jargon_block.md), there is a single `M` such that all [block](jargon_block.md) [standard deviation](jargon_standard_deviation.md) errors are eventually small (see [sequential consistency](jargon_sequential_consistency.md)).
 - `sequential_consistency_total_ae` gives the same for the total score.
-- Bounded versions turn boundedness assumptions into the needed evaluation assumptions.
+- Bounded versions turn boundedness assumptions into the needed evaluation assumptions; these now use `EvalAttrIID` for the evaluation sample (separate from any design-side IID).
 
 The file mainly combines the single-score [sequential consistency](jargon_sequential_consistency.md) result with a finite-union argument over [blocks](jargon_block.md).

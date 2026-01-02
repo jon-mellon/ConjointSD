@@ -778,7 +778,8 @@ theorem paper_ols_lln_of_score_assumptions_ae
 omit [DecidableEq (PaperTerm Main Inter)] in
 theorem paper_ols_lln_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hPop : DesignAttrIID (κ := μexp) Aω)
+    (hRand :
+      ConjointRandomizationStream (μexp := μexp) (A := Aω) (Y := Y))
     (hDesign :
       PaperOLSDesignAssumptions
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -810,6 +811,9 @@ theorem paper_ols_lln_of_design_ae
               (xiAttr := kappaDesign (κ := μexp) (A := Aω))
               (g := gStar (μexp := μexp) (Y := Y))
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
+  have hPop : DesignAttrIID (κ := μexp) Aω :=
+    DesignAttrIID.of_randomization_stream
+      (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hmeasφ :
       ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
     measurable_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
@@ -854,7 +858,8 @@ theorem paper_ols_lln_of_design_ae
 
 theorem paper_ols_gramInv_tendsto_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hPop : DesignAttrIID (κ := μexp) Aω)
+    (hRand :
+      ConjointRandomizationStream (μexp := μexp) (A := Aω) (Y := Y))
     (hDesign :
       PaperOLSDesignAssumptions
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -878,7 +883,7 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
   have hLLN :=
     paper_ols_lln_of_design_ae
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (Aω := Aω) (Yobsω := Yobsω) hPop hDesign
+      (Aω := Aω) (Yobsω := Yobsω) hRand hDesign
   have hdet :
       IsUnit
         (attrGram
@@ -1074,7 +1079,8 @@ theorem paper_ols_attr_moments_of_lln_fullrank_ae
 theorem paper_ols_attr_moments_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (θ0 : PaperTerm Main Inter → ℝ)
-    (hPop : DesignAttrIID (κ := μexp) Aω)
+    (hRand :
+      ConjointRandomizationStream (μexp := μexp) (A := Aω) (Y := Y))
     (hDesign :
       PaperOLSDesignAssumptions
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -1089,6 +1095,9 @@ theorem paper_ols_attr_moments_of_design_ae
         (g := gStar (μexp := μexp) (Y := Y))
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
         θ0 := by
+  have hPop : DesignAttrIID (κ := μexp) Aω :=
+    DesignAttrIID.of_randomization_stream
+      (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hA0 : Measurable (Aω 0) := hPop.measA 0
   letI : ProbMeasureAssumptions (kappaDesign (κ := μexp) (A := Aω)) :=
     probMeasureAssumptions_map_of_measurable
@@ -1123,7 +1132,7 @@ theorem paper_ols_attr_moments_of_design_ae
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) :=
     paper_ols_lln_of_design_ae
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (Aω := Aω) (Yobsω := Yobsω) hPop hDesign
+      (Aω := Aω) (Yobsω := Yobsω) hRand hDesign
   have hInv :
       ∀ᵐ ω ∂μexp,
         ∀ i j,
@@ -1140,7 +1149,7 @@ theorem paper_ols_attr_moments_of_design_ae
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)) :=
     paper_ols_gramInv_tendsto_of_design_ae
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (Aω := Aω) (Yobsω := Yobsω) hPop hDesign hFull
+      (Aω := Aω) (Yobsω := Yobsω) hRand hDesign hFull
   exact
     paper_ols_attr_moments_of_lln_fullrank_ae
       (μexp := μexp) (xiAttr := kappaDesign (κ := μexp) (A := Aω)) (Y := Y) (fMain := fMain) (fInter := fInter)
@@ -1150,7 +1159,8 @@ theorem paper_ols_attr_moments_of_design_ae
 theorem theta_tendsto_of_paper_ols_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (θ0 : PaperTerm Main Inter → ℝ)
-    (hPop : DesignAttrIID (κ := μexp) Aω)
+    (hRand :
+      ConjointRandomizationStream (μexp := μexp) (A := Aω) (Y := Y))
     (hDesign :
       PaperOLSDesignAssumptions
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
@@ -1171,6 +1181,9 @@ theorem theta_tendsto_of_paper_ols_design_ae
             n)
         atTop
         (nhds θ0) := by
+  have hPop : DesignAttrIID (κ := μexp) Aω :=
+    DesignAttrIID.of_randomization_stream
+      (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hA0 : Measurable (Aω 0) := hPop.measA 0
   letI : ProbMeasureAssumptions (kappaDesign (κ := μexp) (A := Aω)) :=
     probMeasureAssumptions_map_of_measurable
@@ -1186,7 +1199,7 @@ theorem theta_tendsto_of_paper_ols_design_ae
     paper_ols_attr_moments_of_design_ae
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
-      hPop hDesign hFull
+      hRand hDesign hFull
   have hId :
       θ0 =
         (attrGram

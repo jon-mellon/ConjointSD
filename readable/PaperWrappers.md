@@ -14,11 +14,12 @@ Section 2: model to [blocks](jargon_block.md)
 Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md)
 - Provides paper-facing statements that block [standard deviations](jargon_standard_deviation.md) and total standard deviation are sequentially [consistent](jargon_consistency.md) (see [sequential consistency](jargon_sequential_consistency.md) and [consistency](jargon_consistency.md)).
 - Uses the "Route 2" [bridge](jargon_bridge.md): [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) plus [continuity](jargon_continuity.md) implies plug‑in moment convergence.
-- Includes bounded variants.
+- Includes bounded variants, now explicitly requiring `EvalAttrIID` for evaluation draws rather than the design-side IID bundle.
 - Adds total-score wrappers that take raw `Tendsto` + continuity hypotheses instead of a bundled plug‑in assumption.
 - Adds [OLS](jargon_ols.md)-based wrappers that plug the paper OLS assumptions into the total-only sequential [consistency](jargon_consistency.md) results.
 - For the paper term model, bounded/measurable features are used to derive functional continuity inside those OLS wrappers rather than requiring it as a premise.
-- Adds an end-to-end OLS wrapper (`paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`) that derives well-specification from `NoInteractions` + `FullMainEffectsTerms`, uses randomized assignment for identification, and then applies the external-validity assumption (`InvarianceAE`) to target the population SD.
+- Adds randomization-based sequential-consistency wrappers that derive IID for the evaluation draws from a randomization stream (via `SplitEvalWeightAssumptionsNoIID`) instead of assuming it directly. The end‑to‑end paper OLS wrappers now use the direct IID evaluation bundle (`SplitEvalWeightAssumptions`) rather than the randomized evaluation stream.
+- Adds end-to-end OLS wrappers that derive well-specification from `NoInteractions` + `FullMainEffectsTerms`, use randomized assignment for identification, and then apply the external-validity assumption (`InvarianceAE`) to target the population SD: one for the total score (`paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`) and one for block components (`paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`).
 
 Section 4: targeting the true [estimand](jargon_estimand.md)
 - Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the target human [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.

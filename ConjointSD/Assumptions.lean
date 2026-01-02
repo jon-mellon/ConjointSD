@@ -97,6 +97,16 @@ structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
   indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
   identA : ∀ i, IdentDistrib (A i) (A 0) κ κ
 
+/--
+i.i.d.-type assumptions on the attribute-record process A under the evaluation
+distribution. This is intentionally distinct from `DesignAttrIID` so evaluation
+sampling can be assumed independently of design randomization.
+-/
+structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
+  measA : ∀ i, Measurable (A i)
+  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
+  identA : ∀ i, IdentDistrib (A i) (A 0) κ κ
+
 /-- Score-level measurability and second-moment conditions under the design law. -/
 structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions κ] :
     Prop where
@@ -144,7 +154,7 @@ structure SplitEvalAssumptions
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
-  hIID : DesignAttrIID (κ := ρ) A
+  hIID : EvalAttrIID (κ := ρ) A
   hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
 
 /--
@@ -156,7 +166,23 @@ structure SplitEvalWeightAssumptions
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
     (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
     (m : ℕ) : Prop where
-  hIID : DesignAttrIID (κ := ρ) A
+  hIID : EvalAttrIID (κ := ρ) A
+  hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
+  hWeight : ScoreAssumptions (κ := ρ) (A := A) (g := w)
+  hWeightScore :
+    ScoreAssumptions (κ := ρ) (A := A)
+      (g := fun a => w a * gHat g θhat m a)
+  hWeightScoreSq :
+    ScoreAssumptions (κ := ρ) (A := A)
+      (g := fun a => w a * (gHat g θhat m a) ^ 2)
+  hW0 :
+    designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
+
+/-- Weighted-evaluation assumptions without IID, for cases where IID is derived. -/
+structure SplitEvalWeightAssumptionsNoIID
+    (ρ : Measure Ω) [ProbMeasureAssumptions ρ] (A : ℕ → Ω → Attr)
+    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
+    (m : ℕ) : Prop where
   hScore : ScoreAssumptions (κ := ρ) (A := A) (g := gHat g θhat m)
   hWeight : ScoreAssumptions (κ := ρ) (A := A) (g := w)
   hWeightScore :

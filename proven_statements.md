@@ -119,6 +119,19 @@ Formalization (Lean name): `approxWellSpecified_of_approxNoInteractions_of_fullM
 Formalization (math):
 `ApproxNoInteractions ε ∧ FullMainEffectsTerms φ -> ∃ β, ApproxWellSpecified ε`.
 
+## End-to-end block SD consistency (PaperWrappers)
+
+File: `ConjointSD/PaperWrappers.lean`
+
+Statement: Under randomized assignment, OLS design assumptions, and no-interactions/full-main-effects identification, the block components of the paper score have sequentially consistent SD estimates that target the true block scores derived from the model fit, with IID assumed for the evaluation draws.
+
+Intuition: The randomization + OLS design assumptions deliver parameter consistency; bounded feature continuity gives plug-in moment convergence; IID is assumed for the evaluation draws; then the evaluation-weighted SD estimator is sequentially consistent for each block score.
+
+Formalization (Lean name): `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
+
+Formalization (math):
+Block-level SD consistency follows from the paper OLS design chain, with targets given by the block components of the total score.
+
 ## sequential consistency ae (SequentialConsistency)
 
 File: `ConjointSD/SequentialConsistency.lean`

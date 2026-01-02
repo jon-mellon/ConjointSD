@@ -1,16 +1,8 @@
----
-title: "Dependency Tables"
-output: md_document
----
-
-This document auto-generates theorem dependency tables by parsing the output of
-`Scratch.lean`.
-
-```{r setup, echo=FALSE}
+## ----setup, echo=FALSE--------------------------------------------------------
 options(width = 120)
-```
 
-```{r collect, echo=FALSE}
+
+## ----collect, echo=FALSE------------------------------------------------------
 cmd <- "lake env lean Scratch.lean"
 lines <- system(cmd, intern = TRUE)
 
@@ -435,15 +427,13 @@ for (j in seq_along(theorems)) {
 
 dimnames(dep_mat) <- list(pretty_name(rownames(dep_mat)), pretty_name(colnames(dep_mat)))
 dep_fmt <- fmt_matrix(dep_mat, diag_omit = TRUE)
-```
 
-## Auto-generated assumption matrix
 
-```{r assumption-table, echo=FALSE}
+## ----assumption-table, echo=FALSE---------------------------------------------
 knitr::kable(cbind(Count = assump_count, assump_fmt), align = "l")
-```
 
-```{r assumption-xlsx, echo=FALSE}
+
+## ----assumption-xlsx, echo=FALSE----------------------------------------------
 assump_tbl <- data.frame(
   Assumption = rownames(assump_fmt),
   Count = assump_count,
@@ -464,11 +454,9 @@ if (requireNamespace("writexl", quietly = TRUE)) {
   write.csv(assump_tbl, out_csv, row.names = FALSE)
   warning("Package 'writexl' or 'openxlsx' is required to write assumption_matrix.xlsx; wrote CSV instead.")
 }
-```
 
-## Theorem dependency DAG
 
-```{r dependency-dag, echo=FALSE, fig.width=10, fig.height=8}
+## ----dependency-dag, echo=FALSE, fig.width=10, fig.height=8-------------------
 if (!requireNamespace("DiagrammeR", quietly = TRUE) ||
     !requireNamespace("DiagrammeRsvg", quietly = TRUE) ||
     !requireNamespace("rsvg", quietly = TRUE)) {
@@ -523,11 +511,9 @@ if (is.null(edges) || nrow(edges) == 0) {
   rsvg::rsvg_png(charToRaw(svg), file = out_png)
   knitr::include_graphics(out_png)
 }
-```
 
-## OLS SD consistency DAG (direct assumptions)
 
-```{r ols-sd-consistency-dag, echo=FALSE, fig.width=10, fig.height=8}
+## ----ols-sd-consistency-dag, echo=FALSE, fig.width=10, fig.height=8-----------
 if (!requireNamespace("DiagrammeR", quietly = TRUE) ||
     !requireNamespace("DiagrammeRsvg", quietly = TRUE) ||
     !requireNamespace("rsvg", quietly = TRUE)) {
@@ -648,11 +634,9 @@ if ((is.null(edges) || nrow(edges) == 0) && length(assump_nodes) == 0) {
   rsvg::rsvg_png(charToRaw(svg), file = out_png)
 knitr::include_graphics(out_png)
 }
-```
 
-## OLS SD block consistency DAG (direct assumptions)
 
-```{r ols-sd-block-consistency-dag, echo=FALSE, fig.width=10, fig.height=8}
+## ----ols-sd-block-consistency-dag, echo=FALSE, fig.width=10, fig.height=8-----
 if (!requireNamespace("DiagrammeR", quietly = TRUE) ||
     !requireNamespace("DiagrammeRsvg", quietly = TRUE) ||
     !requireNamespace("rsvg", quietly = TRUE)) {
@@ -768,4 +752,4 @@ if ((is.null(edges) || nrow(edges) == 0) && length(assump_nodes) == 0) {
   rsvg::rsvg_png(charToRaw(svg), file = out_png)
   knitr::include_graphics(out_png)
 }
-```
+

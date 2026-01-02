@@ -157,12 +157,18 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   `∀ i, Measurable (A i) ∧
     Pairwise (fun i j => IndepFun (A i) (A j) μexp) ∧
     ∀ i, IdentDistrib (A i) (A 0) μexp μexp`.
+- `EvalAttrIID`: the same [i.i.d.](jargon_iid.md)-style conditions, but explicitly
+  for an evaluation attribute stream under the evaluation law `ρ`. This is
+  i.i.d. across profile draws, not a claim about independence of components
+  within a single profile. It is intentionally distinct from `DesignAttrIID` so
+  evaluation sampling can be assumed independently of design randomization.
 - `ScoreAssumptions`: score-level [measurability](jargon_measurable.md) of
   the score function `g` plus [integrability](jargon_integrable.md) of
   `g(A 0)^2` under the experimental design distribution `μexp`. Integrability of
   `g(A 0)` is derived from the second-moment condition. [i.i.d.](jargon_iid.md)
   properties of the attribute stream are now tracked separately in
-  `DesignAttrIID` and are typically derived from `ConjointRandomizationStream`.
+  `DesignAttrIID` (design) or `EvalAttrIID` (evaluation), and are typically
+  derived from `ConjointRandomizationStream` on the design side.
   The score-based [standard deviation](jargon_standard_deviation.md) [LLN](jargon_lln.md)
   lemmas (e.g., `sdHatZ_tendsto_ae_of_score`) require both `DesignAttrIID` and
   `ScoreAssumptions`.
@@ -201,7 +207,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [converge](jargon_convergence.md) to the target population SD target under `ν`.
   - `SplitEvalWeightAssumptions.hIID`: i.i.d. assumptions for the evaluation
     attribute stream `A` under `ρ`. Intuition: evaluation draws are stable and
-    independent enough to apply LLNs. Formal: `DesignAttrIID` for the evaluation law `ρ`.
+    independent enough to apply LLNs. Formal: `EvalAttrIID` for the evaluation law `ρ`.
   - `SplitEvalWeightAssumptions.hScore`: unweighted score assumptions for `gHat g θhat m`.
     Intuition: in practice, the estimated score looks like a stable outcome model on the
     evaluation sample (no obvious nonstationarity or design-induced artifacts).
@@ -222,12 +228,21 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Intuition: the reweighting scheme has nonzero mass overall (no degenerate weighting
     that discards essentially all evaluation observations).
     Formal: `designMeanZ` for the evaluation law `ρ` is nonzero.
+- `SplitEvalWeightAssumptionsNoIID`: the weighted evaluation assumptions without the IID
+  component, used when IID is derived elsewhere (e.g. from randomized assignment).
+  It packages the same score/weight moment conditions as `SplitEvalWeightAssumptions`,
+  but omits the explicit `EvalAttrIID` requirement.
+  - `SplitEvalWeightAssumptionsNoIID.hScore`: unweighted score assumptions for `gHat g θhat m`.
+  - `SplitEvalWeightAssumptionsNoIID.hWeight`: score assumptions for the weights `w`.
+  - `SplitEvalWeightAssumptionsNoIID.hWeightScore`: score assumptions for the weighted score `w * gHat`.
+  - `SplitEvalWeightAssumptionsNoIID.hWeightScoreSq`: score assumptions for `w * (gHat)^2`.
+  - `SplitEvalWeightAssumptionsNoIID.hW0`: the weight mean is nonzero so ratios are well-defined.
 - `SplitEvalAssumptions`: the unweighted evaluation-stage assumptions used as part of
-  weighted setups. It packages `DesignAttrIID` for the evaluation draws and
+  weighted setups. It packages `EvalAttrIID` for the evaluation draws and
   `ScoreAssumptions` for the fixed score.
   Intuition: the estimated score is stable enough on its own that sample averages
   behave like target population averages under `ν` when evaluated on the sample.
-  Formal: `DesignAttrIID` and `ScoreAssumptions` for the evaluation law `ρ`.
+  Formal: `EvalAttrIID` and `ScoreAssumptions` for the evaluation law `ρ`.
 - `SplitEvalAssumptionsBounded`: alternative evaluation assumptions that replace
   the full `ScoreAssumptions` bundle with a stronger, more concrete checklist:
   [measurability](jargon_measurable.md) of the fixed evaluation score

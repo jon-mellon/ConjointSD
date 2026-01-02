@@ -126,7 +126,7 @@ theorem sequential_consistency_blocks_ae_of_bounded
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (w : Attr → ℝ)
-    (hPop : DesignAttrIID (κ := ρ) A)
+    (hPop : EvalAttrIID (κ := ρ) A)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
       SplitEvalAssumptionsBounded (ρ := ρ) (A := A) (g := gBlock (gB := gB) b) (θhat := θhat) m)
@@ -178,7 +178,7 @@ theorem sequential_consistency_total_ae_of_bounded
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
     (w : Attr → ℝ)
-    (hPop : DesignAttrIID (κ := ρ) A)
+    (hPop : EvalAttrIID (κ := ρ) A)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
