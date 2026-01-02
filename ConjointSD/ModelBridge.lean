@@ -115,34 +115,6 @@ theorem gStar_eq_sum_blocks_of_WellSpecified
             simpa using congrArg (fun f => f x) hblocks
 
 /--
-If the estimand is within ε of a linear-in-terms model, it is within ε of the induced block sum.
--/
-theorem gStar_approx_sum_blocks_of_ApproxWellSpecified
-    {Ω Attr B Term : Type*}
-    [MeasurableSpace Ω] [Fintype B] [Fintype Term] [DecidableEq B]
-    (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
-    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ)
-    (hspec : ApproxWellSpecified (μexp := μexp) (Y := Y) (β := β) (φ := φ) ε) :
-    ∀ x,
-      |gStar (μexp := μexp) (Y := Y) x
-        - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
-        ≤ ε := by
-  classical
-  intro x
-  have hblocks :
-      gLin (β := β) (φ := φ)
-        =
-      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) :=
-    gLin_eq_gTotal_blocks (B := B) (Term := Term) (blk := blk) (β := β) (φ := φ)
-  have hlin :
-      gLin (β := β) (φ := φ) x
-        =
-      gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x := by
-    simpa using congrArg (fun f => f x) hblocks
-  have h := hspec x
-  simpa [hlin, abs_sub_comm] using h
-
-/--
 AE version of the approximation bridge: if `gStar` is ε-close to the linear model
 on target-population support (ν-a.e.), then it is ε-close to the induced block sum ν-a.e.
 -/

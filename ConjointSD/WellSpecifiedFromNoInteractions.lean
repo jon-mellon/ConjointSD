@@ -65,36 +65,6 @@ def φMain (main : ∀ k : K, V k → ℝ) : Term K → Profile K V → ℝ
 -/
 
 /--
-If `gStar` is additive in the attributes (no interactions), then it is well-specified by a
-linear-in-terms model with `Term := Option K` (intercept + main effects).
--/
-theorem wellSpecified_of_noInteractions
-    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ)
-    (h : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y)) :
-    ∃ (β : Term K → ℝ) (φ : Term K → Profile K V → ℝ),
-      WellSpecified (Ω := Ω) (Attr := Profile K V) (Term := Term K)
-        (μexp := μexp) (Y := Y) (β := β) (φ := φ) := by
-  classical
-  rcases h with ⟨α0, main, hadd⟩
-  refine ⟨βMain (K := K) α0, φMain (K := K) (V := V) main, ?_⟩
-  intro x
-  have hlin :
-      gLin (Attr := Profile K V) (Term := Term K)
-          (β := βMain (K := K) α0)
-          (φ := φMain (K := K) (V := V) main) x
-        =
-      α0 + ∑ k : K, main k (x k) :=
-    gLin_eq_additive (K := K) (V := V) α0 main x
-  -- Convert the additive form into the `WellSpecified` equality.
-  calc
-    gLin (Attr := Profile K V) (Term := Term K)
-        (β := βMain (K := K) α0)
-        (φ := φMain (K := K) (V := V) main) x
-        = α0 + ∑ k : K, main k (x k) := hlin
-    _   = gStar (μexp := μexp) (Y := Y) x := by
-            simpa using (hadd x).symm
-
-/--
 If `gStar` is additive and the term basis can express any main-effects surface,
 then the model is well-specified for some coefficient vector.
 -/

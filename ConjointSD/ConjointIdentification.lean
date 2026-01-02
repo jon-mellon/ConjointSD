@@ -239,21 +239,6 @@ def gExp (μexp : Measure Ω) (X : Ω → Attr) (Yobs : Ω → ℝ) : Attr → �
 def gPot (μexp : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
   fun x => potMean (κ := μexp) Y x
 
-/--
-Under the conjoint identification assumptions, the observed conditional-mean score function
-equals the causal potential-mean score function (pointwise, hence as functions).
--/
-theorem gExp_eq_gPot
-    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
-    (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
-    (hpos : ∀ x, μexp (eventX (X := X) x) ≠ 0) :
-    gExp (μexp := μexp) (X := X) (Yobs := Yobs) = gPot (μexp := μexp) (Y := Y) := by
-  funext x
-  simpa [gExp, gPot] using
-    identified_potMean_from_condMean (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs) h
-      x (hpos x)
-
 section ProfileOrder
 
 variable {Task J Attr : Type*}

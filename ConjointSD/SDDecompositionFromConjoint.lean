@@ -487,18 +487,4 @@ theorem sdHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     (Real.continuous_sqrt.continuousAt).tendsto
   simpa [sdHatZW, designSDZW] using (hsqrt.comp hω)
 
-/-- Consistency of the plug-in SD for a single component scoring rule g. -/
-theorem sd_component_consistent [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
-    (hMeas : Measurable g)
-    (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
-    ∀ᵐ ω ∂μexp,
-      Tendsto
-        (fun n : ℕ => sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
-        atTop
-        (nhds (designSDZ (κ := μexp) (Zcomp (A := A) (g := g)))) := by
-  simpa using
-    sdHatZ_tendsto_ae_of_score
-      (μexp := μexp) (A := A) (g := g) hIID hMeas hBound
 end ConjointSD

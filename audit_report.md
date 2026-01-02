@@ -63,7 +63,6 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 ## Theorems not in chain
 
 - functionalContinuity_gTotalΘ_of_bounded
-- sd_component_consistent
 - sdHatZ_tendsto_ae_of_score
 - sequential_consistency_total_ae
 - sequential_consistency_blocks_ae_of_bounded
@@ -72,7 +71,6 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - ae_restrict_consistency
 - identified_potMean_from_condMean
 - identified_amce_from_condMeans
-- gExp_eq_gPot
 - approxInvarianceAE_triangle
 - attrMean_diff_le_of_L2Approx
 - attrSD_diff_le_of_L2Approx
@@ -83,7 +81,6 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - attrSD_diff_le_of_approx_ae
 - gLin_eq_gTotal_blocks
 - gStar_eq_sum_blocks_of_WellSpecified
-- gStar_approx_sum_blocks_of_ApproxWellSpecified
 - gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
 - approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 - paper_identifies_potMean_from_condMean
@@ -106,17 +103,13 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - functionalContinuity_gPaper_of_bounded
 - gLin_eq_additive
 - sd_block_consistent
-- sd_component_consistent_of_bounded
 - status_event_pos
 - status_id_randomized
 - varProxy_sum_eq_sum_covRaw
-- wellSpecified_of_noInteractions
 
 ## Theorems not used by any other theorem
 
-- gExp_eq_gPot
 - attrSD_diff_le_of_L2Approx
-- gStar_approx_sum_blocks_of_ApproxWellSpecified
 - approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 - paper_identifies_amce_from_condMeans
 - paper_identifies_potMean_from_condMean_status
@@ -134,6 +127,4 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - derive_mean_tendsto_blocks
 - functionalContinuity_gPaper_of_bounded
 - sd_block_consistent
-- sd_component_consistent_of_bounded
 - varProxy_sum_eq_sum_covRaw
-- wellSpecified_of_noInteractions

@@ -13,7 +13,6 @@ Main results:
 - If `g` is bounded, then the second-moment and [integrable](jargon_integrable.md) conditions hold automatically.
 - `meanHatZ_tendsto_ae_of_score`, `m2HatZ_tendsto_ae_of_score`, and `sdHatZ_tendsto_ae_of_score` apply the [LLN](jargon_lln.md) to score processes from `DesignAttrIID` plus boundedness/measurability.
 - `meanHatZW_tendsto_ae_of_score`, `m2HatZW_tendsto_ae_of_score`, and `sdHatZW_tendsto_ae_of_score` provide weighted analogues using bounded scores and weights.
-- `sd_component_consistent` proves the empirical [standard deviation](jargon_standard_deviation.md) of `g(A i)` [converges](jargon_convergence.md) to the target attribute-distribution [SD](jargon_standard_deviation.md).
 
 Block version:
 - `DecompAssumptions` bundles boundedness and [measurability](jargon_measurable.md) for all [blocks](jargon_block.md).

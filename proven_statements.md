@@ -29,42 +29,6 @@ Formalization (Lean name): `sdHatZ tendsto ae`
 Formalization (math):
 `sdHatZ(Z) -> designSDZ(Z)` a.e. for score processes derived from `DesignAttrIID` plus `ScoreAssumptions`.
 
-## sd component consistent (SDDecompositionFromConjoint)
-
-File: `ConjointSD/SDDecompositionFromConjoint.lean`
-
-Statement: For a score function `g` applied to attribute draws `A i`, the
-empirical [standard deviation](readable/jargon_standard_deviation.md) of
-`g(A i)` [converges](readable/jargon_convergence.md) to the
-[standard deviation](readable/jargon_standard_deviation.md) under the target
-[distribution](readable/jargon_distribution.md) for the
-[population](readable/jargon_population.md) when `g` is measurable and bounded.
-
-Intuition: Once you view each `g(A i)` as a real-valued i.i.d. sequence, boundedness
-gives the required moments and the standard [standard deviation](readable/jargon_standard_deviation.md)
-[consistency](readable/jargon_consistency.md) result applies.
-
-Formalization (Lean name): `sd component consistent`
-
-Formalization (math):
-`sdHatZ (fun i => g (A i)) -> designSDZ (fun i => g (A i))` a.e.
-
-## gExp eq gPot (ConjointIdentification)
-
-File: `ConjointSD/ConjointIdentification.lean`
-
-Statement: Under conjoint identification assumptions, the observed
-[conditional mean](readable/jargon_conditional_mean.md) score equals the causal
-[potential outcome](readable/jargon_potential_outcome.md) score.
-
-Intuition: Random assignment and consistency let observed conditional averages
-recover causal averages.
-
-Formalization (Lean name): `gExp eq gPot`
-
-Formalization (math):
-`gExp = gPot` under `ConjointIdRandomized`.
-
 ## attrSD congr ae (TargetEquivalence)
 
 File: `ConjointSD/TargetEquivalence.lean`

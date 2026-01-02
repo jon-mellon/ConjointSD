@@ -27,7 +27,6 @@ import ConjointSD
 #print ConjointSD.ConjointRandomizationStream
 #print ConjointSD.DesignAttrIID.of_randomization_stream
 -- Core SD and decomposition.
-#print ConjointSD.sd_component_consistent
 #print ConjointSD.meanHatZ_tendsto_ae_of_score
 #print ConjointSD.sdHatZ_tendsto_ae_of_score
 #print ConjointSD.sdHatZW_tendsto_ae_of_score
@@ -49,7 +48,6 @@ import ConjointSD
 #print ConjointSD.ae_restrict_consistency
 #print ConjointSD.identified_potMean_from_condMean
 #print ConjointSD.identified_amce_from_condMeans
-#print ConjointSD.gExp_eq_gPot
 
 -- Target equivalence and approximation bounds.
 #print ConjointSD.attrMean_congr_ae
@@ -68,7 +66,6 @@ import ConjointSD
 -- Model bridge.
 #print ConjointSD.gLin_eq_gTotal_blocks
 #print ConjointSD.gStar_eq_sum_blocks_of_WellSpecified
-#print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecified
 #print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
 #print ConjointSD.approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 
@@ -107,5 +104,4 @@ import ConjointSD
 #print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
 #print ConjointSD.status_event_pos
 #print ConjointSD.status_id_randomized
-#print ConjointSD.wellSpecified_of_noInteractions
 #print ConjointSD.wellSpecified_of_noInteractions_of_fullMainEffects
