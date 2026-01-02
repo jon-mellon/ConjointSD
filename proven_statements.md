@@ -477,6 +477,24 @@ Formalization (Lean name): `paper sd blocks and total sequential consistency ae 
 Formalization (math):
 `NoInteractions ∧ FullMainEffectsTerms φPaper -> ∃ θ0,` block and total `totalErr` go to 0 sequentially under design‑side OLS assumptions.
 
+## paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions of randomization (PaperWrappers)
+
+File: `ConjointSD/PaperWrappers.lean`
+
+Statement: Under randomized assignment of attributes, the paper’s design-side OLS bundle,
+full‑rank, no‑[interactions](readable/jargon_interaction.md), and a full main‑effects term
+basis for `φPaper`, there exists a coefficient vector `θ0` so block and total
+[sequential consistency](readable/jargon_sequential_consistency.md) holds almost surely.
+
+Intuition: Randomized assignment yields the IID design condition, which together with the
+paper OLS assumptions and no‑[interactions](readable/jargon_interaction.md) yields a
+well‑specified additive model and the SD consistency chain.
+
+Formalization (Lean name): `paper sd blocks and total sequential consistency ae of paper ols design ae of NoInteractions of randomization`
+
+Formalization (math):
+`ConjointRandomizationStream ∧ NoInteractions ∧ FullMainEffectsTerms φPaper -> ∃ θ0,` block and total `totalErr` go to 0 sequentially under the paper OLS design assumptions.
+
 ## paper sd total sequential consistency ae of paper ols gStar total (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`

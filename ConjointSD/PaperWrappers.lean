@@ -1290,6 +1290,122 @@ theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_
       (hPop := hPop) (hDesign := hDesign) (hFull := hFull) (hspec := hspec)
       (ε := ε) (hε := hε)
 
+theorem paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+    (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
+    (hRand :
+      ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
+    (hMomBlocks : ∀ ω m b,
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := Aeval) (ν := ν)
+        (w := w)
+        (s := gHat
+          (gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b)
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m))
+    (hMomTotal : ∀ ω m,
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := Aeval) (ν := ν)
+        (w := w)
+        (s := gHat
+          (gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+          (fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m))
+    (hSplit :
+      ∀ ω m b,
+        SplitEvalWeightAssumptions
+          (ρ := ρ) (A := Aeval) (w := w)
+          (g := gBlock
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b)
+          (θhat := fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hSplitTotal :
+      ∀ ω m,
+        SplitEvalWeightAssumptions
+          (ρ := ρ) (A := Aeval) (w := w)
+          (g := gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+          (θhat := fun n =>
+            olsThetaHat
+              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+              n) m)
+    (hDesign :
+      PaperOLSDesignAssumptions
+        (μexp := μexp) (A := Atrain) (Y := Y) (Yobs := Yobs)
+        (fMain := fMain) (fInter := fInter))
+    (hFull :
+      PaperOLSFullRankAssumptions
+        (xiAttr := kappaDesign (κ := μexp) (A := Atrain)) (fMain := fMain) (fInter := fInter))
+    (hTerms :
+      FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
+        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
+    (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
+    (ε : ℝ) (hε : EpsilonAssumptions ε) :
+    ∃ θ0 : PaperTerm Main Inter → ℝ,
+      ∀ᵐ ω ∂μexp,
+        ∃ M : ℕ,
+          ∀ m ≥ M,
+            (∀ b : B,
+              (∀ᵐ ω' ∂ρ,
+                ∀ᶠ n : ℕ in atTop,
+                  totalErr ρ Aeval (ν) w
+                    (gBlock
+                      (gB := fun b θ a =>
+                        gBlockTerm (blk := blk) (β := θ)
+                          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b)
+                    θ0
+                    (fun n =>
+                      olsThetaHat
+                        (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                        n)
+                    m n ω' < ε))
+            ∧
+            (∀ᵐ ω' ∂ρ,
+              ∀ᶠ n : ℕ in atTop,
+                totalErr ρ Aeval (ν) w
+                  (gTotalΘ
+                    (gB := fun b θ a =>
+                      gBlockTerm (blk := blk) (β := θ)
+                        (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+                  θ0
+                  (fun n =>
+                    olsThetaHat
+                      (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                      (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                  n)
+                  m n ω' < ε) := by
+  have hPop : DesignAttrIID (κ := μexp) Atrain :=
+    DesignAttrIID.of_randomization_stream
+      (μexp := μexp) (A := Atrain) (Y := Y) hRand
+  exact
+    paper_sd_blocks_and_total_sequential_consistency_ae_of_paper_ols_design_ae_of_NoInteractions
+      (ρ := ρ) (μexp := μexp) (Aeval := Aeval) (ν := ν) (w := w)
+      (Y := Y) (fMain := fMain) (fInter := fInter) (blk := blk)
+      (Atrain := Atrain) (Yobs := Yobs)
+      (hMomBlocks := hMomBlocks) (hMomTotal := hMomTotal)
+      (hSplit := hSplit) (hSplitTotal := hSplitTotal)
+      (hPop := hPop) (hDesign := hDesign) (hFull := hFull)
+      (hTerms := hTerms) (hNoInt := hNoInt)
+      (ε := ε) (hε := hε)
+
 end SDSequentialConsistencyOLSNoInteractions
 
 section SDSequentialConsistencyNoTopo
