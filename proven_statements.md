@@ -173,8 +173,6 @@ Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
 `attrSD ν (gTotalΘ gB θ0) = attrSD ν gTrue`.
 
-## paper total sd estimator consistency ae of gBTerm (PaperCoreEstimand)
-
 ## attrSD diff le of L2Approx (TargetEquivalence)
 
 File: `ConjointSD/TargetEquivalence.lean`

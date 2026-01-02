@@ -62,11 +62,6 @@ variable {J : Type u} {Attr : Type v}
 /-- Ordered profile list for a task with `J` profile slots. -/
 abbrev OrderedProfiles (J : Type u) (Attr : Type v) : Type (max u v) := J → Attr
 
-/-- Permute an ordered profile list by a permutation of slots. -/
-def permuteProfiles (π : Equiv.Perm J) (t : OrderedProfiles J Attr) :
-    OrderedProfiles J Attr :=
-  fun j => t (π j)
-
 end ConjointOrder
 
 section PredictedSD
@@ -85,10 +80,6 @@ def meanHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
 /-- Empirical second moment: (1/n) • ∑_{i<n} (Z i ω)^2. -/
 def m2HatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   ((n : ℝ)⁻¹) • (Finset.sum (Finset.range n) fun i => (Z i ω) ^ 2)
-
-/-- Plug-in empirical variance proxy: m2Hat - (meanHat)^2. -/
-def varHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  m2HatZ (Z := Z) n ω - (meanHatZ (Z := Z) n ω) ^ 2
 
 /-- Weights evaluated along a draw stream `A`. -/
 def Wcomp {Attr : Type*} (A : ℕ → Ω → Attr) (w : Attr → ℝ) : ℕ → Ω → ℝ :=
@@ -215,15 +206,6 @@ end RegressionConsistencyBridge
 section RegressionEstimator
 
 universe u v
-
-/--
-Empirical squared-loss risk for a linear-in-terms model using the first `n` samples.
-The `A` and `Y` sequences are the training attributes/outcomes.
--/
-def empiricalRisk {Attr : Type u} {Term : Type v} [Fintype Term]
-    (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ)
-    (n : ℕ) (β : Term → ℝ) : ℝ :=
-  (1 / (n : ℝ)) * ∑ i : Fin n, (Y i - gLin (β := β) (φ := φ) (A i)) ^ 2
 
 /--
 Empirical Gram matrix of the feature map for the first `n` samples.

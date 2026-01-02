@@ -13,6 +13,5 @@ Part 1: core targets
 Part 2: the main estimator
 
 Part 3: [bridge](jargon_bridge.md) to the causal target
-- `gTotalTheta_eq_gTotal_gBTerm` shows how the total score at `theta0` matches the term-based total score.
 
 Overall, this file packages the paper's target quantities and shows the main estimator [converges](jargon_convergence.md) to them under the stated assumptions.

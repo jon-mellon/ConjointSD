@@ -1,6 +1,8 @@
 This document auto-generates theorem dependency tables by parsing the
 output of `Scratch.lean`.
 
+    ## Warning in system(cmd, intern = TRUE): running command 'lake env lean Scratch.lean' had status 1
+
 ## Auto-generated assumption matrix
 
 <table style="width:100%;">

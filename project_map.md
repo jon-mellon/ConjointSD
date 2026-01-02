@@ -46,7 +46,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 - [ConjointSD/ModelBridge.lean](readable/ModelBridge.md) defines [block](readable/jargon_block.md) allocation `gBlockTerm` and bridges well-specification/approximation to [block](readable/jargon_block.md) sums; core definitions (`gLin`, paper term set) are in `Defs.lean`, and well-specification definitions now live in `ModelBridge.lean`.
 - [ConjointSD/WellSpecifiedFromNoInteractions.lean](readable/WellSpecifiedFromNoInteractions.md) shows an additive/no-interactions causal [estimand](readable/jargon_estimand.md) implies `WellSpecified` for a [linear model](readable/jargon_linear_model.md)-in-[terms](readable/jargon_term.md) model; depends on `ModelBridge`.
-- [ConjointSD/TermModelBlocks.lean](readable/TermModelBlocks.md) defines the [block](readable/jargon_block.md)-score model `gBTerm` induced by [term](readable/jargon_term.md) coefficients; proves a [block](readable/jargon_block.md)-specification lemma; depends on `PaperWrappers` (for the wrapper APIs).
+- [ConjointSD/TermModelBlocks.lean](readable/TermModelBlocks.md) is currently a placeholder for term-to-block model notes; depends on `PaperWrappers` (for the wrapper APIs).
 - [ConjointSD/TrueBlockEstimand.lean](readable/TrueBlockEstimand.md) defines the “true [block](readable/jargon_block.md) score” from a [term](readable/jargon_term.md) model and proves [convergence](readable/jargon_convergence.md) statements to those targets; depends on `TermModelBlocks` and [sequential consistency](readable/jargon_sequential_consistency.md) wrappers.
 
 ## Paper-facing wrappers and estimands

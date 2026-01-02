@@ -2,7 +2,4 @@
 
 Lean file: [ConjointSD/TermModelBlocks.lean](../ConjointSD/TermModelBlocks.lean)
 
-This file defines how a term-level [linear model](jargon_linear_model.md) induces a block-level score model.
-
-Key definition:
-- `gBTerm` takes a mapping from [terms](jargon_term.md) to [blocks](jargon_block.md) and a coefficient function `betaOf`. For each block, it sums the terms assigned to that block (see [term](jargon_term.md) and [block](jargon_block.md)).
+This file currently contains no additional definitions beyond the shared imports; it is kept as a placeholder for term-to-block model notes.
