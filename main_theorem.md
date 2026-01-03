@@ -40,6 +40,19 @@ structure ConjointRandomizationStream
       (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
       ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
 ```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\begin{aligned}
+\exists (R,\mathcal{M}_R, U:\mathbb{N}\to\Omega\to R, f:R\to Attr),\;
+&(\forall i,\; U_i \text{ is measurable}) \land f \text{ is measurable} \\
+&\land (\forall i,\; A_i = f \circ U_i) \\
+&\land \text{Pairwise}(i \ne j \Rightarrow U_i \perp U_j \text{ under } \mu_{exp}) \\
+&\land (\forall i,\; U_i \stackrel{d}{=} U_0 \text{ under } \mu_{exp}) \\
+&\land (\forall i,x,\; U_i \perp Y_x \text{ under } \mu_{exp}).
+\end{aligned}
+\]
+```
 **English version**: there is a randomization [random variable](readable/jargon_random_variable.md)
 sequence `U i` and a
 [measurable](readable/jargon_measurable.md) map `f`
@@ -65,6 +78,16 @@ structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
   measA : ∀ i, Measurable (A i)
   indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
   identA : ∀ i, IdentDistrib (A i) (A 0) κ κ
+```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\begin{aligned}
+&(\forall i,\; A_i \text{ is measurable}) \\
+&\land \text{Pairwise}(i \ne j \Rightarrow A_i \perp A_j \text{ under } \kappa) \\
+&\land (\forall i,\; A_i \stackrel{d}{=} A_0 \text{ under } \kappa).
+\end{aligned}
+\]
 ```
 **English version**: each evaluation draw `A i` is [measurable](readable/jargon_measurable.md);
 any two distinct draws are [independent](readable/jargon_independent.md); and every draw has the
@@ -124,6 +147,21 @@ structure PaperOLSDesignAssumptions
   meas_gStar : Measurable (gStar (μexp := μexp) (Y := Y))
   bound_gStar : ∃ C, 0 ≤ C ∧ ∀ a, |gStar (μexp := μexp) (Y := Y) a| ≤ C
 ```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\begin{aligned}
+&\text{ObservationNoiseAssumptions:} \\
+&\forall i,a,\;
+\mathbb{E}_{\mu_{exp}}\!\left[ Y^{obs}_i - g^\star(A_i) \,\middle|\, A_i = a \right] = 0, \\
+&\forall i,\; \frac{1}{n}\sum_{k<n} \varphi_i(A_k)\bigl(Y^{obs}_k - g^\star(A_k)\bigr)
+\to 0 \text{ a.e. as } n\to\infty. \\
+&\text{PaperOLSDesignAssumptions:} \\
+&\text{obs\_noise holds, } f_{Main}, f_{Inter} \text{ are measurable and uniformly bounded,} \\
+&g^\star \text{ is measurable and uniformly bounded.}
+\end{aligned}
+\]
+```
 **English version**: the paper feature map has [measurable](readable/jargon_measurable.md),
 uniformly [bounded](readable/jargon_boundedness.md) main and interaction components; the true
 causal score `gStar` is measurable and uniformly bounded; and the observation noise has zero
@@ -153,6 +191,12 @@ structure PaperOLSFullRankAssumptions
         (xiAttr := xiAttr)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
 ```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\operatorname{attrGram}(\xi_{Attr}, \varphi_{Paper}) \text{ is invertible.}
+\]
+```
 **English version**: the [Gram matrix](readable/jargon_gram_matrix.md) of the paper feature map
 under the attribute law `xiAttr` is invertible.
 
@@ -179,6 +223,14 @@ def FullMainEffectsTerms
           =
         α0 + ∑ k : K, main k (x k)
 ```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\forall \alpha_0,\; \forall \text{ main }(k,\cdot),\;
+\exists \beta,\; \forall x,\;
+g^{Lin}_{\varphi,\beta}(x) = \alpha_0 + \sum_{k\in K} \text{main}_k(x_k).
+\]
+```
 **English version**: for any intercept `α0` and any collection of per‑attribute main
 effects, there exist [parameters](readable/jargon_parameter.md) `β` so that the
 [linear‑in‑terms](readable/jargon_linear_in_terms.md) model `gLin` exactly reproduces the additive
@@ -201,6 +253,13 @@ def NoInteractions
     (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
   ∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
     ∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)
+```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\exists \alpha_0,\; \exists \text{ main }(k,\cdot),\; \forall x,\;
+g^\star(x) = \alpha_0 + \sum_{k\in K} \text{main}_k(x_k).
+\]
 ```
 **English version**: there exists an intercept and per‑attribute main effects so that the
 true causal score `gStar` is exactly additive in attributes for every profile.
@@ -238,6 +297,16 @@ structure EvalWeightMatchesPopMoments
       =
     attrM2 ν s
 ```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\begin{aligned}
+&A_0 \text{ is measurable,} \\
+&\frac{\int w(a)\, s(a)\, d\kappa}{\int w(a)\, d\kappa} = \operatorname{attrMean}_\nu(s), \\
+&\frac{\int w(a)\, s(a)^2\, d\kappa}{\int w(a)\, d\kappa} = \operatorname{attrM2}_\nu(s),
+\end{aligned}
+\]
+```
 **English version**: for the evaluation sample, the weight‑normalized [mean](readable/jargon_mean.md)
 and [second moment](readable/jargon_second_moment.md) of score `s` match the
 [population](readable/jargon_population.md) mean and second moment under `ν`.
@@ -271,6 +340,16 @@ structure SplitEvalWeightAssumptionsBounded
   hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C
   hW0 : designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
 ```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\begin{aligned}
+&A \text{ is IID under } \rho, \\
+&g^{Hat}_m \text{ and } w \text{ are measurable and uniformly bounded,} \\
+&\mathbb{E}_\rho[Z] \ne 0 \text{ for } Z = Z_{comp}(A,w).
+\end{aligned}
+\]
+```
 **English version**: the evaluation attributes are [IID](readable/jargon_iid.md); both the
 fitted score `gHat` and weights `w` are [measurable](readable/jargon_measurable.md) and
 uniformly [bounded](readable/jargon_boundedness.md); and the mean of the weight process is
@@ -291,6 +370,12 @@ nonzero.
 def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
   ∀ᵐ x ∂ν, gExp x = gPop x
 ```
+**Formal statement (LaTeX)**:
+```tex
+\[
+g_{Exp}(x) = g_{Pop}(x) \quad \text{for } \nu\text{-a.e. } x.
+\]
+```
 **English version**: the experimental score and [population](readable/jargon_population.md)
 target score agree for `ν`‑[almost every](readable/jargon_almost_everywhere.md)
 attribute [profile](readable/jargon_profile.md).
@@ -307,6 +392,12 @@ attribute [profile](readable/jargon_profile.md).
 ```lean
 structure EpsilonAssumptions (ε : ℝ) : Prop where
   pos : 0 < ε
+```
+**Formal statement (LaTeX)**:
+```tex
+\[
+0 < \varepsilon.
+\]
 ```
 **English version**: the tolerance parameter `ε` is strictly positive.
 
@@ -480,6 +571,22 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
                 attrSD (ν)
                   (gBlockTerm (blk := blk) (β := θ0)
                     (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b)
+```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\begin{aligned}
+&\exists \theta_0,\; \forall^{\mu_{exp}\text{-a.e.}} \omega,\; \exists M,\;
+\forall m \ge M,\; \forall b, \\
+&\quad \Bigl(\forall^{\rho\text{-a.e.}} \omega',\;
+\forall^{\text{eventually}} n,\;
+\operatorname{totalErr}(\rho,A_{eval},\nu,w,g_{Block},\theta_0,\hat\theta,m,n,\omega') < \varepsilon\Bigr) \\
+&\quad \land\;
+\operatorname{attrSD}_\nu\!\bigl(g_{Block}(b,\theta_0)\bigr)
+=
+\operatorname{attrSD}_\nu\!\bigl(g_{BlockTerm}(b,\theta_0)\bigr).
+\end{aligned}
+\]
 ```
 **English version**: there exists a coefficient vector `θ0` such that, for `μexp`‑almost
 every training path `ω`, there is a cutoff `M` where for all `m ≥ M` and every block `b`,
