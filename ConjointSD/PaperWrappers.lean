@@ -1013,7 +1013,7 @@ theorem
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
   intro m hm
-    exact hM m hm
+  exact hM m hm
 
 set_option linter.style.longLine true
 

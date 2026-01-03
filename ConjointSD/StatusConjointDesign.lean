@@ -296,11 +296,9 @@ theorem status_event_pos
           = Measure.map (statusX (Respondent := Respondent)) μexp {p} := by
               simp [hmap_pre]
       _ = νStatus {p} := by simp [hlaw]
+  set_option linter.unnecessarySimpa false in
   have hpos : νStatus {p} ≠ 0 := by
-    intro hzero
-    have hzero' := hzero
-    simp [hmass] at hzero'
-    exact hsupport hzero'
+    simpa [hmass] using hsupport
   intro hzero
   apply hpos
   calc
