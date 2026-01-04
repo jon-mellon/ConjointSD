@@ -4,9 +4,7 @@ Lean file: [ConjointSD/PaperWrappers.lean](../ConjointSD/PaperWrappers.lean)
 
 This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript. The wrapper statements use the standard probability/convergence bundles and target attribute moments under `ν`, with `EvalWeightMatchesPopMoments` encoding the weighted evaluation-to-population moment match needed for SD targets. Where causal scores (`gStar`, `gExp`) appear, they are tied to the experimental law `μexp`, separating experimental identification from population evaluation.
 
-Section 1: identification
-- Wraps the identification results so they read as "[conditional mean](jargon_conditional_mean.md) identifies the potential [mean](jargon_mean.md)" and "difference in [conditional [means](jargon_mean.md)](jargon_conditional_mean.md) identifies the treatment contrast," now with an explicit positivity assumption on the conditioning events.
-- Adds status-conjoint identification wrappers and derives positivity from the single-shot design before applying the generic identification results.
+Identification wrappers now live in `ConjointSD/IdentificationTheorems.lean`.
 
 Section 2: model to [blocks](jargon_block.md)
 - Uses the block decomposition bridge from `ConjointSD/ModelBridge.lean` inside the end-to-end wrappers (see [linear model](jargon_linear_model.md) and [block](jargon_block.md)).
@@ -20,16 +18,8 @@ Section 3: sequential [standard deviation](jargon_standard_deviation.md) [consis
 - Adds end-to-end OLS wrappers that derive well-specification from `NoInteractions` + `FullMainEffectsTerms`, use randomized assignment for identification, and then apply the respondent-sampling LLN bridge (`RespondentSamplingLLN`) so both the total-score wrapper (`paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`) and the block component wrapper (`paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`) target the population-mean score `gPop` and its implied block decomposition.
 - Approximate/misspecification variants now live in `ConjointSD/ApproxPaperWrappers.lean`.
 
-Section 4: targeting the true [estimand](jargon_estimand.md)
-- Adds a separate assumption that the model score equals the true target [almost everywhere](jargon_almost_everywhere.md), then concludes the target human [population](jargon_population.md) [standard deviations](jargon_standard_deviation.md) are equal.
-- Provides an approximate version where the scores are within epsilon, giving an explicit [standard deviation](jargon_standard_deviation.md) error bound.
-- Adds an identification bridge: if the model score targets the observed score and the observed score equals the causal score, then the SD target is the causal one (using [potential outcomes](jargon_potential_outcome.md) and [conditional means](jargon_conditional_mean.md)).
-
-Section 4c: link to the causal [estimand](jargon_estimand.md)
-- Adds an approximate counterpart: if the model is only approximately [well-specified](jargon_well_specified.md) ν-a.e., the total-score [standard deviation](jargon_standard_deviation.md) target is within an explicit bound of the `gStar` target.
-- Adds a two-stage approximation version: a flexible oracle score approximates `gStar`, and the model approximates that oracle, with the combined error driving the [standard deviation](jargon_standard_deviation.md) bound to the `gStar` target.
-
-Section 4d: no-[interactions](jargon_interaction.md) corollary
-- Uses the "no [interactions](jargon_interaction.md)" assumption to produce [well-specification](jargon_well_specified.md) automatically and then applies the same [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) [bridge](jargon_bridge.md).
+Targeting the true [estimand](jargon_estimand.md):
+- Uses ν-a.e. equality (derived from respondent sampling) to link model-implied SDs to the population targets.
+- Approximate/misspecification variants now live in `ConjointSD/ApproxPaperWrappers.lean`.
 
 In short, this file is the narrative layer: it collects the pieces into statements that match the paper's wording and flow.

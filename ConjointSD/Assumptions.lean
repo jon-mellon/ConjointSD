@@ -55,10 +55,6 @@ theorem int1 {ν : Measure Attr} [ProbMeasureAssumptions ν] {s : Attr → ℝ}
 
 end AttrMomentAssumptions
 
-/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
-def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ᵐ a ∂ν, |s a - t a| ≤ ε
-
 /-- Uniform bound on a score function, ν-a.e. -/
 def BoundedAE (ν : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
   ∀ᵐ a ∂ν, |s a| ≤ C
@@ -456,18 +452,6 @@ structure ConjointRandomizationStream
       (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
       ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
 
-/-- Randomized-assignment assumptions that imply the `rand` factorization. -/
-structure ConjointIdRandomized
-    [MeasurableSpace Attr] (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    [ProbMeasureAssumptions μexp] : Prop where
-  measX : Measurable X
-  measYobs : Measurable Yobs
-  measY : ∀ x, Measurable (Y x)
-  consistency : ∀ ω, Yobs ω = Y (X ω) ω
-  bounded :
-    ∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C
-  ignorability : ∀ x, (fun ω => X ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
-
 end ConjointIdentification
 
 section ConjointIdentificationLemmas
@@ -502,30 +486,6 @@ lemma DesignAttrIID.of_randomization_stream
 
 end ConjointIdentificationLemmas
 
-section ApproximateOracle
-
-variable {Attr : Type*} [MeasurableSpace Attr]
-
-/--
-Two-stage approximation: a flexible score `gFlex` approximates the experimental
-causal score `gStar`, and the model score `gModel` approximates `gFlex`, both ν-a.e.
--/
-def ApproxOracleAE
-    (ν : Measure Attr)
-    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
-  (∀ᵐ x ∂ν, |gModel x - gFlex x| ≤ δModel) ∧
-  (∀ᵐ x ∂ν, |gFlex x - gStar x| ≤ δOracle)
-
-/--
-L2-style approximation: the model score differs from the target by at most delta in mean-square.
--/
-def L2Approx
-    (ν : Measure Attr)
-    (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
-  MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
-  Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ
-
-end ApproximateOracle
 
 section WellSpecifiedFromNoInteractions
 
@@ -556,13 +516,6 @@ def NoInteractions
     (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
   ∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
     ∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)
-
-/-- Approximate additivity: `gStar` is within ε of an additive main-effects surface. -/
-def ApproxNoInteractions
-    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) (ε : ℝ) : Prop :=
-  ∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
-    ∀ x : Profile K V,
-      |gStar (μexp := μexp) (Y := Y) x - (α0 + ∑ k : K, main k (x k))| ≤ ε
 
 end WellSpecifiedFromNoInteractions
 

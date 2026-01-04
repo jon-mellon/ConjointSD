@@ -2,6 +2,7 @@ import Mathlib
 import ConjointSD.PaperWrappers
 import ConjointSD.ApproxTargetEquivalence
 import ConjointSD.ApproxModelBridge
+import ConjointSD.ApproxAssumptions
 
 open Filter MeasureTheory ProbabilityTheory
 open scoped Topology BigOperators

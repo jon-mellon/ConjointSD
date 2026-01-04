@@ -5,6 +5,8 @@ Readable summaries of the Lean development.
 - [ConjointIdentification.lean](ConjointIdentification.md)
 - [ConjointSD.lean](ConjointSD.md)
 - [Assumptions.lean](Assumptions.md)
+- [ApproxAssumptions.lean](ApproxAssumptions.md)
+- [IdentificationAssumptions.lean](IdentificationAssumptions.md)
 - [ApproxModelBridge.lean](ApproxModelBridge.md)
 - [ApproxPaperWrappers.lean](ApproxPaperWrappers.md)
 - [ApproxTargetEquivalence.lean](ApproxTargetEquivalence.md)
@@ -32,3 +34,4 @@ Readable summaries of the Lean development.
 - [TrueBlockEstimand.lean](TrueBlockEstimand.md)
 - [VarianceDecompositionFromBlocks.lean](VarianceDecompositionFromBlocks.md)
 - [WellSpecifiedFromNoInteractions.lean](WellSpecifiedFromNoInteractions.md)
+- [IdentificationTheorems.lean](IdentificationTheorems.md)

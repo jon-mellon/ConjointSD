@@ -8,13 +8,16 @@ Look in paper_highlights.md for excerpts from the paper that describe its analyt
 
 ## Assumptions (required)
 
+The following rules apply only to assumptions driving the main theorem chain described in main_theorem.md. Other assumptions (e.g. approximation or identification) may live in other places. 
+
 Always add new assumptions (even minor ones) to `ConjointSD/Assumptions.lean` and reuse existing assumptions when possible. 
 
-No assumption may live outside of Assumptions.lean.
+No assumption (other than specified above) may live outside of Assumptions.lean.
 
 No non-assumption content (e.g. anything derived) should be in Assumptions.lean.
 
-An assumption is *anything* the reader must buy in order to accept a theorem. 
+An assumption is *anything* the reader must buy in order to accept the main theorems. 
+
 
 ## Proof rules
 

@@ -104,12 +104,6 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   - `RespondentSamplingLLN.lln_gPop`: the respondent-average score converges to `gPop`.
   The ν-a.e. equality `gStar = gPop` is then *derived* from these two LLN statements
   (via uniqueness of limits), not assumed.
-- `ApproxInvarianceAE`: the approximate transport condition that allows bounded
-  deviations on the target [population](jargon_population.md) support.
-  Intuition: the experiment score may differ from the target score by at most
-  `ε` on a set of probability one under `ν`, so target moments are only
-  perturbed by a controlled amount. Formal:
-  `∀ᵐ x ∂ν, |s x - t x| ≤ ε`.
 - `BoundedAE`: uniform boundedness on the target [population](jargon_population.md)
   support. Intuition: scores stay within `C` almost everywhere under `ν`, so
   moment bounds and approximation lemmas can use a global envelope. Formal:
@@ -397,46 +391,12 @@ Reader mapping to standard OLS assumptions:
   `∃ R U f, (∀ i, Measurable (U i)) ∧ Measurable f ∧ (∀ i, A i = fun ω => f (U i ω)) ∧
     Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧ (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
     ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)`.
-- `ConjointIdRandomized`: a randomized-design variant under a probability
-  measure `μexp` (experimental design distribution). It assumes
-  [measurable](jargon_measurable.md) assignment,
-  uniformly bounded [potential outcomes](jargon_potential_outcome.md), and
-  [independence](jargon_independent.md) between `X` and each `Y x`. Integrability
-  of outcomes is derived from boundedness. (Hainmueller Assumption 3)
-  - `ConjointIdRandomized.measX`: assignment is measurable.
-    Intuition: treatment is a well-defined [random variable](jargon_random_variable.md).
-    Formal: `Measurable X`.
-  - `ConjointIdRandomized.measYobs`: observed outcomes are measurable.
-    Intuition: outcomes are observable [random variables](jargon_random_variable.md).
-    Formal: `Measurable Yobs`.
-  - `ConjointIdRandomized.measY`: potential outcomes are measurable.
-    Intuition: counterfactual outcomes are integrable.
-    Formal: `∀ x, Measurable (Y x)`.
-  - `ConjointIdRandomized.consistency`: observed equals realized potential outcome.
-    Intuition: no measurement distortion.
-    Formal: `∀ ω, Yobs ω = Y (X ω) ω`.
-  - `ConjointIdRandomized.bounded`: uniform boundedness of potential outcomes.
-    Intuition: outcomes have finite moments by design.
-    Formal: `∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C`.
-  - `ConjointIdRandomized.ignorability`: assignment is independent of each `Y x`.
-    Intuition: randomization breaks confounding.
-    Formal: `∀ x, (fun ω => X ω) ⟂ᵢ[μexp] (fun ω => Y x ω)`.
+Identification-specific randomized-design assumptions now live in
+`readable/IdentificationAssumptions.md`.
 
-## ModelBridge
+## Approximation-only assumptions
 
-- `ApproxOracleAE` (not used for consistency or identification): a two-stage approximation assumption: a flexible score
-  approximates the experimental causal score `gStar`, and the model score approximates the
-  flexible score, both [almost everywhere](jargon_almost_everywhere.md) under
-  the attribute distribution `ν`.
-  Intuition: use a rich intermediate score to bridge to the target.
-  Formal:
-  `(∀ᵐ x ∂ν, |gModel x - gFlex x| ≤ δModel) ∧ (∀ᵐ x ∂ν, |gFlex x - gStar x| ≤ δOracle)`.
-- `L2Approx`: an [L2](jargon_l2.md)/[RMSE](jargon_rmse.md)-style approximation assumption: the model score differs
-  from the target by at most `δ` in mean-square (uses the [L2](jargon_l2.md) norm under `ν`).
-  Intuition: the average squared error is bounded by `δ^2`.
-  Formal:
-  `MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
-    Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ`.
+Approximation-specific assumptions now live in `readable/ApproxAssumptions.md`.
 
 ## WellSpecifiedFromNoInteractions
 
@@ -455,11 +415,3 @@ Reader mapping to standard OLS assumptions:
   Formal:
   `∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
     ∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)`.
-- `ApproxNoInteractions`: approximate additivity of `gStar` within `ε` of a
-  main-effects surface.
-  Intuition: interactions are small enough that an additive model is uniformly
-  close to the causal target.
-  Formal:
-  `∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
-    ∀ x : Profile K V,
-      |gStar (μexp := μexp) (Y := Y) x - (α0 + ∑ k : K, main k (x k))| ≤ ε`.

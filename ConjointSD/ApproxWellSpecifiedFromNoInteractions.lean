@@ -1,5 +1,6 @@
 import ConjointSD.WellSpecifiedFromNoInteractions
 import ConjointSD.ApproxModelBridge
+import ConjointSD.ApproxAssumptions
 
 open scoped BigOperators
 open Filter MeasureTheory ProbabilityTheory

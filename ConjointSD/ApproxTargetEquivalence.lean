@@ -1,6 +1,7 @@
 import Mathlib
 import ConjointSD.Transport
 import ConjointSD.Assumptions
+import ConjointSD.ApproxAssumptions
 
 open Filter MeasureTheory
 open scoped Topology

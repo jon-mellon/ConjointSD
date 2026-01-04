@@ -3,7 +3,6 @@ import ConjointSD.Assumptions
 import ConjointSD.PredictedSD
 import ConjointSD.SDDecompositionFromConjoint
 import ConjointSD.VarianceDecompositionFromBlocks
-import ConjointSD.ConjointIdentification
 import ConjointSD.Transport
 import ConjointSD.EstimatedG
 import ConjointSD.SampleSplitting
@@ -19,4 +18,3 @@ import ConjointSD.RegressionEstimator
 import ConjointSD.PaperOLSConsistency
 import ConjointSD.PaperCoreEstimand
 import ConjointSD.WellSpecifiedFromNoInteractions
-import ConjointSD.StatusConjointDesign
