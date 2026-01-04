@@ -41,9 +41,9 @@ Formalization (Lean name): `gStar eq sum blocks of WellSpecified`
 Formalization (math):
 `WellSpecified -> gStar = sum b gBlock b`.
 
-## approx wellSpecified of approx no interactions (WellSpecifiedFromNoInteractions)
+## approx wellSpecified of approx no interactions (ApproxWellSpecifiedFromNoInteractions)
 
-File: `ConjointSD/WellSpecifiedFromNoInteractions.lean`
+File: `ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean`
 
 Statement: If the causal target is approximately additive and the term features
 can represent any additive main-effect surface, then the linear-in-terms model
@@ -63,14 +63,14 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under randomized assignment, OLS design assumptions, and no-interactions/full-main-effects identification, the block components of the paper score have sequentially consistent SD estimates that target the true block scores derived from the model fit. IID and boundedness of the evaluation score/weights are assumed, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
+Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and respondent-sampling LLN, the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score/weights are assumed, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
 
-Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; boundedness of the evaluation score/weights supplies the needed moment conditions for weighted LLNs, giving sequential consistency for each block score.
+Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; respondent sampling links the experiment to the population-mean score, and weighted LLNs yield sequential consistency for each block score.
 
 Formalization (Lean name): `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 
 Formalization (math):
-Block-level SD consistency follows from the paper OLS design chain, with targets given by the block components of the total score.
+Block-level SD consistency follows from the paper OLS design chain, with targets given by the block components implied by `gPop`.
 
 ## sequential consistency ae (SequentialConsistency)
 
@@ -273,9 +273,9 @@ Formalization (Lean name): `paper sd blocks sequential consistency to true targe
 Formalization (math):
 `attrSD ν (gBlock ...) = attrSD ν gTrueB` for each block.
 
-## paper sd blocks sequential consistency to approx target ae (PaperWrappers)
+## paper sd blocks sequential consistency to approx target ae (ApproxPaperWrappers)
 
-File: `ConjointSD/PaperWrappers.lean`
+File: `ConjointSD/ApproxPaperWrappers.lean`
 
 Statement: If [blocks](readable/jargon_block.md) are approximately correct in
 [L2](readable/jargon_l2.md), the block
@@ -290,9 +290,9 @@ Formalization (Lean name): `paper sd blocks sequential consistency to approx tar
 Formalization (math):
 `|attrSD ν s - attrSD ν t| ≤ bound` for each block.
 
-## paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE (PaperWrappers)
+## paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE (ApproxPaperWrappers)
 
-File: `ConjointSD/PaperWrappers.lean`
+File: `ConjointSD/ApproxPaperWrappers.lean`
 
 Statement: If the model is approximately
 [well-specified](readable/jargon_well_specified.md)
@@ -309,9 +309,9 @@ Formalization (Lean name): `paper sd total sequential consistency to gStar appro
 Formalization (math):
 `|attrSD ν gTotal - attrSD ν gStar(μexp)| ≤ bound`.
 
-## paper sd total sequential consistency to gStar approx ae of ApproxOracleAE (PaperWrappers)
+## paper sd total sequential consistency to gStar approx ae of ApproxOracleAE (ApproxPaperWrappers)
 
-File: `ConjointSD/PaperWrappers.lean`
+File: `ConjointSD/ApproxPaperWrappers.lean`
 
 Statement: If a flexible [oracle](readable/jargon_oracle.md) approximates
 `gStar` and the model approximates the oracle, the total

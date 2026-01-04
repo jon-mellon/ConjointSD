@@ -2873,7 +2873,7 @@ isUnit</td>
 </tr>
 <tr>
 <td style="text-align: left;">RespondentSamplingLLN lln gPop</td>
-<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2930,7 +2930,7 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2942,7 +2942,7 @@ isUnit</td>
 </tr>
 <tr>
 <td style="text-align: left;">RespondentSamplingLLN lln gStar</td>
-<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -2999,7 +2999,7 @@ isUnit</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">✅</td>
-<td style="text-align: left;">❌</td>
+<td style="text-align: left;">✅</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
 <td style="text-align: left;">❌</td>
@@ -3294,7 +3294,7 @@ hMeasW</td>
 
 ## Theorem dependency DAG
 
-<img src="dependency_tables_files/theorem_dependency_dag.png" width="2442" />
+<img src="dependency_tables_files/theorem_dependency_dag.png" width="2411" />
 
 ## OLS SD consistency DAG (direct assumptions)
 

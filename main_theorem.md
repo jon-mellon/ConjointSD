@@ -98,7 +98,7 @@ structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
 any two distinct draws are [independent](readable/jargon_independent.md); and every draw has the
 same [distribution](readable/jargon_distribution.md) as `A 0` under `κ`.
 
-### 3) Respondent sampling (total-score wrapper only)
+### 3) Respondent sampling
 **Assumption**: `RespondentSamplingLLN`.
 
 **Meaning** (subassumptions):
@@ -546,9 +546,17 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
       FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
+    {Person : Type*} [MeasurableSpace Person]
+    (μpop : Measure Person) [ProbMeasureAssumptions μpop]
+    (R : ℕ → Ω → Person)
+    (gP : Person → Profile K V → ℝ)
+    (hRespLLN :
+      RespondentSamplingLLN
+        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ θ0 : PaperTerm Main Inter → ℝ,
-      ∀ᵐ ω ∂μexp,
+      (∀ᵐ ω ∂μexp,
         ∃ M : ℕ,
           ∀ m ≥ M,
             ∀ b : B,
@@ -577,7 +585,16 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
                 =
                 attrSD (ν)
                   (gBlockTerm (blk := blk) (β := θ0)
-                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b))
+      ∧
+      (∀ᵐ x ∂ν,
+        gPop (μpop := μpop) gP x
+          =
+        gTotal
+          (B := B)
+          (g := gBlockTerm (blk := blk) (β := θ0)
+            (φ :=
+              φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x)
 ```
 **Formal statement (LaTeX)**:
 ```tex
@@ -591,7 +608,8 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
 &\quad \land\;
 \operatorname{attrSD}_\nu\!\bigl(g_{Block}(b,\theta_0)\bigr)
 =
-\operatorname{attrSD}_\nu\!\bigl(g_{BlockTerm}(b,\theta_0)\bigr).
+\operatorname{attrSD}_\nu\!\bigl(g_{BlockTerm}(b,\theta_0)\bigr), \\
+&\quad \text{and } g_{Pop}(x) = g_{Total}(x) \text{ for } \nu\text{-a.e. } x.
 \end{aligned}
 \]
 ```
@@ -600,4 +618,6 @@ every training path `ω`, there is a cutoff `M` where for all `m ≥ M` and ever
 the weighted evaluation error `totalErr` is eventually below `ε` along `ρ`‑almost every
 evaluation path, and the [population](readable/jargon_population.md)
 [SD](readable/jargon_standard_deviation.md) of the model block score at `θ0` equals the
-population SD of the true block term.
+population SD of the true block term. In addition, the population-mean score
+`gPop` equals the block-sum score `gTotal (gBlockTerm θ0)` ν-a.e., tying the block
+targets to respondent-sampling transport.

@@ -223,134 +223,6 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
       (s := gBlock (gB := gB) b θ0) (t := gTrueB b) (hTrueB b)
   exact ⟨hCons, hEq⟩
 
-/-!
-## 4b) Approximate targets: carry an explicit misspecification bound
--/
-
-/--
-Blocks: sequential consistency + ν-a.e. ε-approximation yields convergence with an SD bound.
--/
-theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
-    (hMom : ∀ m b,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
-    (hSplitBounded : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-        (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν := ν)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
-    (gTrueB : B → Attr → ℝ)
-    (C δ : ℝ)
-    (hApprox :
-      ∀ b : B,
-        ApproxInvarianceAE (ν := ν)
-          (s := gBlock (gB := gB) b θ0) (t := gTrueB b) δ)
-    (hBoundS :
-      ∀ b : B, BoundedAE (ν := ν)
-        (s := gBlock (gB := gB) b θ0) C)
-    (hBoundT :
-      ∀ b : B, BoundedAE (ν := ν) (s := gTrueB b) C)
-    (hMomS :
-      ∀ b : B, AttrMomentAssumptions (ν := ν)
-        (s := gBlock (gB := gB) b θ0))
-    (hMomT :
-      ∀ b : B, AttrMomentAssumptions (ν := ν) (s := gTrueB b))
-    (hVarS :
-      ∀ b : B, 0 ≤ attrVar (ν) (gBlock (gB := gB) b θ0))
-    (hVarT : ∀ b : B, 0 ≤ attrVar (ν) (gTrueB b))
-    (hδ : 0 ≤ δ)
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        ∀ b : B,
-          (∀ᵐ ω ∂ρ,
-            ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A (ν) w
-                (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
-          ∧
-          |attrSD (ν) (gBlock (gB := gB) b θ0)
-              - attrSD (ν) (gTrueB b)|
-            ≤ Real.sqrt (4 * C * δ) := by
-  rcases paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMom)
-      (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitBounded := hSplitBounded) (hPlug := hPlug)
-      (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm b
-  have hCons := hM m hm b
-  have hEq :
-      |attrSD (ν) (gBlock (gB := gB) b θ0)
-          - attrSD (ν) (gTrueB b)|
-        ≤ Real.sqrt (4 * C * δ) :=
-    attrSD_diff_le_of_approx_ae
-      (ν := ν) (s := gBlock (gB := gB) b θ0) (t := gTrueB b)
-      (hs := hMomS b) (ht := hMomT b)
-      (hBoundS := hBoundS b) (hBoundT := hBoundT b)
-      (hApprox := hApprox b) (hε := hδ)
-      (hVarS := hVarS b) (hVarT := hVarT b)
-  exact ⟨hCons, hEq⟩
-
-/- Total-score: sequential consistency + ν-a.e. ε-approximation yields convergence with
-an SD bound. -/
-theorem paper_sd_total_sequential_consistency_to_approx_target_ae
-    (hMom : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (hSplitTotalBounded :
-      ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-          (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
-    (gTrue : Attr → ℝ)
-    (C δ : ℝ)
-    (hApprox :
-      ApproxInvarianceAE (ν := ν)
-        (s := gTotalΘ (gB := gB) θ0) (t := gTrue) δ)
-    (hBoundS : BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
-    (hBoundT : BoundedAE (ν := ν) (s := gTrue) C)
-    (hMomS :
-      AttrMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
-    (hMomT : AttrMomentAssumptions (ν := ν) (s := gTrue))
-    (hVarS : 0 ≤ attrVar (ν) (gTotalΘ (gB := gB) θ0))
-    (hVarT : 0 ≤ attrVar (ν) gTrue)
-    (hδ : 0 ≤ δ)
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ᵐ ω ∂ρ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
-              (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
-        ∧
-        |attrSD (ν) (gTotalΘ (gB := gB) θ0)
-            - attrSD (ν) gTrue|
-          ≤ Real.sqrt (4 * C * δ) := by
-  rcases paper_sd_total_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMom)
-      (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
-      (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm
-  have hCons := hM m hm
-  have hEq :
-      |attrSD (ν) (gTotalΘ (gB := gB) θ0)
-          - attrSD (ν) gTrue|
-        ≤ Real.sqrt (4 * C * δ) :=
-    attrSD_diff_le_of_approx_ae
-      (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue)
-      (hs := hMomS) (ht := hMomT)
-      (hBoundS := hBoundS) (hBoundT := hBoundT)
-      (hApprox := hApprox) (hε := hδ)
-      (hVarS := hVarS) (hVarT := hVarT)
-  exact ⟨hCons, hEq⟩
-
 /--
 Total-score: sequential consistency + ν-a.e. target equality packages convergence to the true SD.
 -/
@@ -394,169 +266,6 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
       (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
   exact ⟨hCons, hEq⟩
 
-/-!
-## 4c) Link well-specification to the true causal estimand `gStar`
--/
-
-/-!
-Approximate link: use an ε-approximate well-specification assumption to bound the SD target
-error relative to `gStar`.
--/
-
-theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
-    {Term : Type*} [Fintype Term] [DecidableEq B]
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
-    (hMomEval : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (Y : Attr → Ω → ℝ)
-    (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
-    (hTotalModel :
-      ∀ x,
-        gTotalΘ (gB := gB) θ0 x
-          =
-        gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x)
-    (hspec :
-      ApproxWellSpecifiedAE (ν := ν) (μexp := μexp) (Y := Y) (β := β) (φ := φ) δ)
-    (hSplitTotalBounded :
-      ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-          (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
-    (C : ℝ)
-    (hBoundS :
-      BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
-    (hBoundT :
-      BoundedAE (ν := ν) (s := gStar (μexp := μexp) (Y := Y)) C)
-    (hMomS :
-      AttrMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
-    (hMomT :
-      AttrMomentAssumptions (ν := ν) (s := gStar (μexp := μexp) (Y := Y)))
-    (hVarS : 0 ≤ attrVar (ν) (gTotalΘ (gB := gB) θ0))
-    (hVarT : 0 ≤ attrVar (ν) (gStar (μexp := μexp) (Y := Y)))
-    (hδ : 0 ≤ δ)
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ᵐ ω ∂ρ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
-              (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
-        ∧
-        |attrSD (ν) (gTotalΘ (gB := gB) θ0)
-            - attrSD (ν) (gStar (μexp := μexp) (Y := Y))|
-          ≤ Real.sqrt (4 * C * δ) := by
-  have hApprox :
-      ApproxInvarianceAE
-        (ν := ν)
-        (s := gTotalΘ (gB := gB) θ0)
-        (t := gStar (μexp := μexp) (Y := Y))
-        δ := by
-    have hBlocks :
-        ∀ᵐ x ∂ν,
-          |gStar (μexp := μexp) (Y := Y) x
-            - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
-          ≤ δ :=
-      gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
-        (ν := ν) (μexp := μexp) (Y := Y) (blk := blk) (β := β) (φ := φ)
-        (ε := δ) hspec
-    refine hBlocks.mono ?_
-    intro x hx
-    simpa [abs_sub_comm, hTotalModel x] using hx
-  rcases
-    paper_sd_total_sequential_consistency_to_approx_target_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMomEval)
-      (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
-      (gTrue := gStar (μexp := μexp) (Y := Y))
-      (C := C) (δ := δ) (hApprox := hApprox)
-      (hBoundS := hBoundS) (hBoundT := hBoundT)
-      (hMomS := hMomS) (hMomT := hMomT)
-      (hVarS := hVarS) (hVarT := hVarT)
-      (hδ := hδ) (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm
-  exact hM m hm
-
-/--
-Two-stage approximate link: a flexible oracle score approximates `gStar`, and the model
-approximates the oracle. The SD target error is bounded by the combined approximation.
--/
-theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
-    (hMomEval : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
-    (Y : Attr → Ω → ℝ)
-    (gFlex : Attr → ℝ)
-    (δModel δOracle : ℝ)
-    (hApprox :
-      ApproxOracleAE (ν := ν)
-        (gModel := gTotalΘ (gB := gB) θ0) (gFlex := gFlex) (gStar := gStar (μexp := μexp) (Y := Y))
-        δModel δOracle)
-    (hSplitTotalBounded :
-      ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
-          (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
-    (C : ℝ)
-    (hBoundS :
-      BoundedAE (ν := ν) (s := gTotalΘ (gB := gB) θ0) C)
-    (hBoundT :
-      BoundedAE (ν := ν) (s := gStar (μexp := μexp) (Y := Y)) C)
-    (hMomS :
-      AttrMomentAssumptions (ν := ν) (s := gTotalΘ (gB := gB) θ0))
-    (hMomT :
-      AttrMomentAssumptions (ν := ν) (s := gStar (μexp := μexp) (Y := Y)))
-    (hVarS : 0 ≤ attrVar (ν) (gTotalΘ (gB := gB) θ0))
-    (hVarT : 0 ≤ attrVar (ν) (gStar (μexp := μexp) (Y := Y)))
-    (hδModel : 0 ≤ δModel)
-    (hδOracle : 0 ≤ δOracle)
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ᵐ ω ∂ρ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
-              (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
-        ∧
-        |attrSD (ν) (gTotalΘ (gB := gB) θ0)
-            - attrSD (ν) (gStar (μexp := μexp) (Y := Y))|
-          ≤ Real.sqrt (4 * C * (δModel + δOracle)) := by
-  rcases hApprox with ⟨hApproxModel, hApproxOracle⟩
-  have hApproxCombined :
-      ApproxInvarianceAE
-        (ν := ν)
-        (s := gTotalΘ (gB := gB) θ0)
-        (t := gStar (μexp := μexp) (Y := Y))
-        (δModel + δOracle) := by
-    exact
-      approxInvarianceAE_triangle
-        (ν := ν)
-        (s := gTotalΘ (gB := gB) θ0) (t := gFlex) (u := gStar (μexp := μexp) (Y := Y))
-        (ε₁ := δModel) (ε₂ := δOracle)
-        hApproxModel hApproxOracle
-  have hδ : 0 ≤ δModel + δOracle := add_nonneg hδModel hδOracle
-  rcases
-    paper_sd_total_sequential_consistency_to_approx_target_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMomEval)
-      (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
-      (gTrue := gStar (μexp := μexp) (Y := Y))
-      (C := C) (δ := δModel + δOracle) (hApprox := hApproxCombined)
-      (hBoundS := hBoundS) (hBoundT := hBoundT)
-      (hMomS := hMomS) (hMomT := hMomT)
-      (hVarS := hVarS) (hVarT := hVarT)
-      (hδ := hδ) (ε := ε) (hε := hε)
-      with ⟨M, hM⟩
-  refine ⟨M, ?_⟩
-  intro m hm
-  exact hM m hm
 
 end SDSequentialConsistency
 
@@ -625,9 +334,17 @@ theorem
       FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
+    {Person : Type*} [MeasurableSpace Person]
+    (μpop : Measure Person) [ProbMeasureAssumptions μpop]
+    (R : ℕ → Ω → Person)
+    (gP : Person → Profile K V → ℝ)
+    (hRespLLN :
+      RespondentSamplingLLN
+        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ θ0 : PaperTerm Main Inter → ℝ,
-      ∀ᵐ ω ∂μexp,
+      (∀ᵐ ω ∂μexp,
         ∃ M : ℕ,
           ∀ m ≥ M,
             ∀ b : B,
@@ -659,7 +376,16 @@ theorem
                 attrSD (ν)
                   (gBlockTerm (blk := blk) (β := θ0)
                     (φ :=
-                      φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b) := by
+                      φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b))
+      ∧
+      (∀ᵐ x ∂ν,
+        gPop (μpop := μpop) gP x
+          =
+        gTotal
+          (B := B)
+          (g := gBlockTerm (blk := blk) (β := θ0)
+            (φ :=
+              φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x) := by
   rcases
       wellSpecified_of_noInteractions_of_fullMainEffects
         (K := K) (V := V) (Term := PaperTerm Main Inter)
@@ -692,7 +418,80 @@ theorem
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
       hRand hDesign hFull hspec
+  have hStarEq :
+      ∀ᵐ x ∂ν,
+        gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ :=
+                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
+          =
+        gStar (μexp := μexp) (Y := Y) x := by
+    have hBlocks :
+        gTotal
+          (B := B)
+          (g := gBlockTerm (blk := blk) (β := θ0)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
+          =
+        gStar (μexp := μexp) (Y := Y) := by
+      classical
+      funext x
+      have hLinBlocks :
+          gLin (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+            =
+          gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) :=
+        gLin_eq_gTotal_blocks
+          (B := B)
+          (Term := PaperTerm Main Inter)
+          (blk := blk)
+          (β := θ0)
+          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+      have hLinBlocksX :
+          gTotal
+              (B := B)
+              (g := gBlockTerm (blk := blk) (β := θ0)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
+            =
+          gLin (β := θ0)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) x := by
+        simpa using congrArg (fun f => f x) hLinBlocks.symm
+      calc
+        gTotal
+            (B := B)
+            (g := gBlockTerm (blk := blk) (β := θ0)
+              (φ :=
+                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x
+            =
+          gLin (β := θ0)
+              (φ :=
+                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) x := hLinBlocksX
+        _ =
+          gStar (μexp := μexp) (Y := Y) x := by
+            simpa [WellSpecified] using hspec x
+    refine ae_of_all _ ?_
+    intro x
+    simpa using congrArg (fun f => f x) hBlocks
+  have hPopEq :
+      ∀ᵐ x ∂ν, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
+    respondent_lln_ae_eq (h := hRespLLN)
+  have hPopBlocks :
+      ∀ᵐ x ∂ν,
+        gPop (μpop := μpop) gP x
+          =
+        gTotal
+          (B := B)
+          (g := gBlockTerm (blk := blk) (β := θ0)
+            (φ :=
+              φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x := by
+    refine (hPopEq.and hStarEq).mono ?_
+    intro x hx
+    exact hx.1.symm.trans hx.2.symm
   refine ⟨θ0, ?_⟩
+  refine ⟨?_, hPopBlocks⟩
   filter_upwards [hTheta] with ω hThetaω
   have hPlugBlocks' :
       ∀ b : B,

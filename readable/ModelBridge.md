@@ -9,9 +9,9 @@ Core linear model pieces:
 - `gBlockTerm` groups [terms](jargon_term.md) into [blocks](jargon_block.md) using a block assignment function.
 - `gLin_eq_gTotal_blocks` proves that summing block scores recovers the original linear score.
 
-Causal target pieces:
+*Causal target pieces*:
 - `gStar` (defined in `ConjointSD/Defs.lean`) is the causal score function: the [mean](jargon_mean.md) [potential outcome](jargon_potential_outcome.md) under each [profile](jargon_profile.md).
-- `WellSpecified` and approximation variants are defined in `ConjointSD/ModelBridge.lean`.
-- The AE approximation theorem (`ApproxWellSpecifiedAE`) yields a.e. closeness to the block-sum score; the well-specification definition is paired with `gLin_eq_gTotal_blocks` in downstream proofs.
+- `WellSpecified` is defined in `ConjointSD/ModelBridge.lean`; approximation variants live in `ConjointSD/ApproxModelBridge.lean`.
+- The well-specification definition is paired with `gLin_eq_gTotal_blocks` in downstream proofs.
 
 This file is the main algebraic [bridge](jargon_bridge.md) from "linear model for the causal target" to "sum of block scores."
