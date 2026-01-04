@@ -55,14 +55,6 @@ theorem int1 {ν : Measure Attr} [ProbMeasureAssumptions ν] {s : Attr → ℝ}
 
 end AttrMomentAssumptions
 
-/--
-Invariance only on target-population attribute support (AE under `ν`): the experimental
-score agrees with the target-population score `gPop` `ν`-almost everywhere.
-This is the minimal transport condition used to link experiment to population.
--/
-def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
-  ∀ᵐ x ∂ν, gExp x = gPop x
-
 /-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
 def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
   ∀ᵐ a ∂ν, |s a - t a| ≤ ε
@@ -157,6 +149,86 @@ structure SplitEvalWeightAssumptionsBounded
   hW0 : designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
 
 end SampleSplitting
+
+section RespondentSampling
+
+variable {Ω Person Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Person]
+variable [MeasurableSpace Attr]
+
+/-- IID respondent sampling from the population law. -/
+structure RespondentSamplingIID
+    (μexp : Measure Ω) (μpop : Measure Person) (R : ℕ → Ω → Person) : Prop where
+  measR : ∀ i, Measurable (R i)
+  indepR : Pairwise (fun i j => IndepFun (R i) (R j) μexp)
+  identR : ∀ i, Measure.map (R i) μexp = μpop
+
+/--
+Pointwise LLN for respondent-level scores, with an explicit transport target
+`gPop` and a link to the experimental estimand `gStar`.
+-/
+structure RespondentSamplingLLN
+    (μexp : Measure Ω) (ν : Measure Attr) (μpop : Measure Person)
+    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+  lln_gStar :
+    ∀ x,
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+          atTop
+          (nhds (gStar (μexp := μexp) (Y := Y) x))
+  lln_gPop :
+    ∀ x,
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+          atTop
+          (nhds (gPop (μpop := μpop) gP x))
+
+theorem respondent_lln_pointwise_eq
+    {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
+    {ν : Measure Attr} {μpop : Measure Person}
+    {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
+    (h : RespondentSamplingLLN
+      (μexp := μexp) (ν := ν) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
+    ∀ x, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
+  classical
+  intro x
+  by_contra hne
+  have hboth :
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+            (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+            atTop
+            (nhds (gStar (μexp := μexp) (Y := Y) x))
+          ∧
+        Tendsto
+            (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+            atTop
+            (nhds (gPop (μpop := μpop) gP x)) :=
+    (h.lln_gStar x).and (h.lln_gPop x)
+  have hfalse : ∀ᵐ _ω ∂μexp, False := by
+    refine hboth.mono ?_
+    intro ω hω
+    exact hne (tendsto_nhds_unique hω.1 hω.2)
+  have hzero_univ : μexp Set.univ = 0 := by
+    have hfalse' : μexp { ω | ¬False } = 0 := (MeasureTheory.ae_iff).1 hfalse
+    simpa using hfalse'
+  have hone : μexp Set.univ = 1 := by
+    exact measure_univ
+  exact zero_ne_one (hzero_univ.symm.trans hone)
+
+theorem respondent_lln_ae_eq
+    {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
+    {ν : Measure Attr} {μpop : Measure Person}
+    {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
+    (h : RespondentSamplingLLN
+      (μexp := μexp) (ν := ν) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
+    ∀ᵐ x ∂ν, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
+  refine ae_of_all _ ?_
+  intro x
+  exact respondent_lln_pointwise_eq (h := h) x
+
+end RespondentSampling
 
 section RegressionConsistencyBridge
 

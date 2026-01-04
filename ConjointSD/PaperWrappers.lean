@@ -16,7 +16,7 @@ closest to the manuscript:
    - combined statement (blocks + total) with a single M.
 
 4) “Convergence to the true estimand” is obtained by adding an explicit target-equality
-   assumption (typically InvarianceAE / well-specification), plus AE-congruence lemmas
+   assumption (now via respondent-sampling LLN), plus AE-congruence lemmas
    showing target human population SDs match when score functions match ν-a.e.
 -/
 
@@ -195,8 +195,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
     (gTrueB : B → Attr → ℝ)
     (hTrueB :
       ∀ b : B,
-        InvarianceAE (ν := ν)
-          (gBlock (gB := gB) b θ0) (gTrueB b))
+        ∀ᵐ x ∂ν, gBlock (gB := gB) b θ0 x = gTrueB b x)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -368,7 +367,7 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
     (gTrue : Attr → ℝ)
     (hTrue :
-      InvarianceAE (ν := ν) (gTotalΘ (gB := gB) θ0) gTrue)
+      ∀ᵐ x ∂ν, gTotalΘ (gB := gB) θ0 x = gTrue x)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -725,15 +724,15 @@ theorem
       hContBlocks
   have hTrueB :
       ∀ b : B,
-        InvarianceAE
-          (ν := ν)
-          (gBlock
-            (gB := fun b θ a =>
-              gBlockTerm (blk := blk) (β := θ)
-                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
-            b θ0)
-          (gBlockTerm (blk := blk) (β := θ0)
-            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b) := by
+        ∀ᵐ x ∂ν,
+          gBlock
+              (gB := fun b θ a =>
+                gBlockTerm (blk := blk) (β := θ)
+                  (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+              b θ0 x
+            =
+          gBlockTerm (blk := blk) (β := θ0)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b x := by
     intro b
     refine ae_of_all _ ?_
     intro x
@@ -808,9 +807,14 @@ theorem
       FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
-    (gTrue : Profile K V → ℝ)
-    (hInv :
-      InvarianceAE (ν := ν) (gStar (μexp := μexp) (Y := Y)) gTrue)
+    {Person : Type*} [MeasurableSpace Person]
+    (μpop : Measure Person) [ProbMeasureAssumptions μpop]
+    (R : ℕ → Ω → Person)
+    (gP : Person → Profile K V → ℝ)
+    (hRespLLN :
+      RespondentSamplingLLN
+        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ θ0 : PaperTerm Main Inter → ℝ,
       ∀ᵐ ω ∂μexp,
@@ -840,7 +844,7 @@ theorem
                         φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                   θ0)
               =
-              attrSD (ν) gTrue := by
+              attrSD (ν) (gPop (μpop := μpop) gP) := by
   rcases
       wellSpecified_of_noInteractions_of_fullMainEffects
         (K := K) (V := V) (Term := PaperTerm Main Inter)
@@ -982,15 +986,19 @@ theorem
               (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x := by
             simp [gTotalΘ, gTotal]
       _ = gStar (μexp := μexp) (Y := Y) x := hBlocksx
+  have hInv :
+      ∀ᵐ x ∂ν,
+        gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
+    respondent_lln_ae_eq (h := hRespLLN)
   have hTrue :
-      InvarianceAE
-        (ν := ν)
-        (gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
-          θ0)
-        gTrue := by
+      ∀ᵐ x ∂ν,
+        gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+            θ0 x
+          =
+        gPop (μpop := μpop) gP x := by
     refine (hStarEq.and hInv).mono ?_
     intro x hx
     exact hx.1.trans hx.2
@@ -1008,7 +1016,7 @@ theorem
           n)
       (hSplitTotalBounded := hSplitTotal ω)
       (hPlugTotal := hPlugTotal')
-      (gTrue := gTrue) (hTrue := hTrue)
+      (gTrue := gPop (μpop := μpop) gP) (hTrue := hTrue)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩

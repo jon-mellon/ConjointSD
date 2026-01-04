@@ -90,25 +90,20 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 - `EvalWeightMatchesPopMoments.m2_eq`: weighted evaluation second moment equals target second moment.
     Intuition: reweighted evaluation scale matches the target population second moment under `ν`.
     Formal: `(∫ w a * s a^2)/(∫ w a) = attrM2 ν s` under `kappaDesign`.
-- `InvarianceAE`: almost-everywhere equality under the attribute distribution
-  `ν`, i.e., the experimental and target [population](jargon_population.md) scores
-  agree on the [population support](jargon_population_support.md) (support of
-  `ν`). This is the transport/external-validity step that links the experiment to
-  target-population moments; it is not part of first-stage randomized identification
-  on the design distribution.
-  Intuitively, they may
-  differ only on a set with zero probability under `ν`; this is the external
-  validity/transport assumption that lets target [population](jargon_population.md)
-  targets be read off from
-  the experimental score. Formally: `gExp = gPop` nu-a.e. (under `ν`). It does
-  not by itself guarantee the fitted model
-  matches that score; misspecification or estimation error can still break
-  transfer. It also fails if the experimental setup elicits a different scoring
-  rule than the real-world target [population](jargon_population.md) process
-  (beyond a `ν`-null set). Intuition: the experiment and target human
-  [population](jargon_population.md) differ only on events that never occur in
-  the target [population](jargon_population.md). Formal:
-  `∀ᵐ x ∂ν, gExp x = gPop x`.
+- `RespondentSamplingIID`: IID respondent sampling from the population law `μpop`.
+  It separates the respondent draw from the profile randomization.
+  - `RespondentSamplingIID.measR`: respondent draws are measurable.
+  - `RespondentSamplingIID.indepR`: respondent draws are pairwise independent under `μexp`.
+  - `RespondentSamplingIID.identR`: the respondent draws' distribution equals `μpop`.
+  Intuition: the survey respondents are a random sample of the target population.
+- `RespondentSamplingLLN`: pointwise LLN transport for respondent-level scores.
+  It formalizes the idea that averaging individual scoring rules across respondents
+  converges to the population-mean score `gPop`, and links that limit to the
+  experimental estimand `gStar`. Formally it bundles:
+  - `RespondentSamplingLLN.lln_gStar`: the respondent-average score converges to `gStar`.
+  - `RespondentSamplingLLN.lln_gPop`: the respondent-average score converges to `gPop`.
+  The ν-a.e. equality `gStar = gPop` is then *derived* from these two LLN statements
+  (via uniqueness of limits), not assumed.
 - `ApproxInvarianceAE`: the approximate transport condition that allows bounded
   deviations on the target [population](jargon_population.md) support.
   Intuition: the experiment score may differ from the target score by at most

@@ -157,9 +157,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Adds an external validity assumption (`InvarianceAE`) so the total
-score target can be replaced by a declared true target `gTrue`, and then
-states the target [standard deviation](readable/jargon_standard_deviation.md).
+Statement: Adds a ν-a.e. target equality so the total score target can be
+replaced by a declared true target `gTrue`, and then states the target
+[standard deviation](readable/jargon_standard_deviation.md).
 
 Intuition: If the model score equals the true
 [population](readable/jargon_population.md) score on the
@@ -367,20 +367,20 @@ File: `ConjointSD/PaperWrappers.lean`
 Statement: Under randomized assignment, the paper OLS design assumptions,
 full main-effects terms, and no-interactions, there exists a coefficient
 vector `theta0` such that the weighted plug‑in SD for the total score
-converges and equals the population SD of the true target score `gTrue`,
-assuming `InvarianceAE` between `gStar` and `gTrue`.
+converges and equals the population SD of the population-mean score `gPop`,
+using the respondent-sampling LLN bridge.
 
 Intuition: randomization and OLS assumptions identify the additive
-status‑assigning rule in the experiment; the external‑validity assumption
-transports that rule to the population, so the weighted evaluation SD
-converges to the true population SD.
+status‑assigning rule in the experiment; respondent sampling links the
+experimental estimand to the population-mean score, so the weighted evaluation SD
+converges to the population SD.
 
 Formalization (Lean name):
 `paper sd total sequential consistency to true target ae of paper ols design ae of NoInteractions of randomization`
 
 Formalization (math):
-Sequential consistency of `attrSD ν (gTotalΘ θ0)` plus `InvarianceAE` yields
-`attrSD ν (gTotalΘ θ0) = attrSD ν gTrue` a.e.
+Sequential consistency of `attrSD ν (gTotalΘ θ0)` plus the respondent-sampling
+LLN bridge yields `attrSD ν (gTotalΘ θ0) = attrSD ν (gPop)` a.e.
 
 ## Dependency tables
 

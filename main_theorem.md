@@ -5,6 +5,11 @@ This document walks through the **[block](readable/jargon_block.md)‑level** en
 The target is the [block](readable/jargon_block.md) components of the total score, not the total
 score itself. The final wrapper is:
 `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`.
+Note: the total-score wrapper
+`paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
+uses the respondent-sampling LLN bridge (`RespondentSamplingLLN`).
+The implied ν-a.e. equality `gStar = gPop` is derived from the two LLN limits
+(uniqueness of limits), not assumed as a separate transport axiom.
 
 ## Assumptions the reader must accept
 
@@ -93,7 +98,37 @@ structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
 any two distinct draws are [independent](readable/jargon_independent.md); and every draw has the
 same [distribution](readable/jargon_distribution.md) as `A 0` under `κ`.
 
-### 3) Paper [OLS](readable/jargon_ols.md) design bundle
+### 3) Respondent sampling (total-score wrapper only)
+**Assumption**: `RespondentSamplingLLN`.
+
+**Meaning** (subassumptions):
+- `RespondentSamplingLLN.lln_gStar`: respondent-average scores converge to `gStar`.
+- `RespondentSamplingLLN.lln_gPop`: respondent-average scores converge to `gPop`.
+
+**Intuition**: respondents are an IID sample from the population, so averaging
+individual scoring functions recovers the population-mean scoring function.
+The implied `gStar = gPop` ν-a.e. is derived from uniqueness of limits.
+
+**Formal statement (Lean)**:
+```lean
+structure RespondentSamplingLLN
+    (μexp : Measure Ω) (ν : Measure Attr) (μpop : Measure Person)
+    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+  lln_gStar :
+    ∀ x, ∀ᵐ ω ∂μexp,
+      Tendsto
+        (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+        atTop
+        (nhds (gStar (μexp := μexp) (Y := Y) x))
+  lln_gPop :
+    ∀ x, ∀ᵐ ω ∂μexp,
+      Tendsto
+        (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+        atTop
+        (nhds (gPop (μpop := μpop) gP x))
+```
+
+### 4) Paper [OLS](readable/jargon_ols.md) design bundle
 **Assumption**: `PaperOLSDesignAssumptions`.
 
 **Meaning**:
@@ -168,7 +203,7 @@ causal score `gStar` is measurable and uniformly bounded; and the observation no
 [conditional mean](readable/jargon_conditional_mean.md) and satisfies a feature‑weighted
 [LLN](readable/jargon_lln.md).
 
-### 4) [Full‑rank](readable/jargon_full_rank.md) design
+### 5) [Full‑rank](readable/jargon_full_rank.md) design
 **Assumption**: `PaperOLSFullRankAssumptions`.
 
 **Meaning**: the attribute‑[distribution](readable/jargon_distribution.md)
@@ -200,7 +235,7 @@ structure PaperOLSFullRankAssumptions
 **English version**: the [Gram matrix](readable/jargon_gram_matrix.md) of the paper feature map
 under the attribute law `xiAttr` is invertible.
 
-### 5) Full main‑effects basis
+### 6) Full main‑effects basis
 **Assumption**: `FullMainEffectsTerms`.
 
 **Meaning**: the paper [term](readable/jargon_term.md) basis can represent any additive
@@ -236,7 +271,7 @@ effects, there exist [parameters](readable/jargon_parameter.md) `β` so that the
 [linear‑in‑terms](readable/jargon_linear_in_terms.md) model `gLin` exactly reproduces the additive
 surface `α0 + Σ_k main k (x k)` for all [profiles](readable/jargon_profile.md) `x`.
 
-### 6) No [interactions](readable/jargon_interaction.md)
+### 7) No [interactions](readable/jargon_interaction.md)
 **Assumption**: `NoInteractions`.
 
 **Meaning**: the causal score is additive in attributes (no interaction effects in the
@@ -264,7 +299,7 @@ g^\star(x) = \alpha_0 + \sum_{k\in K} \text{main}_k(x_k).
 **English version**: there exists an intercept and per‑attribute main effects so that the
 true causal score `gStar` is exactly additive in attributes for every profile.
 
-### 7) [Weighted](readable/jargon_weighting.md) evaluation moments
+### 8) [Weighted](readable/jargon_weighting.md) evaluation moments
 **Assumption**: `EvalWeightMatchesPopMoments` (for every block score and every `m`).
 
 **Meaning**: the weighted evaluation [mean](readable/jargon_mean.md) and weighted
@@ -311,7 +346,7 @@ structure EvalWeightMatchesPopMoments
 and [second moment](readable/jargon_second_moment.md) of score `s` match the
 [population](readable/jargon_population.md) mean and second moment under `ν`.
 
-### 8) Weighted evaluation [boundedness](readable/jargon_boundedness.md) (with IID)
+### 9) Weighted evaluation [boundedness](readable/jargon_boundedness.md) (with IID)
 **Assumption**: `SplitEvalWeightAssumptionsBounded` (for every block score and every `m`).
 
 **Meaning**:
@@ -354,31 +389,6 @@ structure SplitEvalWeightAssumptionsBounded
 fitted score `gHat` and weights `w` are [measurable](readable/jargon_measurable.md) and
 uniformly [bounded](readable/jargon_boundedness.md); and the mean of the weight process is
 nonzero.
-
-### 9) [External validity](readable/jargon_transport.md) (transport)
-**Assumption**: `InvarianceAE`.
-
-**Meaning** (subassumption):
-- `InvarianceAE`: for each [block](readable/jargon_block.md), the model score equals the target
-  score `ν`‑[a.e.](readable/jargon_almost_everywhere.md).
-
-**Intuition**: the experimental score function transports to the
-[population support](readable/jargon_population_support.md).
-
-**Formal statement (Lean)**:
-```lean
-def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
-  ∀ᵐ x ∂ν, gExp x = gPop x
-```
-**Formal statement (LaTeX)**:
-```tex
-\[
-g_{Exp}(x) = g_{Pop}(x) \quad \text{for } \nu\text{-a.e. } x.
-\]
-```
-**English version**: the experimental score and [population](readable/jargon_population.md)
-target score agree for `ν`‑[almost every](readable/jargon_almost_everywhere.md)
-attribute [profile](readable/jargon_profile.md).
 
 ### 10) Epsilon positivity
 **Assumption**: `EpsilonAssumptions`.
@@ -476,14 +486,11 @@ We combine:
 This yields block‑level [sequential consistency](readable/jargon_sequential_consistency.md) of the
 weighted [SD](readable/jargon_standard_deviation.md) [estimator](readable/jargon_estimator.md).
 
-## 7) [External validity](readable/jargon_transport.md) (block targets)
+## 7) Target interpretation (block targets)
 
-We add:
-- `InvarianceAE` linking the model‑implied [block](readable/jargon_block.md) scores to the
-  [population](readable/jargon_population.md) target block scores under `ν`.
-
-This turns [consistency](readable/jargon_consistency.md) for the model’s block SDs into
-consistency for the **true** block SDs.
+No additional external-validity step is required at the block level in this wrapper:
+the target block SDs are defined directly from the model-implied block scores
+`gBlockTerm` under `ν`.
 
 ## 8) End‑to‑end block wrapper
 

@@ -9,11 +9,9 @@ Population targets:
 - `AttrMomentAssumptions` bundles [integrable](jargon_integrable.md) conditions so these quantities are well-defined.
 
 Transport assumptions:
-- `InvarianceAE` says the experimental and target-population scores match
-  [almost everywhere](jargon_almost_everywhere.md) under the attribute
-  [distribution](jargon_distribution.md) `ν`. This is the transport/external-validity
-  condition used to move from identified experimental scores to target-population
-  moments (not a first-stage identification condition).
+- `RespondentSamplingLLN` packages the respondent-sampling LLN bridge: respondent-level
+  score averages converge to both the experimental estimand `gStar` and the population
+  mean score `gPop`. The implied ν-a.e. equality is derived from these LLNs.
 - `EvalWeightMatchesPopMoments` packages the evaluation-weight moment match that
   links the evaluation sample to the target population moments under `ν`.
 

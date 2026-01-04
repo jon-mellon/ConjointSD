@@ -3,7 +3,7 @@ ConjointSD/TargetEquivalence.lean
 
 If two score functions are equal ν-a.e., then their attribute-distribution mean/second-moment/variance/SD
 under ν are equal. This is the basic tool to turn “consistency to g θ0” into “consistency to
-the true estimand”, once you add a WellSpecified / InvarianceAE assumption.
+the true estimand”, once you add a WellSpecified / transport bridge assumption.
 -/
 
 import Mathlib
