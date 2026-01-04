@@ -7,7 +7,7 @@ score itself. The final wrapper is:
 `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`.
 Note: the total-score wrapper
 `paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
-uses the respondent-sampling LLN bridge (`RespondentSamplingLLN`).
+uses the experiment-subject sampling LLN bridge (`SubjectSamplingLLN`).
 The implied ν-a.e. equality `gStar = gPop` is derived from the two LLN limits
 (uniqueness of limits), not assumed as a separate transport axiom.
 
@@ -98,34 +98,45 @@ structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
 any two distinct draws are [independent](readable/jargon_independent.md); and every draw has the
 same [distribution](readable/jargon_distribution.md) as `A 0` under `κ`.
 
-### 3) Respondent sampling
-**Assumption**: `RespondentSamplingLLN`.
+### 3) Experiment-subject sampling
+**Assumption**: `SubjectSamplingLLN`.
 
 **Meaning** (subassumptions):
-- `RespondentSamplingLLN.lln_gStar`: respondent-average scores converge to `gStar`.
-- `RespondentSamplingLLN.lln_gPop`: respondent-average scores converge to `gPop`.
+- `SubjectSamplingLLN.lln_gStar`: subject-average scores converge to `gStar`.
+- `SubjectSamplingLLN.lln_gPop`: subject-average scores converge to `gPop`.
 
-**Intuition**: respondents are an IID sample from the population, so averaging
+**Intuition**: experiment subjects are an IID sample from the population, so averaging
 individual scoring functions recovers the population-mean scoring function.
 The implied `gStar = gPop` ν-a.e. is derived from uniqueness of limits.
 
 **Formal statement (Lean)**:
 ```lean
-structure RespondentSamplingLLN
+structure SubjectSamplingLLN
     (μexp : Measure Ω) (ν : Measure Attr) (μpop : Measure Person)
     (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
   lln_gStar :
     ∀ x, ∀ᵐ ω ∂μexp,
       Tendsto
-        (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+        (fun n => gHatSubject (R := R) (gP := gP) n x ω)
         atTop
         (nhds (gStar (μexp := μexp) (Y := Y) x))
   lln_gPop :
     ∀ x, ∀ᵐ ω ∂μexp,
       Tendsto
-        (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+        (fun n => gHatSubject (R := R) (gP := gP) n x ω)
         atTop
         (nhds (gPop (μpop := μpop) gP x))
+```
+**Formal statement (LaTeX)**:
+```tex
+\[
+\begin{aligned}
+&\forall x,\; \text{a.e.}_{\mu_{exp}}\; \lim_{n\to\infty}
+\Big(\frac{1}{n}\sum_{i<n} g_P(R_i, x)\Big) = g^\star(x), \\
+&\forall x,\; \text{a.e.}_{\mu_{exp}}\; \lim_{n\to\infty}
+\Big(\frac{1}{n}\sum_{i<n} g_P(R_i, x)\Big) = g_{Pop}(x).
+\end{aligned}
+\]
 ```
 
 ### 4) Paper [OLS](readable/jargon_ols.md) design bundle
@@ -551,7 +562,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
     (R : ℕ → Ω → Person)
     (gP : Person → Profile K V → ℝ)
     (hRespLLN :
-      RespondentSamplingLLN
+      SubjectSamplingLLN
         (μexp := μexp) (ν := ν) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -620,4 +631,4 @@ evaluation path, and the [population](readable/jargon_population.md)
 [SD](readable/jargon_standard_deviation.md) of the model block score at `θ0` equals the
 population SD of the true block term. In addition, the population-mean score
 `gPop` equals the block-sum score `gTotal (gBlockTerm θ0)` ν-a.e., tying the block
-targets to respondent-sampling transport.
+targets to experiment-subject sampling transport.

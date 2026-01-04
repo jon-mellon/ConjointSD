@@ -40,7 +40,7 @@ mean/variance/SD,” we mean those quantities computed with respect to `ν`.
 These are not formalized as Lean assumption bundles; they arise from how the model is set up.
 
 - Single-shot abstraction: each observation is treated as a standalone profile draw. This
-  sidesteps any task-indexing or within-respondent carryover structure. (Hainmueller Assumption 1, by omission)
+  sidesteps any task-indexing or within-subject carryover structure. (Hainmueller Assumption 1, by omission)
   Intuition: the model abstracts away repeated choices by treating each profile as a fresh draw.
   Formal: not represented as a Lean predicate; this is a modeling choice in the definition of the data structure.
 - No task-order effects: because there is no task index in the core model, the formalization
@@ -90,18 +90,18 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 - `EvalWeightMatchesPopMoments.m2_eq`: weighted evaluation second moment equals target second moment.
     Intuition: reweighted evaluation scale matches the target population second moment under `ν`.
     Formal: `(∫ w a * s a^2)/(∫ w a) = attrM2 ν s` under `kappaDesign`.
-- `RespondentSamplingIID`: IID respondent sampling from the population law `μpop`.
-  It separates the respondent draw from the profile randomization.
-  - `RespondentSamplingIID.measR`: respondent draws are measurable.
-  - `RespondentSamplingIID.indepR`: respondent draws are pairwise independent under `μexp`.
-  - `RespondentSamplingIID.identR`: the respondent draws' distribution equals `μpop`.
-  Intuition: the survey respondents are a random sample of the target population.
-- `RespondentSamplingLLN`: pointwise LLN transport for respondent-level scores.
-  It formalizes the idea that averaging individual scoring rules across respondents
+- `SubjectSamplingIID`: IID experiment-subject sampling from the population law `μpop`.
+  It separates the subject draw from the profile randomization.
+  - `SubjectSamplingIID.measR`: subject draws are measurable.
+  - `SubjectSamplingIID.indepR`: subject draws are pairwise independent under `μexp`.
+  - `SubjectSamplingIID.identR`: the subject draws' distribution equals `μpop`.
+  Intuition: the experiment subjects are a random sample of the target population.
+- `SubjectSamplingLLN`: pointwise LLN transport for subject-level scores.
+  It formalizes the idea that averaging individual scoring rules across subjects
   converges to the population-mean score `gPop`, and links that limit to the
   experimental estimand `gStar`. Formally it bundles:
-  - `RespondentSamplingLLN.lln_gStar`: the respondent-average score converges to `gStar`.
-  - `RespondentSamplingLLN.lln_gPop`: the respondent-average score converges to `gPop`.
+  - `SubjectSamplingLLN.lln_gStar`: the subject-average score converges to `gStar`.
+  - `SubjectSamplingLLN.lln_gPop`: the subject-average score converges to `gPop`.
   The ν-a.e. equality `gStar = gPop` is then *derived* from these two LLN statements
   (via uniqueness of limits), not assumed.
 - `BoundedAE`: uniform boundedness on the target [population](jargon_population.md)
@@ -386,7 +386,7 @@ Reader mapping to standard OLS assumptions:
   [independent](jargon_independent.md) of every [potential outcome](jargon_potential_outcome.md).
   This makes the profile assignments random in the experimental design.
   Intuition: assignment uses a clean randomization device (e.g., survey randomizer)
-  that is independent of respondents’ potential outcomes, so there is no selection bias.
+  that is independent of subjects’ potential outcomes, so there is no selection bias.
   Formal:
   `∃ R U f, (∀ i, Measurable (U i)) ∧ Measurable f ∧ (∀ i, A i = fun ω => f (U i ω)) ∧
     Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧ (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧

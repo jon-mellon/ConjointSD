@@ -273,7 +273,7 @@ def gStar (μexp : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
 
 end ConjointEstimand
 
-section RespondentPopulation
+section SubjectPopulation
 
 variable {Person Attr Ω : Type*} [MeasurableSpace Person] [MeasurableSpace Attr]
 variable [MeasurableSpace Ω]
@@ -282,11 +282,11 @@ variable [MeasurableSpace Ω]
 def gPop (μpop : Measure Person) (gP : Person → Attr → ℝ) : Attr → ℝ :=
   fun x => ∫ p, gP p x ∂μpop
 
-/-- Respondent-sample average of the person-level score at a fixed profile. -/
-def gHatRespondent (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ)
+/-- Experiment-subject sample average of the person-level score at a fixed profile. -/
+def gHatSubject (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ)
     (n : ℕ) (x : Attr) (ω : Ω) : ℝ :=
   (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, gP (R i ω) x
 
-end RespondentPopulation
+end SubjectPopulation
 
 end ConjointSD

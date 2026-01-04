@@ -146,45 +146,45 @@ structure SplitEvalWeightAssumptionsBounded
 
 end SampleSplitting
 
-section RespondentSampling
+section SubjectSampling
 
 variable {Ω Person Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Person]
 variable [MeasurableSpace Attr]
 
-/-- IID respondent sampling from the population law. -/
-structure RespondentSamplingIID
+/-- IID experiment-subject sampling from the population law. -/
+structure SubjectSamplingIID
     (μexp : Measure Ω) (μpop : Measure Person) (R : ℕ → Ω → Person) : Prop where
   measR : ∀ i, Measurable (R i)
   indepR : Pairwise (fun i j => IndepFun (R i) (R j) μexp)
   identR : ∀ i, Measure.map (R i) μexp = μpop
 
 /--
-Pointwise LLN for respondent-level scores, with an explicit transport target
+Pointwise LLN for experiment-subject scores, with an explicit transport target
 `gPop` and a link to the experimental estimand `gStar`.
 -/
-structure RespondentSamplingLLN
+structure SubjectSamplingLLN
     (μexp : Measure Ω) (ν : Measure Attr) (μpop : Measure Person)
     (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
   lln_gStar :
     ∀ x,
       ∀ᵐ ω ∂μexp,
         Tendsto
-          (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+          (fun n => gHatSubject (R := R) (gP := gP) n x ω)
           atTop
           (nhds (gStar (μexp := μexp) (Y := Y) x))
   lln_gPop :
     ∀ x,
       ∀ᵐ ω ∂μexp,
         Tendsto
-          (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+          (fun n => gHatSubject (R := R) (gP := gP) n x ω)
           atTop
           (nhds (gPop (μpop := μpop) gP x))
 
-theorem respondent_lln_pointwise_eq
+theorem subject_lln_pointwise_eq
     {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
     {ν : Measure Attr} {μpop : Measure Person}
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
-    (h : RespondentSamplingLLN
+    (h : SubjectSamplingLLN
       (μexp := μexp) (ν := ν) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
     ∀ x, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
   classical
@@ -193,12 +193,12 @@ theorem respondent_lln_pointwise_eq
   have hboth :
       ∀ᵐ ω ∂μexp,
         Tendsto
-            (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+            (fun n => gHatSubject (R := R) (gP := gP) n x ω)
             atTop
             (nhds (gStar (μexp := μexp) (Y := Y) x))
           ∧
         Tendsto
-            (fun n => gHatRespondent (R := R) (gP := gP) n x ω)
+            (fun n => gHatSubject (R := R) (gP := gP) n x ω)
             atTop
             (nhds (gPop (μpop := μpop) gP x)) :=
     (h.lln_gStar x).and (h.lln_gPop x)
@@ -213,18 +213,18 @@ theorem respondent_lln_pointwise_eq
     exact measure_univ
   exact zero_ne_one (hzero_univ.symm.trans hone)
 
-theorem respondent_lln_ae_eq
+theorem subject_lln_ae_eq
     {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
     {ν : Measure Attr} {μpop : Measure Person}
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
-    (h : RespondentSamplingLLN
+    (h : SubjectSamplingLLN
       (μexp := μexp) (ν := ν) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
     ∀ᵐ x ∂ν, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
   refine ae_of_all _ ?_
   intro x
-  exact respondent_lln_pointwise_eq (h := h) x
+  exact subject_lln_pointwise_eq (h := h) x
 
-end RespondentSampling
+end SubjectSampling
 
 section RegressionConsistencyBridge
 

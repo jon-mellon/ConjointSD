@@ -9,7 +9,7 @@ Population targets:
 - `AttrMomentAssumptions` bundles [integrable](jargon_integrable.md) conditions so these quantities are well-defined.
 
 Transport assumptions:
-- `RespondentSamplingLLN` packages the respondent-sampling LLN bridge: respondent-level
+- `SubjectSamplingLLN` packages the experiment-subject sampling LLN bridge: subject-level
   score averages converge to both the experimental estimand `gStar` and the population
   mean score `gPop`. The implied ν-a.e. equality is derived from these LLNs.
 - `EvalWeightMatchesPopMoments` packages the evaluation-weight moment match that

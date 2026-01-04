@@ -273,7 +273,7 @@ theorem
     (R : ℕ → Ω → Person)
     (gP : Person → Profile K V → ℝ)
     (hRespLLN :
-      RespondentSamplingLLN
+      SubjectSamplingLLN
         (μexp := μexp) (ν := ν) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -411,7 +411,7 @@ theorem
     simpa using congrArg (fun f => f x) hBlocks
   have hPopEq :
       ∀ᵐ x ∂ν, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
-    respondent_lln_ae_eq (h := hRespLLN)
+    subject_lln_ae_eq (h := hRespLLN)
   have hPopBlocks :
       ∀ᵐ x ∂ν,
         gPop (μpop := μpop) gP x
@@ -545,7 +545,7 @@ theorem
     (R : ℕ → Ω → Person)
     (gP : Person → Profile K V → ℝ)
     (hRespLLN :
-      RespondentSamplingLLN
+      SubjectSamplingLLN
         (μexp := μexp) (ν := ν) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
@@ -722,7 +722,7 @@ theorem
   have hInv :
       ∀ᵐ x ∂ν,
         gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
-    respondent_lln_ae_eq (h := hRespLLN)
+    subject_lln_ae_eq (h := hRespLLN)
   have hTrue :
       ∀ᵐ x ∂ν,
         gTotalΘ

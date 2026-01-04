@@ -20,8 +20,8 @@ Highlights:
 - [OLS](jargon_ols.md) helpers and [estimator](jargon_estimator.md) scaffolding:
   `gramMatrix`, `crossVec`, `attrGram`, `attrCross`.
 - Conjoint identification primitives: `eventX`, `condMean`, `potMean`, `amce` ([AMCE](jargon_amce.md)).
-- Respondent-population transport definitions: `gPop` (population-mean scoring function)
-  and `gHatRespondent` (respondent-sample average score at a fixed profile).
+- Experiment-subject population transport definitions: `gPop` (population-mean scoring function)
+  and `gHatSubject` (experiment-subject sample average score at a fixed profile).
 
 Purpose:
 - Keep foundational definitions in one place so assumption packages can be audited in
