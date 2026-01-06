@@ -22,6 +22,8 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Population targets and transport
 
 - [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean`.
+- [ConjointSD/EvalSamplingSRS.lean](readable/EvalSamplingSRS.md) derives the weighted-moment assumption from an SRS evaluation law and uniform weights.
+- [ConjointSD/SubjectSamplingLLNFromIID.lean](readable/SubjectSamplingLLNFromIID.md) derives the subject-sampling LLN to `gPop` from IID subject sampling and score regularity, and builds `SubjectSamplingLLN` using the assumed `SubjectSamplingLLNStar`.
 - [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under the pushforward attribute law `kappaDesign := Measure.map (A 0) μ` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
 - [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); uses `Transport`.
 - [ConjointSD/ApproxTargetEquivalence.lean](readable/ApproxTargetEquivalence.md) collects approximate/misspecification bounds (triangle inequality and moment/SD bounds) under `ApproxInvarianceAE`/`L2Approx` plus `BoundedAE`.

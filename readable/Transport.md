@@ -11,8 +11,10 @@ Population targets:
 Transport assumptions:
 - `SubjectSamplingLLN` packages the experiment-subject sampling LLN bridge: subject-level
   score averages converge to both the experimental estimand `gStar` and the population
-  mean score `gPop`. The implied ν-a.e. equality is derived from these LLNs.
-- `EvalWeightMatchesPopMoments` packages the evaluation-weight moment match that
-  links the evaluation sample to the target population moments under `ν`.
+  mean score `gPop`. In the main chain, the `gPop` convergence is derived from
+  `SubjectSamplingIID` + `SubjectScoreAssumptions`, while the `gStar` convergence is assumed
+  via `SubjectSamplingLLNStar`. The implied ν-a.e. equality is derived from these LLNs.
+- `EvalAttrLawEqPop` states the evaluation attribute law equals `ν`, providing the SRS
+  representativeness assumption for evaluation targets.
 
 This file is the foundation: it exposes the target human population targets and transport conditions that all later [consistency](jargon_consistency.md) results point to.

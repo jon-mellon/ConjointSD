@@ -63,9 +63,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and respondent-sampling LLN, the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score/weights are assumed, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
+Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score/weights are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop` (uniform weights), and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
 
-Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; respondent sampling links the experiment to the population-mean score, and weighted LLNs yield sequential consistency for each block score.
+Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; subject sampling links the experiment to the population-mean score, and weighted LLNs yield sequential consistency for each block score.
 
 Formalization (Lean name): `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 
@@ -76,13 +76,13 @@ Block-level SD consistency follows from the paper OLS design chain, with targets
 
 File: `ConjointSD/SequentialConsistency.lean`
 
-Statement: With evaluation-sample moment assumptions and [plug-in](readable/jargon_plug_in.md)
+Statement: With evaluation-sample representativeness and [plug-in](readable/jargon_plug_in.md)
 moment [convergence](readable/jargon_convergence.md), the two-stage
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
 size then evaluation size), targeting the attribute-law SD under `ν` with
-`EvalWeightMatchesPopMoments` matching weighted evaluation moments to `ν`.
+`EvalAttrLawEqPop` tying the evaluation attribute law to `ν`.
 
 Intuition: First the fitted score stabilizes, then the evaluation
 [standard deviation](readable/jargon_standard_deviation.md) converges to the
@@ -139,7 +139,7 @@ under the target [distribution](readable/jargon_distribution.md) for the
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size), with `EvalWeightMatchesPopMoments` tying weighted evaluation moments to `ν`.
+size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν` (uniform weights).
 
 Intuition: [parameter](readable/jargon_parameter.md)
 [convergence](readable/jargon_convergence.md) plus
@@ -372,7 +372,7 @@ using the respondent-sampling LLN bridge.
 
 Intuition: randomization and OLS assumptions identify the additive
 status‑assigning rule in the experiment; respondent sampling links the
-experimental estimand to the population-mean score, so the weighted evaluation SD
+experimental estimand to the population-mean score, so the evaluation SD
 converges to the population SD.
 
 Formalization (Lean name):

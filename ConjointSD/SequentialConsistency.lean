@@ -67,8 +67,8 @@ def totalErr
 /--
 Step (1): for fixed `m`, as `n → ∞`, total error → training error (a.e.).
 
-Assumes evaluation moments under `ρ` match the target-population moments under `ν`
-via `EvalWeightMatchesPopMoments` (transport happens only through that step).
+Assumes the evaluation attribute law equals the target-population law `ν`
+(so weights are effectively uniform for the evaluation stage).
 -/
 theorem totalErr_tendsto_trainErr_fixed_m
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
@@ -79,8 +79,8 @@ theorem totalErr_tendsto_trainErr_fixed_m
     (m : ℕ)
     (h :
       SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
-    (hMom : EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-      (w := w) (s := gHat g θhat m)) :
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ)) :
     ∀ᵐ ω ∂ρ,
       Tendsto
         (fun n : ℕ =>
@@ -97,7 +97,7 @@ theorem totalErr_tendsto_trainErr_fixed_m
           atTop
           (nhds (attrSD ν (gHat g θhat m))) :=
     sdHat_fixed_m_tendsto_ae_attrSD
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (g := g) (θhat := θhat) m h hMom
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (g := g) (θhat := θhat) m h hLaw hW
   -- Rewrite the limit using `hLaw`.
   have hBase :
       ∀ᵐ ω ∂ρ,
@@ -176,9 +176,8 @@ theorem sequential_consistency_ae
     (hSplit : ∀ m,
       SplitEvalWeightAssumptionsBounded
         (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
-    (hMom : ∀ m,
-      EvalWeightMatchesPopMoments
-        (ρ := ρ) (A := A) (ν := ν) (w := w) (s := gHat g θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ))
     (hPlug : PlugInMomentAssumptions (ν := ν) (g := g) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -215,7 +214,7 @@ theorem sequential_consistency_ae
           (nhds (trainErr ν g θ0 θhat m)) :=
     totalErr_tendsto_trainErr_fixed_m
       (ρ := ρ) (A := A) (ν := ν) (w := w) (g := g) (θ0 := θ0) (θhat := θhat)
-      (m := m) (h := hSplit m) (hMom := hMom m)
+      (m := m) (h := hSplit m) (hLaw := hLaw) (hW := hW)
   -- Convert pointwise Tendsto into an eventually upper bound trainErr(m) + ε/2, a.e. in ω
   have hEvN :
       ∀ᵐ ω ∂ρ,

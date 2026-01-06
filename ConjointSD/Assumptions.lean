@@ -158,6 +158,12 @@ structure SubjectSamplingIID
   indepR : Pairwise (fun i j => IndepFun (R i) (R j) μexp)
   identR : ∀ i, Measure.map (R i) μexp = μpop
 
+/-- Measurability/integrability conditions for subject-level scores under `μpop`. -/
+structure SubjectScoreAssumptions
+    (μpop : Measure Person) (gP : Person → Attr → ℝ) : Prop where
+  meas_gP : ∀ x, Measurable (fun p => gP p x)
+  integrable_gP : ∀ x, Integrable (fun p => gP p x) μpop
+
 /--
 Pointwise LLN for experiment-subject scores, with an explicit transport target
 `gPop` and a link to the experimental estimand `gStar`.
@@ -179,6 +185,18 @@ structure SubjectSamplingLLN
           (fun n => gHatSubject (R := R) (gP := gP) n x ω)
           atTop
           (nhds (gPop (μpop := μpop) gP x))
+
+/-- LLN assumption for experiment-subject averages converging to `gStar`. -/
+structure SubjectSamplingLLNStar
+    (μexp : Measure Ω) (ν : Measure Attr) (μpop : Measure Person)
+    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+  lln_gStar :
+    ∀ x,
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n => gHatSubject (R := R) (gP := gP) n x ω)
+          atTop
+          (nhds (gStar (μexp := μexp) (Y := Y) x))
 
 theorem subject_lln_pointwise_eq
     {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
@@ -401,6 +419,17 @@ end PaperOLSDesign
 section SurveyWeights
 
 variable {Attr : Type*} [MeasurableSpace Attr]
+
+/--
+Evaluation sample is an IID draw from the target population attribute law `ν`:
+the evaluation attribute distribution equals `ν`.
+-/
+structure EvalAttrLawEqPop
+    {Ω : Type*} [MeasurableSpace Ω]
+    (ρ : Measure Ω) (A : ℕ → Ω → Attr)
+    (ν : Measure Attr) : Prop where
+  measA0 : Measurable (A 0)
+  map_eq : Measure.map (A 0) ρ = ν
 
 /--
 Evaluation-weight moment matching: weighted moments of the evaluation draw

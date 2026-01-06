@@ -11,6 +11,7 @@ import ConjointSD.SDDecompositionFromConjoint
 import ConjointSD.DesignAttributeBridge
 import ConjointSD.EstimatedG
 import ConjointSD.Assumptions
+import ConjointSD.EvalSamplingSRS
 
 open Filter MeasureTheory ProbabilityTheory
 open scoped BigOperators
@@ -37,8 +38,8 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
     (m : ℕ)
     (h : SplitEvalWeightAssumptionsBounded
       (ρ := ρ) (A := A) (w := w) (g := g) (θhat := θhat) m)
-    (hMom : EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-      (w := w) (s := gHat g θhat m)) :
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ)) :
     ∀ᵐ ω ∂ρ,
       Tendsto
         (fun n : ℕ =>
@@ -46,6 +47,11 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
             (W := Wcomp (A := A) (w := w)) n ω)
         atTop
         (nhds (attrSD ν (gHat g θhat m))) := by
+  have hMom :
+      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
+        (w := w) (s := gHat g θhat m) :=
+    evalWeightMatchesPopMoments_of_law_eq
+      (hLaw := hLaw) (w := w) (s := gHat g θhat m) hW
   have hSDZ :
       ∀ᵐ ω ∂ρ,
         Tendsto

@@ -33,9 +33,8 @@ variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 Blocks: sequential consistency + ν-a.e. ε-approximation yields convergence with an SD bound.
 -/
 theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
-    (hMom : ∀ m b,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ))
     (hSplitBounded : ∀ m b,
       SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
@@ -75,7 +74,7 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
               - attrSD (ν) (gTrueB b)|
             ≤ Real.sqrt (4 * C * δ) := by
   rcases paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMom)
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitBounded := hSplitBounded) (hPlug := hPlug)
       (ε := ε) (hε := hε)
@@ -98,9 +97,8 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
 /- Total-score: sequential consistency + ν-a.e. ε-approximation yields convergence with
 an SD bound. -/
 theorem paper_sd_total_sequential_consistency_to_approx_target_ae
-    (hMom : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ))
     (hSplitTotalBounded :
       ∀ m,
         SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
@@ -133,7 +131,7 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
             - attrSD (ν) gTrue|
           ≤ Real.sqrt (4 * C * δ) := by
   rcases paper_sd_total_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMom)
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
@@ -165,9 +163,8 @@ error relative to `gStar`.
 theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
     {Term : Type*} [Fintype Term] [DecidableEq B]
     (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
-    (hMomEval : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ))
     (Y : Attr → Ω → ℝ)
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
     (hTotalModel :
@@ -226,7 +223,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
     simpa [abs_sub_comm, hTotalModel x] using hx
   rcases
     paper_sd_total_sequential_consistency_to_approx_target_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMomEval)
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (gTrue := gStar (μexp := μexp) (Y := Y))
@@ -246,9 +243,8 @@ approximates the oracle. The SD target error is bounded by the combined approxim
 -/
 theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
     (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
-    (hMomEval : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ))
     (Y : Attr → Ω → ℝ)
     (gFlex : Attr → ℝ)
     (δModel δOracle : ℝ)
@@ -303,7 +299,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
   have hδ : 0 ≤ δModel + δOracle := add_nonneg hδModel hδOracle
   rcases
     paper_sd_total_sequential_consistency_to_approx_target_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hMom := hMomEval)
+      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (gTrue := gStar (μexp := μexp) (Y := Y))

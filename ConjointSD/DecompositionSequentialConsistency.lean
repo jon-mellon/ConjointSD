@@ -45,9 +45,8 @@ theorem sequential_consistency_blocks_ae
     (hSplit : ∀ m b,
       SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hMom : ∀ m b,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ))
     (hPlug : ∀ b : B,
       PlugInMomentAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
@@ -73,7 +72,7 @@ theorem sequential_consistency_blocks_ae
         (ρ := ρ) (A := A) (ν := ν) (w := w)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
-        (hMom := fun m => hMom m b)
+        (hLaw := hLaw) (hW := hW)
         (hPlug := hPlug b)
         (ε := ε) (hε := hε))
   choose Mb hMb using hEach
@@ -98,9 +97,8 @@ theorem sequential_consistency_total_ae
       ∀ m,
         SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hMom : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hW : w = fun _ => (1 : ℝ))
     (hPlugTotal :
       PlugInMomentAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
@@ -115,7 +113,7 @@ theorem sequential_consistency_total_ae
       (ρ := ρ) (A := A) (ν := ν) (w := w)
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
-      (hMom := hMom)
+      (hLaw := hLaw) (hW := hW)
       (hPlug := hPlugTotal)
       (ε := ε) (hε := hε))
 
