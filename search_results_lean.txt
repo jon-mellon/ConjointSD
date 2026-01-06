@@ -16,16 +16,16 @@
 ./scripts/runLinter.lean:116:      IO.print (← fmtResults.toString)
 ./scripts/runLinter.lean:119:      IO.println s!"-- Linting passed for {module}."
 ./scripts/runLinter.lean:128:unsafe def main (args : List String) : IO Unit := do
-./ConjointSD/TargetEquivalence.lean:4:If two score functions are equal ν-a.e., then their attribute-distribution mean/second-moment/variance/SD
+./ConjointSD/TargetEquivalence.lean:4:If two score functions are equal ν_pop-a.e., then their attribute-distribution mean/second-moment/variance/SD
 ./ConjointSD/TargetEquivalence.lean:15:noncomputable section
-./ConjointSD/TargetEquivalence.lean:24:/-- If s = t ν-a.e., then their attribute-distribution means are equal. -/
+./ConjointSD/TargetEquivalence.lean:24:/-- If s = t ν_pop-a.e., then their attribute-distribution means are equal. -/
 ./ConjointSD/TargetEquivalence.lean:29:  simpa [attrMean] using this
-./ConjointSD/TargetEquivalence.lean:31:/-- If s = t ν-a.e., then their attribute-distribution second moments are equal. -/
+./ConjointSD/TargetEquivalence.lean:31:/-- If s = t ν_pop-a.e., then their attribute-distribution second moments are equal. -/
 ./ConjointSD/TargetEquivalence.lean:37:    simp [ha]
 ./ConjointSD/TargetEquivalence.lean:40:  simpa [attrM2] using this
-./ConjointSD/TargetEquivalence.lean:42:/-- If s = t ν-a.e., then their attribute-distribution variances are equal. -/
+./ConjointSD/TargetEquivalence.lean:42:/-- If s = t ν_pop-a.e., then their attribute-distribution variances are equal. -/
 ./ConjointSD/TargetEquivalence.lean:49:  simp [attrVar, hm, hm2]
-./ConjointSD/TargetEquivalence.lean:51:/-- If s = t ν-a.e., then their attribute-distribution SDs are equal. -/
+./ConjointSD/TargetEquivalence.lean:51:/-- If s = t ν_pop-a.e., then their attribute-distribution SDs are equal. -/
 ./ConjointSD/TargetEquivalence.lean:56:  simp [attrSD, hv]
 ./ConjointSD/ApproxTargetEquivalence.lean:9:noncomputable section
 ./ConjointSD/ApproxTargetEquivalence.lean:32:    simpa using abs_sub_le (s x) (t x) (u x)
@@ -33,7 +33,7 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:49:    simp [attrMean, integral_sub, hs, ht]
 ./ConjointSD/ApproxTargetEquivalence.lean:52:    simpa using
 ./ConjointSD/ApproxTargetEquivalence.lean:59:      rw [Real.holderConjugate_iff]
-./ConjointSD/ApproxTargetEquivalence.lean:73:      simpa using (memLp_const (μ := ν) (p := ENNReal.ofReal 2) (c := (1 : ℝ)))
+./ConjointSD/ApproxTargetEquivalence.lean:73:      simpa using (memLp_const (μ := ν_pop) (p := ENNReal.ofReal 2) (c := (1 : ℝ)))
 ./ConjointSD/ApproxTargetEquivalence.lean:82:      simpa using h
 ./ConjointSD/ApproxTargetEquivalence.lean:83:    simpa [Real.sqrt_eq_rpow] using h1
 ./ConjointSD/ApproxTargetEquivalence.lean:86:    exact le_trans (by simpa [hdiff] using habs) hcs
@@ -61,7 +61,7 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:173:      simp [attrSD, hvar]
 ./ConjointSD/ApproxTargetEquivalence.lean:175:      simp
 ./ConjointSD/ApproxTargetEquivalence.lean:177:end L2Centering
-./ConjointSD/ApproxTargetEquivalence.lean:190:    simpa using (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := c))
+./ConjointSD/ApproxTargetEquivalence.lean:190:    simpa using (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := c))
 ./ConjointSD/ApproxTargetEquivalence.lean:202:    simpa using h
 ./ConjointSD/ApproxTargetEquivalence.lean:220:  have hrewrite :
 ./ConjointSD/ApproxTargetEquivalence.lean:224:    simp [c, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
@@ -75,8 +75,8 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:270:          simp [Real.norm_eq_abs]
 ./ConjointSD/ApproxTargetEquivalence.lean:292:    simpa using hs_mem'
 ./ConjointSD/ApproxTargetEquivalence.lean:297:    simpa using ht_mem'
-./ConjointSD/ApproxTargetEquivalence.lean:299:    simpa using hs_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := ηs))
-./ConjointSD/ApproxTargetEquivalence.lean:301:    simpa using ht_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := ηt))
+./ConjointSD/ApproxTargetEquivalence.lean:299:    simpa using hs_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηs))
+./ConjointSD/ApproxTargetEquivalence.lean:301:    simpa using ht_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηt))
 ./ConjointSD/ApproxTargetEquivalence.lean:303:    simpa using hcenter_s.sub hcenter_t
 ./ConjointSD/ApproxTargetEquivalence.lean:311:      simpa [ηs] using hsd
 ./ConjointSD/ApproxTargetEquivalence.lean:314:    simpa [ηs] using (hsd'.trans hbridge)
@@ -108,7 +108,7 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:473:    simpa [hbridge'] using hL2'
 ./ConjointSD/ApproxTargetEquivalence.lean:478:      simpa [hconst] using hmean
 ./ConjointSD/ApproxTargetEquivalence.lean:479:    nlinarith [htri_centered, hnorm_st, hmean']
-./ConjointSD/ApproxTargetEquivalence.lean:487:    simpa using (abs_integral_le_integral_abs (f := s) (μ := ν))
+./ConjointSD/ApproxTargetEquivalence.lean:487:    simpa using (abs_integral_le_integral_abs (f := s) (μ := ν_pop))
 ./ConjointSD/ApproxTargetEquivalence.lean:493:    simp
 ./ConjointSD/ApproxTargetEquivalence.lean:494:  simpa [attrMean, hconst] using (le_trans h1 h2)
 ./ConjointSD/ApproxTargetEquivalence.lean:506:    simp [attrMean, integral_sub, hs, ht]
@@ -140,11 +140,11 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:627:      simp
 ./ConjointSD/ApproxTargetEquivalence.lean:628:    simpa [hconst] using hle
 ./ConjointSD/ApproxTargetEquivalence.lean:629:  simpa [h1] using (le_trans h2 h3)
-./ConjointSD/ApproxTargetEquivalence.lean:655:      simpa using (abs_add_le (attrMean ν s) (attrMean ν t))
+./ConjointSD/ApproxTargetEquivalence.lean:655:      simpa using (abs_add_le (attrMean ν_pop s) (attrMean ν_pop t))
 ./ConjointSD/ApproxTargetEquivalence.lean:661:      ring
 ./ConjointSD/ApproxTargetEquivalence.lean:667:      simp [hfact, abs_mul]
 ./ConjointSD/ApproxTargetEquivalence.lean:668:    calc
-./ConjointSD/ApproxTargetEquivalence.lean:676:              have hsum_le : |attrMean ν s| + |attrMean ν t| ≤ C + C := by nlinarith
+./ConjointSD/ApproxTargetEquivalence.lean:676:              have hsum_le : |attrMean ν_pop s| + |attrMean ν_pop t| ≤ C + C := by nlinarith
 ./ConjointSD/ApproxTargetEquivalence.lean:678:      _   = 2 * C * ε := by ring
 ./ConjointSD/ApproxTargetEquivalence.lean:688:    simp [attrVar, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
 ./ConjointSD/ApproxTargetEquivalence.lean:696:    simpa [hvar, sub_eq_add_neg, abs_neg, abs_sub_comm,
@@ -197,7 +197,7 @@
 ./ConjointSD/EvalSamplingSRS.lean:14:theorem evalWeightMatchesPopMoments_of_law_eq
 ./ConjointSD/EvalSamplingSRS.lean:21:  haveI : IsProbabilityMeasure (kappaDesign (κ := ρ) (A := A)) :=
 ./ConjointSD/EvalSamplingSRS.lean:24:    simpa [kappaDesign] using hLaw.map_eq
-./ConjointSD/EvalSamplingSRS.lean:25:  haveI : IsProbabilityMeasure ν := by
+./ConjointSD/EvalSamplingSRS.lean:25:  haveI : IsProbabilityMeasure ν_pop := by
 ./ConjointSD/EvalSamplingSRS.lean:26:    simpa [hkappa] using
 ./ConjointSD/EvalSamplingSRS.lean:32:  · simp [hW, attrMean, hkappa, div_eq_mul_inv, mul_comm]
 ./ConjointSD/EvalSamplingSRS.lean:33:  · simp [hW, attrM2, hkappa, div_eq_mul_inv, mul_comm]
@@ -244,12 +244,12 @@
 ./ConjointSD/Transport.lean:3:noncomputable section
 ./ConjointSD/Transport.lean:7:# Transport (attribute-distribution prediction) layer
 ./ConjointSD/EstimatedG.lean:6:We assume the attribute-distribution moments on attributes (attrMean/attrM2/attrVar/attrSD)
-./ConjointSD/EstimatedG.lean:8:attribute-distribution *mean* and *second moment* under ν when we replace oracle `g θ0`
+./ConjointSD/EstimatedG.lean:8:attribute-distribution *mean* and *second moment* under ν_pop when we replace oracle `g θ0`
 ./ConjointSD/EstimatedG.lean:18:noncomputable section
-./ConjointSD/EstimatedG.lean:29:/-- Derived: attribute-distribution variance convergence under ν for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:29:/-- Derived: attribute-distribution variance convergence under ν_pop for the plug-in score. -/
 ./ConjointSD/EstimatedG.lean:52:    simpa [pow_two] using (hmean.mul hmean)
 ./ConjointSD/EstimatedG.lean:59:  simpa [attrVar] using hvar
-./ConjointSD/EstimatedG.lean:61:/-- Derived: attribute-distribution SD convergence under ν for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:61:/-- Derived: attribute-distribution SD convergence under ν_pop for the plug-in score. -/
 ./ConjointSD/EstimatedG.lean:87:  simpa [attrSD] using (hsqrt.comp hvar)
 ./ConjointSD/RegressionConsistencyBridge.lean:4:Route 2 bridge: derive attribute-distribution moment convergence from
 ./ConjointSD/RegressionConsistencyBridge.lean:17:noncomputable section
@@ -295,8 +295,8 @@
 ./ConjointSD/IdentificationAssumptions.lean:18:    [ProbMeasureAssumptions μexp] : Prop where
 ./ConjointSD/PaperCoreEstimand.lean:15:noncomputable section
 ./ConjointSD/PaperCoreEstimand.lean:38:  classical
-./ConjointSD/PaperCoreEstimand.lean:68:    paperBlockSDs (ν := ν) blk β0 φ b = paperBlockSD (ν := ν) blk β0 φ b := rfl
-./ConjointSD/PaperCoreEstimand.lean:75:    attrSD ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
+./ConjointSD/PaperCoreEstimand.lean:68:    paperBlockSDs (ν_pop := ν_pop) blk β0 φ b = paperBlockSD (ν_pop := ν_pop) blk β0 φ b := rfl
+./ConjointSD/PaperCoreEstimand.lean:75:    attrSD ν_pop (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
 ./ConjointSD/RegressionEstimator.lean:14:noncomputable section
 ./ConjointSD/RegressionEstimator.lean:24:of `G n` inverse and `c n` to their attribute-distribution counterparts.
 ./ConjointSD/RegressionEstimator.lean:43:  classical
@@ -308,21 +308,21 @@
 ./ConjointSD/PaperWrappers.lean:38:noncomputable section
 ./ConjointSD/PaperWrappers.lean:213:variable (Aeval : ℕ → Ω → Profile K V)
 ./ConjointSD/PaperWrappers.lean:222:set_option linter.style.longLine false
-./ConjointSD/PaperWrappers.lean:228:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./ConjointSD/PaperWrappers.lean:228:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
 ./ConjointSD/PaperWrappers.lean:233:          (ρ := ρ) (A := Aeval) (w := w)
-./ConjointSD/PaperWrappers.lean:275:                  totalErr ρ Aeval (ν) w
+./ConjointSD/PaperWrappers.lean:275:                  totalErr ρ Aeval (ν_pop) w
 ./ConjointSD/PaperWrappers.lean:359:      classical
 ./ConjointSD/PaperWrappers.lean:383:        simpa using congrArg (fun f => f x) hLinBlocks.symm
 ./ConjointSD/PaperWrappers.lean:384:      calc
 ./ConjointSD/PaperWrappers.lean:396:            simpa [WellSpecified] using hspec x
 ./ConjointSD/PaperWrappers.lean:399:    simpa using congrArg (fun f => f x) hBlocks
 ./ConjointSD/PaperWrappers.lean:466:    rfl
-./ConjointSD/PaperWrappers.lean:468:      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
+./ConjointSD/PaperWrappers.lean:468:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w)
 ./ConjointSD/PaperWrappers.lean:492:set_option linter.style.longLine true
 ./ConjointSD/PaperWrappers.lean:494:set_option linter.style.longLine false
-./ConjointSD/PaperWrappers.lean:500:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./ConjointSD/PaperWrappers.lean:500:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
 ./ConjointSD/PaperWrappers.lean:505:          (ρ := ρ) (A := Aeval) (w := w)
-./ConjointSD/PaperWrappers.lean:545:                totalErr ρ Aeval (ν) w
+./ConjointSD/PaperWrappers.lean:545:                totalErr ρ Aeval (ν_pop) w
 ./ConjointSD/PaperWrappers.lean:647:      classical
 ./ConjointSD/PaperWrappers.lean:671:        simpa using congrArg (fun f => f x) hLinBlocks.symm
 ./ConjointSD/PaperWrappers.lean:672:      calc
@@ -330,7 +330,7 @@
 ./ConjointSD/PaperWrappers.lean:695:      simpa using congrArg (fun f => f x) hBlocks
 ./ConjointSD/PaperWrappers.lean:696:    calc
 ./ConjointSD/PaperWrappers.lean:707:            simp [gTotalΘ, gTotal]
-./ConjointSD/PaperWrappers.lean:732:      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
+./ConjointSD/PaperWrappers.lean:732:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w)
 ./ConjointSD/PaperWrappers.lean:752:set_option linter.style.longLine true
 ./ConjointSD/DecompositionSequentialConsistency.lean:20:noncomputable section
 ./ConjointSD/DecompositionSequentialConsistency.lean:60:  classical
@@ -351,14 +351,14 @@
 ./ConjointSD/SubjectSamplingLLNFromIID.lean:79:  simpa [gHatSubject, X, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hω'
 ./ConjointSD/ApproxModelBridge.lean:6:noncomputable section
 ./ConjointSD/ApproxModelBridge.lean:16:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
-./ConjointSD/ApproxModelBridge.lean:19:/-- Approximate well-specification on target-population attribute support (ν-a.e.). -/
+./ConjointSD/ApproxModelBridge.lean:19:/-- Approximate well-specification on target-population attribute support (ν_pop-a.e.). -/
 ./ConjointSD/ApproxModelBridge.lean:23:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
 ./ConjointSD/ApproxModelBridge.lean:42:  classical
 ./ConjointSD/ApproxModelBridge.lean:54:    simpa using congrArg (fun f => f x) hblocks
 ./ConjointSD/ApproxModelBridge.lean:57:  simpa [hlin x, abs_sub_comm] using hx
 ./ConjointSD/ApproxAssumptions.lean:8:noncomputable section
-./ConjointSD/ApproxAssumptions.lean:15:/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
-./ConjointSD/ApproxAssumptions.lean:16:def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:15:/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν_pop-a.e. -/
+./ConjointSD/ApproxAssumptions.lean:16:def ApproxInvarianceAE (ν_pop : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
 ./ConjointSD/ApproxAssumptions.lean:31:    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
 ./ConjointSD/ApproxAssumptions.lean:40:    (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
 ./ConjointSD/ApproxAssumptions.lean:53:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) (ε : ℝ) : Prop :=
@@ -468,7 +468,7 @@
 ./ConjointSD/SequentialConsistency.lean:8:(1) For any fixed training index m, as evaluation size n → ∞,
 ./ConjointSD/SequentialConsistency.lean:27:noncomputable section
 ./ConjointSD/SequentialConsistency.lean:36:/-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/
-./ConjointSD/SequentialConsistency.lean:70:Assumes the evaluation attribute law equals the target-population law `ν`
+./ConjointSD/SequentialConsistency.lean:70:Assumes the evaluation attribute law equals the target-population law `ν_pop`
 ./ConjointSD/SequentialConsistency.lean:71:(so weights are effectively uniform for the evaluation stage).
 ./ConjointSD/SequentialConsistency.lean:110:    simpa using hBase_map
 ./ConjointSD/SequentialConsistency.lean:114:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
@@ -486,10 +486,10 @@
 ./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb
 ./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward)
 ./ConjointSD/Assumptions.lean:37:for non-target attribute laws.
-./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν`. -/
-./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
+./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
+./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
 ./ConjointSD/Assumptions.lean:42:    (s : Attr → ℝ) : Prop where
-./ConjointSD/Assumptions.lean:59:def BoundedAE (ν : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
+./ConjointSD/Assumptions.lean:59:def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
 ./ConjointSD/Assumptions.lean:67:structure EpsilonAssumptions (ε : ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:80:i.i.d.-type assumptions on the attribute-record process A under the experimental
 ./ConjointSD/Assumptions.lean:83:structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
@@ -521,7 +521,7 @@
 ./ConjointSD/Assumptions.lean:254:structure FunctionalContinuityAssumptions
 ./ConjointSD/Assumptions.lean:255:    (xiAttr : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : Prop where
 ./ConjointSD/Assumptions.lean:264:structure PlugInMomentAssumptions
-./ConjointSD/Assumptions.lean:265:    (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
+./ConjointSD/Assumptions.lean:265:    (ν_pop : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
 ./ConjointSD/Assumptions.lean:278:structure BlockFunctionalContinuityAssumptions
 ./ConjointSD/Assumptions.lean:280:    (xiAttr : Measure Attr) (gB : B → Θ → Attr → ℝ) (θ0 : Θ) : Prop where
 ./ConjointSD/Assumptions.lean:291:structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
@@ -535,16 +535,16 @@
 ./ConjointSD/Assumptions.lean:386:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:403:structure PaperOLSFullRankAssumptions
 ./ConjointSD/Assumptions.lean:405:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
-./ConjointSD/Assumptions.lean:419:Evaluation sample is an IID draw from the target population attribute law `ν`:
-./ConjointSD/Assumptions.lean:420:the evaluation attribute distribution equals `ν`.
+./ConjointSD/Assumptions.lean:419:Evaluation sample is an IID draw from the target population attribute law `ν_pop`:
+./ConjointSD/Assumptions.lean:420:the evaluation attribute distribution equals `ν_pop`.
 ./ConjointSD/Assumptions.lean:422:structure EvalAttrLawEqPop
-./ConjointSD/Assumptions.lean:425:    (ν : Measure Attr) : Prop where
+./ConjointSD/Assumptions.lean:425:    (ν_pop : Measure Attr) : Prop where
 ./ConjointSD/Assumptions.lean:430:Evaluation-weight moment matching: weighted moments of the evaluation draw
 ./ConjointSD/Assumptions.lean:433:This is a transport-style assumption that links the evaluation sample
-./ConjointSD/Assumptions.lean:434:(`A 0` under the evaluation law `ρ`) to the population distribution `ν`
+./ConjointSD/Assumptions.lean:434:(`A 0` under the evaluation law `ρ`) to the population distribution `ν_pop`
 ./ConjointSD/Assumptions.lean:435:without requiring full law equality.
 ./ConjointSD/Assumptions.lean:437:structure EvalWeightMatchesPopMoments
-./ConjointSD/Assumptions.lean:440:    (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:440:    (ν_pop : Measure Attr) (w s : Attr → ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:462:Randomization mechanism for an attribute stream `A i`.
 ./ConjointSD/Assumptions.lean:468:structure ConjointRandomizationStream
 ./ConjointSD/Assumptions.lean:469:    [MeasurableSpace Attr] (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) : Prop where
@@ -574,7 +574,7 @@
 ./ConjointSD/StatusConjointDesign.lean:70:  μResp.prod μTask
 ./ConjointSD/StatusConjointDesign.lean:72:instance {Respondent : Type u} [MeasurableSpace Respondent]
 ./ConjointSD/StatusConjointDesign.lean:75:  classical
-./ConjointSD/StatusConjointDesign.lean:80:  have hprod := Measure.prod_prod (μ := μResp) (ν := μTask) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:80:  have hprod := Measure.prod_prod (μ := μResp) (ν_pop := μTask) (Set.univ) (Set.univ)
 ./ConjointSD/StatusConjointDesign.lean:81:  calc
 ./ConjointSD/StatusConjointDesign.lean:83:        = μResp.prod μTask (Set.univ ×ˢ (Set.univ : Set TaskSlot)) := by
 ./ConjointSD/StatusConjointDesign.lean:84:          simp [μRT, Set.univ_prod_univ]
@@ -584,7 +584,7 @@
 ./ConjointSD/StatusConjointDesign.lean:95:  (μRT (μResp := μResp)).prod νStatus
 ./ConjointSD/StatusConjointDesign.lean:97:instance {Respondent : Type u} [MeasurableSpace Respondent]
 ./ConjointSD/StatusConjointDesign.lean:100:  classical
-./ConjointSD/StatusConjointDesign.lean:105:    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:105:    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) (Set.univ) (Set.univ)
 ./ConjointSD/StatusConjointDesign.lean:106:  calc
 ./ConjointSD/StatusConjointDesign.lean:108:        = (μRT (μResp := μResp)).prod νStatus
 ./ConjointSD/StatusConjointDesign.lean:110:          simp [μStatus, Set.univ_prod_univ]
@@ -603,11 +603,11 @@
 ./ConjointSD/StatusConjointDesign.lean:216:                    · simpa [statusX] using hs'
 ./ConjointSD/StatusConjointDesign.lean:218:                        simpa using hrs
 ./ConjointSD/StatusConjointDesign.lean:219:                      simpa [statusY] using this
-./ConjointSD/StatusConjointDesign.lean:222:                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:222:                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
 ./ConjointSD/StatusConjointDesign.lean:224:                simp [μexp, μStatus, μRT, hrect]
-./ConjointSD/StatusConjointDesign.lean:231:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:231:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
 ./ConjointSD/StatusConjointDesign.lean:234:                  simp [μexp, μStatus, μRT, hpreX]
-./ConjointSD/StatusConjointDesign.lean:240:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:240:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
 ./ConjointSD/StatusConjointDesign.lean:244:                  simp [μexp, μStatus, μRT, hpreY, hν]
 ./ConjointSD/StatusConjointDesign.lean:245:                simp [hXmass, hYmass, mul_comm]
 ./ConjointSD/StatusConjointDesign.lean:250:      consistency := by intro ω; rfl

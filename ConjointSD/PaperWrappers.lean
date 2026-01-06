@@ -17,7 +17,7 @@ closest to the manuscript:
 
 4) “Convergence to the true estimand” is obtained by adding an explicit target-equality
    assumption (now via subject-sampling LLN), plus AE-congruence lemmas
-   showing target human population SDs match when score functions match ν-a.e.
+   showing target human population SDs match when score functions match ν_pop-a.e.
 -/
 
 import Mathlib
@@ -51,18 +51,18 @@ variable {B : Type*} [Fintype B]
 
 variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
 variable (A : ℕ → Ω → Attr)
-variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
+variable (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
 /-- Paper-facing: per-block SDs are sequentially consistent (single `M` works for all blocks). -/
 theorem paper_sd_blocks_sequential_consistency_ae
-    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (hSplitBounded : ∀ m b,
       SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν := ν)
+      PlugInMomentAssumptions (ν_pop := ν_pop)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
@@ -70,72 +70,72 @@ theorem paper_sd_blocks_sequential_consistency_ae
         ∀ b : B,
           (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A ν
+              totalErr ρ A ν_pop
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
   exact
     sequential_consistency_blocks_ae
-      (ρ := ρ) (A := A) (ν := ν)
+      (ρ := ρ) (A := A) (ν_pop := ν_pop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitBounded) (hLaw := hLaw) (hPlug := hPlug)
       (ε := ε) (hε := hε)
 
 /-- Paper-facing: total-score SD is sequentially consistent. -/
 theorem paper_sd_total_sequential_consistency_ae
-    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (hSplitTotalBounded :
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
+      PlugInMomentAssumptions (ν_pop := ν_pop)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A ν
+            totalErr ρ A ν_pop
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   exact
     sequential_consistency_total_ae
-      (ρ := ρ) (A := A) (ν := ν)
+      (ρ := ρ) (A := A) (ν_pop := ν_pop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotal := hSplitTotalBounded) (hLaw := hLaw) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
 
 /-!
-## 4) Turn “converges to attrSD ν (g θ0)” into “converges to the true SD target”
-by assuming ν-a.e. equality to a declared true score function and using congruence lemmas.
+## 4) Turn “converges to attrSD ν_pop (g θ0)” into “converges to the true SD target”
+by assuming ν_pop-a.e. equality to a declared true score function and using congruence lemmas.
 -/
 
 /--
-Blocks: sequential consistency + ν-a.e. target equality packages convergence to the true block SD.
+Blocks: sequential consistency + ν_pop-a.e. target equality packages convergence to the true block SD.
 -/
 theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
-    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (hSplitBounded : ∀ m b,
       SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν := ν)
+      PlugInMomentAssumptions (ν_pop := ν_pop)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
     (gTrueB : B → Attr → ℝ)
     (hTrueB :
       ∀ b : B,
-        ∀ᵐ x ∂ν, gBlock (gB := gB) b θ0 x = gTrueB b x)
+        ∀ᵐ x ∂ν_pop, gBlock (gB := gB) b θ0 x = gTrueB b x)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
           (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A (ν)
+              totalErr ρ A (ν_pop)
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
-          attrSD (ν) (gBlock (gB := gB) b θ0)
-            = attrSD (ν) (gTrueB b) := by
+          attrSD (ν_pop) (gBlock (gB := gB) b θ0)
+            = attrSD (ν_pop) (gTrueB b) := by
   rcases paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
+      (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitBounded := hSplitBounded) (hPlug := hPlug) (ε := ε) (hε := hε)
       with ⟨M, hM⟩
@@ -143,40 +143,40 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
   intro m hm b
   have hCons := hM m hm b
   have hEq :
-      attrSD (ν) (gBlock (gB := gB) b θ0)
-        = attrSD (ν) (gTrueB b) :=
+      attrSD (ν_pop) (gBlock (gB := gB) b θ0)
+        = attrSD (ν_pop) (gTrueB b) :=
     attrSD_congr_ae
-      (ν := ν)
+      (ν_pop := ν_pop)
       (s := gBlock (gB := gB) b θ0) (t := gTrueB b) (hTrueB b)
   exact ⟨hCons, hEq⟩
 
 /--
-Total-score: sequential consistency + ν-a.e. target equality packages convergence to the true SD.
+Total-score: sequential consistency + ν_pop-a.e. target equality packages convergence to the true SD.
 -/
 theorem paper_sd_total_sequential_consistency_to_true_target_ae
-    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (hSplitTotalBounded :
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
+      PlugInMomentAssumptions (ν_pop := ν_pop)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
     (gTrue : Attr → ℝ)
     (hTrue :
-      ∀ᵐ x ∂ν, gTotalΘ (gB := gB) θ0 x = gTrue x)
+      ∀ᵐ x ∂ν_pop, gTotalΘ (gB := gB) θ0 x = gTrue x)
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν)
+            totalErr ρ A (ν_pop)
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
-        attrSD (ν) (gTotalΘ (gB := gB) θ0)
-          = attrSD (ν) gTrue := by
+        attrSD (ν_pop) (gTotalΘ (gB := gB) θ0)
+          = attrSD (ν_pop) gTrue := by
   rcases paper_sd_total_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
+      (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
@@ -185,10 +185,10 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
   intro m hm
   have hCons := hM m hm
   have hEq :
-      attrSD (ν) (gTotalΘ (gB := gB) θ0)
-        = attrSD (ν) gTrue :=
+      attrSD (ν_pop) (gTotalΘ (gB := gB) θ0)
+        = attrSD (ν_pop) gTrue :=
     attrSD_congr_ae
-      (ν := ν) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
+      (ν_pop := ν_pop) (s := gTotalΘ (gB := gB) θ0) (t := gTrue) hTrue
   exact ⟨hCons, hEq⟩
 
 
@@ -207,7 +207,7 @@ variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
 variable (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
 variable (Aeval : ℕ → Ω → Profile K V)
 
-variable (ν : Measure (Profile K V)) [ProbMeasureAssumptions ν]
+variable (ν_pop : Measure (Profile K V)) [ProbMeasureAssumptions ν_pop]
 
 variable (Y : Profile K V → Ω → ℝ)
 variable (fMain : Main → Profile K V → ℝ) (fInter : Inter → Profile K V → ℝ)
@@ -219,7 +219,7 @@ theorem
     (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
-    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
     (hSplitBlocks :
       ∀ ω m b,
         SplitEvalAssumptionsBounded
@@ -255,7 +255,7 @@ theorem
       SubjectScoreAssumptions (μpop := μpop) (gP := gP))
     (hSubjectLLNStar :
       SubjectSamplingLLNStar
-        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ θ0 : PaperTerm Main Inter → ℝ,
@@ -265,7 +265,7 @@ theorem
             ∀ b : B,
               (∀ᵐ ω' ∂ρ,
                 ∀ᶠ n : ℕ in atTop,
-                  totalErr ρ Aeval (ν)
+                  totalErr ρ Aeval (ν_pop)
                     (gBlock
                       (gB := fun b θ a =>
                         gBlockTerm (blk := blk) (β := θ)
@@ -280,7 +280,7 @@ theorem
                         n)
                     m n ω' < ε)
               ∧
-              attrSD (ν)
+              attrSD (ν_pop)
                   (gBlock
                     (gB := fun b θ a =>
                       gBlockTerm (blk := blk) (β := θ)
@@ -288,12 +288,12 @@ theorem
                           φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                     b θ0)
                 =
-                attrSD (ν)
+                attrSD (ν_pop)
                   (gBlockTerm (blk := blk) (β := θ0)
                     (φ :=
                       φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b))
       ∧
-      (∀ᵐ x ∂ν,
+      (∀ᵐ x ∂ν_pop,
         gPop (μpop := μpop) gP x
           =
         gTotal
@@ -308,7 +308,7 @@ theorem
         (μexp := μexp) (Y := Y) hTerms hNoInt with
     ⟨θ0, hspec⟩
   have hContBlocks :
-      BlockFunctionalContinuityAssumptions (xiAttr := ν)
+      BlockFunctionalContinuityAssumptions (xiAttr := ν_pop)
         (gB := fun b θ a =>
           gBlockTerm (blk := blk) (β := θ)
             (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
@@ -316,7 +316,7 @@ theorem
     blockFunctionalContinuity_gBlockTerm_of_bounded
       (Attr := Profile K V) (Main := Main) (Inter := Inter)
       (fMain := fMain) (fInter := fInter)
-      (xiAttr := ν) (blk := blk) (θ0 := θ0)
+      (xiAttr := ν_pop) (blk := blk) (θ0 := θ0)
       hDesign.meas_fMain hDesign.meas_fInter
       hDesign.bound_fMain hDesign.bound_fInter
   have hTheta :
@@ -334,7 +334,7 @@ theorem
       (θ0 := θ0) (Aω := Atrain) (Yobsω := Yobs)
       hRand hDesign hFull hspec
   have hStarEq :
-      ∀ᵐ x ∂ν,
+      ∀ᵐ x ∂ν_pop,
         gTotal
             (B := B)
             (g := gBlockTerm (blk := blk) (β := θ0)
@@ -392,15 +392,15 @@ theorem
     simpa using congrArg (fun f => f x) hBlocks
   have hSubjectLLN :
       SubjectSamplingLLN
-        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y) :=
     subjectSamplingLLN_of_iid_of_lln_gStar
       (hIID := hSubjectIID) (hScore := hSubjectScore) (hStar := hSubjectLLNStar)
   have hPopEq :
-      ∀ᵐ x ∂ν, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
+      ∀ᵐ x ∂ν_pop, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
     subject_lln_ae_eq (h := hSubjectLLN)
   have hPopBlocks :
-      ∀ᵐ x ∂ν,
+      ∀ᵐ x ∂ν_pop,
         gPop (μpop := μpop) gP x
           =
         gTotal
@@ -417,7 +417,7 @@ theorem
   have hPlugBlocks' :
       ∀ b : B,
         PlugInMomentAssumptions
-          (ν := ν)
+          (ν_pop := ν_pop)
           (g := gBlock
             (gB := fun b θ a =>
               gBlockTerm (blk := blk) (β := θ)
@@ -430,7 +430,7 @@ theorem
               (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
               n) :=
     plugInMomentAssumptions_blocks_of_theta_tendsto
-      (xiAttr := ν)
+      (xiAttr := ν_pop)
       (gB := fun b θ a =>
         gBlockTerm (blk := blk) (β := θ)
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
@@ -444,7 +444,7 @@ theorem
       hContBlocks
   have hTrueB :
       ∀ b : B,
-        ∀ᵐ x ∂ν,
+        ∀ᵐ x ∂ν_pop,
           gBlock
               (gB := fun b θ a =>
                 gBlockTerm (blk := blk) (β := θ)
@@ -458,7 +458,7 @@ theorem
     intro x
     rfl
   rcases paper_sd_blocks_sequential_consistency_to_true_target_ae
-      (ρ := ρ) (A := Aeval) (ν := ν)
+      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop)
       (hLaw := hLawEval)
       (gB := fun b θ a =>
         gBlockTerm (blk := blk) (β := θ)
@@ -490,7 +490,7 @@ theorem
     (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
-    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
     (hSplitTotal :
       ∀ ω m,
         SplitEvalAssumptionsBounded
@@ -525,9 +525,8 @@ theorem
       SubjectScoreAssumptions (μpop := μpop) (gP := gP))
     (hSubjectLLNStar :
       SubjectSamplingLLNStar
-        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y))
-    (hCross : PopCrossSDTargetEq (μpop := μpop) (ν := ν) (gP := gP))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ θ0 : PaperTerm Main Inter → ℝ,
       ∀ᵐ ω ∂μexp,
@@ -535,7 +534,7 @@ theorem
           ∀ m ≥ M,
             (∀ᵐ ω' ∂ρ,
               ∀ᶠ n : ℕ in atTop,
-                totalErr ρ Aeval (ν)
+                totalErr ρ Aeval (ν_pop)
                   (gTotalΘ
                     (gB := fun b θ a =>
                       gBlockTerm (blk := blk) (β := θ)
@@ -549,7 +548,7 @@ theorem
                   n)
                   m n ω' < ε)
             ∧
-            attrSD (ν)
+            attrSD (ν_pop)
                 (gTotalΘ
                   (gB := fun b θ a =>
                     gBlockTerm (blk := blk) (β := θ)
@@ -557,7 +556,7 @@ theorem
                         φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                   θ0)
               =
-              popCrossSD (μpop := μpop) (ν := ν) (gP := gP) := by
+              attrSD (ν_pop) (gPop (μpop := μpop) gP) := by
   rcases
       wellSpecified_of_noInteractions_of_fullMainEffects
         (K := K) (V := V) (Term := PaperTerm Main Inter)
@@ -565,7 +564,7 @@ theorem
         (μexp := μexp) (Y := Y) hTerms hNoInt with
     ⟨θ0, hspec⟩
   have hContTotal :
-      FunctionalContinuityAssumptions (xiAttr := ν)
+      FunctionalContinuityAssumptions (xiAttr := ν_pop)
         (g := gTotalΘ
           (gB := fun b θ a =>
             gBlockTerm (blk := blk) (β := θ)
@@ -575,7 +574,7 @@ theorem
     functionalContinuity_gTotalΘ_of_bounded
       (Attr := Profile K V) (Main := Main) (Inter := Inter)
       (fMain := fMain) (fInter := fInter)
-      (xiAttr := ν) (blk := blk) (θ0 := θ0)
+      (xiAttr := ν_pop) (blk := blk) (θ0 := θ0)
       hDesign.meas_fMain hDesign.meas_fInter
       hDesign.bound_fMain hDesign.bound_fInter
   have hTheta :
@@ -596,7 +595,7 @@ theorem
   filter_upwards [hTheta] with ω hThetaω
   have hPlugTotal' :
       PlugInMomentAssumptions
-        (ν := ν)
+        (ν_pop := ν_pop)
         (g := gTotalΘ
           (gB := fun b θ a =>
             gBlockTerm (blk := blk) (β := θ)
@@ -608,7 +607,7 @@ theorem
             (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
             n) :=
     plugInMomentAssumptions_of_theta_tendsto
-      (xiAttr := ν)
+      (xiAttr := ν_pop)
       (g := gTotalΘ
         (gB := fun b θ a =>
           gBlockTerm (blk := blk) (β := θ)
@@ -622,7 +621,7 @@ theorem
       hThetaω
       hContTotal
   have hStarEq :
-      ∀ᵐ x ∂ν,
+      ∀ᵐ x ∂ν_pop,
         gTotalΘ
             (gB := fun b θ a =>
               gBlockTerm (blk := blk) (β := θ)
@@ -701,16 +700,16 @@ theorem
       _ = gStar (μexp := μexp) (Y := Y) x := hBlocksx
   have hSubjectLLN :
       SubjectSamplingLLN
-        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y) :=
     subjectSamplingLLN_of_iid_of_lln_gStar
       (hIID := hSubjectIID) (hScore := hSubjectScore) (hStar := hSubjectLLNStar)
   have hInv :
-      ∀ᵐ x ∂ν,
+      ∀ᵐ x ∂ν_pop,
         gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
     subject_lln_ae_eq (h := hSubjectLLN)
   have hTrue :
-      ∀ᵐ x ∂ν,
+      ∀ᵐ x ∂ν_pop,
         gTotalΘ
             (gB := fun b θ a =>
               gBlockTerm (blk := blk) (β := θ)
@@ -722,7 +721,7 @@ theorem
     intro x hx
     exact hx.1.trans hx.2
   rcases paper_sd_total_sequential_consistency_to_true_target_ae
-      (ρ := ρ) (A := Aeval) (ν := ν)
+      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop)
       (hLaw := hLawEval)
       (gB := fun b θ a =>
         gBlockTerm (blk := blk) (β := θ)
@@ -741,8 +740,7 @@ theorem
   refine ⟨M, ?_⟩
   intro m hm
   rcases hM m hm with ⟨hCons, hEq⟩
-  refine ⟨hCons, ?_⟩
-  simpa [hCross.cross_eq] using hEq
+  exact ⟨hCons, hEq⟩
 
 set_option linter.style.longLine true
 

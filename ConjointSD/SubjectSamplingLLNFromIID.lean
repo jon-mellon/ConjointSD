@@ -1,5 +1,6 @@
 import Mathlib
 import ConjointSD.Assumptions
+import ConjointSD.SDDecompositionFromConjoint
 
 open Filter MeasureTheory ProbabilityTheory
 open scoped BigOperators
@@ -14,6 +15,7 @@ variable [MeasurableSpace Attr]
 
 theorem subject_lln_gPop_of_iid
     {μexp : Measure Ω} {μpop : Measure Person}
+    [ProbMeasureAssumptions μpop]
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ}
     (hIID : SubjectSamplingIID (μexp := μexp) (μpop := μpop) (R := R))
     (hScore : SubjectScoreAssumptions (μpop := μpop) (gP := gP)) :
@@ -28,7 +30,10 @@ theorem subject_lln_gPop_of_iid
   let X : ℕ → Ω → ℝ := fun n ω => gP (R n ω) x
   have hmeas_g : Measurable (fun p => gP p x) := hScore.meas_gP x
   have hint_map : Integrable (fun p => gP p x) (Measure.map (R 0) μexp) := by
-    simpa [hIID.identR 0] using hScore.integrable_gP x
+    have hbound : ∃ C, 0 ≤ C ∧ ∀ p, |gP p x| ≤ C := hScore.bound_gP x
+    have hint : Integrable (fun p => gP p x) μpop :=
+      integrable_of_bounded (μexp := μpop) hmeas_g hbound
+    simpa [hIID.identR 0] using hint
   have hint : Integrable (X 0) μexp := by
     simpa [X] using hint_map.comp_measurable (hIID.measR 0)
   have hindep : Pairwise (fun i j => IndepFun (X i) (X j) μexp) := by
@@ -80,13 +85,13 @@ theorem subject_lln_gPop_of_iid
 
 theorem subjectSamplingLLN_of_iid_of_lln_gStar
     {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
-    {ν : Measure Attr} {μpop : Measure Person}
+    {ν_pop : Measure Attr} {μpop : Measure Person} [ProbMeasureAssumptions μpop]
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
     (hIID : SubjectSamplingIID (μexp := μexp) (μpop := μpop) (R := R))
     (hScore : SubjectScoreAssumptions (μpop := μpop) (gP := gP))
     (hStar : SubjectSamplingLLNStar
-      (μexp := μexp) (ν := ν) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
-    SubjectSamplingLLN (μexp := μexp) (ν := ν) (μpop := μpop) (R := R) (gP := gP) (Y := Y) := by
+      (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
+    SubjectSamplingLLN (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y) := by
   refine { lln_gStar := hStar.lln_gStar, lln_gPop := ?_ }
   exact subject_lln_gPop_of_iid (hIID := hIID) (hScore := hScore)
 

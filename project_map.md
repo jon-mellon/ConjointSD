@@ -22,9 +22,9 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Population targets and transport
 
 - [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean`.
-- [ConjointSD/SubjectSamplingLLNFromIID.lean](readable/SubjectSamplingLLNFromIID.md) derives the subject-sampling LLN to `gPop` from IID subject sampling and score regularity, and builds `SubjectSamplingLLN` using the assumed `SubjectSamplingLLNStar`.
+- [ConjointSD/SubjectSamplingLLNFromIID.lean](readable/SubjectSamplingLLNFromIID.md) derives the subject-sampling LLN to `gPop` from IID subject sampling plus bounded score regularity, and builds `SubjectSamplingLLN` using the assumed `SubjectSamplingLLNStar`.
 - [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under the pushforward attribute law `kappaDesign := Measure.map (A 0) μ` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
-- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); uses `Transport`.
+- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν_pop`-[a.e.](readable/jargon_almost_everywhere.md); uses `Transport`.
 - [ConjointSD/ApproxTargetEquivalence.lean](readable/ApproxTargetEquivalence.md) collects approximate/misspecification bounds (triangle inequality and moment/SD bounds) under `ApproxInvarianceAE`/`L2Approx` plus `BoundedAE`.
 
 ## Identification and design
@@ -50,7 +50,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Model/[term](readable/jargon_term.md)/[block](readable/jargon_block.md) bridges
 
 - [ConjointSD/ModelBridge.lean](readable/ModelBridge.md) defines [block](readable/jargon_block.md) allocation `gBlockTerm` and bridges well-specification to [block](readable/jargon_block.md) sums; core definitions (`gLin`, paper term set) are in `Defs.lean`, and well-specification definitions live in `ModelBridge.lean`.
-- [ConjointSD/ApproxModelBridge.lean](readable/ApproxModelBridge.md) provides approximate well-specification definitions and the ν-a.e. approximation bridge to block sums.
+- [ConjointSD/ApproxModelBridge.lean](readable/ApproxModelBridge.md) provides approximate well-specification definitions and the ν_pop-a.e. approximation bridge to block sums.
 - [ConjointSD/WellSpecifiedFromNoInteractions.lean](readable/WellSpecifiedFromNoInteractions.md) shows an additive/no-interactions causal [estimand](readable/jargon_estimand.md) implies `WellSpecified` for a [linear model](readable/jargon_linear_model.md)-in-[terms](readable/jargon_term.md) model; depends on `ModelBridge`.
 - [ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean](readable/ApproxWellSpecifiedFromNoInteractions.md) derives approximate well-specification from `ApproxNoInteractions` and `FullMainEffectsTerms`.
 - [ConjointSD/TermModelBlocks.lean](readable/TermModelBlocks.md) is currently a placeholder for term-to-block model notes; depends on `PaperWrappers` (for the wrapper APIs).

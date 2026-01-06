@@ -259,10 +259,6 @@ def gHatSubject (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ)
     (n : ℕ) (x : Attr) (ω : Ω) : ℝ :=
   (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, gP (R i ω) x
 
-/-- SD over independent person/attribute draws from the population marginals. -/
-def popCrossSD (μpop : Measure Person) (ν : Measure Attr) (gP : Person → Attr → ℝ) : ℝ :=
-  attrSD (xiAttr := Measure.prod μpop ν) (fun pa => gP pa.1 pa.2)
-
 end SubjectPopulation
 
 end ConjointSD

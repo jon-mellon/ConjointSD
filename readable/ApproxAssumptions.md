@@ -8,25 +8,25 @@ results. These do not feed the main theorem chain in `main_theorem.md`.
 - `ApproxInvarianceAE`: the approximate transport condition that allows bounded
   deviations on the target [population](jargon_population.md) support.
   Intuition: the experiment score may differ from the target score by at most
-  `ε` on a set of probability one under `ν`, so target moments are only
+  `ε` on a set of probability one under `ν_pop`, so target moments are only
   perturbed by a controlled amount. Formal:
-  `∀ᵐ x ∂ν, |s x - t x| ≤ ε`.
+  `∀ᵐ x ∂ν_pop, |s x - t x| ≤ ε`.
 
 ## ApproximateOracle
 
 - `ApproxOracleAE`: a two-stage approximation assumption: a flexible score
   approximates the experimental causal score `gStar`, and the model score
   approximates the flexible score, both [almost everywhere](jargon_almost_everywhere.md)
-  under the attribute distribution `ν`.
+  under the attribute distribution `ν_pop`.
   Intuition: use a rich intermediate score to bridge to the target.
   Formal:
-  `(∀ᵐ x ∂ν, |gModel x - gFlex x| ≤ δModel) ∧ (∀ᵐ x ∂ν, |gFlex x - gStar x| ≤ δOracle)`.
+  `(∀ᵐ x ∂ν_pop, |gModel x - gFlex x| ≤ δModel) ∧ (∀ᵐ x ∂ν_pop, |gFlex x - gStar x| ≤ δOracle)`.
 - `L2Approx`: an [L2](jargon_l2.md)/[RMSE](jargon_rmse.md)-style approximation assumption: the model score differs
-  from the target by at most `δ` in mean-square (uses the [L2](jargon_l2.md) norm under `ν`).
+  from the target by at most `δ` in mean-square (uses the [L2](jargon_l2.md) norm under `ν_pop`).
   Intuition: the average squared error is bounded by `δ^2`.
   Formal:
-  `MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
-    Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ`.
+  `MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν_pop ∧
+    Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν_pop) ≤ δ`.
 
 ## WellSpecifiedFromNoInteractions
 

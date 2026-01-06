@@ -7,38 +7,40 @@ score itself. The final wrapper is:
 `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`.
 Note: the total-score wrapper
 `paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
-uses the experiment-subject sampling LLN bridge (`SubjectSamplingLLN`) and
-`PopCrossSDTargetEq` to target the cross-draw SD `popCrossSD μpop ν gP`.
-The implied ν-a.e. equality `gStar = gPop` is derived from the two LLN limits
+uses the experiment-subject sampling LLN bridge (`SubjectSamplingLLN`) to target the
+population-mean score SD under `ν_pop` (denoted `ν_pop` below).
+The implied ν_pop-a.e. equality `gStar = gPop` is derived from the two LLN limits
 (uniqueness of limits), not assumed as a separate transport axiom.
 
 ## Target estimand (block SD)
 
-**Words**: for each block `b`, the target is the population [SD](readable/jargon_standard_deviation.md)
-of the block contribution of the *population‑mean* score function across the population
-profile distribution `ν`. Think of two independent sampling stages: draw a population member
-`i` from `μpop` (to define the mean score function), and draw a profile `j` from `ν`
-to evaluate its block score. The `i` index only appears inside the population mean;
-the [SD](readable/jargon_standard_deviation.md) is taken across `j`.
+**Words**: for each block `b`, the target is the [population](readable/jargon_population.md)
+[SD](readable/jargon_standard_deviation.md) under `ν_pop` of the block contribution of the
+population‑mean score function. This is a pure population quantity:
+\[
+\operatorname{SD}_{A\sim\nu_{pop}}\!\big(g_{pop}^{b}(A)\big),
+\]
+with no sampling assumptions required to define it. (IID enters only when analyzing the
+estimator, not the estimand.)
 
-**Lean name**: `paperBlockSD (ν := ν) blk β0 φ b`, i.e.
-`attrSD ν (paperTrueBlockScore blk β0 φ b)`.
+**Lean name**: `paperBlockSD (ν_pop := ν_pop) blk β0 φ b`, i.e.
+`attrSD ν_pop (paperTrueBlockScore blk β0 φ b)`.
 
-**LaTeX (i, j formulation)**:
+**LaTeX (population formulation)**:
 ```tex
 \[
-\text{Let } I_i \stackrel{\text{iid}}{\sim} \mu_{pop},\; A_j \stackrel{\text{iid}}{\sim} \nu,
-\text{ and } g_{pop}(a) := \mathbb{E}_{I_i}[g_P(I_i,a)].
+\text{Let } g_{pop}(a) := \mathbb{E}_{I\sim\mu_{pop}}[g_P(I,a)]
+\text{ and } A \sim \nu_{pop}.
 \]
 \[
-g^{\text{block}}_b(a) := \mathbb{E}_{I_i}\!\left[g^{\text{block}}_P(I_i, a)\right],
+g_{pop}^{b}(a) := \mathbb{E}_{I\sim\mu_{pop}}\!\left[g^{b}_P(I, a)\right],
 \qquad
-g_{pop}(a) = \sum_{b} g^{\text{block}}_b(a),
-\qquad \text{target} = \operatorname{SD}_{A\sim\nu}\!\big(g^{\text{block}}_b(A)\big).
+g_{pop}(a) = \sum_{b} g_{pop}^{b}(a),
+\qquad \text{target} = \operatorname{SD}_{A\sim\nu_{pop}}\!\big(g_{pop}^{b}(A)\big).
 \]
 \[
-\text{Equivalently: } \operatorname{SD}_{j}\!\left(g^{\text{block}}_b(A_j)\right)
-\text{ with } g_{pop}(A_j) = \mathbb{E}_{i}[g_P(I_i, A_j)].
+\text{Equivalently: } \operatorname{SD}_{A\sim\nu_{pop}}\!\left(g_{pop}^{b}(A)\right)
+\text{ with } g_{pop}(A) = \mathbb{E}_{I\sim\mu_{pop}}[g_P(I, A)].
 \]
 ```
 
@@ -130,19 +132,16 @@ any two distinct draws are [independent](readable/jargon_independent.md); and ev
 same [distribution](readable/jargon_distribution.md) as `A 0` under `κ`.
 
 ### 3) Experiment-subject sampling
-**Assumptions**: `SubjectSamplingIID`, `SubjectScoreAssumptions`, `SubjectSamplingLLNStar`,
-and `PopCrossSDTargetEq`.
+**Assumptions**: `SubjectSamplingIID`, `SubjectScoreAssumptions`, `SubjectSamplingLLNStar`.
 
 **Meaning** (subassumptions):
 - `SubjectSamplingIID`: subjects are an IID sample from `μpop`.
-- `SubjectScoreAssumptions`: subject-level scores are measurable and integrable under `μpop`.
+- `SubjectScoreAssumptions`: subject-level scores are measurable and uniformly bounded under `μpop`.
 - `SubjectSamplingLLNStar.lln_gStar`: subject-average scores converge to `gStar`.
-- `PopCrossSDTargetEq`: the product-draw SD target equals the SD of the population-mean score.
 
 **Intuition**: subject-level scores are well-behaved and subjects are IID from the population,
 so a strong LLN yields convergence to `gPop`. Combined with the LLN-to-`gStar` assumption, the
-implied `gStar = gPop` ν-a.e. is derived from uniqueness of limits. The extra target-equality
-assumption ties the cross-draw SD estimand to the mean-score SD tracked by the estimator.
+implied `gStar = gPop` ν_pop-a.e. is derived from uniqueness of limits.
 
 **Formal statement (Lean)**:
 ```lean
@@ -155,10 +154,10 @@ structure SubjectSamplingIID
 structure SubjectScoreAssumptions
     (μpop : Measure Person) (gP : Person → Attr → ℝ) : Prop where
   meas_gP : ∀ x, Measurable (fun p => gP p x)
-  integrable_gP : ∀ x, Integrable (fun p => gP p x) μpop
+  bound_gP : ∀ x, ∃ C, 0 ≤ C ∧ ∀ p, |gP p x| ≤ C
 
 structure SubjectSamplingLLNStar
-    (μexp : Measure Ω) (ν : Measure Attr) (μpop : Measure Person)
+    (μexp : Measure Ω) (ν_pop : Measure Attr) (μpop : Measure Person)
     (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
   lln_gStar :
     ∀ x, ∀ᵐ ω ∂μexp,
@@ -167,21 +166,15 @@ structure SubjectSamplingLLNStar
         atTop
         (nhds (gStar (μexp := μexp) (Y := Y) x))
 
-structure PopCrossSDTargetEq
-    (μpop : Measure Person) (ν : Measure Attr) (gP : Person → Attr → ℝ) : Prop where
-  cross_eq :
-    popCrossSD (μpop := μpop) (ν := ν) (gP := gP)
-      = attrSD ν (gPop (μpop := μpop) gP)
 ```
 **Formal statement (LaTeX)**:
 ```tex
 \[
 \begin{aligned}
 &\text{IID subject sampling: } R_i \text{ are measurable, independent, and } R_i \sim \mu_{pop}. \\
-&\text{Score regularity: } g_P(\cdot,x) \text{ is measurable and integrable under } \mu_{pop}. \\
+&\text{Score regularity: } g_P(\cdot,x) \text{ is measurable and uniformly bounded under } \mu_{pop}. \\
 &\forall x,\; \text{a.e.}_{\mu_{exp}}\; \lim_{n\to\infty}
 \Big(\frac{1}{n}\sum_{i<n} g_P(R_i, x)\Big) = g^\star(x).
-\;\;\text{and}\;\; \operatorname{SD}_{\mu_{pop}\otimes\nu}(g_P)=\operatorname{SD}_{\nu}(g_{pop}).
 \end{aligned}
 \]
 ```
@@ -360,11 +353,12 @@ true causal score `gStar` is exactly additive in attributes for every profile.
 ### 8) Evaluation sample is IID from the population
 **Assumption**: `EvalAttrLawEqPop`.
 
-**Meaning**: the evaluation attribute distribution equals the target population law `ν`.
+**Meaning**: the evaluation attribute distribution equals the target population law `ν_pop`.
 
 Subassumptions:
-- `measA0`: measurability of `Aeval 0`.
-- `map_eq`: the evaluation attribute law equals `ν`.
+- `measA`: measurability of each `Aeval i`.
+- `indepA`: pairwise independence of evaluation draws under `ρ`.
+- `identA`: each evaluation draw has law `ν_pop`.
 
 **Intuition**: the evaluation sample is a simple random sample from the target population.
 
@@ -373,17 +367,22 @@ Subassumptions:
 structure EvalAttrLawEqPop
     {Ω : Type*} [MeasurableSpace Ω]
     (ρ : Measure Ω) (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) : Prop where
-  measA0 : Measurable (A 0)
-  map_eq : Measure.map (A 0) ρ = ν
+    (ν_pop : Measure Attr) : Prop where
+  measA : ∀ i, Measurable (A i)
+  indepA : Pairwise (fun i j => IndepFun (A i) (A j) ρ)
+  identA : ∀ i, Measure.map (A i) ρ = ν_pop
 ```
 **Formal statement (LaTeX)**:
 ```tex
 \[
-A_0 \text{ is measurable and } \operatorname{Law}(A_0 \mid \rho) = \nu.
+\begin{aligned}
+&(\forall i,\; A_i \text{ is measurable}) \\
+&\land \text{Pairwise}(i \ne j \Rightarrow A_i \perp A_j \text{ under } \rho) \\
+&\land (\forall i,\; \operatorname{Law}(A_i \mid \rho) = \nu).
+\end{aligned}
 \]
 ```
-**English version**: the evaluation attributes are sampled IID from the population law `ν`.
+**English version**: the evaluation attributes are sampled IID from the population law `ν_pop`.
 
 ### 9) Evaluation [boundedness](readable/jargon_boundedness.md) (with IID)
 **Assumption**: `SplitEvalAssumptionsBounded` (for every block score and every `m`).
@@ -497,10 +496,10 @@ at `θ0`, yielding the needed moment convergence.
 ## 5) Derive plug‑in moment convergence from OLS
 
 We derive the plug‑in assumptions ([mean](readable/jargon_mean.md) + [second moment](readable/jargon_second_moment.md)
-under `ν`) from:
+under `ν_pop`) from:
 - `theta_tendsto_of_paper_ols_design_ae` (OLS consistency),
 - boundedness/[measurability](readable/jargon_measurable.md) of the paper features
-  (gives functional [continuity](readable/jargon_continuity.md) under `ν`).
+  (gives functional [continuity](readable/jargon_continuity.md) under `ν_pop`).
 
 Formally:
 - `functionalContinuity_gBlockTerm_of_bounded` and
@@ -511,7 +510,7 @@ Formally:
 ## 6) Evaluation representativeness (block SD targets)
 
 We combine:
-- `EvalAttrLawEqPop` (evaluation attributes are an IID draw from `ν`),
+- `EvalAttrLawEqPop` (evaluation attributes are an IID draw from `ν_pop`),
 - `SplitEvalAssumptionsBounded` for each block score and each `m`.
 
 This yields block‑level [sequential consistency](readable/jargon_sequential_consistency.md) of the
@@ -521,7 +520,7 @@ This yields block‑level [sequential consistency](readable/jargon_sequential_co
 
 No additional external-validity step is required at the block level in this wrapper:
 the target block SDs are defined directly from the model-implied block scores
-`gBlockTerm` under `ν`.
+`gBlockTerm` under `ν_pop`.
 
 ## 8) End‑to‑end block wrapper
 
@@ -538,7 +537,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
     (Atrain : ℕ → Ω → Profile K V) (Yobs : ℕ → Ω → ℝ)
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
-    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
     (hSplitBlocks :
       ∀ ω m b,
         SplitEvalAssumptionsBounded
@@ -574,7 +573,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
       SubjectScoreAssumptions (μpop := μpop) (gP := gP))
     (hSubjectLLNStar :
       SubjectSamplingLLNStar
-        (μexp := μexp) (ν := ν) (μpop := μpop)
+        (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ θ0 : PaperTerm Main Inter → ℝ,
@@ -584,7 +583,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
             ∀ b : B,
               (∀ᵐ ω' ∂ρ,
                 ∀ᶠ n : ℕ in atTop,
-                  totalErr ρ Aeval (ν)
+                  totalErr ρ Aeval (ν_pop)
                     (gBlock
                       (gB := fun b θ a =>
                         gBlockTerm (blk := blk) (β := θ)
@@ -598,18 +597,18 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
                         n)
                     m n ω' < ε)
               ∧
-              attrSD (ν)
+              attrSD (ν_pop)
                   (gBlock
                     (gB := fun b θ a =>
                       gBlockTerm (blk := blk) (β := θ)
                         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                     b θ0)
                 =
-                attrSD (ν)
+                attrSD (ν_pop)
                   (gBlockTerm (blk := blk) (β := θ0)
                     (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b))
       ∧
-      (∀ᵐ x ∂ν,
+      (∀ᵐ x ∂ν_pop,
         gPop (μpop := μpop) gP x
           =
         gTotal
@@ -641,5 +640,5 @@ the evaluation error `totalErr` is eventually below `ε` along `ρ`‑almost eve
 evaluation path, and the [population](readable/jargon_population.md)
 [SD](readable/jargon_standard_deviation.md) of the model block score at `θ0` equals the
 population SD of the true block term. In addition, the population-mean score
-`gPop` equals the block-sum score `gTotal (gBlockTerm θ0)` ν-a.e., tying the block
+`gPop` equals the block-sum score `gTotal (gBlockTerm θ0)` ν_pop-a.e., tying the block
 targets to experiment-subject sampling transport.

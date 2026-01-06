@@ -243,7 +243,7 @@ extract_atomic_assumptions <- function(text) {
   eps <- unlist(regmatches(text_flat, gregexpr("0 < [A-Za-z0-9_]+", text_flat)))
   if (length(eps) > 0) labels <- c(labels, eps)
 
-  ae_eq <- unlist(regmatches(text_flat, gregexpr("∀ᵐ \\(a : Attr\\) ∂ν, s a = t a", text_flat)))
+  ae_eq <- unlist(regmatches(text_flat, gregexpr("∀ᵐ \\(a : Attr\\) ∂ν_pop, s a = t a", text_flat)))
   if (length(ae_eq) > 0) labels <- c(labels, ae_eq)
 
   labels

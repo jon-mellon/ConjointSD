@@ -12,9 +12,9 @@ section Transport
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
-/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
-def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ᵐ a ∂ν, |s a - t a| ≤ ε
+/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν_pop-a.e. -/
+def ApproxInvarianceAE (ν_pop : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
+  ∀ᵐ a ∂ν_pop, |s a - t a| ≤ ε
 
 end Transport
 
@@ -24,22 +24,22 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 
 /--
 Two-stage approximation: a flexible score `gFlex` approximates the experimental
-causal score `gStar`, and the model score `gModel` approximates `gFlex`, both ν-a.e.
+causal score `gStar`, and the model score `gModel` approximates `gFlex`, both ν_pop-a.e.
 -/
 def ApproxOracleAE
-    (ν : Measure Attr)
+    (ν_pop : Measure Attr)
     (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
-  (∀ᵐ x ∂ν, |gModel x - gFlex x| ≤ δModel) ∧
-  (∀ᵐ x ∂ν, |gFlex x - gStar x| ≤ δOracle)
+  (∀ᵐ x ∂ν_pop, |gModel x - gFlex x| ≤ δModel) ∧
+  (∀ᵐ x ∂ν_pop, |gFlex x - gStar x| ≤ δOracle)
 
 /--
 L2-style approximation: the model score differs from the target by at most delta in mean-square.
 -/
 def L2Approx
-    (ν : Measure Attr)
+    (ν_pop : Measure Attr)
     (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
-  MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
-  Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ
+  MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν_pop ∧
+  Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν_pop) ≤ δ
 
 end ApproximateOracle
 

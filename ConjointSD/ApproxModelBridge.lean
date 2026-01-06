@@ -16,26 +16,26 @@ def ApproxWellSpecified
     (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
   ∀ x, |gLin (β := β) (φ := φ) x - gStar (μexp := μexp) (Y := Y) x| ≤ ε
 
-/-- Approximate well-specification on target-population attribute support (ν-a.e.). -/
+/-- Approximate well-specification on target-population attribute support (ν_pop-a.e.). -/
 def ApproxWellSpecifiedAE
     {Attr : Type*} [MeasurableSpace Attr]
-    (ν : Measure Attr) (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
+    (ν_pop : Measure Attr) (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ᵐ x ∂ν, |gLin (β := β) (φ := φ) x - gStar (μexp := μexp) (Y := Y) x| ≤ ε
+  ∀ᵐ x ∂ν_pop, |gLin (β := β) (φ := φ) x - gStar (μexp := μexp) (Y := Y) x| ≤ ε
 
 end WellSpecified
 
 /--
 AE version of the approximation bridge: if `gStar` is ε-close to the linear model
-on target-population support (ν-a.e.), then it is ε-close to the induced block sum ν-a.e.
+on target-population support (ν_pop-a.e.), then it is ε-close to the induced block sum ν_pop-a.e.
 -/
 theorem gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
     {Ω Attr B Term : Type*}
     [MeasurableSpace Ω] [MeasurableSpace Attr] [Fintype B] [Fintype Term] [DecidableEq B]
-    (ν : Measure Attr) (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
+    (ν_pop : Measure Attr) (μexp : Measure Ω) (Y : Attr → Ω → ℝ)
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ)
-    (hspec : ApproxWellSpecifiedAE (ν := ν) (μexp := μexp) (Y := Y) (β := β) (φ := φ) ε) :
-    ∀ᵐ x ∂ν,
+    (hspec : ApproxWellSpecifiedAE (ν_pop := ν_pop) (μexp := μexp) (Y := Y) (β := β) (φ := φ) ε) :
+    ∀ᵐ x ∂ν_pop,
       |gStar (μexp := μexp) (Y := Y) x
         - gTotal (B := B) (g := gBlockTerm (blk := blk) (β := β) (φ := φ)) x|
         ≤ ε := by

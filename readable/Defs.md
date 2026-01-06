@@ -11,7 +11,7 @@ Highlights:
   assumptions.
 - Attribute-distribution and experimental design distribution moment functionals:
   `attrMean`, `attrM2`, `attrVar`, `attrSD` (all parameterized by a generic attribute
-  distribution `xiAttr`; use `ν` only for the target population in transport files),
+  distribution `xiAttr`; use `ν_pop` only for the target population in transport files),
   `meanHatZ`,
   `designMeanZ`/`designM2Z`/`designVarZ`/`designSDZ`
   (see [mean](jargon_mean.md), [variance](jargon_variance.md),
@@ -21,8 +21,7 @@ Highlights:
   `gramMatrix`, `crossVec`, `attrGram`, `attrCross`.
 - Conjoint identification primitives: `eventX`, `condMean`, `potMean`, `amce` ([AMCE](jargon_amce.md)).
 - Experiment-subject population transport definitions: `gPop` (population-mean scoring function)
-  and `gHatSubject` (experiment-subject sample average score at a fixed profile), plus
-  `popCrossSD` for the SD over independent person/attribute draws.
+  and `gHatSubject` (experiment-subject sample average score at a fixed profile).
 
 Purpose:
 - Keep foundational definitions in one place so assumption packages can be audited in

@@ -1,11 +1,11 @@
 ./proven_statements.md:18:Intuition: Differences on a `nu`-null set do not change moments under the target
-./proven_statements.md:66:Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score/weights are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop` (uniform weights), and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
+./proven_statements.md:66:Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score/weights are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop` (uniform weights), and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν_pop`.
 ./proven_statements.md:79:Statement: With evaluation-sample representativeness and [plug-in](readable/jargon_plug_in.md)
-./proven_statements.md:84:size then evaluation size), targeting the attribute-law SD under `ν` with
-./proven_statements.md:85:`EvalAttrLawEqPop` tying the evaluation attribute law to `ν`.
+./proven_statements.md:84:size then evaluation size), targeting the attribute-law SD under `ν_pop` with
+./proven_statements.md:85:`EvalAttrLawEqPop` tying the evaluation attribute law to `ν_pop`.
 ./proven_statements.md:87:Intuition: First the fitted score stabilizes, then the evaluation
 ./proven_statements.md:138:[continuous](readable/jargon_continuity.md) at `θ0`, then the evaluation
-./proven_statements.md:142:size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν` (uniform weights).
+./proven_statements.md:142:size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν_pop` (uniform weights).
 ./proven_statements.md:355:Intuition: bounded/measurable features and a design‑IID attribute stream give the
 ./proven_statements.md:375:experimental estimand to the population-mean score, so the evaluation SD
 ./AGENTS.md:3:Always follow these project rules when making changes:
@@ -17,22 +17,22 @@
 ./AGENTS.md:40:- `gaps.md`: update if your changes add/close proof gaps or alter the state of assumptions called out there.
 ./AGENTS.md:41:- `README.md`: update if build instructions or repo layout change.
 ./readable/jargon_profile.md:5:A profile is a full description of an individual or item in the conjoint study. It assigns a value to each attribute.
-./readable/SequentialConsistency.md:5:This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν` (uniform weights). The evaluation assumptions are now boundedness-based (`SplitEvalAssumptionsBounded`), which then derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
+./readable/SequentialConsistency.md:5:This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν_pop`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν_pop` (uniform weights). The evaluation assumptions are now boundedness-based (`SplitEvalAssumptionsBounded`), which then derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
 ./readable/SequentialConsistency.md:9:- `sdEst`: the evaluation-stage [standard deviation](jargon_standard_deviation.md) [estimator](jargon_estimator.md) using a fixed training index `m`, evaluation size `n`, and a weight function `w`.
 ./readable/SequentialConsistency.md:12:- `totalErr`: the gap between the evaluation estimator (uniform weights) and the oracle [standard deviation](jargon_standard_deviation.md).
 ./readable/SequentialConsistency.md:17:3) Combine the two to show: for any epsilon, there is an `M` so that for all `m >= M`, the evaluation error becomes less than epsilon for large enough `n` ([almost everywhere](jargon_almost_everywhere.md)).
 ./readable/jargon_weighting.md:5:Weighting means using a weight function to adjust evaluation-sample averages so they match
 ./readable/jargon_l2.md:5:over the attribute distribution for the target human population.
-./readable/jargon_population.md:10:we call the *attribute distribution* (often denoted `ν`). Sample quantities are
+./readable/jargon_population.md:10:we call the *attribute distribution* (often denoted `ν_pop`). Sample quantities are
 ./readable/jargon_sequential_consistency.md:5:Sequential [consistency](jargon_consistency.md) here means a two-step limit: first let the evaluation sample size grow (n), then let the training index grow (m). The error gets small for large n after m is large enough.
 ./readable/jargon_population_support.md:4:probability under the attribute [distribution](jargon_distribution.md) for the
 ./readable/Defs.md:13:  `attrMean`, `attrM2`, `attrVar`, `attrSD` (all parameterized by a generic attribute
 ./readable/Defs.md:23:- Experiment-subject population transport definitions: `gPop` (population-mean scoring function)
-./readable/DecompositionSequentialConsistency.md:5:This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score. It uses the standard probability/convergence bundles and evaluates targets under the target attribute distribution `ν`, with `EvalAttrLawEqPop` providing the evaluation-to-population law equality needed for the SD targets (uniform weights).
+./readable/DecompositionSequentialConsistency.md:5:This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score. It uses the standard probability/convergence bundles and evaluates targets under the target attribute distribution `ν_pop`, with `EvalAttrLawEqPop` providing the evaluation-to-population law equality needed for the SD targets (uniform weights).
 ./readable/jargon_pushforward.md:1:# Pushforward
 ./readable/jargon_pushforward.md:5:The pushforward of a measure by a measurable function is the induced distribution of the function’s output. If `A 0` is a random draw under `μexp` (experiment) or `ρ` (evaluation), then `Measure.map (A 0) μexp` or `Measure.map (A 0) ρ` is the pushforward law of attributes.
 ./readable/RegressionEstimator.md:16:- `attrGram` and `attrCross` define the Gram and cross moments under a generic attribute distribution `xiAttr` (use `kappaDesign` in the first-stage OLS setting).
-./readable/PaperOLSConsistency.md:5:This file specializes the regression [consistency](jargon_consistency.md) machinery to the paper's OLS [estimator](jargon_estimator.md) and [term](jargon_term.md) set. It uses bundled `ProbMeasureAssumptions` where probability assumptions are required, and the LLN statements target the experimental pushforward attribute law `kappaDesign := Measure.map (A 0) μexp` (the experiment data used to fit the model). In the code, this distribution is denoted `xiAttr`; the target population distribution `ν` is not used in this first-stage OLS file.
+./readable/PaperOLSConsistency.md:5:This file specializes the regression [consistency](jargon_consistency.md) machinery to the paper's OLS [estimator](jargon_estimator.md) and [term](jargon_term.md) set. It uses bundled `ProbMeasureAssumptions` where probability assumptions are required, and the LLN statements target the experimental pushforward attribute law `kappaDesign := Measure.map (A 0) μexp` (the experiment data used to fit the model). In the code, this distribution is denoted `xiAttr`; the target population distribution `ν_pop` is not used in this first-stage OLS file.
 ./readable/PaperOLSConsistency.md:11:- The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets under `xiAttr`. In the core‑idea flow, those targets are the design pushforward law `kappaDesign`, with population transport handled separately.
 ./readable/PaperOLSConsistency.md:14:  - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the design pushforward law `kappaDesign`.
 ./readable/PaperOLSConsistency.md:28:- `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the normal equations (derived from well‑specification when needed) under the attribute distribution in use.
@@ -44,11 +44,11 @@
 ./readable/WellSpecifiedFromNoInteractions.md:10:  constant + sum of one-at-a-time effects, with no cross-[terms](jargon_term.md).
 ./readable/WellSpecifiedFromNoInteractions.md:13:- `NoInteractions` says there exist a constant and main-effect functions giving the exact additive form of the causal score `gStar`.
 ./readable/WellSpecifiedFromNoInteractions.md:16:- A [term](jargon_term.md) set `Term := Option K` is used: `none` is the intercept term and `some k` is the main effect for attribute `k`.
-./readable/PaperCoreEstimand.md:5:This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md). The consistency wrappers target the attribute distribution `ν` and use `EvalAttrLawEqPop` to relate evaluation draws under the evaluation law `ρ` to the target population law (uniform weights). Causal scores (`gStar`) are tied to the experimental law `μexp`, matching the paper’s “fit on experiment, evaluate on population” pipeline.
+./readable/PaperCoreEstimand.md:5:This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md). The consistency wrappers target the attribute distribution `ν_pop` and use `EvalAttrLawEqPop` to relate evaluation draws under the evaluation law `ρ` to the target population law (uniform weights). Causal scores (`gStar`) are tied to the experimental law `μexp`, matching the paper’s “fit on experiment, evaluate on population” pipeline.
 ./readable/PaperCoreEstimand.md:9:- `paperBlockSD` and `paperTotalSD` are the target human [population](jargon_population.md) [standard deviation](jargon_standard_deviation.md) targets for those scores (under the attribute distribution).
 ./readable/EvalSamplingSRS.md:5:This file derives the weighted-moment assumption used by the evaluation SD machinery
 ./readable/EvalSamplingSRS.md:6:from a simple random sample (SRS) evaluation law and uniform weights.
-./readable/EvalSamplingSRS.md:9:- `evalWeightMatchesPopMoments_of_law_eq`: if the evaluation attribute law equals `ν`
+./readable/EvalSamplingSRS.md:9:- `evalWeightMatchesPopMoments_of_law_eq`: if the evaluation attribute law equals `ν_pop`
 ./readable/EvalSamplingSRS.md:10:  and weights are constant 1, then the weighted moment match holds for any score `s`.
 ./readable/jargon_interaction.md:5:An interaction [term](jargon_term.md) captures how the effect of one attribute depends on another attribute. It goes beyond simple additivity of main effects.
 ./readable/jargon_amce.md:3:AMCE is the average effect of changing one attribute level while holding the
@@ -68,7 +68,7 @@
 ./readable/DeriveGEstimationAssumptions.md:9:- Assumes the attribute-distribution [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) (under `xiAttr`) as functions of the [parameter](jargon_parameter.md) are [continuous](jargon_continuity.md) at `theta0`.
 ./readable/RegressionConsistencyBridge.md:8:- `attrMeanΘ` and `attrM2Θ` treat the attribute-distribution [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) (under `xiAttr`) as functions of the [parameter](jargon_parameter.md).
 ./readable/jargon_integral.md:5:An integral is a weighted [average](jargon_mean.md) of a function under a [distribution](jargon_distribution.md). In this project, integrals are used to define target human [population](jargon_population.md) averages under the attribute distribution, like the [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), and [standard deviation](jargon_standard_deviation.md).
-./readable/SampleSplitting.md:5:This file handles the evaluation stage in a sample-splitting setup. It uses `ProbMeasureAssumptions` for the target attribute distribution `ν` and assumes `EvalAttrLawEqPop` so the evaluation draw `A 0` under the evaluation law `ρ` has the target attribute law `ν` (weights are uniform). The training data that produced `θhat` is not modeled here.
+./readable/SampleSplitting.md:5:This file handles the evaluation stage in a sample-splitting setup. It uses `ProbMeasureAssumptions` for the target attribute distribution `ν_pop` and assumes `EvalAttrLawEqPop` so the evaluation draw `A 0` under the evaluation law `ρ` has the target attribute law `ν_pop` (weights are uniform). The training data that produced `θhat` is not modeled here.
 ./readable/SampleSplitting.md:8:- `SplitEvalAssumptionsBounded` bundles the evaluation-stage assumptions needed to
 ./readable/SampleSplitting.md:11:  evaluation draws, boundedness and measurability for `w` and `gHat`, plus a nonzero weight
 ./readable/SampleSplitting.md:14:- `sdHat_fixed_m_tendsto_ae_attrSD` says: for fixed `m`, the evaluation-stage
@@ -84,7 +84,7 @@
 ./readable/DesignAttributeBridge.md:21:targets under the pushforward attribute distribution `kappaDesign`.
 ./readable/Assumptions.md:13:not the classical Gauss–Markov/BLUE conditions.
 ./readable/Assumptions.md:17:Recent changes: [probability-measure](jargon_probability_measure.md) requirements were pushed into the moment bundles, and first-moment integrability is now derived from square-integrability where applicable.
-./readable/Assumptions.md:22:- `ν` is reserved for the target attribute [distribution](jargon_distribution.md) of the target human
+./readable/Assumptions.md:22:- `ν_pop` is reserved for the target attribute [distribution](jargon_distribution.md) of the target human
 ./readable/Assumptions.md:23:  [population](jargon_population.md). Non-target attribute laws must be written as `xiAttr` (generic)
 ./readable/Assumptions.md:24:  or `kappaDesign` (design/evaluation pushforward).
 ./readable/Assumptions.md:25:- `xiAttr` is a generic attribute distribution used in continuity/moment lemmas; in the
@@ -100,12 +100,12 @@
 ./readable/Assumptions.md:51:  of attributes inside a profile is not represented. (Hainmueller footnote: attribute-order invariance)
 ./readable/Assumptions.md:52:  Intuition: attribute order is irrelevant because profiles are unordered records.
 ./readable/Assumptions.md:53:  Formal: not represented as a Lean predicate; profiles are modeled without ordered attribute positions.
-./readable/Assumptions.md:58:  a score function `s` under the attribute distribution `ν` on `Attr`
+./readable/Assumptions.md:58:  a score function `s` under the attribute distribution `ν_pop` on `Attr`
 ./readable/Assumptions.md:59:  (the attribute distribution representing the target human
 ./readable/Assumptions.md:71:  - `AttrMomentAssumptions.int2`: `s^2` is integrable under the attribute
-./readable/Assumptions.md:72:    distribution `ν` (the target population attribute distribution). This
-./readable/Assumptions.md:77:- `EvalAttrLawEqPop`: evaluation attributes are sampled IID from the target population law `ν`.
-./readable/Assumptions.md:78:  It states the evaluation attribute law equals `ν` (so weights are effectively constant 1).
+./readable/Assumptions.md:72:    distribution `ν_pop` (the target population attribute distribution). This
+./readable/Assumptions.md:77:- `EvalAttrLawEqPop`: evaluation attributes are sampled IID from the target population law `ν_pop`.
+./readable/Assumptions.md:78:  It states the evaluation attribute law equals `ν_pop` (so weights are effectively constant 1).
 ./readable/Assumptions.md:81:  Intuition: the evaluation sample is a simple random sample from the population.
 ./readable/Assumptions.md:83:  This remains available for weighted evaluations, but the main theorem chain now
 ./readable/Assumptions.md:88:  - `SubjectSamplingIID.indepR`: subject draws are pairwise independent under `μexp`.
@@ -141,12 +141,12 @@
 ./readable/Assumptions.md:327:    Intuition: features cannot take implausibly large values; the design keeps attribute
 ./readable/Assumptions.md:338:    instance specialized to the paper feature map `φPaper`, ensuring the
 ./readable/Assumptions.md:348:  [Gram matrix](jargon_gram_matrix.md) of the paper feature map under the chosen attribute distribution
-./readable/Assumptions.md:359:- `EvalAttrLawEqPop`: evaluation attribute law equals the target population law `ν`.
+./readable/Assumptions.md:359:- `EvalAttrLawEqPop`: evaluation attribute law equals the target population law `ν_pop`.
 ./readable/Assumptions.md:362:    Intuition: the evaluation draw is a well-defined random variable.
-./readable/Assumptions.md:364:  - `EvalAttrLawEqPop.map_eq`: the evaluation attribute law equals `ν`.
+./readable/Assumptions.md:364:  - `EvalAttrLawEqPop.map_eq`: the evaluation attribute law equals `ν_pop`.
 ./readable/Assumptions.md:365:    Intuition: the evaluation sample is an IID draw from the population.
 ./readable/Assumptions.md:367:- `EvalWeightMatchesPopMoments`: evaluation-weight transport assumption (still available for
-./readable/Assumptions.md:368:  weighted analyses). It matches weighted evaluation moments to population moments under `ν`.
+./readable/Assumptions.md:368:  weighted analyses). It matches weighted evaluation moments to population moments under `ν_pop`.
 ./readable/Assumptions.md:373:  full attribute stream `A i` in the experiment. Each draw is generated by a
 ./readable/Assumptions.md:381:    Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧ (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
 ./readable/Assumptions.md:393:  additive main-effect surface (intercept plus per-attribute effects). This is
@@ -186,13 +186,13 @@
 ./main_theorem.md:305:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
 ./main_theorem.md:316:**English version**: there exists an intercept and per‑attribute main effects so that the
 ./main_theorem.md:317:true causal score `gStar` is exactly additive in attributes for every profile.
-./main_theorem.md:322:**Meaning**: the evaluation attribute distribution equals the target population law `ν`
+./main_theorem.md:322:**Meaning**: the evaluation attribute distribution equals the target population law `ν_pop`
 ./main_theorem.md:326:- `measA0`: measurability of `Aeval 0`.
-./main_theorem.md:327:- `map_eq`: the evaluation attribute law equals `ν`.
+./main_theorem.md:327:- `map_eq`: the evaluation attribute law equals `ν_pop`.
 ./main_theorem.md:329:**Intuition**: the evaluation sample is a simple random sample from the target population.
 ./main_theorem.md:333:structure EvalAttrLawEqPop
-./main_theorem.md:336:    (ν : Measure Attr) : Prop where
-./main_theorem.md:346:**English version**: the evaluation attributes are sampled IID from the population law `ν`
+./main_theorem.md:336:    (ν_pop : Measure Attr) : Prop where
+./main_theorem.md:346:**English version**: the evaluation attributes are sampled IID from the population law `ν_pop`
 ./main_theorem.md:347:(weights are effectively constant 1).
 ./main_theorem.md:354:- `hIID`: `EvalAttrIID` for the evaluation draws.
 ./main_theorem.md:368:structure SplitEvalAssumptionsBounded
@@ -203,11 +203,11 @@
 ./main_theorem.md:418:and [IID](readable/jargon_iid.md) for the evaluation stream:
 ./main_theorem.md:420:- [IID](readable/jargon_iid.md) for `Aeval`.
 ./main_theorem.md:435:## 3) Add the no‑interactions structure and full main‑effects basis
-./main_theorem.md:484:- `EvalAttrLawEqPop` (evaluation attributes are an IID draw from `ν`),
+./main_theorem.md:484:- `EvalAttrLawEqPop` (evaluation attributes are an IID draw from `ν_pop`),
 ./main_theorem.md:502:It asserts that, under the assumptions listed at the top, the evaluation SDs
-./main_theorem.md:512:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./main_theorem.md:512:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
 ./main_theorem.md:517:          (ρ := ρ) (A := Aeval) (w := w)
-./main_theorem.md:559:                  totalErr ρ Aeval (ν) w
+./main_theorem.md:559:                  totalErr ρ Aeval (ν_pop) w
 ./main_theorem.md:597:&\exists \theta_0,\; \forall^{\mu_{exp}\text{-a.e.}} \omega,\; \exists M,\;
 ./main_theorem.md:599:&\quad \Bigl(\forall^{\rho\text{-a.e.}} \omega',\;
 ./main_theorem.md:601:\operatorname{totalErr}(\rho,A_{eval},\nu,w,g_{Block},\theta_0,\hat\theta,m,n,\omega') < \varepsilon\Bigr) \\
@@ -243,8 +243,8 @@
 ./Scratch.lean:101:#print ConjointSD.paper_ols_lln_of_design_ae
 ./Scratch.lean:102:#print ConjointSD.paper_ols_lln_of_score_assumptions_ae
 ./Scratch.lean:103:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
-./readable/Transport.md:8:- `attrMean`, `attrM2`, `attrVar`, `attrSD` define the mean, second moment, variance, and standard deviation of a score function under the target-population attribute [distribution](jargon_distribution.md) `ν` (see [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md)).
-./readable/Transport.md:17:- `EvalAttrLawEqPop` states the evaluation attribute law equals `ν`, providing the SRS
+./readable/Transport.md:8:- `attrMean`, `attrM2`, `attrVar`, `attrSD` define the mean, second moment, variance, and standard deviation of a score function under the target-population attribute [distribution](jargon_distribution.md) `ν_pop` (see [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md)).
+./readable/Transport.md:17:- `EvalAttrLawEqPop` states the evaluation attribute law equals `ν_pop`, providing the SRS
 ./readable/Transport.md:18:  representativeness assumption for evaluation targets.
 ./project_map.md:11:- [ConjointSD/Defs.lean](readable/Defs.md) centralizes core definitions used across the project (attribute-distribution/experimental-design moments for the target human [population](readable/jargon_population.md), [plug-in](readable/jargon_plug_in.md) scores, [OLS](readable/jargon_ols.md) helpers, and conjoint primitives).
 ./project_map.md:24:- [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean`.
@@ -255,8 +255,8 @@
 ./project_map.md:71:- [Scratch.lean](readable/Scratch.md) is a local scratch file that prints key structures/theorems for inspection; no production dependencies.
 ./readable/StatusConjointDesign.md:26:Recent changes: simplified the design output to the randomized identification bundle and
 ./ConjointSD/ApproxAssumptions.lean:8:noncomputable section
-./ConjointSD/ApproxAssumptions.lean:15:/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
-./ConjointSD/ApproxAssumptions.lean:16:def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:15:/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν_pop-a.e. -/
+./ConjointSD/ApproxAssumptions.lean:16:def ApproxInvarianceAE (ν_pop : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
 ./ConjointSD/ApproxAssumptions.lean:31:    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
 ./ConjointSD/ApproxAssumptions.lean:40:    (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
 ./ConjointSD/ApproxAssumptions.lean:53:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) (ε : ℝ) : Prop :=
@@ -274,16 +274,16 @@
 ./ConjointSD/DesignAttributeBridge.lean:70:            simp [designMeanZ, Zcomp]
 ./ConjointSD/DesignAttributeBridge.lean:72:            simp [hmap]
 ./ConjointSD/DesignAttributeBridge.lean:74:            simp [attrMean]
-./ConjointSD/TargetEquivalence.lean:4:If two score functions are equal ν-a.e., then their attribute-distribution mean/second-moment/variance/SD
+./ConjointSD/TargetEquivalence.lean:4:If two score functions are equal ν_pop-a.e., then their attribute-distribution mean/second-moment/variance/SD
 ./ConjointSD/TargetEquivalence.lean:15:noncomputable section
-./ConjointSD/TargetEquivalence.lean:24:/-- If s = t ν-a.e., then their attribute-distribution means are equal. -/
+./ConjointSD/TargetEquivalence.lean:24:/-- If s = t ν_pop-a.e., then their attribute-distribution means are equal. -/
 ./ConjointSD/TargetEquivalence.lean:29:  simpa [attrMean] using this
-./ConjointSD/TargetEquivalence.lean:31:/-- If s = t ν-a.e., then their attribute-distribution second moments are equal. -/
+./ConjointSD/TargetEquivalence.lean:31:/-- If s = t ν_pop-a.e., then their attribute-distribution second moments are equal. -/
 ./ConjointSD/TargetEquivalence.lean:37:    simp [ha]
 ./ConjointSD/TargetEquivalence.lean:40:  simpa [attrM2] using this
-./ConjointSD/TargetEquivalence.lean:42:/-- If s = t ν-a.e., then their attribute-distribution variances are equal. -/
+./ConjointSD/TargetEquivalence.lean:42:/-- If s = t ν_pop-a.e., then their attribute-distribution variances are equal. -/
 ./ConjointSD/TargetEquivalence.lean:49:  simp [attrVar, hm, hm2]
-./ConjointSD/TargetEquivalence.lean:51:/-- If s = t ν-a.e., then their attribute-distribution SDs are equal. -/
+./ConjointSD/TargetEquivalence.lean:51:/-- If s = t ν_pop-a.e., then their attribute-distribution SDs are equal. -/
 ./ConjointSD/TargetEquivalence.lean:56:  simp [attrSD, hv]
 ./scripts/runLinter.lean:13:  let _ : MonadExceptOf String IO := ⟨throw ∘ IO.userError, fun x _ => x⟩
 ./scripts/runLinter.lean:14:  liftExcept <| fromJson? <|← liftExcept <| Json.parse <|← IO.FS.readFile path
@@ -336,18 +336,18 @@
 ./paper_highlights.md:217:income. Our supermarket variable also shows meaningful effects, with Waitrose shoppers scoring an average
 ./paper_highlights.md:233:instance, the economic row shows social status scores predicted using all of the economic variables shown
 ./paper_highlights.md:250:that Britain in a class-structured society, we find that class origins are the most impactful ascribed factor in
-./readable/PaperWrappers.md:5:This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript. The wrapper statements use the standard probability/convergence bundles and target attribute moments under `ν`, with `EvalAttrLawEqPop` encoding the evaluation-to-population law equality needed for SD targets (uniform weights). Where causal scores (`gStar`, `gExp`) appear, they are tied to the experimental law `μexp`, separating experimental identification from population evaluation.
+./readable/PaperWrappers.md:5:This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript. The wrapper statements use the standard probability/convergence bundles and target attribute moments under `ν_pop`, with `EvalAttrLawEqPop` encoding the evaluation-to-population law equality needed for SD targets (uniform weights). Where causal scores (`gStar`, `gExp`) appear, they are tied to the experimental law `μexp`, separating experimental identification from population evaluation.
 ./readable/PaperWrappers.md:15:- The main end-to-end chain now assumes boundedness for the evaluation score/weights and derives the needed score-level integrability from those bounds (rather than assuming `ScoreAssumptions` directly).
 ./ConjointSD/PaperCoreEstimand.lean:15:noncomputable section
 ./ConjointSD/PaperCoreEstimand.lean:38:  classical
-./ConjointSD/PaperCoreEstimand.lean:68:    paperBlockSDs (ν := ν) blk β0 φ b = paperBlockSD (ν := ν) blk β0 φ b := rfl
-./ConjointSD/PaperCoreEstimand.lean:75:    attrSD ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
+./ConjointSD/PaperCoreEstimand.lean:68:    paperBlockSDs (ν_pop := ν_pop) blk β0 φ b = paperBlockSD (ν_pop := ν_pop) blk β0 φ b := rfl
+./ConjointSD/PaperCoreEstimand.lean:75:    attrSD ν_pop (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
 ./readable/jargon_index.md:50:- [Pushforward](jargon_pushforward.md)
-./readable/ApproxAssumptions.md:20:  under the attribute distribution `ν`.
+./readable/ApproxAssumptions.md:20:  under the attribute distribution `ν_pop`.
 ./gaps.md:11:   - Sequential results require SplitEvalAssumptions ([i.i.d.](readable/jargon_iid.md) eval sample; second-moment conditions with integrability derived under a probability measure), raw parameter convergence, and `FunctionalContinuityAssumptions`, but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).
 ./gaps.md:12:   - To fix: formalize the training/evaluation split used in the paper, show the assumptions hold for that procedure, and state rates or limits for the specific m,n regimes relevant to the data size.
 ./gaps.md:23:   - We want bounds for component SDs even when the oracle includes nonlinear/interactive structure. That requires defining components as the additive [L2](readable/jargon_l2.md) projection of the oracle onto the linear/main-effects span, with a residual capturing non-additive effects.
-./gaps.md:31:   - `AttrMomentAssumptions` currently assumes only a.e. measurability and square-integrability under the target population attribute distribution `ν`. In the paper, status scores are implicitly bounded (0–100), so square-integrability should follow from boundedness plus measurability.
+./gaps.md:31:   - `AttrMomentAssumptions` currently assumes only a.e. measurability and square-integrability under the target population attribute distribution `ν_pop`. In the paper, status scores are implicitly bounded (0–100), so square-integrability should follow from boundedness plus measurability.
 ./lake-manifest.json:54:  {"url": "https://github.com/leanprover-community/aesop",
 ./lake-manifest.json:59:   "name": "aesop",
 ./lake-manifest.json:64:  {"url": "https://github.com/leanprover-community/quote4",
@@ -355,12 +355,12 @@
 ./dependency_tables.md:2019:<img src="dependency_tables_files/ols_sd_consistency_dag.png" width="2285" />
 ./dependency_tables.md:2023:<img src="dependency_tables_files/ols_sd_block_consistency_dag.png" width="2322" />
 ./ConjointSD/EstimatedG.lean:6:We assume the attribute-distribution moments on attributes (attrMean/attrM2/attrVar/attrSD)
-./ConjointSD/EstimatedG.lean:8:attribute-distribution *mean* and *second moment* under ν when we replace oracle `g θ0`
+./ConjointSD/EstimatedG.lean:8:attribute-distribution *mean* and *second moment* under ν_pop when we replace oracle `g θ0`
 ./ConjointSD/EstimatedG.lean:18:noncomputable section
-./ConjointSD/EstimatedG.lean:29:/-- Derived: attribute-distribution variance convergence under ν for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:29:/-- Derived: attribute-distribution variance convergence under ν_pop for the plug-in score. -/
 ./ConjointSD/EstimatedG.lean:52:    simpa [pow_two] using (hmean.mul hmean)
 ./ConjointSD/EstimatedG.lean:59:  simpa [attrVar] using hvar
-./ConjointSD/EstimatedG.lean:61:/-- Derived: attribute-distribution SD convergence under ν for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:61:/-- Derived: attribute-distribution SD convergence under ν_pop for the plug-in score. -/
 ./ConjointSD/EstimatedG.lean:87:  simpa [attrSD] using (hsqrt.comp hvar)
 ./ConjointSD/Defs.lean:6:noncomputable section
 ./ConjointSD/Defs.lean:13:assumption packages. Assumption structures/props live in `ConjointSD.Assumptions`.
@@ -386,10 +386,10 @@
 ./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb
 ./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward)
 ./ConjointSD/Assumptions.lean:37:for non-target attribute laws.
-./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν`. -/
-./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
+./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
+./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
 ./ConjointSD/Assumptions.lean:42:    (s : Attr → ℝ) : Prop where
-./ConjointSD/Assumptions.lean:59:def BoundedAE (ν : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
+./ConjointSD/Assumptions.lean:59:def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
 ./ConjointSD/Assumptions.lean:67:structure EpsilonAssumptions (ε : ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:80:i.i.d.-type assumptions on the attribute-record process A under the experimental
 ./ConjointSD/Assumptions.lean:83:structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
@@ -421,7 +421,7 @@
 ./ConjointSD/Assumptions.lean:254:structure FunctionalContinuityAssumptions
 ./ConjointSD/Assumptions.lean:255:    (xiAttr : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : Prop where
 ./ConjointSD/Assumptions.lean:264:structure PlugInMomentAssumptions
-./ConjointSD/Assumptions.lean:265:    (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
+./ConjointSD/Assumptions.lean:265:    (ν_pop : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
 ./ConjointSD/Assumptions.lean:278:structure BlockFunctionalContinuityAssumptions
 ./ConjointSD/Assumptions.lean:280:    (xiAttr : Measure Attr) (gB : B → Θ → Attr → ℝ) (θ0 : Θ) : Prop where
 ./ConjointSD/Assumptions.lean:291:structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
@@ -435,16 +435,16 @@
 ./ConjointSD/Assumptions.lean:386:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:403:structure PaperOLSFullRankAssumptions
 ./ConjointSD/Assumptions.lean:405:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
-./ConjointSD/Assumptions.lean:419:Evaluation sample is an IID draw from the target population attribute law `ν`:
-./ConjointSD/Assumptions.lean:420:the evaluation attribute distribution equals `ν`.
+./ConjointSD/Assumptions.lean:419:Evaluation sample is an IID draw from the target population attribute law `ν_pop`:
+./ConjointSD/Assumptions.lean:420:the evaluation attribute distribution equals `ν_pop`.
 ./ConjointSD/Assumptions.lean:422:structure EvalAttrLawEqPop
-./ConjointSD/Assumptions.lean:425:    (ν : Measure Attr) : Prop where
+./ConjointSD/Assumptions.lean:425:    (ν_pop : Measure Attr) : Prop where
 ./ConjointSD/Assumptions.lean:430:Evaluation-weight moment matching: weighted moments of the evaluation draw
 ./ConjointSD/Assumptions.lean:433:This is a transport-style assumption that links the evaluation sample
-./ConjointSD/Assumptions.lean:434:(`A 0` under the evaluation law `ρ`) to the population distribution `ν`
+./ConjointSD/Assumptions.lean:434:(`A 0` under the evaluation law `ρ`) to the population distribution `ν_pop`
 ./ConjointSD/Assumptions.lean:435:without requiring full law equality.
 ./ConjointSD/Assumptions.lean:437:structure EvalWeightMatchesPopMoments
-./ConjointSD/Assumptions.lean:440:    (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:440:    (ν_pop : Measure Attr) (w s : Attr → ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:462:Randomization mechanism for an attribute stream `A i`.
 ./ConjointSD/Assumptions.lean:468:structure ConjointRandomizationStream
 ./ConjointSD/Assumptions.lean:469:    [MeasurableSpace Attr] (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) : Prop where
@@ -457,7 +457,7 @@
 ./ConjointSD/SequentialConsistency.lean:8:(1) For any fixed training index m, as evaluation size n → ∞,
 ./ConjointSD/SequentialConsistency.lean:27:noncomputable section
 ./ConjointSD/SequentialConsistency.lean:36:/-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/
-./ConjointSD/SequentialConsistency.lean:70:Assumes the evaluation attribute law equals the target-population law `ν`
+./ConjointSD/SequentialConsistency.lean:70:Assumes the evaluation attribute law equals the target-population law `ν_pop`
 ./ConjointSD/SequentialConsistency.lean:71:(so weights are effectively uniform for the evaluation stage).
 ./ConjointSD/SequentialConsistency.lean:110:    simpa using hBase_map
 ./ConjointSD/SequentialConsistency.lean:114:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
@@ -491,35 +491,35 @@
 ./ConjointSD/WellSpecifiedFromNoInteractions.lean:69:  classical
 ./ConjointSD/WellSpecifiedFromNoInteractions.lean:74:  calc
 ./ConjointSD/WellSpecifiedFromNoInteractions.lean:78:        simpa using (hadd x).symm
-./readable/jargon_distribution.md:6:target human population attribute distribution is denoted `ν`, while the
+./readable/jargon_distribution.md:6:target human population attribute distribution is denoted `ν_pop`, while the
 ./readable/jargon_distribution.md:7:experimental attribute pushforward is written `kappaDesign := Measure.map (A 0) μexp`
 ./readable/jargon_distribution.md:8:and the evaluation attribute pushforward is written `kappaDesign := Measure.map (A 0) ρ`.
 ./ConjointSD/EvalSamplingSRS.lean:7:noncomputable section
 ./ConjointSD/EvalSamplingSRS.lean:14:theorem evalWeightMatchesPopMoments_of_law_eq
 ./ConjointSD/EvalSamplingSRS.lean:21:  haveI : IsProbabilityMeasure (kappaDesign (κ := ρ) (A := A)) :=
 ./ConjointSD/EvalSamplingSRS.lean:24:    simpa [kappaDesign] using hLaw.map_eq
-./ConjointSD/EvalSamplingSRS.lean:25:  haveI : IsProbabilityMeasure ν := by
+./ConjointSD/EvalSamplingSRS.lean:25:  haveI : IsProbabilityMeasure ν_pop := by
 ./ConjointSD/EvalSamplingSRS.lean:26:    simpa [hkappa] using
 ./ConjointSD/EvalSamplingSRS.lean:32:  · simp [hW, attrMean, hkappa, div_eq_mul_inv, mul_comm]
 ./ConjointSD/EvalSamplingSRS.lean:33:  · simp [hW, attrM2, hkappa, div_eq_mul_inv, mul_comm]
 ./ConjointSD/PaperWrappers.lean:38:noncomputable section
 ./ConjointSD/PaperWrappers.lean:214:variable (Aeval : ℕ → Ω → Profile K V)
 ./ConjointSD/PaperWrappers.lean:223:set_option linter.style.longLine false
-./ConjointSD/PaperWrappers.lean:229:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./ConjointSD/PaperWrappers.lean:229:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
 ./ConjointSD/PaperWrappers.lean:234:          (ρ := ρ) (A := Aeval) (w := w)
-./ConjointSD/PaperWrappers.lean:276:                  totalErr ρ Aeval (ν) w
+./ConjointSD/PaperWrappers.lean:276:                  totalErr ρ Aeval (ν_pop) w
 ./ConjointSD/PaperWrappers.lean:360:      classical
 ./ConjointSD/PaperWrappers.lean:384:        simpa using congrArg (fun f => f x) hLinBlocks.symm
 ./ConjointSD/PaperWrappers.lean:385:      calc
 ./ConjointSD/PaperWrappers.lean:397:            simpa [WellSpecified] using hspec x
 ./ConjointSD/PaperWrappers.lean:400:    simpa using congrArg (fun f => f x) hBlocks
 ./ConjointSD/PaperWrappers.lean:467:    rfl
-./ConjointSD/PaperWrappers.lean:469:      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
+./ConjointSD/PaperWrappers.lean:469:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w)
 ./ConjointSD/PaperWrappers.lean:493:set_option linter.style.longLine true
 ./ConjointSD/PaperWrappers.lean:495:set_option linter.style.longLine false
-./ConjointSD/PaperWrappers.lean:501:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./ConjointSD/PaperWrappers.lean:501:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
 ./ConjointSD/PaperWrappers.lean:506:          (ρ := ρ) (A := Aeval) (w := w)
-./ConjointSD/PaperWrappers.lean:546:                totalErr ρ Aeval (ν) w
+./ConjointSD/PaperWrappers.lean:546:                totalErr ρ Aeval (ν_pop) w
 ./ConjointSD/PaperWrappers.lean:648:      classical
 ./ConjointSD/PaperWrappers.lean:672:        simpa using congrArg (fun f => f x) hLinBlocks.symm
 ./ConjointSD/PaperWrappers.lean:673:      calc
@@ -527,7 +527,7 @@
 ./ConjointSD/PaperWrappers.lean:696:      simpa using congrArg (fun f => f x) hBlocks
 ./ConjointSD/PaperWrappers.lean:697:    calc
 ./ConjointSD/PaperWrappers.lean:708:            simp [gTotalΘ, gTotal]
-./ConjointSD/PaperWrappers.lean:733:      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
+./ConjointSD/PaperWrappers.lean:733:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w)
 ./ConjointSD/PaperWrappers.lean:753:set_option linter.style.longLine true
 ./ConjointSD/SubjectSamplingLLNFromIID.lean:7:noncomputable section
 ./ConjointSD/SubjectSamplingLLNFromIID.lean:27:  classical
@@ -564,7 +564,7 @@
 ./ConjointSD/SampleSplitting.lean:130:  simpa [hEq] using hSDZ
 ./ConjointSD/ApproxModelBridge.lean:6:noncomputable section
 ./ConjointSD/ApproxModelBridge.lean:16:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
-./ConjointSD/ApproxModelBridge.lean:19:/-- Approximate well-specification on target-population attribute support (ν-a.e.). -/
+./ConjointSD/ApproxModelBridge.lean:19:/-- Approximate well-specification on target-population attribute support (ν_pop-a.e.). -/
 ./ConjointSD/ApproxModelBridge.lean:23:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
 ./ConjointSD/ApproxModelBridge.lean:42:  classical
 ./ConjointSD/ApproxModelBridge.lean:54:    simpa using congrArg (fun f => f x) hblocks
@@ -822,7 +822,7 @@
 ./ConjointSD/StatusConjointDesign.lean:70:  μResp.prod μTask
 ./ConjointSD/StatusConjointDesign.lean:72:instance {Respondent : Type u} [MeasurableSpace Respondent]
 ./ConjointSD/StatusConjointDesign.lean:75:  classical
-./ConjointSD/StatusConjointDesign.lean:80:  have hprod := Measure.prod_prod (μ := μResp) (ν := μTask) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:80:  have hprod := Measure.prod_prod (μ := μResp) (ν_pop := μTask) (Set.univ) (Set.univ)
 ./ConjointSD/StatusConjointDesign.lean:81:  calc
 ./ConjointSD/StatusConjointDesign.lean:83:        = μResp.prod μTask (Set.univ ×ˢ (Set.univ : Set TaskSlot)) := by
 ./ConjointSD/StatusConjointDesign.lean:84:          simp [μRT, Set.univ_prod_univ]
@@ -832,7 +832,7 @@
 ./ConjointSD/StatusConjointDesign.lean:95:  (μRT (μResp := μResp)).prod νStatus
 ./ConjointSD/StatusConjointDesign.lean:97:instance {Respondent : Type u} [MeasurableSpace Respondent]
 ./ConjointSD/StatusConjointDesign.lean:100:  classical
-./ConjointSD/StatusConjointDesign.lean:105:    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:105:    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) (Set.univ) (Set.univ)
 ./ConjointSD/StatusConjointDesign.lean:106:  calc
 ./ConjointSD/StatusConjointDesign.lean:108:        = (μRT (μResp := μResp)).prod νStatus
 ./ConjointSD/StatusConjointDesign.lean:110:          simp [μStatus, Set.univ_prod_univ]
@@ -851,11 +851,11 @@
 ./ConjointSD/StatusConjointDesign.lean:216:                    · simpa [statusX] using hs'
 ./ConjointSD/StatusConjointDesign.lean:218:                        simpa using hrs
 ./ConjointSD/StatusConjointDesign.lean:219:                      simpa [statusY] using this
-./ConjointSD/StatusConjointDesign.lean:222:                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:222:                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
 ./ConjointSD/StatusConjointDesign.lean:224:                simp [μexp, μStatus, μRT, hrect]
-./ConjointSD/StatusConjointDesign.lean:231:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:231:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
 ./ConjointSD/StatusConjointDesign.lean:234:                  simp [μexp, μStatus, μRT, hpreX]
-./ConjointSD/StatusConjointDesign.lean:240:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:240:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
 ./ConjointSD/StatusConjointDesign.lean:244:                  simp [μexp, μStatus, μRT, hpreY, hν]
 ./ConjointSD/StatusConjointDesign.lean:245:                simp [hXmass, hYmass, mul_comm]
 ./ConjointSD/StatusConjointDesign.lean:250:      consistency := by intro ω; rfl
@@ -942,7 +942,7 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:49:    simp [attrMean, integral_sub, hs, ht]
 ./ConjointSD/ApproxTargetEquivalence.lean:52:    simpa using
 ./ConjointSD/ApproxTargetEquivalence.lean:59:      rw [Real.holderConjugate_iff]
-./ConjointSD/ApproxTargetEquivalence.lean:73:      simpa using (memLp_const (μ := ν) (p := ENNReal.ofReal 2) (c := (1 : ℝ)))
+./ConjointSD/ApproxTargetEquivalence.lean:73:      simpa using (memLp_const (μ := ν_pop) (p := ENNReal.ofReal 2) (c := (1 : ℝ)))
 ./ConjointSD/ApproxTargetEquivalence.lean:82:      simpa using h
 ./ConjointSD/ApproxTargetEquivalence.lean:83:    simpa [Real.sqrt_eq_rpow] using h1
 ./ConjointSD/ApproxTargetEquivalence.lean:86:    exact le_trans (by simpa [hdiff] using habs) hcs
@@ -970,7 +970,7 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:173:      simp [attrSD, hvar]
 ./ConjointSD/ApproxTargetEquivalence.lean:175:      simp
 ./ConjointSD/ApproxTargetEquivalence.lean:177:end L2Centering
-./ConjointSD/ApproxTargetEquivalence.lean:190:    simpa using (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := c))
+./ConjointSD/ApproxTargetEquivalence.lean:190:    simpa using (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := c))
 ./ConjointSD/ApproxTargetEquivalence.lean:202:    simpa using h
 ./ConjointSD/ApproxTargetEquivalence.lean:220:  have hrewrite :
 ./ConjointSD/ApproxTargetEquivalence.lean:224:    simp [c, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
@@ -984,8 +984,8 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:270:          simp [Real.norm_eq_abs]
 ./ConjointSD/ApproxTargetEquivalence.lean:292:    simpa using hs_mem'
 ./ConjointSD/ApproxTargetEquivalence.lean:297:    simpa using ht_mem'
-./ConjointSD/ApproxTargetEquivalence.lean:299:    simpa using hs_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := ηs))
-./ConjointSD/ApproxTargetEquivalence.lean:301:    simpa using ht_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := ηt))
+./ConjointSD/ApproxTargetEquivalence.lean:299:    simpa using hs_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηs))
+./ConjointSD/ApproxTargetEquivalence.lean:301:    simpa using ht_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηt))
 ./ConjointSD/ApproxTargetEquivalence.lean:303:    simpa using hcenter_s.sub hcenter_t
 ./ConjointSD/ApproxTargetEquivalence.lean:311:      simpa [ηs] using hsd
 ./ConjointSD/ApproxTargetEquivalence.lean:314:    simpa [ηs] using (hsd'.trans hbridge)
@@ -1017,7 +1017,7 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:473:    simpa [hbridge'] using hL2'
 ./ConjointSD/ApproxTargetEquivalence.lean:478:      simpa [hconst] using hmean
 ./ConjointSD/ApproxTargetEquivalence.lean:479:    nlinarith [htri_centered, hnorm_st, hmean']
-./ConjointSD/ApproxTargetEquivalence.lean:487:    simpa using (abs_integral_le_integral_abs (f := s) (μ := ν))
+./ConjointSD/ApproxTargetEquivalence.lean:487:    simpa using (abs_integral_le_integral_abs (f := s) (μ := ν_pop))
 ./ConjointSD/ApproxTargetEquivalence.lean:493:    simp
 ./ConjointSD/ApproxTargetEquivalence.lean:494:  simpa [attrMean, hconst] using (le_trans h1 h2)
 ./ConjointSD/ApproxTargetEquivalence.lean:506:    simp [attrMean, integral_sub, hs, ht]
@@ -1049,11 +1049,11 @@
 ./ConjointSD/ApproxTargetEquivalence.lean:627:      simp
 ./ConjointSD/ApproxTargetEquivalence.lean:628:    simpa [hconst] using hle
 ./ConjointSD/ApproxTargetEquivalence.lean:629:  simpa [h1] using (le_trans h2 h3)
-./ConjointSD/ApproxTargetEquivalence.lean:655:      simpa using (abs_add_le (attrMean ν s) (attrMean ν t))
+./ConjointSD/ApproxTargetEquivalence.lean:655:      simpa using (abs_add_le (attrMean ν_pop s) (attrMean ν_pop t))
 ./ConjointSD/ApproxTargetEquivalence.lean:661:      ring
 ./ConjointSD/ApproxTargetEquivalence.lean:667:      simp [hfact, abs_mul]
 ./ConjointSD/ApproxTargetEquivalence.lean:668:    calc
-./ConjointSD/ApproxTargetEquivalence.lean:676:              have hsum_le : |attrMean ν s| + |attrMean ν t| ≤ C + C := by nlinarith
+./ConjointSD/ApproxTargetEquivalence.lean:676:              have hsum_le : |attrMean ν_pop s| + |attrMean ν_pop t| ≤ C + C := by nlinarith
 ./ConjointSD/ApproxTargetEquivalence.lean:678:      _   = 2 * C * ε := by ring
 ./ConjointSD/ApproxTargetEquivalence.lean:688:    simp [attrVar, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
 ./ConjointSD/ApproxTargetEquivalence.lean:696:    simpa [hvar, sub_eq_add_neg, abs_neg, abs_sub_comm,

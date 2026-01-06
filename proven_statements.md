@@ -63,7 +63,7 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop`, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
+Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop`, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν_pop`.
 
 Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; subject sampling links the experiment to the population-mean score, and LLNs yield sequential consistency for each block score.
 
@@ -81,8 +81,8 @@ moment [convergence](readable/jargon_convergence.md), the two-stage
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size), targeting the attribute-law SD under `ν` with
-`EvalAttrLawEqPop` tying the evaluation attribute law to `ν`.
+size then evaluation size), targeting the attribute-law SD under `ν_pop` with
+`EvalAttrLawEqPop` tying the evaluation attribute law to `ν_pop`.
 
 Intuition: First the fitted score stabilizes, then the evaluation
 [standard deviation](readable/jargon_standard_deviation.md) converges to the
@@ -139,7 +139,7 @@ under the target [distribution](readable/jargon_distribution.md) for the
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν`.
+size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν_pop`.
 
 Intuition: [parameter](readable/jargon_parameter.md)
 [convergence](readable/jargon_convergence.md) plus
@@ -151,13 +151,13 @@ moment convergence, which then feeds the sequential
 Formalization (Lean name): `paper sd total sequential consistency ae`
 
 Formalization (math):
-`totalErr μ A ν w (gTotalΘ gB) θ0 θhat m n -> 0` sequentially in `m,n`.
+`totalErr μ A ν_pop w (gTotalΘ gB) θ0 θhat m n -> 0` sequentially in `m,n`.
 
 ## paper sd total sequential consistency to true target ae (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Adds a ν-a.e. target equality so the total score target can be
+Statement: Adds a ν_pop-a.e. target equality so the total score target can be
 replaced by a declared true target `gTrue`, and then states the target
 [standard deviation](readable/jargon_standard_deviation.md).
 
@@ -171,7 +171,7 @@ Formalization (Lean name): `paper sd total sequential consistency to true target
 
 Formalization (math):
 Sequential consistency for `gTotalΘ gB`, plus
-`attrSD ν (gTotalΘ gB θ0) = attrSD ν gTrue`.
+`attrSD ν_pop (gTotalΘ gB θ0) = attrSD ν_pop gTrue`.
 
 ## attrSD diff le of L2Approx (TargetEquivalence)
 
@@ -188,7 +188,7 @@ Intuition: [L2](readable/jargon_l2.md) closeness bounds
 Formalization (Lean name): `attrSD diff le of L2Approx`
 
 Formalization (math):
-If `E[|s - t|^2] ≤ δ^2`, then `|attrSD ν s - attrSD ν t| ≤ 2 * δ`.
+If `E[|s - t|^2] ≤ δ^2`, then `|attrSD ν_pop s - attrSD ν_pop t| ≤ 2 * δ`.
 
 ## paper identifies potMean from condMean status (PaperWrappers)
 
@@ -271,7 +271,7 @@ target [distribution](readable/jargon_distribution.md).
 Formalization (Lean name): `paper sd blocks sequential consistency to true target ae`
 
 Formalization (math):
-`attrSD ν (gBlock ...) = attrSD ν gTrueB` for each block.
+`attrSD ν_pop (gBlock ...) = attrSD ν_pop gTrueB` for each block.
 
 ## paper sd blocks sequential consistency to approx target ae (ApproxPaperWrappers)
 
@@ -288,7 +288,7 @@ Intuition: [L2](readable/jargon_l2.md) approximation bounds
 Formalization (Lean name): `paper sd blocks sequential consistency to approx target ae`
 
 Formalization (math):
-`|attrSD ν s - attrSD ν t| ≤ bound` for each block.
+`|attrSD ν_pop s - attrSD ν_pop t| ≤ bound` for each block.
 
 ## paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE (ApproxPaperWrappers)
 
@@ -296,7 +296,7 @@ File: `ConjointSD/ApproxPaperWrappers.lean`
 
 Statement: If the model is approximately
 [well-specified](readable/jargon_well_specified.md)
-ν-[almost everywhere](readable/jargon_almost_everywhere.md), the total
+ν_pop-[almost everywhere](readable/jargon_almost_everywhere.md), the total
 [standard deviation](readable/jargon_standard_deviation.md) target is within an
 explicit bound of the `gStar` target.
 
@@ -307,7 +307,7 @@ error bounds.
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxWellSpecifiedAE`
 
 Formalization (math):
-`|attrSD ν gTotal - attrSD ν gStar(μexp)| ≤ bound`.
+`|attrSD ν_pop gTotal - attrSD ν_pop gStar(μexp)| ≤ bound`.
 
 ## paper sd total sequential consistency to gStar approx ae of ApproxOracleAE (ApproxPaperWrappers)
 
@@ -324,14 +324,14 @@ Intuition: Two approximation errors add to a
 Formalization (Lean name): `paper sd total sequential consistency to gStar approx ae of ApproxOracleAE`
 
 Formalization (math):
-`|attrSD ν gTotal - attrSD ν gStar(μexp)| ≤ bound`.
+`|attrSD ν_pop gTotal - attrSD ν_pop gStar(μexp)| ≤ bound`.
 
 ## paper ols normal eq of wellSpecified (PaperOLSConsistency)
 
 File: `ConjointSD/PaperOLSConsistency.lean`
 
 Statement: If `gStar` is [well-specified](readable/jargon_well_specified.md) by the paper’s feature map and the features are bounded/measurable, the paper’s population normal equations hold for `θ0`:
-`(attrGram ν φPaper).mulVec θ0 = attrCross ν gStar φPaper`.
+`(attrGram ν_pop φPaper).mulVec θ0 = attrCross ν_pop gStar φPaper`.
 
 Intuition: well‑specification turns the cross‑moment into a linear combination of
 feature cross‑moments, so the Gram matrix multiplies `θ0` to match the
@@ -367,8 +367,8 @@ File: `ConjointSD/PaperWrappers.lean`
 Statement: Under randomized assignment, the paper OLS design assumptions,
 full main-effects terms, and no-interactions, there exists a coefficient
 vector `theta0` such that the plug‑in SD for the total score
-converges and equals the cross‑draw population SD `popCrossSD μpop ν gP`,
-using the respondent-sampling LLN bridge plus the cross‑SD target equality.
+converges and equals the population‑mean score SD `attrSD ν_pop (gPop μpop gP)`,
+using the respondent-sampling LLN bridge.
 
 Intuition: randomization and OLS assumptions identify the additive
 status‑assigning rule in the experiment; respondent sampling links the
@@ -379,8 +379,8 @@ Formalization (Lean name):
 `paper sd total sequential consistency to true target ae of paper ols design ae of NoInteractions of randomization`
 
 Formalization (math):
-Sequential consistency of `attrSD ν (gTotalΘ θ0)` plus the respondent-sampling
-LLN bridge yields `attrSD ν (gTotalΘ θ0) = popCrossSD μpop ν gP` a.e.
+Sequential consistency of `attrSD ν_pop (gTotalΘ θ0)` plus the respondent-sampling
+LLN bridge yields `attrSD ν_pop (gTotalΘ θ0) = attrSD ν_pop (gPop μpop gP)` a.e.
 
 ## Dependency tables
 
