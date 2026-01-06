@@ -22,7 +22,6 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Population targets and transport
 
 - [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean`.
-- [ConjointSD/EvalSamplingSRS.lean](readable/EvalSamplingSRS.md) derives the weighted-moment assumption from an SRS evaluation law and uniform weights.
 - [ConjointSD/SubjectSamplingLLNFromIID.lean](readable/SubjectSamplingLLNFromIID.md) derives the subject-sampling LLN to `gPop` from IID subject sampling and score regularity, and builds `SubjectSamplingLLN` using the assumed `SubjectSamplingLLNStar`.
 - [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under the pushforward attribute law `kappaDesign := Measure.map (A 0) μ` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
 - [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); uses `Transport`.
@@ -59,7 +58,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Paper-facing wrappers and estimands
 
-- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), exact target-equivalence wrappers, weighted-target transfer lemmas, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; now also depends on `SampleSplitting` to derive evaluation IID from randomization; central hub for exported statements.
+- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), exact target-equivalence wrappers, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; now also depends on `SampleSplitting` to derive evaluation IID from randomization; central hub for exported statements.
 - [ConjointSD/ApproxPaperWrappers.lean](readable/ApproxPaperWrappers.md) hosts approximate/misspecified variants of the paper-facing SD wrappers (approximate targets, ApproxWellSpecifiedAE, and oracle bounds).
 - [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core [estimands](readable/jargon_estimand.md) ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
 

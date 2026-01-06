@@ -20,8 +20,6 @@ variable {B : Type*} [Fintype B]
 variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
 variable (A : ℕ → Ω → Attr)
 variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
-variable (w : Attr → ℝ)
-variable (w : Attr → ℝ)
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
@@ -34,9 +32,8 @@ Blocks: sequential consistency + ν-a.e. ε-approximation yields convergence wit
 -/
 theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitBounded : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+      SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hPlug : ∀ b : B,
       PlugInMomentAssumptions (ν := ν)
@@ -67,14 +64,14 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
         ∀ b : B,
           (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A (ν) w
+              totalErr ρ A (ν)
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
           |attrSD (ν) (gBlock (gB := gB) b θ0)
               - attrSD (ν) (gTrueB b)|
             ≤ Real.sqrt (4 * C * δ) := by
   rcases paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
+      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitBounded := hSplitBounded) (hPlug := hPlug)
       (ε := ε) (hε := hε)
@@ -98,10 +95,9 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
 an SD bound. -/
 theorem paper_sd_total_sequential_consistency_to_approx_target_ae
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitTotalBounded :
       ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hPlugTotal :
       PlugInMomentAssumptions (ν := ν)
@@ -124,14 +120,14 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
+            totalErr ρ A (ν)
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
         |attrSD (ν) (gTotalΘ (gB := gB) θ0)
             - attrSD (ν) gTrue|
           ≤ Real.sqrt (4 * C * δ) := by
   rcases paper_sd_total_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
+      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
@@ -164,7 +160,6 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
     {Term : Type*} [Fintype Term] [DecidableEq B]
     (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (Y : Attr → Ω → ℝ)
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
     (hTotalModel :
@@ -176,7 +171,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
       ApproxWellSpecifiedAE (ν := ν) (μexp := μexp) (Y := Y) (β := β) (φ := φ) δ)
     (hSplitTotalBounded :
       ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hPlugTotal :
       PlugInMomentAssumptions (ν := ν)
@@ -198,7 +193,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
+            totalErr ρ A (ν)
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
         |attrSD (ν) (gTotalΘ (gB := gB) θ0)
@@ -223,7 +218,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
     simpa [abs_sub_comm, hTotalModel x] using hx
   rcases
     paper_sd_total_sequential_consistency_to_approx_target_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
+      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (gTrue := gStar (μexp := μexp) (Y := Y))
@@ -244,7 +239,6 @@ approximates the oracle. The SD target error is bounded by the combined approxim
 theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
     (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (Y : Attr → Ω → ℝ)
     (gFlex : Attr → ℝ)
     (δModel δOracle : ℝ)
@@ -254,7 +248,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
         δModel δOracle)
     (hSplitTotalBounded :
       ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hPlugTotal :
       PlugInMomentAssumptions (ν := ν)
@@ -277,7 +271,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
+            totalErr ρ A (ν)
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
         |attrSD (ν) (gTotalΘ (gB := gB) θ0)
@@ -299,7 +293,7 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
   have hδ : 0 ≤ δModel + δOracle := add_nonneg hδModel hδOracle
   rcases
     paper_sd_total_sequential_consistency_to_approx_target_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
+      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (gTrue := gStar (μexp := μexp) (Y := Y))

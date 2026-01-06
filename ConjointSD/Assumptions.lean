@@ -129,20 +129,14 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
 
 /--
-Weighted-evaluation assumptions under boundedness, for a fixed training index `m`.
-These let us derive score-level integrability assumptions for `gHat`, `w`, and
-their weighted combinations.
+Evaluation assumptions under boundedness, for a fixed training index `m`.
 -/
-structure SplitEvalWeightAssumptionsBounded
+structure SplitEvalAssumptionsBounded
     (ρ : Measure Ω) (A : ℕ → Ω → Attr)
-    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
+    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ) (m : ℕ) : Prop where
   hIID : EvalAttrIID (κ := ρ) A
   hMeasG : Measurable (gHat g θhat m)
   hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
-  hMeasW : Measurable w
-  hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C
-  hW0 : designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
 
 end SampleSplitting
 
@@ -197,6 +191,16 @@ structure SubjectSamplingLLNStar
           (fun n => gHatSubject (R := R) (gP := gP) n x ω)
           atTop
           (nhds (gStar (μexp := μexp) (Y := Y) x))
+
+/--
+Cross-population SD target equality: the product-draw SD of person-level scores
+matches the SD of the population-mean score.
+-/
+structure PopCrossSDTargetEq
+    (μpop : Measure Person) (ν : Measure Attr) (gP : Person → Attr → ℝ) : Prop where
+  cross_eq :
+    popCrossSD (μpop := μpop) (ν := ν) (gP := gP)
+      = attrSD ν (gPop (μpop := μpop) gP)
 
 theorem subject_lln_pointwise_eq
     {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
@@ -416,7 +420,7 @@ structure PaperOLSFullRankAssumptions
 
 end PaperOLSDesign
 
-section SurveyWeights
+section EvaluationSampling
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
@@ -431,31 +435,7 @@ structure EvalAttrLawEqPop
   measA0 : Measurable (A 0)
   map_eq : Measure.map (A 0) ρ = ν
 
-/--
-Evaluation-weight moment matching: weighted moments of the evaluation draw
-match target human population moments under `ν`.
-
-This is a transport-style assumption that links the evaluation sample
-(`A 0` under the evaluation law `ρ`) to the population distribution `ν`
-without requiring full law equality.
--/
-structure EvalWeightMatchesPopMoments
-    {Ω : Type*} [MeasurableSpace Ω]
-    (ρ : Measure Ω) (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
-  measA0 : Measurable (A 0)
-  mean_eq :
-    (∫ a, w a * s a ∂kappaDesign (κ := ρ) (A := A)) /
-      (∫ a, w a ∂kappaDesign (κ := ρ) (A := A))
-      =
-    attrMean ν s
-  m2_eq :
-    (∫ a, w a * (s a) ^ 2 ∂kappaDesign (κ := ρ) (A := A)) /
-      (∫ a, w a ∂kappaDesign (κ := ρ) (A := A))
-      =
-    attrM2 ν s
-
-end SurveyWeights
+end EvaluationSampling
 
 section ConjointIdentification
 

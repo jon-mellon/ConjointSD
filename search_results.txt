@@ -1,0 +1,1062 @@
+./proven_statements.md:18:Intuition: Differences on a `nu`-null set do not change moments under the target
+./proven_statements.md:66:Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score/weights are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop` (uniform weights), and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
+./proven_statements.md:79:Statement: With evaluation-sample representativeness and [plug-in](readable/jargon_plug_in.md)
+./proven_statements.md:84:size then evaluation size), targeting the attribute-law SD under `ν` with
+./proven_statements.md:85:`EvalAttrLawEqPop` tying the evaluation attribute law to `ν`.
+./proven_statements.md:87:Intuition: First the fitted score stabilizes, then the evaluation
+./proven_statements.md:138:[continuous](readable/jargon_continuity.md) at `θ0`, then the evaluation
+./proven_statements.md:142:size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν` (uniform weights).
+./proven_statements.md:355:Intuition: bounded/measurable features and a design‑IID attribute stream give the
+./proven_statements.md:375:experimental estimand to the population-mean score, so the evaluation SD
+./AGENTS.md:3:Always follow these project rules when making changes:
+./AGENTS.md:24:No sorry, trivial, or other fudges. No compromising on the analytic goals for convenience.
+./AGENTS.md:32:When you change Lean sources, update the corresponding documentation:
+./AGENTS.md:36:- `readable/*.md`: update the readable summary for any `.lean` file you modify (e.g., `ConjointSD/PredictedSD.lean` -> `readable/PredictedSD.md`). You may not need to change the file if your change does not make meaningful changes to functionality or mathematical content (e.g. if you're just fixing linter errors). It is fine to skip updating a file if you have nothing meaningful to say
+./AGENTS.md:37:- `proven_statements.md`: update if you add new theorems or change the statement/meaning of existing theorems.
+./AGENTS.md:38:- `Scratch.lean`: keep the printed theorem list up to date when the set of key theorems changes.
+./AGENTS.md:40:- `gaps.md`: update if your changes add/close proof gaps or alter the state of assumptions called out there.
+./AGENTS.md:41:- `README.md`: update if build instructions or repo layout change.
+./readable/jargon_profile.md:5:A profile is a full description of an individual or item in the conjoint study. It assigns a value to each attribute.
+./readable/SequentialConsistency.md:5:This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν` (uniform weights). The evaluation assumptions are now boundedness-based (`SplitEvalAssumptionsBounded`), which then derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
+./readable/SequentialConsistency.md:9:- `sdEst`: the evaluation-stage [standard deviation](jargon_standard_deviation.md) [estimator](jargon_estimator.md) using a fixed training index `m`, evaluation size `n`, and a weight function `w`.
+./readable/SequentialConsistency.md:12:- `totalErr`: the gap between the evaluation estimator (uniform weights) and the oracle [standard deviation](jargon_standard_deviation.md).
+./readable/SequentialConsistency.md:17:3) Combine the two to show: for any epsilon, there is an `M` so that for all `m >= M`, the evaluation error becomes less than epsilon for large enough `n` ([almost everywhere](jargon_almost_everywhere.md)).
+./readable/jargon_weighting.md:5:Weighting means using a weight function to adjust evaluation-sample averages so they match
+./readable/jargon_l2.md:5:over the attribute distribution for the target human population.
+./readable/jargon_population.md:10:we call the *attribute distribution* (often denoted `ν`). Sample quantities are
+./readable/jargon_sequential_consistency.md:5:Sequential [consistency](jargon_consistency.md) here means a two-step limit: first let the evaluation sample size grow (n), then let the training index grow (m). The error gets small for large n after m is large enough.
+./readable/jargon_population_support.md:4:probability under the attribute [distribution](jargon_distribution.md) for the
+./readable/Defs.md:13:  `attrMean`, `attrM2`, `attrVar`, `attrSD` (all parameterized by a generic attribute
+./readable/Defs.md:23:- Experiment-subject population transport definitions: `gPop` (population-mean scoring function)
+./readable/DecompositionSequentialConsistency.md:5:This file lifts the [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md) results to a [block](jargon_block.md) decomposition and to the total score. It uses the standard probability/convergence bundles and evaluates targets under the target attribute distribution `ν`, with `EvalAttrLawEqPop` providing the evaluation-to-population law equality needed for the SD targets (uniform weights).
+./readable/jargon_pushforward.md:1:# Pushforward
+./readable/jargon_pushforward.md:5:The pushforward of a measure by a measurable function is the induced distribution of the function’s output. If `A 0` is a random draw under `μexp` (experiment) or `ρ` (evaluation), then `Measure.map (A 0) μexp` or `Measure.map (A 0) ρ` is the pushforward law of attributes.
+./readable/RegressionEstimator.md:16:- `attrGram` and `attrCross` define the Gram and cross moments under a generic attribute distribution `xiAttr` (use `kappaDesign` in the first-stage OLS setting).
+./readable/PaperOLSConsistency.md:5:This file specializes the regression [consistency](jargon_consistency.md) machinery to the paper's OLS [estimator](jargon_estimator.md) and [term](jargon_term.md) set. It uses bundled `ProbMeasureAssumptions` where probability assumptions are required, and the LLN statements target the experimental pushforward attribute law `kappaDesign := Measure.map (A 0) μexp` (the experiment data used to fit the model). In the code, this distribution is denoted `xiAttr`; the target population distribution `ν` is not used in this first-stage OLS file.
+./readable/PaperOLSConsistency.md:11:- The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets under `xiAttr`. In the core‑idea flow, those targets are the design pushforward law `kappaDesign`, with population transport handled separately.
+./readable/PaperOLSConsistency.md:14:  - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the design pushforward law `kappaDesign`.
+./readable/PaperOLSConsistency.md:28:- `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the normal equations (derived from well‑specification when needed) under the attribute distribution in use.
+./readable/SDDecompositionFromConjoint.md:5:This file connects a sequence of attribute draws to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) results for any score function, and then extends that to a family of [block](jargon_block.md) scores. It now uses `ProbMeasureAssumptions` instead of standalone probability-measure hypotheses.
+./readable/SDDecompositionFromConjoint.md:8:- `DesignAttrIID` packages IID assumptions for the attribute process `A` (see [iid](jargon_iid.md)).
+./readable/SDDecompositionFromConjoint.md:9:- `Zcomp` composes attributes with a score function: `Z i = g (A i)`.
+./readable/SDDecompositionFromConjoint.md:19:This file is the [bridge](jargon_bridge.md) from design-based attribute IID to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) for scores and blocks.
+./readable/WellSpecifiedFromNoInteractions.md:8:- A [profile](jargon_profile.md) is a full list of attribute values.
+./readable/WellSpecifiedFromNoInteractions.md:10:  constant + sum of one-at-a-time effects, with no cross-[terms](jargon_term.md).
+./readable/WellSpecifiedFromNoInteractions.md:13:- `NoInteractions` says there exist a constant and main-effect functions giving the exact additive form of the causal score `gStar`.
+./readable/WellSpecifiedFromNoInteractions.md:16:- A [term](jargon_term.md) set `Term := Option K` is used: `none` is the intercept term and `some k` is the main effect for attribute `k`.
+./readable/PaperCoreEstimand.md:5:This file defines the paper's core [standard deviation](jargon_standard_deviation.md) targets and links them to the main [estimator](jargon_estimator.md). The consistency wrappers target the attribute distribution `ν` and use `EvalAttrLawEqPop` to relate evaluation draws under the evaluation law `ρ` to the target population law (uniform weights). Causal scores (`gStar`) are tied to the experimental law `μexp`, matching the paper’s “fit on experiment, evaluate on population” pipeline.
+./readable/PaperCoreEstimand.md:9:- `paperBlockSD` and `paperTotalSD` are the target human [population](jargon_population.md) [standard deviation](jargon_standard_deviation.md) targets for those scores (under the attribute distribution).
+./readable/EvalSamplingSRS.md:5:This file derives the weighted-moment assumption used by the evaluation SD machinery
+./readable/EvalSamplingSRS.md:6:from a simple random sample (SRS) evaluation law and uniform weights.
+./readable/EvalSamplingSRS.md:9:- `evalWeightMatchesPopMoments_of_law_eq`: if the evaluation attribute law equals `ν`
+./readable/EvalSamplingSRS.md:10:  and weights are constant 1, then the weighted moment match holds for any score `s`.
+./readable/jargon_interaction.md:5:An interaction [term](jargon_term.md) captures how the effect of one attribute depends on another attribute. It goes beyond simple additivity of main effects.
+./readable/jargon_amce.md:3:AMCE is the average effect of changing one attribute level while holding the
+./readable/jargon_amce.md:4:distribution of other attributes fixed, typically under randomized conjoint
+./readable/jargon_amce.md:5:designs. It is a causal estimand for attribute effects.
+./core_idea.md:3:This project’s core idea is a simple two-stage argument about identifying and
+./core_idea.md:7:- A randomized conjoint experiment assigns independent attribute bundles and
+./core_idea.md:14:- The model is well specified: all relevant attributes are included and there
+./core_idea.md:19:- A separate evaluation sample is reweighted to match the target
+./core_idea.md:21:  [distribution](readable/jargon_distribution.md) of attributes.
+./core_idea.md:31:to the true dispersion including for subcomponents that can be decomposed from the additive status scoring function.
+./readable/jargon_boundedness.md:5:A function is bounded if there exists a constant `C` such that its absolute value is always at most `C`. Boundedness guarantees finite moments and avoids explosive tails.
+./readable/SubjectSamplingLLNFromIID.md:6:score regularity, and then packages the full LLN structure used in the main transport step.
+./plot_proof_structure.R:3:# install.packages(c("fs", "stringr", "dplyr", "purrr", "tidyr", "DiagrammeR",
+./plot_proof_structure.R:7:library(stringr)
+./plot_proof_structure.R:19:output_png <- path(project_root, "readable", "lean_import_dag.png")
+./readable/DeriveGEstimationAssumptions.md:9:- Assumes the attribute-distribution [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) (under `xiAttr`) as functions of the [parameter](jargon_parameter.md) are [continuous](jargon_continuity.md) at `theta0`.
+./readable/RegressionConsistencyBridge.md:8:- `attrMeanΘ` and `attrM2Θ` treat the attribute-distribution [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) (under `xiAttr`) as functions of the [parameter](jargon_parameter.md).
+./readable/jargon_integral.md:5:An integral is a weighted [average](jargon_mean.md) of a function under a [distribution](jargon_distribution.md). In this project, integrals are used to define target human [population](jargon_population.md) averages under the attribute distribution, like the [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), and [standard deviation](jargon_standard_deviation.md).
+./readable/SampleSplitting.md:5:This file handles the evaluation stage in a sample-splitting setup. It uses `ProbMeasureAssumptions` for the target attribute distribution `ν` and assumes `EvalAttrLawEqPop` so the evaluation draw `A 0` under the evaluation law `ρ` has the target attribute law `ν` (weights are uniform). The training data that produced `θhat` is not modeled here.
+./readable/SampleSplitting.md:8:- `SplitEvalAssumptionsBounded` bundles the evaluation-stage assumptions needed to
+./readable/SampleSplitting.md:11:  evaluation draws, boundedness and measurability for `w` and `gHat`, plus a nonzero weight
+./readable/SampleSplitting.md:14:- `sdHat_fixed_m_tendsto_ae_attrSD` says: for fixed `m`, the evaluation-stage
+./readable/SampleSplitting.md:18:  of the [plug-in](jargon_plug_in.md) score, using boundedness-based evaluation assumptions
+./readable/TargetEquivalence.md:9:- If two score functions are equal almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)), then their target human [population](jargon_population.md) [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), and [standard deviation](jargon_standard_deviation.md) (under the attribute distribution) are equal.
+./readable/TargetEquivalence.md:14:The main idea: if two scores are the same on the attribute-distribution support, then their target human population dispersion targets are the same.
+./readable/TargetEquivalence.md:16:Recent changes: moved approximate bounds to `ConjointSD/ApproxTargetEquivalence.lean`.
+./readable/DesignAttributeBridge.md:5:This file connects averages computed under the experimental design distribution to averages computed under the attribute [distribution](jargon_distribution.md) induced by the pushforward law `kappaDesign := Measure.map (A 0) μexp`. The bridge assumes measurability of `A 0` and uses change-of-variables formulas for the map.
+./readable/DesignAttributeBridge.md:8:- `A 0` is a random attribute draw on the experimental design distribution, with attribute distribution `kappaDesign` (see [distribution](jargon_distribution.md)).
+./readable/DesignAttributeBridge.md:9:- `g` is a score function on attributes.
+./readable/DesignAttributeBridge.md:13:- The experimental-design [mean](jargon_mean.md) of `g(A 0)` under the sample space equals the mean of `g` under the pushforward attribute distribution `kappaDesign`.
+./readable/DesignAttributeBridge.md:17:- They use a change-of-variables formula for [integrals](jargon_integral.md), so [measurability](jargon_measurable.md) conditions are checked (see [measurable](jargon_measurable.md)).
+./readable/DesignAttributeBridge.md:21:targets under the pushforward attribute distribution `kappaDesign`.
+./readable/Assumptions.md:13:not the classical Gauss–Markov/BLUE conditions.
+./readable/Assumptions.md:17:Recent changes: [probability-measure](jargon_probability_measure.md) requirements were pushed into the moment bundles, and first-moment integrability is now derived from square-integrability where applicable.
+./readable/Assumptions.md:22:- `ν` is reserved for the target attribute [distribution](jargon_distribution.md) of the target human
+./readable/Assumptions.md:23:  [population](jargon_population.md). Non-target attribute laws must be written as `xiAttr` (generic)
+./readable/Assumptions.md:24:  or `kappaDesign` (design/evaluation pushforward).
+./readable/Assumptions.md:25:- `xiAttr` is a generic attribute distribution used in continuity/moment lemmas; in the
+./readable/Assumptions.md:28:- `kappaDesign := Measure.map (A 0) μexp` is the [pushforward](jargon_pushforward.md) attribute law for
+./readable/Assumptions.md:30:- `kappaDesign := Measure.map (A 0) ρ` is the pushforward attribute law for
+./readable/Assumptions.md:31:  the evaluation sample used in transport.
+./readable/Assumptions.md:33:- `ρ` is the evaluation-sample law used in the SD/transport stage (the sample you reweight).
+./readable/Assumptions.md:38:## Structural assumptions (by model choice)
+./readable/Assumptions.md:43:  sidesteps any task-indexing or within-subject carryover structure. (Hainmueller Assumption 1, by omission)
+./readable/Assumptions.md:44:  Intuition: the model abstracts away repeated choices by treating each profile as a fresh draw.
+./readable/Assumptions.md:45:  Formal: not represented as a Lean predicate; this is a modeling choice in the definition of the data structure.
+./readable/Assumptions.md:50:- No attribute-order effects within a profile: profiles are abstract objects, so any ordering
+./readable/Assumptions.md:51:  of attributes inside a profile is not represented. (Hainmueller footnote: attribute-order invariance)
+./readable/Assumptions.md:52:  Intuition: attribute order is irrelevant because profiles are unordered records.
+./readable/Assumptions.md:53:  Formal: not represented as a Lean predicate; profiles are modeled without ordered attribute positions.
+./readable/Assumptions.md:58:  a score function `s` under the attribute distribution `ν` on `Attr`
+./readable/Assumptions.md:59:  (the attribute distribution representing the target human
+./readable/Assumptions.md:71:  - `AttrMomentAssumptions.int2`: `s^2` is integrable under the attribute
+./readable/Assumptions.md:72:    distribution `ν` (the target population attribute distribution). This
+./readable/Assumptions.md:77:- `EvalAttrLawEqPop`: evaluation attributes are sampled IID from the target population law `ν`.
+./readable/Assumptions.md:78:  It states the evaluation attribute law equals `ν` (so weights are effectively constant 1).
+./readable/Assumptions.md:81:  Intuition: the evaluation sample is a simple random sample from the population.
+./readable/Assumptions.md:83:  This remains available for weighted evaluations, but the main theorem chain now
+./readable/Assumptions.md:88:  - `SubjectSamplingIID.indepR`: subject draws are pairwise independent under `μexp`.
+./readable/Assumptions.md:100:- `SubjectSamplingLLN`: bundles both LLN statements (`gStar` and `gPop`) in one structure.
+./readable/Assumptions.md:121:  - `EpsilonAssumptions.pos`: positivity of the tolerance/approximation scale.
+./readable/Assumptions.md:136:- `DesignAttrIID`: [i.i.d.](jargon_iid.md)-style conditions for the attribute draw process `A`
+./readable/Assumptions.md:138:  pairwise [independence](jargon_independent.md) across draws, and
+./readable/Assumptions.md:140:  Intuition: the attribute profiles are sampled in a stable, independent way
+./readable/Assumptions.md:143:    Pairwise (fun i j => IndepFun (A i) (A j) μexp) ∧
+./readable/Assumptions.md:146:  for an evaluation attribute stream under the evaluation law `ρ`. This is
+./readable/Assumptions.md:149:  evaluation sampling can be assumed independently of design randomization.
+./readable/Assumptions.md:154:  properties of the attribute stream are now tracked separately in
+./readable/Assumptions.md:155:  `DesignAttrIID` (design) or `EvalAttrIID` (evaluation), and are typically
+./readable/Assumptions.md:162:    well-defined observable function of attributes. Formal: `Measurable g`.
+./readable/Assumptions.md:169:- `SplitEvalAssumptionsBounded`: boundedness-based evaluation assumptions (weights are uniform in the SRS story).
+./readable/Assumptions.md:172:  - `SplitEvalAssumptionsBounded.hIID`: i.i.d. assumptions for the evaluation draws.
+./readable/Assumptions.md:182:  of the attribute-distribution [mean](jargon_mean.md) and
+./readable/Assumptions.md:190:    Intuition: small parameter perturbations do not change the mean much.
+./readable/Assumptions.md:193:    Intuition: the scale of the score changes smoothly with parameters.
+./readable/Assumptions.md:195:- `PlugInMomentAssumptions`: direct plug-in convergence of the attribute-distribution
+./readable/Assumptions.md:203:  continuity, requiring the above assumptions for each block score under the
+./readable/Assumptions.md:204:  attribute distribution `xiAttr`.
+./readable/Assumptions.md:207:    Intuition: every block mean/second moment is stable under small parameter changes.
+./readable/Assumptions.md:224:    Social‑science intuition: if attributes are independently randomized and feature
+./readable/Assumptions.md:235:    error is correlated with certain attributes, or when the design makes some
+./readable/Assumptions.md:254:    Social‑science intuition: with stable measurement and randomized attributes,
+./readable/Assumptions.md:267:- `OLSMomentAssumptionsOfAttr`: the attribute‑distribution version of the above,
+./readable/Assumptions.md:268:  with the limits pinned to the Gram and cross moments under a chosen attribute
+./readable/Assumptions.md:273:  only at the transport stage via evaluation weights.
+./readable/Assumptions.md:276:    attribute‑distribution Gram, giving the stable
+./readable/Assumptions.md:282:    converges to the cross moment under the chosen attribute distribution `xiAttr`, so the
+./readable/Assumptions.md:322:    Intuition: the coded attributes/features are clearly defined and consistently
+./readable/Assumptions.md:327:    Intuition: features cannot take implausibly large values; the design keeps attribute
+./readable/Assumptions.md:338:    instance specialized to the paper feature map `φPaper`, ensuring the
+./readable/Assumptions.md:348:  [Gram matrix](jargon_gram_matrix.md) of the paper feature map under the chosen attribute distribution
+./readable/Assumptions.md:359:- `EvalAttrLawEqPop`: evaluation attribute law equals the target population law `ν`.
+./readable/Assumptions.md:362:    Intuition: the evaluation draw is a well-defined random variable.
+./readable/Assumptions.md:364:  - `EvalAttrLawEqPop.map_eq`: the evaluation attribute law equals `ν`.
+./readable/Assumptions.md:365:    Intuition: the evaluation sample is an IID draw from the population.
+./readable/Assumptions.md:367:- `EvalWeightMatchesPopMoments`: evaluation-weight transport assumption (still available for
+./readable/Assumptions.md:368:  weighted analyses). It matches weighted evaluation moments to population moments under `ν`.
+./readable/Assumptions.md:373:  full attribute stream `A i` in the experiment. Each draw is generated by a
+./readable/Assumptions.md:381:    Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧ (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
+./readable/Assumptions.md:393:  additive main-effect surface (intercept plus per-attribute effects). This is
+./main_theorem.md:12:(uniqueness of limits), not assumed as a separate transport axiom.
+./main_theorem.md:32:[IID](readable/jargon_iid.md)‑style structure for the training design and supports
+./main_theorem.md:37:structure ConjointRandomizationStream
+./main_theorem.md:38:    [MeasurableSpace Attr] (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) : Prop where
+./main_theorem.md:44:      Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧
+./main_theorem.md:55:&\land \text{Pairwise}(i \ne j \Rightarrow U_i \perp U_j \text{ under } \mu_{exp}) \\
+./main_theorem.md:68:### 2) [IID](readable/jargon_iid.md) evaluation stream
+./main_theorem.md:69:**Assumption**: `EvalAttrIID` for `Aeval`.
+./main_theorem.md:72:- `EvalAttrIID.measA`: each `Aeval i` is [measurable](readable/jargon_measurable.md).
+./main_theorem.md:73:- `EvalAttrIID.indepA`: pairwise [independence](readable/jargon_independent.md) across indices.
+./main_theorem.md:76:**Intuition**: the evaluation sample is a random sample of people/[profiles](readable/jargon_profile.md),
+./main_theorem.md:82:structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
+./main_theorem.md:84:  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
+./main_theorem.md:92:&\land \text{Pairwise}(i \ne j \Rightarrow A_i \perp A_j \text{ under } \kappa) \\
+./main_theorem.md:97:**English version**: each evaluation draw `A i` is [measurable](readable/jargon_measurable.md);
+./main_theorem.md:115:structure SubjectSamplingIID
+./main_theorem.md:116:    (μexp : Measure Ω) (μpop : Measure Person) (R : ℕ → Ω → Person) : Prop where
+./main_theorem.md:118:  indepR : Pairwise (fun i j => IndepFun (R i) (R j) μexp)
+./main_theorem.md:121:structure SubjectScoreAssumptions
+./main_theorem.md:122:    (μpop : Measure Person) (gP : Person → Attr → ℝ) : Prop where
+./main_theorem.md:126:structure SubjectSamplingLLNStar
+./main_theorem.md:128:    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+./main_theorem.md:164:structure ObservationNoiseAssumptions
+./main_theorem.md:168:    (φ : Term → Attr → ℝ) : Prop where
+./main_theorem.md:187:structure PaperOLSDesignAssumptions
+./main_theorem.md:190:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+./main_theorem.md:226:**Meaning**: the attribute‑[distribution](readable/jargon_distribution.md)
+./main_theorem.md:237:structure PaperOLSFullRankAssumptions
+./main_theorem.md:239:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+./main_theorem.md:253:under the attribute law `xiAttr` is invertible.
+./main_theorem.md:270:    (φ : Term → Profile K V → ℝ) : Prop :=
+./main_theorem.md:286:**English version**: for any intercept `α0` and any collection of per‑attribute main
+./main_theorem.md:294:**Meaning**: the causal score is additive in attributes (no interaction effects in the
+./main_theorem.md:305:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
+./main_theorem.md:316:**English version**: there exists an intercept and per‑attribute main effects so that the
+./main_theorem.md:317:true causal score `gStar` is exactly additive in attributes for every profile.
+./main_theorem.md:322:**Meaning**: the evaluation attribute distribution equals the target population law `ν`
+./main_theorem.md:326:- `measA0`: measurability of `Aeval 0`.
+./main_theorem.md:327:- `map_eq`: the evaluation attribute law equals `ν`.
+./main_theorem.md:329:**Intuition**: the evaluation sample is a simple random sample from the target population.
+./main_theorem.md:333:structure EvalAttrLawEqPop
+./main_theorem.md:336:    (ν : Measure Attr) : Prop where
+./main_theorem.md:346:**English version**: the evaluation attributes are sampled IID from the population law `ν`
+./main_theorem.md:347:(weights are effectively constant 1).
+./main_theorem.md:354:- `hIID`: `EvalAttrIID` for the evaluation draws.
+./main_theorem.md:368:structure SplitEvalAssumptionsBounded
+./main_theorem.md:371:    (m : ℕ) : Prop where
+./main_theorem.md:389:**English version**: the evaluation attributes are [IID](readable/jargon_iid.md); both the
+./main_theorem.md:398:- `EpsilonAssumptions.pos`: `0 < ε`.
+./main_theorem.md:404:structure EpsilonAssumptions (ε : ℝ) : Prop where
+./main_theorem.md:418:and [IID](readable/jargon_iid.md) for the evaluation stream:
+./main_theorem.md:420:- [IID](readable/jargon_iid.md) for `Aeval`.
+./main_theorem.md:435:## 3) Add the no‑interactions structure and full main‑effects basis
+./main_theorem.md:484:- `EvalAttrLawEqPop` (evaluation attributes are an IID draw from `ν`),
+./main_theorem.md:502:It asserts that, under the assumptions listed at the top, the evaluation SDs
+./main_theorem.md:512:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./main_theorem.md:517:          (ρ := ρ) (A := Aeval) (w := w)
+./main_theorem.md:559:                  totalErr ρ Aeval (ν) w
+./main_theorem.md:597:&\exists \theta_0,\; \forall^{\mu_{exp}\text{-a.e.}} \omega,\; \exists M,\;
+./main_theorem.md:599:&\quad \Bigl(\forall^{\rho\text{-a.e.}} \omega',\;
+./main_theorem.md:601:\operatorname{totalErr}(\rho,A_{eval},\nu,w,g_{Block},\theta_0,\hat\theta,m,n,\omega') < \varepsilon\Bigr) \\
+./main_theorem.md:612:the evaluation error `totalErr` is eventually below `ε` along `ρ`‑almost every
+./main_theorem.md:613:evaluation path, and the [population](readable/jargon_population.md)
+./ConjointSD/DeriveGEstimationAssumptions.lean:7:  (2) continuity-at-θ0 of the attribute-distribution functionals
+./ConjointSD/DeriveGEstimationAssumptions.lean:19:noncomputable section
+./ConjointSD/DeriveGEstimationAssumptions.lean:62:  simpa [gBlock] using hcont.cont b
+./Scratch.lean:21:#print ConjointSD.plugInMomentAssumptions_of_theta_tendsto
+./Scratch.lean:22:#print ConjointSD.plugInMomentAssumptions_blocks_of_theta_tendsto
+./Scratch.lean:23:#print ConjointSD.paper_ols_gramInv_tendsto_of_design_ae
+./Scratch.lean:24:#print ConjointSD.paper_ols_theta0_eq_of_normal_eq
+./Scratch.lean:25:#print ConjointSD.paper_ols_normal_eq_of_wellSpecified
+./Scratch.lean:36:-- Sample splitting (evaluation stage).
+./Scratch.lean:39:-- Sequential consistency (train then eval).
+./Scratch.lean:74:#print ConjointSD.paperBlockSDs_apply
+./Scratch.lean:75:#print ConjointSD.paperTotalSD_def
+./Scratch.lean:78:#print ConjointSD.paper_identifies_potMean_from_condMean
+./Scratch.lean:79:#print ConjointSD.paper_identifies_amce_from_condMeans
+./Scratch.lean:80:#print ConjointSD.paper_identifies_potMean_from_condMean_status
+./Scratch.lean:81:#print ConjointSD.paper_sd_blocks_sequential_consistency_ae
+./Scratch.lean:82:#print ConjointSD.paper_sd_total_sequential_consistency_ae
+./Scratch.lean:83:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae
+./Scratch.lean:84:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae
+./Scratch.lean:85:#print ConjointSD.paper_sd_total_sequential_consistency_to_approx_target_ae
+./Scratch.lean:86:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae
+./Scratch.lean:87:#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
+./Scratch.lean:88:#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
+./Scratch.lean:89:#print ConjointSD.paper_ols_attr_moments_of_design_ae
+./Scratch.lean:90:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+./Scratch.lean:91:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+./Scratch.lean:100:#print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae
+./Scratch.lean:101:#print ConjointSD.paper_ols_lln_of_design_ae
+./Scratch.lean:102:#print ConjointSD.paper_ols_lln_of_score_assumptions_ae
+./Scratch.lean:103:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+./readable/Transport.md:8:- `attrMean`, `attrM2`, `attrVar`, `attrSD` define the mean, second moment, variance, and standard deviation of a score function under the target-population attribute [distribution](jargon_distribution.md) `ν` (see [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), [standard deviation](jargon_standard_deviation.md)).
+./readable/Transport.md:17:- `EvalAttrLawEqPop` states the evaluation attribute law equals `ν`, providing the SRS
+./readable/Transport.md:18:  representativeness assumption for evaluation targets.
+./project_map.md:11:- [ConjointSD/Defs.lean](readable/Defs.md) centralizes core definitions used across the project (attribute-distribution/experimental-design moments for the target human [population](readable/jargon_population.md), [plug-in](readable/jargon_plug_in.md) scores, [OLS](readable/jargon_ols.md) helpers, and conjoint primitives).
+./project_map.md:24:- [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean`.
+./project_map.md:25:- [ConjointSD/EvalSamplingSRS.lean](readable/EvalSamplingSRS.md) derives the weighted-moment assumption from an SRS evaluation law and uniform weights.
+./project_map.md:27:- [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under the pushforward attribute law `kappaDesign := Measure.map (A 0) μ` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
+./project_map.md:40:- [ConjointSD/SampleSplitting.lean](readable/SampleSplitting.md) proves evaluation-stage [SD](readable/jargon_standard_deviation.md) [convergence](readable/jargon_convergence.md) for fixed training index `m` using `SDDecompositionFromConjoint`, `DesignAttributeBridge`, and `EstimatedG`.
+./project_map.md:62:- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), exact target-equivalence wrappers, weighted-target transfer lemmas, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; now also depends on `SampleSplitting` to derive evaluation IID from randomization; central hub for exported statements.
+./project_map.md:71:- [Scratch.lean](readable/Scratch.md) is a local scratch file that prints key structures/theorems for inspection; no production dependencies.
+./readable/StatusConjointDesign.md:26:Recent changes: simplified the design output to the randomized identification bundle and
+./ConjointSD/ApproxAssumptions.lean:8:noncomputable section
+./ConjointSD/ApproxAssumptions.lean:15:/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
+./ConjointSD/ApproxAssumptions.lean:16:def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:31:    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:40:    (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:53:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/PredictedSD.lean:6:noncomputable section
+./readable/jargon_lln.md:7:moments to design-distribution moments and, via transport, to attribute-distribution
+./ConjointSD/DesignAttributeBridge.lean:5:- attribute-distribution functionals under the pushforward attribute law
+./ConjointSD/DesignAttributeBridge.lean:11:We work with the pushforward attribute law `kappaDesign (κ := κ) (A := A)` induced by the
+./ConjointSD/DesignAttributeBridge.lean:29:noncomputable section
+./ConjointSD/DesignAttributeBridge.lean:32:-- Pushforward of a probability measure is a probability measure when the map is measurable.
+./ConjointSD/DesignAttributeBridge.lean:33:instance probMeasureAssumptions_map_of_measurable
+./ConjointSD/DesignAttributeBridge.lean:50:equals the mean of `g` under the pushforward attribute distribution `kappaDesign`.
+./ConjointSD/DesignAttributeBridge.lean:63:    -- change-of-variables for pushforward measures
+./ConjointSD/DesignAttributeBridge.lean:64:    simpa using
+./ConjointSD/DesignAttributeBridge.lean:67:  calc
+./ConjointSD/DesignAttributeBridge.lean:70:            simp [designMeanZ, Zcomp]
+./ConjointSD/DesignAttributeBridge.lean:72:            simp [hmap]
+./ConjointSD/DesignAttributeBridge.lean:74:            simp [attrMean]
+./ConjointSD/TargetEquivalence.lean:4:If two score functions are equal ν-a.e., then their attribute-distribution mean/second-moment/variance/SD
+./ConjointSD/TargetEquivalence.lean:15:noncomputable section
+./ConjointSD/TargetEquivalence.lean:24:/-- If s = t ν-a.e., then their attribute-distribution means are equal. -/
+./ConjointSD/TargetEquivalence.lean:29:  simpa [attrMean] using this
+./ConjointSD/TargetEquivalence.lean:31:/-- If s = t ν-a.e., then their attribute-distribution second moments are equal. -/
+./ConjointSD/TargetEquivalence.lean:37:    simp [ha]
+./ConjointSD/TargetEquivalence.lean:40:  simpa [attrM2] using this
+./ConjointSD/TargetEquivalence.lean:42:/-- If s = t ν-a.e., then their attribute-distribution variances are equal. -/
+./ConjointSD/TargetEquivalence.lean:49:  simp [attrVar, hm, hm2]
+./ConjointSD/TargetEquivalence.lean:51:/-- If s = t ν-a.e., then their attribute-distribution SDs are equal. -/
+./ConjointSD/TargetEquivalence.lean:56:  simp [attrSD, hv]
+./scripts/runLinter.lean:13:  let _ : MonadExceptOf String IO := ⟨throw ∘ IO.userError, fun x _ => x⟩
+./scripts/runLinter.lean:14:  liftExcept <| fromJson? <|← liftExcept <| Json.parse <|← IO.FS.readFile path
+./scripts/runLinter.lean:18:  IO.FS.writeFile path <| toJson a |>.pretty.push '\n'
+./scripts/runLinter.lean:41:def parseLinterArgs (args: List String) : Except String (Bool × Option Name) :=
+./scripts/runLinter.lean:57:Otherwise, resolve the default root modules from the Lake workspace.
+./scripts/runLinter.lean:71:unsafe def runLinterOnModule (update : Bool) (module : Name): IO Unit := do
+./scripts/runLinter.lean:74:  unless (← mFile.pathExists) do
+./scripts/runLinter.lean:83:  unless (← lintFile.pathExists) do
+./scripts/runLinter.lean:91:  let nolints ← if ← nolintsFile.pathExists then
+./scripts/runLinter.lean:95:  unsafe Lean.enableInitializersExecution
+./scripts/runLinter.lean:107:        decls.fold (fun res decl _ => res.push (linter.name, decl)) #[]
+./scripts/runLinter.lean:111:    let failed := results.any (!·.2.isEmpty)
+./scripts/runLinter.lean:116:      IO.print (← fmtResults.toString)
+./scripts/runLinter.lean:119:      IO.println s!"-- Linting passed for {module}."
+./scripts/runLinter.lean:128:unsafe def main (args : List String) : IO Unit := do
+./readable/ConjointIdentification.md:26:Bridge note: identification results in this file take `ConjointIdRandomized` directly; stream-level SD consistency uses separate attribute-stream assumptions.
+./readable/ConjointIdentification.md:28:Note: attribute-level AMCE identification and estimation assumptions (e.g., conditional or componentwise randomization) are not formalized here; we defer to Hainmueller–Hopkins–Yamamoto for those results.
+./readable/ConjointIdentification.md:30:Recent changes: drop explicit integrability assumptions for potential outcomes; boundedness plus `ProbMeasureAssumptions` now supplies integrability when needed.
+./readable/jargon_continuity.md:5:Continuity means small changes in an input lead to small changes in the output. In these files, continuity lets you pass from [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) to convergence of target human [population](jargon_population.md) [averages](jargon_mean.md) computed under the attribute distribution.
+./scripts/check_r.R:3:source("plot_proof_structure.R")
+./paper_highlights.md:6:cultural (leisure activities and supermarket choice), and ascribed (gender and ethnicity) factors as
+./paper_highlights.md:12:experimental estimates with data on the prevalence of status predictors in the British population.
+./paper_highlights.md:24:make status judgments about hypothetical personas on the basis of many different attributes. Figure 1 shows
+./paper_highlights.md:30:Each of these attributes is independently randomized, which allows the causal effect of each to be estimated
+./paper_highlights.md:34:The order of attributes shown was randomized with the exception of parental occupation which is always
+./paper_highlights.md:47:We generally randomly assigned attributes to personas in the experiment. However, some combinations of
+./paper_highlights.md:48:occupation and income or education lacked external validity. For instance, it is not clear what we learn by
+./paper_highlights.md:54:scales that they simply noisily measure the economic position of occupations rather than measuring a
+./paper_highlights.md:60:cultural capital. We measure cultural consumption through choice of supermarket. As in the US (Freeland
+./paper_highlights.md:69:respondents, for instance, who think that ethnic minorities should have equal status to white British people
+./paper_highlights.md:77:that they simply measure economic success rather than the more relational idea of prestige (Bukodi, Dex,
+./paper_highlights.md:83:The external validity of this design is high because status is inherently a relational attribute assigned by
+./paper_highlights.md:97:Hainmueller, Hopkins, and Yamamoto (2014) suggest stratifying the data by group, calculating the group-
+./paper_highlights.md:103:an equal chance of occurring (and so have equal weights), this grand mean should, therefore, be equivalent
+./paper_highlights.md:129:Our experiment as described so far allows us to establish how much different attributes affect status judgments
+./paper_highlights.md:131:status in society. For this we need to know the prevalence and covariance of the different factors in the
+./paper_highlights.md:133:Our estimated models allow us to predict scores for real people based on their levels of the various attributes
+./paper_highlights.md:135:a representative sample of the population. For instance, we can establish what the standard deviation
+./paper_highlights.md:138:our experiment because we use linear models. For instance, we can look at the standard deviation of predicted
+./paper_highlights.md:140:For instance, if we wanted to look at the standard deviation of social status due to gender we would first
+./paper_highlights.md:145:we then calculate the standard deviation of 𝑠𝑡𝑎𝑡𝑢𝑠𝑔𝑒𝑛𝑑𝑒𝑟
+./paper_highlights.md:149:In order to calculate these combined distributions of social status attributable to a set of factors, we need
+./paper_highlights.md:150:the distribution of the variables of interest. We cannot simply use oﬀicial statistics for this purpose because
+./paper_highlights.md:174:For each set of factors, we consider its effects in two ways. First, we show the effect size of each attribute
+./paper_highlights.md:176:the size of each attribute’s effect and the distribution of the factors being judged (figure 7). In line with the
+./paper_highlights.md:203:points higher. Home size also has an effect, with those living in houses with 5 bedrooms scoring 2.5 points
+./paper_highlights.md:204:higher than those in a one bedroom home and having a home with a large garden scoring 0.8 points higher
+./paper_highlights.md:214:are substantial, with Eating at McDonalds lowering status ratings by 4.1 points on average compared to
+./paper_highlights.md:217:income. Our supermarket variable also shows meaningful effects, with Waitrose shoppers scoring an average
+./paper_highlights.md:233:instance, the economic row shows social status scores predicted using all of the economic variables shown
+./paper_highlights.md:250:that Britain in a class-structured society, we find that class origins are the most impactful ascribed factor in
+./readable/PaperWrappers.md:5:This file provides paper-friendly wrappers around the core technical results. It mostly re-exports theorems with names and hypotheses that match the manuscript. The wrapper statements use the standard probability/convergence bundles and target attribute moments under `ν`, with `EvalAttrLawEqPop` encoding the evaluation-to-population law equality needed for SD targets (uniform weights). Where causal scores (`gStar`, `gExp`) appear, they are tied to the experimental law `μexp`, separating experimental identification from population evaluation.
+./readable/PaperWrappers.md:15:- The main end-to-end chain now assumes boundedness for the evaluation score/weights and derives the needed score-level integrability from those bounds (rather than assuming `ScoreAssumptions` directly).
+./ConjointSD/PaperCoreEstimand.lean:15:noncomputable section
+./ConjointSD/PaperCoreEstimand.lean:38:  classical
+./ConjointSD/PaperCoreEstimand.lean:68:    paperBlockSDs (ν := ν) blk β0 φ b = paperBlockSD (ν := ν) blk β0 φ b := rfl
+./ConjointSD/PaperCoreEstimand.lean:75:    attrSD ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
+./readable/jargon_index.md:50:- [Pushforward](jargon_pushforward.md)
+./readable/ApproxAssumptions.md:20:  under the attribute distribution `ν`.
+./gaps.md:11:   - Sequential results require SplitEvalAssumptions ([i.i.d.](readable/jargon_iid.md) eval sample; second-moment conditions with integrability derived under a probability measure), raw parameter convergence, and `FunctionalContinuityAssumptions`, but are never instantiated with the paper’s two-stage estimation (train/eval splits, number of tasks per respondent, weighting).
+./gaps.md:12:   - To fix: formalize the training/evaluation split used in the paper, show the assumptions hold for that procedure, and state rates or limits for the specific m,n regimes relevant to the data size.
+./gaps.md:23:   - We want bounds for component SDs even when the oracle includes nonlinear/interactive structure. That requires defining components as the additive [L2](readable/jargon_l2.md) projection of the oracle onto the linear/main-effects span, with a residual capturing non-additive effects.
+./gaps.md:31:   - `AttrMomentAssumptions` currently assumes only a.e. measurability and square-integrability under the target population attribute distribution `ν`. In the paper, status scores are implicitly bounded (0–100), so square-integrability should follow from boundedness plus measurability.
+./lake-manifest.json:54:  {"url": "https://github.com/leanprover-community/aesop",
+./lake-manifest.json:59:   "name": "aesop",
+./lake-manifest.json:64:  {"url": "https://github.com/leanprover-community/quote4",
+./dependency_tables.md:2015:<img src="dependency_tables_files/theorem_dependency_dag.png" width="1598" />
+./dependency_tables.md:2019:<img src="dependency_tables_files/ols_sd_consistency_dag.png" width="2285" />
+./dependency_tables.md:2023:<img src="dependency_tables_files/ols_sd_block_consistency_dag.png" width="2322" />
+./ConjointSD/EstimatedG.lean:6:We assume the attribute-distribution moments on attributes (attrMean/attrM2/attrVar/attrSD)
+./ConjointSD/EstimatedG.lean:8:attribute-distribution *mean* and *second moment* under ν when we replace oracle `g θ0`
+./ConjointSD/EstimatedG.lean:18:noncomputable section
+./ConjointSD/EstimatedG.lean:29:/-- Derived: attribute-distribution variance convergence under ν for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:52:    simpa [pow_two] using (hmean.mul hmean)
+./ConjointSD/EstimatedG.lean:59:  simpa [attrVar] using hvar
+./ConjointSD/EstimatedG.lean:61:/-- Derived: attribute-distribution SD convergence under ν for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:87:  simpa [attrSD] using (hsqrt.comp hvar)
+./ConjointSD/Defs.lean:6:noncomputable section
+./ConjointSD/Defs.lean:13:assumption packages. Assumption structures/props live in `ConjointSD.Assumptions`.
+./ConjointSD/Defs.lean:25:/-- Profiles are a product of all relevant attributes: `Attr := ∀ k, V k`. -/
+./ConjointSD/Defs.lean:72:/-- Design pushforward attribute distribution: the law of `A 0` under `κ`. -/
+./ConjointSD/Defs.lean:80:/-- Weights evaluated along a draw stream `A`. -/
+./ConjointSD/Defs.lean:143:/-- Attribute-distribution mean under `xiAttr` (generic attribute law). -/
+./ConjointSD/Defs.lean:166:/-- Plug-in (estimated) status function on attributes. -/
+./ConjointSD/Defs.lean:177:/-- Induced real-valued process from attribute records via a scoring function `g`. -/
+./ConjointSD/Defs.lean:187:/-- Θ ↦ attribute-distribution mean induced by `g` under `xiAttr`. -/
+./ConjointSD/Defs.lean:191:/-- Θ ↦ attribute-distribution second moment induced by `g` under `xiAttr`. -/
+./ConjointSD/Defs.lean:212:    classical
+./ConjointSD/Defs.lean:222:    classical
+./ConjointSD/Defs.lean:230:    classical
+./ConjointSD/Defs.lean:238:    classical
+./ConjointSD/Defs.lean:281:/-- Population-mean scoring function across persons. -/
+./ConjointSD/Transport.lean:3:noncomputable section
+./ConjointSD/Transport.lean:7:# Transport (attribute-distribution prediction) layer
+./readable/jargon_rmse.md:5:average is taken over the attribute distribution for the target human population.
+./ConjointSD/Assumptions.lean:8:noncomputable section
+./ConjointSD/Assumptions.lean:14:All assumption structures/props are centralized here for easier auditing.
+./ConjointSD/Assumptions.lean:23:class ProbMeasureAssumptions (κ : Measure α) : Prop where
+./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb
+./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward)
+./ConjointSD/Assumptions.lean:37:for non-target attribute laws.
+./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν`. -/
+./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
+./ConjointSD/Assumptions.lean:42:    (s : Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:59:def BoundedAE (ν : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
+./ConjointSD/Assumptions.lean:67:structure EpsilonAssumptions (ε : ℝ) : Prop where
+./ConjointSD/Assumptions.lean:80:i.i.d.-type assumptions on the attribute-record process A under the experimental
+./ConjointSD/Assumptions.lean:83:structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
+./ConjointSD/Assumptions.lean:85:  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
+./ConjointSD/Assumptions.lean:89:i.i.d.-type assumptions on the attribute-record process A under the evaluation
+./ConjointSD/Assumptions.lean:90:distribution. This is intentionally distinct from `DesignAttrIID` so evaluation
+./ConjointSD/Assumptions.lean:93:structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
+./ConjointSD/Assumptions.lean:95:  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
+./ConjointSD/Assumptions.lean:99:structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions κ] :
+./ConjointSD/Assumptions.lean:100:    Prop where
+./ConjointSD/Assumptions.lean:135:structure SplitEvalAssumptionsBounded
+./ConjointSD/Assumptions.lean:137:    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ) (m : ℕ) : Prop where
+./ConjointSD/Assumptions.lean:150:structure SubjectSamplingIID
+./ConjointSD/Assumptions.lean:151:    (μexp : Measure Ω) (μpop : Measure Person) (R : ℕ → Ω → Person) : Prop where
+./ConjointSD/Assumptions.lean:153:  indepR : Pairwise (fun i j => IndepFun (R i) (R j) μexp)
+./ConjointSD/Assumptions.lean:157:structure SubjectScoreAssumptions
+./ConjointSD/Assumptions.lean:158:    (μpop : Measure Person) (gP : Person → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:166:structure SubjectSamplingLLN
+./ConjointSD/Assumptions.lean:168:    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:185:structure SubjectSamplingLLNStar
+./ConjointSD/Assumptions.lean:187:    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:203:  classical
+./ConjointSD/Assumptions.lean:205:  by_contra hne
+./ConjointSD/Assumptions.lean:218:  have hfalse : ∀ᵐ _ω ∂μexp, False := by
+./ConjointSD/Assumptions.lean:223:    have hfalse' : μexp { ω | ¬False } = 0 := (MeasureTheory.ae_iff).1 hfalse
+./ConjointSD/Assumptions.lean:224:    simpa using hfalse'
+./ConjointSD/Assumptions.lean:247:Continuity assumptions for the induced attribute-distribution functionals at θ0.
+./ConjointSD/Assumptions.lean:249:Here `xiAttr` is whichever attribute distribution governs the target moments in the
+./ConjointSD/Assumptions.lean:254:structure FunctionalContinuityAssumptions
+./ConjointSD/Assumptions.lean:255:    (xiAttr : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : Prop where
+./ConjointSD/Assumptions.lean:264:structure PlugInMomentAssumptions
+./ConjointSD/Assumptions.lean:265:    (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
+./ConjointSD/Assumptions.lean:278:structure BlockFunctionalContinuityAssumptions
+./ConjointSD/Assumptions.lean:280:    (xiAttr : Measure Attr) (gB : B → Θ → Attr → ℝ) (θ0 : Θ) : Prop where
+./ConjointSD/Assumptions.lean:291:structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
+./ConjointSD/Assumptions.lean:313:Moment assumptions stated against the attribute-distribution Gram/cross moments.
+./ConjointSD/Assumptions.lean:314:Here `xiAttr` names the attribute distribution used in the limit (design-law for fitting,
+./ConjointSD/Assumptions.lean:318:structure OLSMomentAssumptionsOfAttr {Attr : Type u} {Term : Type v}
+./ConjointSD/Assumptions.lean:323:    (θ0 : Term → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:352:structure ObservationNoiseAssumptions
+./ConjointSD/Assumptions.lean:356:    (φ : Term → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:383:structure PaperOLSDesignAssumptions
+./ConjointSD/Assumptions.lean:386:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:403:structure PaperOLSFullRankAssumptions
+./ConjointSD/Assumptions.lean:405:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:419:Evaluation sample is an IID draw from the target population attribute law `ν`:
+./ConjointSD/Assumptions.lean:420:the evaluation attribute distribution equals `ν`.
+./ConjointSD/Assumptions.lean:422:structure EvalAttrLawEqPop
+./ConjointSD/Assumptions.lean:425:    (ν : Measure Attr) : Prop where
+./ConjointSD/Assumptions.lean:430:Evaluation-weight moment matching: weighted moments of the evaluation draw
+./ConjointSD/Assumptions.lean:433:This is a transport-style assumption that links the evaluation sample
+./ConjointSD/Assumptions.lean:434:(`A 0` under the evaluation law `ρ`) to the population distribution `ν`
+./ConjointSD/Assumptions.lean:435:without requiring full law equality.
+./ConjointSD/Assumptions.lean:437:structure EvalWeightMatchesPopMoments
+./ConjointSD/Assumptions.lean:440:    (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:462:Randomization mechanism for an attribute stream `A i`.
+./ConjointSD/Assumptions.lean:468:structure ConjointRandomizationStream
+./ConjointSD/Assumptions.lean:469:    [MeasurableSpace Attr] (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:475:      Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧
+./ConjointSD/Assumptions.lean:498:    simpa [hAeq i] using hmeasf.comp (hmeasU i)
+./ConjointSD/Assumptions.lean:504:    simpa [hAeq i, hAeq j] using hA
+./ConjointSD/Assumptions.lean:509:    simpa [hAeq i, hAeq 0] using hA
+./ConjointSD/Assumptions.lean:530:    (φ : Term → Profile K V → ℝ) : Prop :=
+./ConjointSD/Assumptions.lean:540:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
+./ConjointSD/SequentialConsistency.lean:8:(1) For any fixed training index m, as evaluation size n → ∞,
+./ConjointSD/SequentialConsistency.lean:27:noncomputable section
+./ConjointSD/SequentialConsistency.lean:36:/-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/
+./ConjointSD/SequentialConsistency.lean:70:Assumes the evaluation attribute law equals the target-population law `ν`
+./ConjointSD/SequentialConsistency.lean:71:(so weights are effectively uniform for the evaluation stage).
+./ConjointSD/SequentialConsistency.lean:110:    simpa using hBase_map
+./ConjointSD/SequentialConsistency.lean:114:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
+./ConjointSD/SequentialConsistency.lean:124:  simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
+./ConjointSD/SequentialConsistency.lean:143:    simpa [c] using
+./ConjointSD/SequentialConsistency.lean:149:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
+./ConjointSD/SequentialConsistency.lean:157:  simpa [trainErr, sdOracle, c] using (h1.trans (by simp))
+./ConjointSD/SequentialConsistency.lean:163:- `hSplit : ∀ m, SplitEvalAssumptionsBounded ... m` gives evaluation-stage
+./ConjointSD/SequentialConsistency.lean:200:      nlinarith [hε.pos]
+./ConjointSD/SequentialConsistency.lean:207:    nlinarith [hε.pos]
+./ConjointSD/SequentialConsistency.lean:229:      nlinarith [hε.pos]
+./ConjointSD/IdentificationTheorems.lean:9:noncomputable section
+./ConjointSD/TrueBlockEstimand.lean:12:noncomputable section
+./ConjointSD/ModelBridge.lean:7:noncomputable section
+./ConjointSD/ModelBridge.lean:21:    (β : Term → ℝ) (φ : Term → Attr → ℝ) : Prop :=
+./ConjointSD/ModelBridge.lean:29:We use an `if` formulation so the additivity proof is just sum-swapping + `simp`.
+./ConjointSD/ModelBridge.lean:34:    classical
+./ConjointSD/ModelBridge.lean:49:  classical
+./ConjointSD/ModelBridge.lean:56:    calc
+./ConjointSD/ModelBridge.lean:59:              simp [gTotal, gBlockTerm]
+./ConjointSD/ModelBridge.lean:62:              simpa using
+./ConjointSD/ModelBridge.lean:69:              refine Finset.sum_congr rfl ?_
+./ConjointSD/ModelBridge.lean:71:              -- `simp` knows how to evaluate `∑ b, if blk t = b then r else 0`
+./ConjointSD/ModelBridge.lean:72:              simp [eq_comm]
+./ConjointSD/ModelBridge.lean:74:              simp [gLin]
+./ConjointSD/ModelBridge.lean:75:  simpa using h.symm
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:5:  Bridge from “no interactions” (additive structure over attributes)
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:20:noncomputable section
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:38:/-- Terms: `none` is intercept, `some k` is the main effect for attribute `k`. -/
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:46:/-- Features: intercept feature is constant `1`; main-effect feature is `main k (x k)`. -/
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:69:  classical
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:74:  calc
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:78:        simpa using (hadd x).symm
+./readable/jargon_distribution.md:6:target human population attribute distribution is denoted `ν`, while the
+./readable/jargon_distribution.md:7:experimental attribute pushforward is written `kappaDesign := Measure.map (A 0) μexp`
+./readable/jargon_distribution.md:8:and the evaluation attribute pushforward is written `kappaDesign := Measure.map (A 0) ρ`.
+./ConjointSD/EvalSamplingSRS.lean:7:noncomputable section
+./ConjointSD/EvalSamplingSRS.lean:14:theorem evalWeightMatchesPopMoments_of_law_eq
+./ConjointSD/EvalSamplingSRS.lean:21:  haveI : IsProbabilityMeasure (kappaDesign (κ := ρ) (A := A)) :=
+./ConjointSD/EvalSamplingSRS.lean:24:    simpa [kappaDesign] using hLaw.map_eq
+./ConjointSD/EvalSamplingSRS.lean:25:  haveI : IsProbabilityMeasure ν := by
+./ConjointSD/EvalSamplingSRS.lean:26:    simpa [hkappa] using
+./ConjointSD/EvalSamplingSRS.lean:32:  · simp [hW, attrMean, hkappa, div_eq_mul_inv, mul_comm]
+./ConjointSD/EvalSamplingSRS.lean:33:  · simp [hW, attrM2, hkappa, div_eq_mul_inv, mul_comm]
+./ConjointSD/PaperWrappers.lean:38:noncomputable section
+./ConjointSD/PaperWrappers.lean:214:variable (Aeval : ℕ → Ω → Profile K V)
+./ConjointSD/PaperWrappers.lean:223:set_option linter.style.longLine false
+./ConjointSD/PaperWrappers.lean:229:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./ConjointSD/PaperWrappers.lean:234:          (ρ := ρ) (A := Aeval) (w := w)
+./ConjointSD/PaperWrappers.lean:276:                  totalErr ρ Aeval (ν) w
+./ConjointSD/PaperWrappers.lean:360:      classical
+./ConjointSD/PaperWrappers.lean:384:        simpa using congrArg (fun f => f x) hLinBlocks.symm
+./ConjointSD/PaperWrappers.lean:385:      calc
+./ConjointSD/PaperWrappers.lean:397:            simpa [WellSpecified] using hspec x
+./ConjointSD/PaperWrappers.lean:400:    simpa using congrArg (fun f => f x) hBlocks
+./ConjointSD/PaperWrappers.lean:467:    rfl
+./ConjointSD/PaperWrappers.lean:469:      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
+./ConjointSD/PaperWrappers.lean:493:set_option linter.style.longLine true
+./ConjointSD/PaperWrappers.lean:495:set_option linter.style.longLine false
+./ConjointSD/PaperWrappers.lean:501:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
+./ConjointSD/PaperWrappers.lean:506:          (ρ := ρ) (A := Aeval) (w := w)
+./ConjointSD/PaperWrappers.lean:546:                totalErr ρ Aeval (ν) w
+./ConjointSD/PaperWrappers.lean:648:      classical
+./ConjointSD/PaperWrappers.lean:672:        simpa using congrArg (fun f => f x) hLinBlocks.symm
+./ConjointSD/PaperWrappers.lean:673:      calc
+./ConjointSD/PaperWrappers.lean:685:            simpa [WellSpecified] using hspec x
+./ConjointSD/PaperWrappers.lean:696:      simpa using congrArg (fun f => f x) hBlocks
+./ConjointSD/PaperWrappers.lean:697:    calc
+./ConjointSD/PaperWrappers.lean:708:            simp [gTotalΘ, gTotal]
+./ConjointSD/PaperWrappers.lean:733:      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
+./ConjointSD/PaperWrappers.lean:753:set_option linter.style.longLine true
+./ConjointSD/SubjectSamplingLLNFromIID.lean:7:noncomputable section
+./ConjointSD/SubjectSamplingLLNFromIID.lean:27:  classical
+./ConjointSD/SubjectSamplingLLNFromIID.lean:31:    simpa [hIID.identR 0] using hScore.integrable_gP x
+./ConjointSD/SubjectSamplingLLNFromIID.lean:33:    simpa [X] using hint_map.comp_measurable (hIID.measR 0)
+./ConjointSD/SubjectSamplingLLNFromIID.lean:34:  have hindep : Pairwise (fun i j => IndepFun (X i) (X j) μexp) := by
+./ConjointSD/SubjectSamplingLLNFromIID.lean:42:      simpa [hIID.identR i, hIID.identR 0]
+./ConjointSD/SubjectSamplingLLNFromIID.lean:60:      simpa using
+./ConjointSD/SubjectSamplingLLNFromIID.lean:65:    calc
+./ConjointSD/SubjectSamplingLLNFromIID.lean:68:        (∫ ω, gP (R 0 ω) x ∂μexp) := by rfl
+./ConjointSD/SubjectSamplingLLNFromIID.lean:72:        simpa [gPop, hmap]
+./ConjointSD/SubjectSamplingLLNFromIID.lean:78:    simpa [hmean] using hω
+./ConjointSD/SubjectSamplingLLNFromIID.lean:79:  simpa [gHatSubject, X, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hω'
+./acceptable_gaps.md:20:   - For the paper, we endorse the moment-matching/weighted LLN assumptions as axioms for the target population moments.
+./ConjointSD/VarianceDecompositionFromBlocks.lean:7:noncomputable section
+./ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean:8:noncomputable section
+./ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean:36:  calc
+./ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean:41:        simp [hlin, abs_sub_comm]
+./README.md:50:![Lean import DAG](readable/lean_import_dag.png)
+./README.md:54:- Install R packages used by `plot_proof_structure.R`: `fs`, `stringr`, `dplyr`, `purrr`, `tidyr`, `DiagrammeR`, `DiagrammeRsvg`, `rsvg`.
+./ConjointSD/SampleSplitting.lean:19:noncomputable section
+./ConjointSD/SampleSplitting.lean:30:    to the population SD under weighted evaluation moments.
+./ConjointSD/SampleSplitting.lean:53:    evalWeightMatchesPopMoments_of_law_eq
+./ConjointSD/SampleSplitting.lean:56:    simpa [hW] using (measurable_const : Measurable (fun _ : Attr => (1 : ℝ)))
+./ConjointSD/SampleSplitting.lean:60:    simpa [hW] using (abs_le.2 ⟨by norm_num, by norm_num⟩)
+./ConjointSD/SampleSplitting.lean:63:    simpa [hW, designMeanZ, Zcomp] using (one_ne_zero : (1 : ℝ) ≠ 0)
+./ConjointSD/SampleSplitting.lean:88:        simpa [pow_two] using (h.hMeasG.mul h.hMeasG)
+./ConjointSD/SampleSplitting.lean:94:        simpa using
+./ConjointSD/SampleSplitting.lean:103:        simpa using
+./ConjointSD/SampleSplitting.lean:113:        simpa using
+./ConjointSD/SampleSplitting.lean:122:        simp [designMeanZW, hMeanW, hMeanWZ, hMom.mean_eq, attrMean]
+./ConjointSD/SampleSplitting.lean:128:        simpa [designM2ZW, hMeanW, hM2WZ, attrMean, attrM2] using hMom.m2_eq
+./ConjointSD/SampleSplitting.lean:129:      simp [designSDZW, designVarZW, attrSD, attrVar, hMean, hM2]
+./ConjointSD/SampleSplitting.lean:130:  simpa [hEq] using hSDZ
+./ConjointSD/ApproxModelBridge.lean:6:noncomputable section
+./ConjointSD/ApproxModelBridge.lean:16:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxModelBridge.lean:19:/-- Approximate well-specification on target-population attribute support (ν-a.e.). -/
+./ConjointSD/ApproxModelBridge.lean:23:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxModelBridge.lean:42:  classical
+./ConjointSD/ApproxModelBridge.lean:54:    simpa using congrArg (fun f => f x) hblocks
+./ConjointSD/ApproxModelBridge.lean:57:  simpa [hlin x, abs_sub_comm] using hx
+./ConjointSD/SDDecompositionFromConjoint.lean:7:noncomputable section
+./ConjointSD/SDDecompositionFromConjoint.lean:29:  simpa [Real.norm_eq_abs] using hC'
+./ConjointSD/SDDecompositionFromConjoint.lean:42:  have hInd : Pairwise (fun i j => IndepFun (Z i) (Z j) μexp) := by
+./ConjointSD/SDDecompositionFromConjoint.lean:47:    simpa [Z, Zcomp, Function.comp] using this
+./ConjointSD/SDDecompositionFromConjoint.lean:53:    simpa [Z, Zcomp, Function.comp] using this
+./ConjointSD/SDDecompositionFromConjoint.lean:64:    simpa [Z, Zcomp] using hInt'
+./ConjointSD/SDDecompositionFromConjoint.lean:65:  simpa [meanHatZ, designMeanZ, Z] using
+./ConjointSD/SDDecompositionFromConjoint.lean:95:    simpa [abs_mul] using hmul
+./ConjointSD/SDDecompositionFromConjoint.lean:108:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:119:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:136:    simpa [nhds_prod_eq] using hWZω.prodMk hWω
+./ConjointSD/SDDecompositionFromConjoint.lean:145:  simpa [meanHatZW, designMeanZW] using hdiv
+./ConjointSD/SDDecompositionFromConjoint.lean:167:    simpa [pow_two] using (hMeasG.mul hMeasG)
+./ConjointSD/SDDecompositionFromConjoint.lean:174:    simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul
+./ConjointSD/SDDecompositionFromConjoint.lean:177:    refine ⟨Cw * Cg ^ 2, mul_nonneg hCw0 (by nlinarith), ?_⟩
+./ConjointSD/SDDecompositionFromConjoint.lean:181:    simpa [abs_mul] using hmul
+./ConjointSD/SDDecompositionFromConjoint.lean:194:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:205:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:225:    simpa [nhds_prod_eq] using hWZ2ω.prodMk hWω
+./ConjointSD/SDDecompositionFromConjoint.lean:234:  simpa [m2HatZW, designM2ZW] using hdiv
+./ConjointSD/SDDecompositionFromConjoint.lean:273:    simpa [pow_two] using (hmeanω.mul hmeanω)
+./ConjointSD/SDDecompositionFromConjoint.lean:288:  simpa [varHatZW, designVarZW] using this
+./ConjointSD/SDDecompositionFromConjoint.lean:323:  simpa [sdHatZW, designSDZW] using (hsqrt.comp hω)
+./tmp_dependency_tables.R:34:    unlist(regmatches(output, gregexpr("unknown constant 'ConjointSD\\.[A-Za-z0-9_]+'", output))),
+./tmp_dependency_tables.R:35:    unlist(regmatches(output, gregexpr("Unknown constant `ConjointSD\\.[A-Za-z0-9_]+`", output)))
+./tmp_dependency_tables.R:37:  unknown <- gsub("unknown constant 'ConjointSD\\.", "", unknown, ignore.case = TRUE)
+./tmp_dependency_tables.R:38:  unknown <- gsub("Unknown constant `ConjointSD\\.", "", unknown, ignore.case = TRUE)
+./tmp_dependency_tables.R:64:structure_lines <- lines_all[grepl("^structure ConjointSD\\.", lines_all)]
+./tmp_dependency_tables.R:65:structures <- unique(sub("^structure ConjointSD\\.([^.{ ]+).*$", "\\1", structure_lines))
+./tmp_dependency_tables.R:66:structures <- structures[structures != ""]
+./tmp_dependency_tables.R:68:# Definitions printed from Scratch.lean (for non-structure assumptions).
+./tmp_dependency_tables.R:79:  # End at next theorem/structure print or end of file.
+./tmp_dependency_tables.R:80:  next_idx <- grep("^(theorem|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+./tmp_dependency_tables.R:91:  next_idx <- grep("^(theorem|lemma|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+./tmp_dependency_tables.R:117:changed <- TRUE
+./tmp_dependency_tables.R:118:while (changed) {
+./tmp_dependency_tables.R:119:  changed <- FALSE
+./tmp_dependency_tables.R:125:      changed <- TRUE
+./tmp_dependency_tables.R:132:structure_block_for <- function(name, lines) {
+./tmp_dependency_tables.R:133:  start_pat <- paste0("^structure ConjointSD\\.", name, "\\.")
+./tmp_dependency_tables.R:137:  next_idx <- grep("^(theorem|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+./tmp_dependency_tables.R:142:structure_blocks <- setNames(lapply(structures, structure_block_for, lines = lines_all), structures)
+./tmp_dependency_tables.R:144:parse_structure <- function(struct_name, block) {
+./tmp_dependency_tables.R:157:structure_info <- setNames(lapply(structures, function(s) parse_structure(s, structure_blocks[[s]])), structures)
+./tmp_dependency_tables.R:164:  next_idx <- grep("^(theorem|structure|def) ConjointSD\\.", lines[(start + 1):length(lines)])
+./tmp_dependency_tables.R:174:  grepl(": Prop", header, fixed = TRUE)
+./tmp_dependency_tables.R:189:    next_idx <- grep("^\\s*(def|structure|theorem|lemma)\\s", assumptions_text[(start + 1):length(assumptions_text)])
+./tmp_dependency_tables.R:192:    if (grepl(":\\s*Prop\\b", block, perl = TRUE)) assump_prop_defs <- c(assump_prop_defs, nm)
+./tmp_dependency_tables.R:197:structure_field_assumptions <- unique(unlist(lapply(names(structure_info), function(s) {
+./tmp_dependency_tables.R:198:  fields <- structure_info[[s]]$fields
+./tmp_dependency_tables.R:203:structure_nested <- lapply(structure_info, function(info) info$nested)
+./tmp_dependency_tables.R:205:structure_closure <- function(struct_name, nested_map) {
+./tmp_dependency_tables.R:264:  for (s in structures) {
+./tmp_dependency_tables.R:266:      for (s_hit in structure_closure(s, structure_nested)) {
+./tmp_dependency_tables.R:267:        fields <- structure_info[[s_hit]]$fields
+./tmp_dependency_tables.R:306:  for (s in structures) {
+./tmp_dependency_tables.R:308:      for (s_hit in structure_closure(s, structure_nested)) {
+./tmp_dependency_tables.R:309:        fields <- structure_info[[s_hit]]$fields
+./tmp_dependency_tables.R:337:    if (s %in% structures) {
+./tmp_dependency_tables.R:375:assumptions <- sort(unique(c(structure_field_assumptions, unlist(assumption_direct))))
+./tmp_dependency_tables.R:446:out_xlsx <- file.path(out_dir, "assumption_matrix.xlsx")
+./tmp_dependency_tables.R:451:  openxlsx::write.xlsx(assump_tbl, out_xlsx, overwrite = TRUE)
+./tmp_dependency_tables.R:453:  out_csv <- file.path(out_dir, "assumption_matrix.csv")
+./tmp_dependency_tables.R:469:  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+./tmp_dependency_tables.R:479:    function(nm) paste(strwrap(pretty_name(nm), width = 18), collapse = "\\n"),
+./tmp_dependency_tables.R:483:  nodes <- data.frame(name = theorems, label = labels, stringsAsFactors = FALSE)
+./tmp_dependency_tables.R:510:  out_png <- file.path(out_dir, "theorem_dependency_dag.png")
+./tmp_dependency_tables.R:538:  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+./tmp_dependency_tables.R:547:  data.frame(from = assumps, to = thm, stringsAsFactors = FALSE)
+./tmp_dependency_tables.R:569:    stringsAsFactors = FALSE
+./tmp_dependency_tables.R:580:    stringsAsFactors = FALSE
+./tmp_dependency_tables.R:633:  out_png <- file.path(out_dir, "ols_sd_consistency_dag.png")
+./tmp_dependency_tables.R:656:  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+./tmp_dependency_tables.R:665:  data.frame(from = assumps, to = thm, stringsAsFactors = FALSE)
+./tmp_dependency_tables.R:687:    stringsAsFactors = FALSE
+./tmp_dependency_tables.R:698:    stringsAsFactors = FALSE
+./tmp_dependency_tables.R:751:  out_png <- file.path(out_dir, "ols_sd_block_consistency_dag.png")
+./ConjointSD/RegressionEstimator.lean:14:noncomputable section
+./ConjointSD/RegressionEstimator.lean:24:of `G n` inverse and `c n` to their attribute-distribution counterparts.
+./ConjointSD/RegressionEstimator.lean:43:  classical
+./ConjointSD/RegressionEstimator.lean:64:    simpa [Matrix.mulVec] using hsum
+./ConjointSD/RegressionEstimator.lean:74:    simpa using hpoint i
+./ConjointSD/RegressionEstimator.lean:75:  simpa [olsThetaHat] using hfun
+./ConjointSD/RegressionEstimator.lean:86:  simpa [hId] using
+./ConjointSD/RegressionEstimator.lean:92:/-- Convert attribute-distribution moment assumptions to sample-path moment assumptions. -/
+./ConjointSD/ApproxPaperWrappers.lean:10:noncomputable section
+./ConjointSD/ApproxPaperWrappers.lean:223:    simpa [abs_sub_comm, hTotalModel x] using hx
+./ConjointSD/IdentificationAssumptions.lean:6:noncomputable section
+./ConjointSD/IdentificationAssumptions.lean:16:structure ConjointIdRandomized
+./ConjointSD/IdentificationAssumptions.lean:18:    [ProbMeasureAssumptions μexp] : Prop where
+./ConjointSD/TermModelBlocks.lean:13:noncomputable section
+./ConjointSD/DecompositionSequentialConsistency.lean:20:noncomputable section
+./ConjointSD/DecompositionSequentialConsistency.lean:60:  classical
+./ConjointSD/DecompositionSequentialConsistency.lean:70:    simpa [gBlock] using
+./ConjointSD/DecompositionSequentialConsistency.lean:83:    have hb : b ∈ (Finset.univ : Finset B) := by simp
+./ConjointSD/DecompositionSequentialConsistency.lean:111:  simpa [gTotalΘ] using
+./ConjointSD/RegressionConsistencyBridge.lean:4:Route 2 bridge: derive attribute-distribution moment convergence from
+./ConjointSD/RegressionConsistencyBridge.lean:17:noncomputable section
+./ConjointSD/RegressionConsistencyBridge.lean:33:  simpa [gHat, attrMeanΘ] using (hcont.cont_mean.tendsto.comp hθ)
+./ConjointSD/RegressionConsistencyBridge.lean:46:  simpa [gHat, attrM2Θ] using (hcont.cont_m2.tendsto.comp hθ)
+./ConjointSD/RegressionConsistencyBridge.lean:71:          simp [attrMeanΘ, hEqθ]
+./ConjointSD/RegressionConsistencyBridge.lean:72:    simpa [hmean] using h.cont_mean
+./ConjointSD/RegressionConsistencyBridge.lean:80:          simp [attrM2Θ, hEqθ]
+./ConjointSD/RegressionConsistencyBridge.lean:81:    simpa [hm2] using h.cont_m2
+./ConjointSD/RegressionConsistencyBridge.lean:96:  simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:107:  classical
+./ConjointSD/RegressionConsistencyBridge.lean:120:      simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:127:  calc
+./ConjointSD/RegressionConsistencyBridge.lean:130:            simp [attrMean, gLin]
+./ConjointSD/RegressionConsistencyBridge.lean:132:          simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:139:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:143:            simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:145:          simpa [attrMean] using hInt
+./ConjointSD/RegressionConsistencyBridge.lean:156:  classical
+./ConjointSD/RegressionConsistencyBridge.lean:171:      simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:178:      simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:200:  calc
+./ConjointSD/RegressionConsistencyBridge.lean:203:            simp [attrM2, gLin, pow_two]
+./ConjointSD/RegressionConsistencyBridge.lean:205:          simp [Fintype.sum_mul_sum]
+./ConjointSD/RegressionConsistencyBridge.lean:207:          simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:214:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:216:          simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:223:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:225:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:232:            ring
+./ConjointSD/RegressionConsistencyBridge.lean:237:            simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:244:            simpa [hmul] using hInt
+./ConjointSD/RegressionConsistencyBridge.lean:245:          simpa [attrMean] using hInt'
+./ConjointSD/RegressionConsistencyBridge.lean:255:  classical
+./ConjointSD/RegressionConsistencyBridge.lean:280:      simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:284:      simpa [hMeanEq] using hMeanContAt
+./ConjointSD/RegressionConsistencyBridge.lean:285:    simpa [attrMeanΘ] using hMeanContAt'
+./ConjointSD/RegressionConsistencyBridge.lean:297:      simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:301:      simpa [hM2Eq] using hM2ContAt
+./ConjointSD/RegressionConsistencyBridge.lean:302:    simpa [attrM2Θ] using hM2ContAt'
+./dependency_tables.Rmd:42:    unlist(regmatches(output, gregexpr("unknown constant 'ConjointSD\\.[A-Za-z0-9_]+'", output))),
+./dependency_tables.Rmd:43:    unlist(regmatches(output, gregexpr("Unknown constant `ConjointSD\\.[A-Za-z0-9_]+`", output)))
+./dependency_tables.Rmd:45:  unknown <- gsub("unknown constant 'ConjointSD\\.", "", unknown, ignore.case = TRUE)
+./dependency_tables.Rmd:46:  unknown <- gsub("Unknown constant `ConjointSD\\.", "", unknown, ignore.case = TRUE)
+./dependency_tables.Rmd:72:structure_lines <- lines_all[grepl("^structure ConjointSD\\.", lines_all)]
+./dependency_tables.Rmd:73:structures <- unique(sub("^structure ConjointSD\\.([^.{ ]+).*$", "\\1", structure_lines))
+./dependency_tables.Rmd:74:structures <- structures[structures != ""]
+./dependency_tables.Rmd:76:# Drop structure names that appear as theorem prefixes (e.g. ScoreAssumptions.int_g0).
+./dependency_tables.Rmd:77:theorems <- setdiff(theorems, structures)
+./dependency_tables.Rmd:79:# Definitions printed from Scratch.lean (for non-structure assumptions).
+./dependency_tables.Rmd:90:  # End at next theorem/structure print or end of file.
+./dependency_tables.Rmd:91:  next_idx <- grep("^(theorem|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+./dependency_tables.Rmd:102:  next_idx <- grep("^(theorem|lemma|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+./dependency_tables.Rmd:128:changed <- TRUE
+./dependency_tables.Rmd:129:while (changed) {
+./dependency_tables.Rmd:130:  changed <- FALSE
+./dependency_tables.Rmd:136:      changed <- TRUE
+./dependency_tables.Rmd:143:structure_block_for <- function(name, lines) {
+./dependency_tables.Rmd:144:  start_pat <- paste0("^structure ConjointSD\\.", name, "\\.")
+./dependency_tables.Rmd:148:  next_idx <- grep("^(theorem|structure) ConjointSD\\.", lines[(start + 1):length(lines)])
+./dependency_tables.Rmd:153:structure_blocks <- setNames(lapply(structures, structure_block_for, lines = lines_all), structures)
+./dependency_tables.Rmd:155:parse_structure <- function(struct_name, block) {
+./dependency_tables.Rmd:168:structure_info <- setNames(lapply(structures, function(s) parse_structure(s, structure_blocks[[s]])), structures)
+./dependency_tables.Rmd:175:  next_idx <- grep("^(theorem|structure|def) ConjointSD\\.", lines[(start + 1):length(lines)])
+./dependency_tables.Rmd:185:  grepl(": Prop", header, fixed = TRUE)
+./dependency_tables.Rmd:200:    next_idx <- grep("^\\s*(def|structure|theorem|lemma)\\s", assumptions_text[(start + 1):length(assumptions_text)])
+./dependency_tables.Rmd:203:    if (grepl(":\\s*Prop\\b", block, perl = TRUE)) assump_prop_defs <- c(assump_prop_defs, nm)
+./dependency_tables.Rmd:208:structure_field_assumptions <- unique(unlist(lapply(names(structure_info), function(s) {
+./dependency_tables.Rmd:209:  fields <- structure_info[[s]]$fields
+./dependency_tables.Rmd:214:structure_nested <- lapply(structure_info, function(info) info$nested)
+./dependency_tables.Rmd:216:structure_closure <- function(struct_name, nested_map) {
+./dependency_tables.Rmd:275:  for (s in structures) {
+./dependency_tables.Rmd:277:      for (s_hit in structure_closure(s, structure_nested)) {
+./dependency_tables.Rmd:278:        fields <- structure_info[[s_hit]]$fields
+./dependency_tables.Rmd:317:  for (s in structures) {
+./dependency_tables.Rmd:319:      for (s_hit in structure_closure(s, structure_nested)) {
+./dependency_tables.Rmd:320:        fields <- structure_info[[s_hit]]$fields
+./dependency_tables.Rmd:348:    if (s %in% structures) {
+./dependency_tables.Rmd:386:assumptions <- sort(unique(c(structure_field_assumptions, unlist(assumption_direct))))
+./dependency_tables.Rmd:459:out_xlsx <- file.path(out_dir, "assumption_matrix.xlsx")
+./dependency_tables.Rmd:464:  openxlsx::write.xlsx(assump_tbl, out_xlsx, overwrite = TRUE)
+./dependency_tables.Rmd:466:  out_csv <- file.path(out_dir, "assumption_matrix.csv")
+./dependency_tables.Rmd:484:  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+./dependency_tables.Rmd:494:    function(nm) paste(strwrap(pretty_name(nm), width = 18), collapse = "\\n"),
+./dependency_tables.Rmd:498:  nodes <- data.frame(name = theorems, label = labels, stringsAsFactors = FALSE)
+./dependency_tables.Rmd:525:  out_png <- file.path(out_dir, "theorem_dependency_dag.png")
+./dependency_tables.Rmd:555:  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+./dependency_tables.Rmd:564:  data.frame(from = assumps, to = thm, stringsAsFactors = FALSE)
+./dependency_tables.Rmd:586:    stringsAsFactors = FALSE
+./dependency_tables.Rmd:597:    stringsAsFactors = FALSE
+./dependency_tables.Rmd:650:  out_png <- file.path(out_dir, "ols_sd_consistency_dag.png")
+./dependency_tables.Rmd:675:  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
+./dependency_tables.Rmd:684:  data.frame(from = assumps, to = thm, stringsAsFactors = FALSE)
+./dependency_tables.Rmd:706:    stringsAsFactors = FALSE
+./dependency_tables.Rmd:717:    stringsAsFactors = FALSE
+./dependency_tables.Rmd:770:  out_png <- file.path(out_dir, "ols_sd_block_consistency_dag.png")
+./ConjointSD/ConjointIdentification.lean:10:noncomputable section
+./ConjointSD/ConjointIdentification.lean:24:  simp
+./ConjointSD/ConjointIdentification.lean:34:  classical
+./ConjointSD/ConjointIdentification.lean:41:    simpa [φ] using hconst.indicator (measurableSet_singleton x0)
+./ConjointSD/ConjointIdentification.lean:43:    simpa [s] using h.measX (measurableSet_singleton x0)
+./ConjointSD/ConjointIdentification.lean:51:    have _ : IsFiniteMeasure μexp := by infer_instance
+./ConjointSD/ConjointIdentification.lean:57:    simpa [Real.norm_eq_abs] using hCω
+./ConjointSD/ConjointIdentification.lean:63:      by_cases hX : X ω = x0
+./ConjointSD/ConjointIdentification.lean:64:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:65:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:66:    simpa [hident] using hconst.indicator hset
+./ConjointSD/ConjointIdentification.lean:72:    simpa using h'.symm
+./ConjointSD/ConjointIdentification.lean:78:      by_cases hX : X ω = x0
+./ConjointSD/ConjointIdentification.lean:79:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:80:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:81:    calc
+./ConjointSD/ConjointIdentification.lean:83:        simp [hident]
+./ConjointSD/ConjointIdentification.lean:87:        simp [integral_const, measureReal_def]
+./ConjointSD/ConjointIdentification.lean:88:  calc
+./ConjointSD/ConjointIdentification.lean:96:              by_cases hX : X ω = x0
+./ConjointSD/ConjointIdentification.lean:97:              · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:98:              · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:99:          simp [hident]
+./ConjointSD/ConjointIdentification.lean:101:          simpa using hprod
+./ConjointSD/ConjointIdentification.lean:104:            ext ω; simp [s, eventX]
+./ConjointSD/ConjointIdentification.lean:105:          have hs : μexp s = μexp (eventX (X := X) x0) := by simp [hsset]
+./ConjointSD/ConjointIdentification.lean:106:          calc
+./ConjointSD/ConjointIdentification.lean:109:              simp [hintInd']
+./ConjointSD/ConjointIdentification.lean:111:              simp [hs]
+./ConjointSD/ConjointIdentification.lean:124:  letI : IsFiniteMeasure μexp := by infer_instance
+./ConjointSD/ConjointIdentification.lean:127:  unfold condMean potMean
+./ConjointSD/ConjointIdentification.lean:130:  calc
+./ConjointSD/ConjointIdentification.lean:135:            simp [hrand]
+./ConjointSD/ConjointIdentification.lean:138:            ring
+./ConjointSD/ConjointIdentification.lean:139:    _ = ∫ ω, Y x ω ∂μexp := by field_simp [hμ]
+./ConjointSD/ConjointIdentification.lean:163:      simp [sub_eq_zero]
+./ConjointSD/ConjointIdentification.lean:167:    simpa [hset] using hpre
+./ConjointSD/ConjointIdentification.lean:180:  simp [hcons ω, hx]
+./ConjointSD/ConjointIdentification.lean:206:  calc
+./ConjointSD/ConjointIdentification.lean:210:              simp [condMean, hint]
+./ConjointSD/ConjointIdentification.lean:225:  unfold amce
+./ConjointSD/ConjointIdentification.lean:234:  simp [hx', hx]
+./ConjointSD/StatusConjointDesign.lean:5:- profile space: the 8,500 feasible attribute combinations generated for the survey,
+./ConjointSD/StatusConjointDesign.lean:9:  potential outcomes supplied by the product structure.
+./ConjointSD/StatusConjointDesign.lean:19:noncomputable section
+./ConjointSD/StatusConjointDesign.lean:29:/-- Four rating tasks per respondent (two choice-sets of two personas). -/
+./ConjointSD/StatusConjointDesign.lean:37:instance : Nonempty StatusProfile := ⟨⟨0, by decide⟩⟩
+./ConjointSD/StatusConjointDesign.lean:38:instance : Nonempty TaskSlot := ⟨⟨0, by decide⟩⟩
+./ConjointSD/StatusConjointDesign.lean:41:noncomputable def νStatus : Measure StatusProfile :=
+./ConjointSD/StatusConjointDesign.lean:44:instance : IsProbabilityMeasure νStatus := by
+./ConjointSD/StatusConjointDesign.lean:45:  classical
+./ConjointSD/StatusConjointDesign.lean:46:  simpa [νStatus] using
+./ConjointSD/StatusConjointDesign.lean:49:instance : ProbMeasureAssumptions νStatus := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:52:noncomputable def μTask : Measure TaskSlot :=
+./ConjointSD/StatusConjointDesign.lean:55:instance : IsProbabilityMeasure μTask :=
+./ConjointSD/StatusConjointDesign.lean:57:    classical
+./ConjointSD/StatusConjointDesign.lean:58:    simpa [μTask] using
+./ConjointSD/StatusConjointDesign.lean:62:instance : ProbMeasureAssumptions μTask := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:68:noncomputable def μRT {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:70:  μResp.prod μTask
+./ConjointSD/StatusConjointDesign.lean:72:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:75:  classical
+./ConjointSD/StatusConjointDesign.lean:80:  have hprod := Measure.prod_prod (μ := μResp) (ν := μTask) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:81:  calc
+./ConjointSD/StatusConjointDesign.lean:83:        = μResp.prod μTask (Set.univ ×ˢ (Set.univ : Set TaskSlot)) := by
+./ConjointSD/StatusConjointDesign.lean:84:          simp [μRT, Set.univ_prod_univ]
+./ConjointSD/StatusConjointDesign.lean:86:    _ = 1 := by simp [hμ, htask]
+./ConjointSD/StatusConjointDesign.lean:88:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:93:noncomputable def μStatus {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:95:  (μRT (μResp := μResp)).prod νStatus
+./ConjointSD/StatusConjointDesign.lean:97:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:100:  classical
+./ConjointSD/StatusConjointDesign.lean:105:    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:106:  calc
+./ConjointSD/StatusConjointDesign.lean:108:        = (μRT (μResp := μResp)).prod νStatus
+./ConjointSD/StatusConjointDesign.lean:110:          simp [μStatus, Set.univ_prod_univ]
+./ConjointSD/StatusConjointDesign.lean:112:    _ = 1 := by simp [hrt, hν]
+./ConjointSD/StatusConjointDesign.lean:114:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:151:  classical
+./ConjointSD/StatusConjointDesign.lean:156:    simpa [StatusΩ, statusX] using
+./ConjointSD/StatusConjointDesign.lean:187:      ext ω; simp [statusX]
+./ConjointSD/StatusConjointDesign.lean:192:      ext ω; simp [statusY]
+./ConjointSD/StatusConjointDesign.lean:193:    -- Combine the rectangles and evaluate with `prod_prod`.
+./ConjointSD/StatusConjointDesign.lean:194:    calc
+./ConjointSD/StatusConjointDesign.lean:210:                        simpa [statusY, statusX] using hy
+./ConjointSD/StatusConjointDesign.lean:211:                      simpa [statusX] using this
+./ConjointSD/StatusConjointDesign.lean:212:                    · have : ω.snd ∈ s := by simpa [statusX] using hx
+./ConjointSD/StatusConjointDesign.lean:213:                      simpa [statusX] using this
+./ConjointSD/StatusConjointDesign.lean:216:                    · simpa [statusX] using hs'
+./ConjointSD/StatusConjointDesign.lean:218:                        simpa using hrs
+./ConjointSD/StatusConjointDesign.lean:219:                      simpa [statusY] using this
+./ConjointSD/StatusConjointDesign.lean:222:                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:224:                simp [μexp, μStatus, μRT, hrect]
+./ConjointSD/StatusConjointDesign.lean:231:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:234:                  simp [μexp, μStatus, μRT, hpreX]
+./ConjointSD/StatusConjointDesign.lean:240:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+./ConjointSD/StatusConjointDesign.lean:244:                  simp [μexp, μStatus, μRT, hpreY, hν]
+./ConjointSD/StatusConjointDesign.lean:245:                simp [hXmass, hYmass, mul_comm]
+./ConjointSD/StatusConjointDesign.lean:250:      consistency := by intro ω; rfl
+./ConjointSD/StatusConjointDesign.lean:259:  classical
+./ConjointSD/StatusConjointDesign.lean:262:    simpa [StatusΩ, statusX] using
+./ConjointSD/StatusConjointDesign.lean:267:    simp [μexp, μStatus, μRT, statusX]
+./ConjointSD/StatusConjointDesign.lean:276:      ext ω; simp [eventX]
+./ConjointSD/StatusConjointDesign.lean:277:    calc
+./ConjointSD/StatusConjointDesign.lean:281:      _ = μexp (eventX (X := statusX) p) := by simp [hpre]
+./ConjointSD/StatusConjointDesign.lean:284:    simpa [νStatus, hset] using
+./ConjointSD/StatusConjointDesign.lean:294:    calc
+./ConjointSD/StatusConjointDesign.lean:297:              simp [hmap_pre]
+./ConjointSD/StatusConjointDesign.lean:298:      _ = νStatus {p} := by simp [hlaw]
+./ConjointSD/StatusConjointDesign.lean:299:  set_option linter.unnecessarySimpa false in
+./ConjointSD/StatusConjointDesign.lean:301:    simpa [hmass] using hsupport
+./ConjointSD/StatusConjointDesign.lean:304:  calc
+./ConjointSD/PaperOLSConsistency.lean:19:noncomputable section
+./ConjointSD/PaperOLSConsistency.lean:42:  classical
+./ConjointSD/PaperOLSConsistency.lean:63:    simp [gTotal]
+./ConjointSD/PaperOLSConsistency.lean:64:  calc
+./ConjointSD/PaperOLSConsistency.lean:69:          simp [gPaper]
+./ConjointSD/PaperOLSConsistency.lean:103:      simp [φPaper]
+./ConjointSD/PaperOLSConsistency.lean:107:          simpa [φPaper] using hmeasMain m
+./ConjointSD/PaperOLSConsistency.lean:109:          simpa [φPaper] using hmeasInter i
+./ConjointSD/PaperOLSConsistency.lean:121:      simp [φPaper]
+./ConjointSD/PaperOLSConsistency.lean:125:          simpa [φPaper] using hboundMain m
+./ConjointSD/PaperOLSConsistency.lean:127:          simpa [φPaper] using hboundInter i
+./ConjointSD/PaperOLSConsistency.lean:158:    simpa [gPaper] using
+./ConjointSD/PaperOLSConsistency.lean:180:  simpa [gTotalΘ] using hEq'
+./ConjointSD/PaperOLSConsistency.lean:200:  by_cases htb : blk t = b
+./ConjointSD/PaperOLSConsistency.lean:206:        simp [φBlock, htb]
+./ConjointSD/PaperOLSConsistency.lean:207:    simpa [hEq] using
+./ConjointSD/PaperOLSConsistency.lean:215:        simp [φBlock, htb]
+./ConjointSD/PaperOLSConsistency.lean:216:    simp [hEq]
+./ConjointSD/PaperOLSConsistency.lean:228:  by_cases htb : blk t = b
+./ConjointSD/PaperOLSConsistency.lean:234:    simpa [φBlock, htb] using hC a
+./ConjointSD/PaperOLSConsistency.lean:237:    simp [φBlock, htb]
+./ConjointSD/PaperOLSConsistency.lean:248:  classical
+./ConjointSD/PaperOLSConsistency.lean:250:  simp [gBlockTerm, gLin, φBlock]
+./ConjointSD/PaperOLSConsistency.lean:323:  simpa using
+./ConjointSD/PaperOLSConsistency.lean:344:  simpa [abs_mul] using hmul
+./ConjointSD/PaperOLSConsistency.lean:366:  classical
+./ConjointSD/PaperOLSConsistency.lean:411:      simpa using (hspec a).symm
+./ConjointSD/PaperOLSConsistency.lean:421:      calc
+./ConjointSD/PaperOLSConsistency.lean:429:          simp [hspec']
+./ConjointSD/PaperOLSConsistency.lean:434:          rfl
+./ConjointSD/PaperOLSConsistency.lean:440:          simpa using
+./ConjointSD/PaperOLSConsistency.lean:450:          refine Finset.sum_congr rfl ?_
+./ConjointSD/PaperOLSConsistency.lean:452:          ring
+./ConjointSD/PaperOLSConsistency.lean:454:          rfl
+./ConjointSD/PaperOLSConsistency.lean:456:          rfl
+./ConjointSD/PaperOLSConsistency.lean:457:    calc
+./ConjointSD/PaperOLSConsistency.lean:465:  calc
+./ConjointSD/PaperOLSConsistency.lean:475:      simp [Matrix.mulVec, dotProduct, attrGram]
+./ConjointSD/PaperOLSConsistency.lean:481:      refine Finset.sum_congr rfl ?_
+./ConjointSD/PaperOLSConsistency.lean:483:      ring
+./ConjointSD/PaperOLSConsistency.lean:489:      simpa using hCrossEq.symm
+./ConjointSD/PaperOLSConsistency.lean:516:  classical
+./ConjointSD/PaperOLSConsistency.lean:530:    simpa using
+./ConjointSD/PaperOLSConsistency.lean:547:    calc
+./ConjointSD/PaperOLSConsistency.lean:559:          refine Finset.sum_congr rfl ?_
+./ConjointSD/PaperOLSConsistency.lean:561:          ring
+./ConjointSD/PaperOLSConsistency.lean:563:          simp [Finset.sum_add_distrib, gCross]
+./ConjointSD/PaperOLSConsistency.lean:564:  simp [crossVec, meanHatZ, Zcomp, gCross, smul_eq_mul, hsum_yobs, hsum_cross, mul_add]
+./ConjointSD/PaperOLSConsistency.lean:619:  classical
+./ConjointSD/PaperOLSConsistency.lean:662:      simpa [hpop] using hω
+./ConjointSD/PaperOLSConsistency.lean:677:        simpa using (Fin.sum_univ_eq_sum_range (n := n) (fun k => gGram (Aω k ω)))
+./ConjointSD/PaperOLSConsistency.lean:678:      simp [gramMatrix, gGram, hsum]
+./ConjointSD/PaperOLSConsistency.lean:679:    simpa [meanHatZ, Zcomp, gGram, attrGram, hgram_eq]
+./ConjointSD/PaperOLSConsistency.lean:737:      simpa [hpop] using hω
+./ConjointSD/PaperOLSConsistency.lean:753:      simpa [gCross] using
+./ConjointSD/PaperOLSConsistency.lean:782:      simpa using hsum_tendsto
+./ConjointSD/PaperOLSConsistency.lean:783:    simpa [attrCross, gCross, hcross_eq] using hsum_tendsto'
+./ConjointSD/PaperOLSConsistency.lean:886:    simpa [abs_mul] using hmul
+./ConjointSD/PaperOLSConsistency.lean:905:    simpa [abs_mul] using hmul
+./ConjointSD/PaperOLSConsistency.lean:967:    simpa [Ring.inverse] using (continuousAt_inv₀ hdet')
+./ConjointSD/PaperOLSConsistency.lean:993:    simpa using hgram i j
+./ConjointSD/PaperOLSConsistency.lean:1011:  simpa using hEntry
+./ConjointSD/PaperOLSConsistency.lean:1063:    simpa using hNormal.symm
+./ConjointSD/PaperOLSConsistency.lean:1076:  simpa using h.symm
+./ConjointSD/ApproxTargetEquivalence.lean:9:noncomputable section
+./ConjointSD/ApproxTargetEquivalence.lean:32:    simpa using abs_sub_le (s x) (t x) (u x)
+./ConjointSD/ApproxTargetEquivalence.lean:33:  nlinarith [htriangle, h1x, h2x]
+./ConjointSD/ApproxTargetEquivalence.lean:49:    simp [attrMean, integral_sub, hs, ht]
+./ConjointSD/ApproxTargetEquivalence.lean:52:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:59:      rw [Real.holderConjugate_iff]
+./ConjointSD/ApproxTargetEquivalence.lean:73:      simpa using (memLp_const (μ := ν) (p := ENNReal.ofReal 2) (c := (1 : ℝ)))
+./ConjointSD/ApproxTargetEquivalence.lean:82:      simpa using h
+./ConjointSD/ApproxTargetEquivalence.lean:83:    simpa [Real.sqrt_eq_rpow] using h1
+./ConjointSD/ApproxTargetEquivalence.lean:86:    exact le_trans (by simpa [hdiff] using habs) hcs
+./ConjointSD/ApproxTargetEquivalence.lean:89:section L2Centering
+./ConjointSD/ApproxTargetEquivalence.lean:97:    simpa [mul_comm, mul_left_comm, mul_assoc] using hs.mul_const (2 * ηs)
+./ConjointSD/ApproxTargetEquivalence.lean:106:    ring
+./ConjointSD/ApproxTargetEquivalence.lean:115:    simpa [sub_eq_add_neg] using
+./ConjointSD/ApproxTargetEquivalence.lean:120:    simpa [mul_comm, mul_left_comm, mul_assoc] using
+./ConjointSD/ApproxTargetEquivalence.lean:127:    simpa [add_assoc] using
+./ConjointSD/ApproxTargetEquivalence.lean:132:    simp [ηs, attrMean]
+./ConjointSD/ApproxTargetEquivalence.lean:134:    simp
+./ConjointSD/ApproxTargetEquivalence.lean:135:  have hcalc :
+./ConjointSD/ApproxTargetEquivalence.lean:137:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:144:              simp [hconst_int, hsub]
+./ConjointSD/ApproxTargetEquivalence.lean:146:              simp [hmul_int]
+./ConjointSD/ApproxTargetEquivalence.lean:148:              ring
+./ConjointSD/ApproxTargetEquivalence.lean:150:              have hring :
+./ConjointSD/ApproxTargetEquivalence.lean:153:                ring
+./ConjointSD/ApproxTargetEquivalence.lean:154:              simpa [hmean] using hring
+./ConjointSD/ApproxTargetEquivalence.lean:156:    simp [ηs, attrMean]
+./ConjointSD/ApproxTargetEquivalence.lean:157:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:159:      simp [attrVar, attrM2, attrMean, hmean_sq, ηs]
+./ConjointSD/ApproxTargetEquivalence.lean:162:      exact hcalc
+./ConjointSD/ApproxTargetEquivalence.lean:171:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:173:      simp [attrSD, hvar]
+./ConjointSD/ApproxTargetEquivalence.lean:175:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:177:end L2Centering
+./ConjointSD/ApproxTargetEquivalence.lean:190:    simpa using (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := c))
+./ConjointSD/ApproxTargetEquivalence.lean:202:    simpa using h
+./ConjointSD/ApproxTargetEquivalence.lean:220:  have hrewrite :
+./ConjointSD/ApproxTargetEquivalence.lean:224:    simp [c, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+./ConjointSD/ApproxTargetEquivalence.lean:225:  simpa [hsum, hrewrite, c] using hmono
+./ConjointSD/ApproxTargetEquivalence.lean:239:  have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp
+./ConjointSD/ApproxTargetEquivalence.lean:244:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:257:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:260:              simp [hnorm]
+./ConjointSD/ApproxTargetEquivalence.lean:265:    simp [Real.sqrt_eq_rpow]
+./ConjointSD/ApproxTargetEquivalence.lean:266:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:270:          simp [Real.norm_eq_abs]
+./ConjointSD/ApproxTargetEquivalence.lean:292:    simpa using hs_mem'
+./ConjointSD/ApproxTargetEquivalence.lean:297:    simpa using ht_mem'
+./ConjointSD/ApproxTargetEquivalence.lean:299:    simpa using hs_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := ηs))
+./ConjointSD/ApproxTargetEquivalence.lean:301:    simpa using ht_mem.sub (memLp_const (μ := ν) (p := (2 : ENNReal)) (c := ηt))
+./ConjointSD/ApproxTargetEquivalence.lean:303:    simpa using hcenter_s.sub hcenter_t
+./ConjointSD/ApproxTargetEquivalence.lean:311:      simpa [ηs] using hsd
+./ConjointSD/ApproxTargetEquivalence.lean:314:    simpa [ηs] using (hsd'.trans hbridge)
+./ConjointSD/ApproxTargetEquivalence.lean:322:      simpa [ηt] using hsd
+./ConjointSD/ApproxTargetEquivalence.lean:325:    simpa [ηt] using (hsd'.trans hbridge)
+./ConjointSD/ApproxTargetEquivalence.lean:358:    have hrewrite :
+./ConjointSD/ApproxTargetEquivalence.lean:361:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:362:    simpa [hsum, hrewrite] using hmono
+./ConjointSD/ApproxTargetEquivalence.lean:395:    have hrewrite :
+./ConjointSD/ApproxTargetEquivalence.lean:398:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:404:      simpa [hsum, hrewrite] using hmono
+./ConjointSD/ApproxTargetEquivalence.lean:409:      simpa [Pi.sub_apply] using
+./ConjointSD/ApproxTargetEquivalence.lean:412:    simpa [hswap] using htri2'
+./ConjointSD/ApproxTargetEquivalence.lean:420:      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri1
+./ConjointSD/ApproxTargetEquivalence.lean:425:      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri2
+./ConjointSD/ApproxTargetEquivalence.lean:428:      linarith
+./ConjointSD/ApproxTargetEquivalence.lean:431:      linarith
+./ConjointSD/ApproxTargetEquivalence.lean:439:      simpa using hL2.1
+./ConjointSD/ApproxTargetEquivalence.lean:440:    simpa [ηs, ηt] using
+./ConjointSD/ApproxTargetEquivalence.lean:445:    have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp
+./ConjointSD/ApproxTargetEquivalence.lean:447:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:450:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:453:              simp [hconst']
+./ConjointSD/ApproxTargetEquivalence.lean:455:              simp [hμ]
+./ConjointSD/ApproxTargetEquivalence.lean:457:              simp [Real.enorm_eq_ofReal_abs]
+./ConjointSD/ApproxTargetEquivalence.lean:464:      simpa using hL2.1
+./ConjointSD/ApproxTargetEquivalence.lean:470:      simpa [abs_sq] using hbridge
+./ConjointSD/ApproxTargetEquivalence.lean:472:      simpa [abs_sq] using hL2.2
+./ConjointSD/ApproxTargetEquivalence.lean:473:    simpa [hbridge'] using hL2'
+./ConjointSD/ApproxTargetEquivalence.lean:478:      simpa [hconst] using hmean
+./ConjointSD/ApproxTargetEquivalence.lean:479:    nlinarith [htri_centered, hnorm_st, hmean']
+./ConjointSD/ApproxTargetEquivalence.lean:487:    simpa using (abs_integral_le_integral_abs (f := s) (μ := ν))
+./ConjointSD/ApproxTargetEquivalence.lean:493:    simp
+./ConjointSD/ApproxTargetEquivalence.lean:494:  simpa [attrMean, hconst] using (le_trans h1 h2)
+./ConjointSD/ApproxTargetEquivalence.lean:506:    simp [attrMean, integral_sub, hs, ht]
+./ConjointSD/ApproxTargetEquivalence.lean:508:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:515:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:516:    simpa [hconst] using hle
+./ConjointSD/ApproxTargetEquivalence.lean:517:  simpa [h1] using (le_trans h2 h3)
+./ConjointSD/ApproxTargetEquivalence.lean:523:    nlinarith [Real.sqrt_nonneg a, Real.sqrt_nonneg b]
+./ConjointSD/ApproxTargetEquivalence.lean:525:    simp [abs_of_nonneg hsum_nonneg]
+./ConjointSD/ApproxTargetEquivalence.lean:534:      calc
+./ConjointSD/ApproxTargetEquivalence.lean:537:                simp [Real.sq_sqrt ha, Real.sq_sqrt hb]
+./ConjointSD/ApproxTargetEquivalence.lean:539:                ring
+./ConjointSD/ApproxTargetEquivalence.lean:541:    simp only [abs_mul] at h'
+./ConjointSD/ApproxTargetEquivalence.lean:545:    simpa [sub_eq_add_neg, abs_neg, abs_of_nonneg (Real.sqrt_nonneg _)] using h
+./ConjointSD/ApproxTargetEquivalence.lean:558:      simp [hsum_abs]
+./ConjointSD/ApproxTargetEquivalence.lean:559:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:562:              simp [pow_two]
+./ConjointSD/ApproxTargetEquivalence.lean:565:      _   = |a - b| := by simp [hfactor]
+./ConjointSD/ApproxTargetEquivalence.lean:566:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:569:            simpa [pow_two] using
+./ConjointSD/ApproxTargetEquivalence.lean:589:      simpa using (abs_add_le (s a) (t a))
+./ConjointSD/ApproxTargetEquivalence.lean:591:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:594:      simp [hfact, abs_mul]
+./ConjointSD/ApproxTargetEquivalence.lean:595:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:602:              have hsum_le : |s a| + |t a| ≤ C + C := by nlinarith
+./ConjointSD/ApproxTargetEquivalence.lean:604:      _   = 2 * C * ε := by ring
+./ConjointSD/ApproxTargetEquivalence.lean:612:    simp [attrM2, integral_sub, hs2, ht2]
+./ConjointSD/ApproxTargetEquivalence.lean:617:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:627:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:628:    simpa [hconst] using hle
+./ConjointSD/ApproxTargetEquivalence.lean:629:  simpa [h1] using (le_trans h2 h3)
+./ConjointSD/ApproxTargetEquivalence.lean:655:      simpa using (abs_add_le (attrMean ν s) (attrMean ν t))
+./ConjointSD/ApproxTargetEquivalence.lean:661:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:667:      simp [hfact, abs_mul]
+./ConjointSD/ApproxTargetEquivalence.lean:668:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:676:              have hsum_le : |attrMean ν s| + |attrMean ν t| ≤ C + C := by nlinarith
+./ConjointSD/ApproxTargetEquivalence.lean:678:      _   = 2 * C * ε := by ring
+./ConjointSD/ApproxTargetEquivalence.lean:688:    simp [attrVar, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+./ConjointSD/ApproxTargetEquivalence.lean:696:    simpa [hvar, sub_eq_add_neg, abs_neg, abs_sub_comm,
+./ConjointSD/ApproxTargetEquivalence.lean:703:      simpa [abs_sub_comm] using hmean_sq
+./ConjointSD/ApproxTargetEquivalence.lean:704:    nlinarith [hM2, hmean_sq']
+./ConjointSD/ApproxTargetEquivalence.lean:723:    simpa [attrSD] using

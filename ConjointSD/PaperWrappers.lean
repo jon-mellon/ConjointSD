@@ -52,17 +52,14 @@ variable {B : Type*} [Fintype B]
 variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
 variable (A : ℕ → Ω → Attr)
 variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
-variable (w : Attr → ℝ)
-variable (w : Attr → ℝ)
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
 /-- Paper-facing: per-block SDs are sequentially consistent (single `M` works for all blocks). -/
 theorem paper_sd_blocks_sequential_consistency_ae
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitBounded : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+      SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hPlug : ∀ b : B,
       PlugInMomentAssumptions (ν := ν)
@@ -73,22 +70,21 @@ theorem paper_sd_blocks_sequential_consistency_ae
         ∀ b : B,
           (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A ν w
+              totalErr ρ A ν
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
   exact
     sequential_consistency_blocks_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w)
+      (ρ := ρ) (A := A) (ν := ν)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplitBounded) (hLaw := hLaw) (hW := hW) (hPlug := hPlug)
+      (hSplit := hSplitBounded) (hLaw := hLaw) (hPlug := hPlug)
       (ε := ε) (hε := hε)
 
 /-- Paper-facing: total-score SD is sequentially consistent. -/
 theorem paper_sd_total_sequential_consistency_ae
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitTotalBounded :
       ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hPlugTotal :
       PlugInMomentAssumptions (ν := ν)
@@ -98,13 +94,13 @@ theorem paper_sd_total_sequential_consistency_ae
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A ν w
+            totalErr ρ A ν
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   exact
     sequential_consistency_total_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w)
+      (ρ := ρ) (A := A) (ν := ν)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotalBounded) (hLaw := hLaw) (hW := hW) (hPlugTotal := hPlugTotal)
+      (hSplitTotal := hSplitTotalBounded) (hLaw := hLaw) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
 
 /-!
@@ -117,9 +113,8 @@ Blocks: sequential consistency + ν-a.e. target equality packages convergence to
 -/
 theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitBounded : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+      SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hPlug : ∀ b : B,
       PlugInMomentAssumptions (ν := ν)
@@ -134,13 +129,13 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
         ∀ b : B,
           (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A (ν) w
+              totalErr ρ A (ν)
                 (gBlock (gB := gB) b) θ0 θhat m n ω < ε)
           ∧
           attrSD (ν) (gBlock (gB := gB) b θ0)
             = attrSD (ν) (gTrueB b) := by
   rcases paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
+      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitBounded := hSplitBounded) (hPlug := hPlug) (ε := ε) (hε := hε)
       with ⟨M, hM⟩
@@ -160,10 +155,9 @@ Total-score: sequential consistency + ν-a.e. target equality packages convergen
 -/
 theorem paper_sd_total_sequential_consistency_to_true_target_ae
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitTotalBounded :
       ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hPlugTotal :
       PlugInMomentAssumptions (ν := ν)
@@ -176,13 +170,13 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A (ν) w
+            totalErr ρ A (ν)
               (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε)
         ∧
         attrSD (ν) (gTotalΘ (gB := gB) θ0)
           = attrSD (ν) gTrue := by
   rcases paper_sd_total_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w) (hLaw := hLaw) (hW := hW)
+      (ρ := ρ) (A := A) (ν := ν) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
       (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
       (ε := ε) (hε := hε)
@@ -214,7 +208,6 @@ variable (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
 variable (Aeval : ℕ → Ω → Profile K V)
 
 variable (ν : Measure (Profile K V)) [ProbMeasureAssumptions ν]
-variable (w : Profile K V → ℝ)
 
 variable (Y : Profile K V → Ω → ℝ)
 variable (fMain : Main → Profile K V → ℝ) (fInter : Inter → Profile K V → ℝ)
@@ -227,11 +220,10 @@ theorem
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
     (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitBlocks :
       ∀ ω m b,
-        SplitEvalWeightAssumptionsBounded
-          (ρ := ρ) (A := Aeval) (w := w)
+        SplitEvalAssumptionsBounded
+          (ρ := ρ) (A := Aeval)
           (g := gBlock
             (gB := fun b θ a =>
               gBlockTerm (blk := blk) (β := θ)
@@ -273,7 +265,7 @@ theorem
             ∀ b : B,
               (∀ᵐ ω' ∂ρ,
                 ∀ᶠ n : ℕ in atTop,
-                  totalErr ρ Aeval (ν) w
+                  totalErr ρ Aeval (ν)
                     (gBlock
                       (gB := fun b θ a =>
                         gBlockTerm (blk := blk) (β := θ)
@@ -466,8 +458,8 @@ theorem
     intro x
     rfl
   rcases paper_sd_blocks_sequential_consistency_to_true_target_ae
-      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
-      (hLaw := hLawEval) (hW := hW)
+      (ρ := ρ) (A := Aeval) (ν := ν)
+      (hLaw := hLawEval)
       (gB := fun b θ a =>
         gBlockTerm (blk := blk) (β := θ)
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
@@ -499,11 +491,10 @@ theorem
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Atrain) (Y := Y))
     (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hSplitTotal :
       ∀ ω m,
-        SplitEvalWeightAssumptionsBounded
-          (ρ := ρ) (A := Aeval) (w := w)
+        SplitEvalAssumptionsBounded
+          (ρ := ρ) (A := Aeval)
           (g := gTotalΘ
             (gB := fun b θ a =>
               gBlockTerm (blk := blk) (β := θ)
@@ -536,6 +527,7 @@ theorem
       SubjectSamplingLLNStar
         (μexp := μexp) (ν := ν) (μpop := μpop)
         (R := R) (gP := gP) (Y := Y))
+    (hCross : PopCrossSDTargetEq (μpop := μpop) (ν := ν) (gP := gP))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ θ0 : PaperTerm Main Inter → ℝ,
       ∀ᵐ ω ∂μexp,
@@ -543,7 +535,7 @@ theorem
           ∀ m ≥ M,
             (∀ᵐ ω' ∂ρ,
               ∀ᶠ n : ℕ in atTop,
-                totalErr ρ Aeval (ν) w
+                totalErr ρ Aeval (ν)
                   (gTotalΘ
                     (gB := fun b θ a =>
                       gBlockTerm (blk := blk) (β := θ)
@@ -565,7 +557,7 @@ theorem
                         φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
                   θ0)
               =
-              attrSD (ν) (gPop (μpop := μpop) gP) := by
+              popCrossSD (μpop := μpop) (ν := ν) (gP := gP) := by
   rcases
       wellSpecified_of_noInteractions_of_fullMainEffects
         (K := K) (V := V) (Term := PaperTerm Main Inter)
@@ -730,8 +722,8 @@ theorem
     intro x hx
     exact hx.1.trans hx.2
   rcases paper_sd_total_sequential_consistency_to_true_target_ae
-      (ρ := ρ) (A := Aeval) (ν := ν) (w := w)
-      (hLaw := hLawEval) (hW := hW)
+      (ρ := ρ) (A := Aeval) (ν := ν)
+      (hLaw := hLawEval)
       (gB := fun b θ a =>
         gBlockTerm (blk := blk) (β := θ)
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
@@ -748,7 +740,9 @@ theorem
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
   intro m hm
-  exact hM m hm
+  rcases hM m hm with ⟨hCons, hEq⟩
+  refine ⟨hCons, ?_⟩
+  simpa [hCross.cross_eq] using hEq
 
 set_option linter.style.longLine true
 

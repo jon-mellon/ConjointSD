@@ -15,7 +15,6 @@ Readable summaries of the Lean development.
 - [DecompositionSequentialConsistency.lean](DecompositionSequentialConsistency.md)
 - [DeriveGEstimationAssumptions.lean](DeriveGEstimationAssumptions.md)
 - [EstimatedG.lean](EstimatedG.md)
-- [EvalSamplingSRS.lean](EvalSamplingSRS.md)
 - [ModelBridge.lean](ModelBridge.md)
 - [PaperCoreEstimand.lean](PaperCoreEstimand.md)
 - [PaperOLSConsistency.lean](PaperOLSConsistency.md)

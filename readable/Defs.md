@@ -21,7 +21,8 @@ Highlights:
   `gramMatrix`, `crossVec`, `attrGram`, `attrCross`.
 - Conjoint identification primitives: `eventX`, `condMean`, `potMean`, `amce` ([AMCE](jargon_amce.md)).
 - Experiment-subject population transport definitions: `gPop` (population-mean scoring function)
-  and `gHatSubject` (experiment-subject sample average score at a fixed profile).
+  and `gHatSubject` (experiment-subject sample average score at a fixed profile), plus
+  `popCrossSD` for the SD over independent person/attribute draws.
 
 Purpose:
 - Keep foundational definitions in one place so assumption packages can be audited in

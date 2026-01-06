@@ -30,7 +30,7 @@ Notation:
 - `kappaDesign := Measure.map (A 0) ρ` is the pushforward attribute law for
   the evaluation sample used in transport.
 - `μexp` is the experimental design distribution used to fit/identify the score.
-- `ρ` is the evaluation-sample law used in the SD/transport stage (the sample you reweight).
+- `ρ` is the evaluation-sample law used in the SD/transport stage.
 Scope: “population” always means the target human
 [population](jargon_population.md). When we say “[population](jargon_population.md)
 mean/variance/SD,” we mean those quantities computed with respect to `ν`.
@@ -75,13 +75,10 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Intuition: finite energy rules out heavy tails that would make SD undefined
     or unstable. Formal: `Integrable (fun a => (s a) ^ 2) ν`.
 - `EvalAttrLawEqPop`: evaluation attributes are sampled IID from the target population law `ν`.
-  It states the evaluation attribute law equals `ν` (so weights are effectively constant 1).
+  It states the evaluation attribute law equals `ν`.
   - `EvalAttrLawEqPop.measA0`: `A 0` is measurable.
   - `EvalAttrLawEqPop.map_eq`: `Measure.map (A 0) ρ = ν`.
   Intuition: the evaluation sample is a simple random sample from the population.
-- `EvalWeightMatchesPopMoments`: weighted transport assumption for a specific score `s`.
-  This remains available for weighted evaluations, but the main theorem chain now
-  uses `EvalAttrLawEqPop` instead (uniform weights).
 - `SubjectSamplingIID`: IID experiment-subject sampling from the population law `μpop`.
   It separates the subject draw from the profile randomization.
   - `SubjectSamplingIID.measR`: subject draws are measurable.
@@ -98,6 +95,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   The LLN to `gPop` is derived from `SubjectSamplingIID` + `SubjectScoreAssumptions` via the strong LLN.
   The ν-a.e. equality `gStar = gPop` is then *derived* by uniqueness of limits.
 - `SubjectSamplingLLN`: bundles both LLN statements (`gStar` and `gPop`) in one structure.
+- `PopCrossSDTargetEq`: ties the cross-draw SD target to the SD of the population-mean score.
+  It asserts `popCrossSD μpop ν gP = attrSD ν (gPop μpop gP)`.
   It can be constructed from `SubjectSamplingIID`, `SubjectScoreAssumptions`, and `SubjectSamplingLLNStar`
   via `subjectSamplingLLN_of_iid_of_lln_gStar`.
 - `BoundedAE`: uniform boundedness on the target [population](jargon_population.md)
@@ -166,15 +165,12 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Formal: `Integrable (fun ω => (g (A 0 ω)) ^ 2) μexp`.
 ## SampleSplitting
 
-- `SplitEvalWeightAssumptionsBounded`: boundedness-based evaluation assumptions (weights are uniform in the SRS story).
+- `SplitEvalAssumptionsBounded`: boundedness-based evaluation assumptions.
   This replaces score/integrability conditions with explicit bounds on the estimated score
-  and on the weights, and then derives the needed moment conditions.
-  - `SplitEvalWeightAssumptionsBounded.hIID`: i.i.d. assumptions for the evaluation draws.
-  - `SplitEvalWeightAssumptionsBounded.hMeasG` / `hBoundG`: measurability and boundedness of
+  and then derives the needed moment conditions.
+  - `SplitEvalAssumptionsBounded.hIID`: i.i.d. assumptions for the evaluation draws.
+  - `SplitEvalAssumptionsBounded.hMeasG` / `hBoundG`: measurability and boundedness of
     `gHat g θhat m`.
-  - `SplitEvalWeightAssumptionsBounded.hMeasW` / `hBoundW`: measurability and boundedness of
-    the weights `w`.
-  - `SplitEvalWeightAssumptionsBounded.hW0`: the weight mean is nonzero.
 
 ## RegressionConsistencyBridge
 
@@ -270,7 +266,7 @@ Reader mapping to standard OLS assumptions:
   (e.g., via [normal equations](jargon_normal_equations.md) and [full‑rank](jargon_full_rank.md) assumptions).
   Core‑idea note: for design‑side OLS, take `xiAttr := kappaDesign (κ := μexp)`
   and use that in `OLSMomentAssumptionsOfAttr`; the target population `ν` enters
-  only at the transport stage via evaluation weights.
+  only at the transport stage via the evaluation sampling law.
   - `OLSMomentAssumptionsOfAttr.gramInv_tendsto`: entries of the inverse sample
     [Gram matrix](jargon_gram_matrix.md) converge to the inverse
     attribute‑distribution Gram, giving the stable
@@ -364,8 +360,6 @@ Reader mapping to standard OLS assumptions:
   - `EvalAttrLawEqPop.map_eq`: the evaluation attribute law equals `ν`.
     Intuition: the evaluation sample is an IID draw from the population.
     Formal: `Measure.map (A 0) ρ = ν`.
-- `EvalWeightMatchesPopMoments`: evaluation-weight transport assumption (still available for
-  weighted analyses). It matches weighted evaluation moments to population moments under `ν`.
 
 ## ConjointIdentification
 

@@ -63,9 +63,9 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score/weights are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop` (uniform weights), and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
+Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop`, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν`.
 
-Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; subject sampling links the experiment to the population-mean score, and weighted LLNs yield sequential consistency for each block score.
+Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; subject sampling links the experiment to the population-mean score, and LLNs yield sequential consistency for each block score.
 
 Formalization (Lean name): `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 
@@ -94,7 +94,7 @@ Formalization (Lean name): `sequential consistency ae`
 
 Formalization (math):
 `sdEst w m n -> attrSD nu (g theta0)` sequentially, under
-`SplitEvalWeightAssumptionsBounded` and `PlugInMomentAssumptions`.
+`SplitEvalAssumptionsBounded` and `PlugInMomentAssumptions`.
 
 ## paper identifies potMean from condMean (PaperWrappers)
 
@@ -139,7 +139,7 @@ under the target [distribution](readable/jargon_distribution.md) for the
 [standard deviation](readable/jargon_standard_deviation.md)
 [estimator](readable/jargon_estimator.md) is
 [sequentially consistent](readable/jargon_sequential_consistency.md) (training
-size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν` (uniform weights).
+size then evaluation size), with `EvalAttrLawEqPop` tying the evaluation attribute law to `ν`.
 
 Intuition: [parameter](readable/jargon_parameter.md)
 [convergence](readable/jargon_convergence.md) plus
@@ -366,9 +366,9 @@ File: `ConjointSD/PaperWrappers.lean`
 
 Statement: Under randomized assignment, the paper OLS design assumptions,
 full main-effects terms, and no-interactions, there exists a coefficient
-vector `theta0` such that the weighted plug‑in SD for the total score
-converges and equals the population SD of the population-mean score `gPop`,
-using the respondent-sampling LLN bridge.
+vector `theta0` such that the plug‑in SD for the total score
+converges and equals the cross‑draw population SD `popCrossSD μpop ν gP`,
+using the respondent-sampling LLN bridge plus the cross‑SD target equality.
 
 Intuition: randomization and OLS assumptions identify the additive
 status‑assigning rule in the experiment; respondent sampling links the
@@ -380,7 +380,7 @@ Formalization (Lean name):
 
 Formalization (math):
 Sequential consistency of `attrSD ν (gTotalΘ θ0)` plus the respondent-sampling
-LLN bridge yields `attrSD ν (gTotalΘ θ0) = attrSD ν (gPop)` a.e.
+LLN bridge yields `attrSD ν (gTotalΘ θ0) = popCrossSD μpop ν gP` a.e.
 
 ## Dependency tables
 

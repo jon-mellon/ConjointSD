@@ -40,13 +40,11 @@ theorem sequential_consistency_blocks_ae
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (w : Attr → ℝ)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+      SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hPlug : ∀ b : B,
       PlugInMomentAssumptions (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
@@ -54,9 +52,9 @@ theorem sequential_consistency_blocks_ae
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
-          (∀ᵐ ω ∂ρ,
+              (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A ν w (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
+              totalErr ρ A ν (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
   classical
   have hEach :
       ∀ b : B,
@@ -64,15 +62,15 @@ theorem sequential_consistency_blocks_ae
           ∀ m ≥ Mb,
             (∀ᵐ ω ∂ρ,
               ∀ᶠ n : ℕ in atTop,
-                totalErr ρ A ν w
+                totalErr ρ A ν
                   (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
     intro b
     simpa [gBlock] using
       (sequential_consistency_ae
-        (ρ := ρ) (A := A) (ν := ν) (w := w)
+        (ρ := ρ) (A := A) (ν := ν)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
-        (hLaw := hLaw) (hW := hW)
+        (hLaw := hLaw)
         (hPlug := hPlug b)
         (ε := ε) (hε := hε))
   choose Mb hMb using hEach
@@ -91,14 +89,12 @@ theorem sequential_consistency_total_ae
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr)
     (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (w : Attr → ℝ)
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν := ν))
-    (hW : w = fun _ => (1 : ℝ))
     (hPlugTotal :
       PlugInMomentAssumptions (ν := ν)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
@@ -107,13 +103,13 @@ theorem sequential_consistency_total_ae
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A ν w (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
+            totalErr ρ A ν (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   simpa [gTotalΘ] using
     (sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w)
+      (ρ := ρ) (A := A) (ν := ν)
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
-      (hLaw := hLaw) (hW := hW)
+      (hLaw := hLaw)
       (hPlug := hPlugTotal)
       (ε := ε) (hε := hε))
 
