@@ -77,7 +77,7 @@ instance {Respondent : Type u} [MeasurableSpace Respondent]
   have hμ : μResp Set.univ = 1 := measure_univ
   have htask : μTask Set.univ = 1 := measure_univ
   refine ⟨?_⟩
-  have hprod := Measure.prod_prod (μ := μResp) (ν := μTask) (Set.univ) (Set.univ)
+  have hprod := Measure.prod_prod (μ := μResp) (ν_pop := μTask) (Set.univ) (Set.univ)
   calc
     (μRT (μResp := μResp)) Set.univ
         = μResp.prod μTask (Set.univ ×ˢ (Set.univ : Set TaskSlot)) := by
@@ -102,7 +102,7 @@ instance {Respondent : Type u} [MeasurableSpace Respondent]
   have hν : νStatus Set.univ = 1 := measure_univ
   refine ⟨?_⟩
   have hprod :=
-    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus) (Set.univ) (Set.univ)
+    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) (Set.univ) (Set.univ)
   calc
     (μStatus (μResp := μResp)) Set.univ
         = (μRT (μResp := μResp)).prod νStatus
@@ -219,7 +219,7 @@ theorem status_id_randomized
                       simpa [statusY] using this
                 -- Evaluate the rectangle under the product measure.
                 have hprod :=
-                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
                     ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t}) s)
                 simp [μexp, μStatus, μRT, hrect]
       _ = μexp ((statusX (Respondent := Respondent)) ⁻¹' s)
@@ -228,7 +228,7 @@ theorem status_id_randomized
                 -- Y depends on respondent/task.
                 have hXmass : μexp ((statusX (Respondent := Respondent)) ⁻¹' s) = νStatus s := by
                   have hprod :=
-                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
                       (Set.univ : Set (Respondent × TaskSlot)) s)
                   have hμrt : (μRT (μResp := μResp)) Set.univ = 1 := measure_univ
                   simp [μexp, μStatus, μRT, hpreX]
@@ -237,7 +237,7 @@ theorem status_id_randomized
                       = μRT (μResp := μResp)
                           ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t}) := by
                   have hprod :=
-                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν := νStatus)
+                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
                       ({rt : Respondent × TaskSlot | Yresp p rt.fst rt.snd ∈ t})
                       (Set.univ : Set StatusProfile))
                   have hν : νStatus Set.univ = 1 := measure_univ

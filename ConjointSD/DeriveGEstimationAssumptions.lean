@@ -31,7 +31,7 @@ theorem plugInMomentAssumptions_of_theta_tendsto
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hθ : Tendsto θhat atTop (nhds θ0))
     (hcont : FunctionalContinuityAssumptions (xiAttr := xiAttr) g θ0) :
-    PlugInMomentAssumptions (ν := xiAttr) (g := g) (θ0 := θ0) (θhat := θhat) :=
+    PlugInMomentAssumptions (ν_pop := xiAttr) (g := g) (θ0 := θ0) (θhat := θhat) :=
   ⟨
     attrMean_tendsto_of_theta_tendsto
       (xiAttr := xiAttr) (g := g) (θ0 := θ0) (θhat := θhat) hθ hcont,
@@ -49,7 +49,7 @@ theorem plugInMomentAssumptions_blocks_of_theta_tendsto
     (hcont : BlockFunctionalContinuityAssumptions (xiAttr := xiAttr) gB θ0) :
     ∀ b : B,
       PlugInMomentAssumptions
-        (ν := xiAttr)
+        (ν_pop := xiAttr)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat) := by
   intro b
   refine

@@ -17,6 +17,7 @@ rev = "v4.26.0"
 
 [[lean_lib]]
 name = "ConjointSD"
+roots = ["ConjointSD"]
 
 [[lean_exe]]
 name = "runLinter"

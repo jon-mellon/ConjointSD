@@ -27,7 +27,7 @@ variable {Term : Type*} [Fintype Term]
 
 variable (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
 
-variable (ν : Measure Attr) [ProbMeasureAssumptions ν]
+variable (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
 
 /-- Paper’s “true block score”: the block contribution `Attr → ℝ` for block `b`. -/
 def paperTrueBlockScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : Attr → ℝ :=
@@ -38,41 +38,41 @@ def paperTrueTotalScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → A
   classical
   exact fun a => ∑ b : B, paperTrueBlockScore (blk := blk) (β0 := β0) (φ := φ) b a
 
-/-- Target human population SD of the true block score for block `b` under `ν`. -/
+/-- Target human population SD of the true block score for block `b` under `ν_pop`. -/
 def paperBlockSD
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : ℝ :=
   by
-    let _ := (inferInstance : IsProbabilityMeasure ν)
-    exact attrSD ν (paperTrueBlockScore blk β0 φ b)
+    let _ := (inferInstance : IsProbabilityMeasure ν_pop)
+    exact attrSD ν_pop (paperTrueBlockScore blk β0 φ b)
 
-/-- Target human population SD of the true total score under `ν`. -/
+/-- Target human population SD of the true total score under `ν_pop`. -/
 def paperTotalSD
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : ℝ :=
   by
-    let _ := (inferInstance : IsProbabilityMeasure ν)
-    exact attrSD ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
+    let _ := (inferInstance : IsProbabilityMeasure ν_pop)
+    exact attrSD ν_pop (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ))
 
 /-- Vector of paper block-SD targets. -/
 def paperBlockSDs
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : B → ℝ :=
   by
-    let _ := (inferInstance : IsProbabilityMeasure ν)
-    exact fun b => paperBlockSD (ν := ν) blk β0 φ b
+    let _ := (inferInstance : IsProbabilityMeasure ν_pop)
+    exact fun b => paperBlockSD (ν_pop := ν_pop) blk β0 φ b
 
 theorem paperBlockSDs_apply
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) :
-    paperBlockSDs (ν := ν) blk β0 φ b = paperBlockSD (ν := ν) blk β0 φ b := rfl
+    paperBlockSDs (ν_pop := ν_pop) blk β0 φ b = paperBlockSD (ν_pop := ν_pop) blk β0 φ b := rfl
 
 theorem paperTotalSD_def
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
+    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) :
-    paperTotalSD (ν := ν) blk β0 φ
+    paperTotalSD (ν_pop := ν_pop) blk β0 φ
       =
-    attrSD ν (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
+    attrSD ν_pop (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
 
 end CoreEstimand
 

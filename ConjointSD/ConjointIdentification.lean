@@ -2,6 +2,7 @@
 ConjointSD/ConjointIdentification.lean
 -/
 import ConjointSD.Assumptions
+import ConjointSD.IdentificationAssumptions
 
 open Filter MeasureTheory ProbabilityTheory
 open scoped BigOperators

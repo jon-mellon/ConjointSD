@@ -2,14 +2,14 @@
 
 Lean file: [ConjointSD/SequentialConsistency.lean](../ConjointSD/SequentialConsistency.lean)
 
-This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν`, with `EvalWeightMatchesPopMoments` matching weighted evaluation moments under `ρ`. The evaluation assumptions are now boundedness-based (`SplitEvalWeightAssumptionsBounded`), which then derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
+This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν_pop`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν_pop`. The evaluation assumptions are boundedness-based (`SplitEvalAssumptionsBounded`), which derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
 It uses the notion of [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md).
 
 Definitions:
-- `sdEst`: the evaluation-stage [standard deviation](jargon_standard_deviation.md) [estimator](jargon_estimator.md) using a fixed training index `m`, evaluation size `n`, and a weight function `w`.
+- `sdEst`: the evaluation-stage [standard deviation](jargon_standard_deviation.md) [estimator](jargon_estimator.md) using a fixed training index `m` and evaluation size `n`.
 - `sdOracle`: the target [standard deviation](jargon_standard_deviation.md) computed with the true score (see [oracle](jargon_oracle.md)).
 - `trainErr`: the gap between the [plug-in](jargon_plug_in.md) [standard deviation](jargon_standard_deviation.md) at training index `m` and the oracle [SD](jargon_standard_deviation.md).
-- `totalErr`: the gap between the weighted evaluation estimator and the oracle [standard deviation](jargon_standard_deviation.md).
+- `totalErr`: the gap between the evaluation estimator and the oracle [standard deviation](jargon_standard_deviation.md).
 
 Main logic (three steps):
 1) For fixed `m`, as `n` grows, `totalErr` [converges](jargon_convergence.md) to `trainErr` for almost all outcomes (see [almost everywhere](jargon_almost_everywhere.md)).

@@ -73,6 +73,26 @@ theorem designMeanZ_Zcomp_eq_attrMean
     _   = attrMean (kappaDesign (κ := κ) (A := A)) g := by
             simp [attrMean]
 
+/--
+Bridge for second moments: the second moment of `g(A 0)` under the sample law `κ`
+equals the second moment of `g` under the pushforward attribute distribution.
+-/
+theorem designM2Z_Zcomp_eq_attrM2
+    (g : Attr → ℝ)
+    (hA0 : Measurable (A 0))
+    (hg : Measurable g) :
+    designM2Z (κ := κ) (Z := Zcomp (A := A) (g := g))
+      =
+    attrM2 (kappaDesign (κ := κ) (A := A)) g := by
+  have hMeasSq : Measurable (fun a => (g a) ^ 2) := by
+    simpa [pow_two] using (hg.mul hg)
+  have hMeanSq :
+      designMeanZ (κ := κ) (Z := Zcomp (A := A) (g := fun a => (g a) ^ 2))
+        =
+      attrMean (kappaDesign (κ := κ) (A := A)) (fun a => (g a) ^ 2) :=
+    designMeanZ_Zcomp_eq_attrMean (κ := κ) (A := A) (g := fun a => (g a) ^ 2) hA0 hMeasSq
+  simpa [designM2Z, attrM2, designMeanZ, Zcomp, attrMean] using hMeanSq
+
 end
 
 end ConjointSD

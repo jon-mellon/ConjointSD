@@ -9,7 +9,9 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Shared definitions and assumptions
 
 - [ConjointSD/Defs.lean](readable/Defs.md) centralizes core definitions used across the project (attribute-distribution/experimental-design moments for the target human [population](readable/jargon_population.md), [plug-in](readable/jargon_plug_in.md) scores, [OLS](readable/jargon_ols.md) helpers, and conjoint primitives).
-- [ConjointSD/Assumptions.lean](readable/Assumptions.md) collects all assumption bundles (transport, [IID](readable/jargon_iid.md)/score, [regression](readable/jargon_regression.md)/[OLS](readable/jargon_ols.md), identification, paper-specific packages, plus the [additive-projection](readable/jargon_additive_projection.md) oracle definition for component targets).
+- [ConjointSD/Assumptions.lean](readable/Assumptions.md) collects assumption bundles used in the main theorem chain (transport, [IID](readable/jargon_iid.md)/score, [regression](readable/jargon_regression.md)/[OLS](readable/jargon_ols.md), identification, and paper-specific packages).
+- [ConjointSD/ApproxAssumptions.lean](readable/ApproxAssumptions.md) isolates approximation-only assumptions (approximate invariance/oracles and approximate additivity) used by the misspecification modules.
+- [ConjointSD/IdentificationAssumptions.lean](readable/IdentificationAssumptions.md) isolates identification-only randomized-design assumptions (`ConjointIdRandomized`).
 
 ## Core probability/SD machinery
 
@@ -20,13 +22,16 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Population targets and transport
 
 - [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean`.
+- [ConjointSD/SubjectSamplingLLNFromIID.lean](readable/SubjectSamplingLLNFromIID.md) derives the subject-sampling LLN to `gPop` from IID subject sampling plus bounded score regularity, and builds `SubjectSamplingLLN` using the assumed `SubjectSamplingLLNStar`.
 - [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under the pushforward attribute law `kappaDesign := Measure.map (A 0) μ` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
-- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν`-[a.e.](readable/jargon_almost_everywhere.md); includes approximate/misspecification bounds, [L2](readable/jargon_l2.md)/[RMSE](readable/jargon_rmse.md) mean and SD bounds, and a triangle-inequality lemma for chaining approximations; uses `Transport` plus the `ApproxInvarianceAE` and `BoundedAE` transport assumptions from `Assumptions.lean`.
+- [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν_pop`-[a.e.](readable/jargon_almost_everywhere.md); uses `Transport`.
+- [ConjointSD/ApproxTargetEquivalence.lean](readable/ApproxTargetEquivalence.md) collects approximate/misspecification bounds (triangle inequality and moment/SD bounds) under `ApproxInvarianceAE`/`L2Approx` plus `BoundedAE`.
 
 ## Identification and design
 
 - [ConjointSD/ConjointIdentification.lean](readable/ConjointIdentification.md) formalizes conjoint identification assumptions and derives observed-[mean](readable/jargon_mean.md) identification of [potential outcomes](readable/jargon_potential_outcome.md) and [AMCE](readable/jargon_amce.md); defines `gExp` for score-level identification statements.
 - [ConjointSD/StatusConjointDesign.lean](readable/StatusConjointDesign.md) encodes the specific status-conjoint randomization (uniform over [profiles](readable/jargon_profile.md)/tasks) and proves it satisfies `ConjointIdRandomized`, plus an explicit positivity lemma for assignments.
+- [ConjointSD/IdentificationTheorems.lean](readable/IdentificationTheorems.md) packages the paper-facing identification wrappers for conditional means and the status conjoint; not used in the main SD theorem chain.
 
 ## Estimation and sequential consistency
 
@@ -44,14 +49,17 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Model/[term](readable/jargon_term.md)/[block](readable/jargon_block.md) bridges
 
-- [ConjointSD/ModelBridge.lean](readable/ModelBridge.md) defines [block](readable/jargon_block.md) allocation `gBlockTerm` and bridges well-specification/approximation to [block](readable/jargon_block.md) sums; core definitions (`gLin`, paper term set) are in `Defs.lean`, and well-specification definitions now live in `ModelBridge.lean`.
+- [ConjointSD/ModelBridge.lean](readable/ModelBridge.md) defines [block](readable/jargon_block.md) allocation `gBlockTerm` and bridges well-specification to [block](readable/jargon_block.md) sums; core definitions (`gLin`, paper term set) are in `Defs.lean`, and well-specification definitions live in `ModelBridge.lean`.
+- [ConjointSD/ApproxModelBridge.lean](readable/ApproxModelBridge.md) provides approximate well-specification definitions and the ν_pop-a.e. approximation bridge to block sums.
 - [ConjointSD/WellSpecifiedFromNoInteractions.lean](readable/WellSpecifiedFromNoInteractions.md) shows an additive/no-interactions causal [estimand](readable/jargon_estimand.md) implies `WellSpecified` for a [linear model](readable/jargon_linear_model.md)-in-[terms](readable/jargon_term.md) model; depends on `ModelBridge`.
+- [ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean](readable/ApproxWellSpecifiedFromNoInteractions.md) derives approximate well-specification from `ApproxNoInteractions` and `FullMainEffectsTerms`.
 - [ConjointSD/TermModelBlocks.lean](readable/TermModelBlocks.md) is currently a placeholder for term-to-block model notes; depends on `PaperWrappers` (for the wrapper APIs).
 - [ConjointSD/TrueBlockEstimand.lean](readable/TrueBlockEstimand.md) defines the “true [block](readable/jargon_block.md) score” from a [term](readable/jargon_term.md) model and proves [convergence](readable/jargon_convergence.md) statements to those targets; depends on `TermModelBlocks` and [sequential consistency](readable/jargon_sequential_consistency.md) wrappers.
 
 ## Paper-facing wrappers and estimands
 
-- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: identification, model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), target-equivalence wrappers (exact and approximate, including two-stage oracle bounds), weighted-target transfer lemmas, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; now also depends on `SampleSplitting` to derive evaluation IID from randomization; central hub for exported statements.
+- [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), exact target-equivalence wrappers, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; now also depends on `SampleSplitting` to derive evaluation IID from randomization; central hub for exported statements.
+- [ConjointSD/ApproxPaperWrappers.lean](readable/ApproxPaperWrappers.md) hosts approximate/misspecified variants of the paper-facing SD wrappers (approximate targets, ApproxWellSpecifiedAE, and oracle bounds).
 - [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core [estimands](readable/jargon_estimand.md) ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
 
 ## Tooling

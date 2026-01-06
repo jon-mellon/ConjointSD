@@ -1,0 +1,668 @@
+./ConjointSD/DeriveGEstimationAssumptions.lean:7:  (2) continuity-at-θ0 of the attribute-distribution functionals
+./ConjointSD/DeriveGEstimationAssumptions.lean:19:noncomputable section
+./ConjointSD/DeriveGEstimationAssumptions.lean:62:  simpa [gBlock] using hcont.cont b
+./scripts/runLinter.lean:13:  let _ : MonadExceptOf String IO := ⟨throw ∘ IO.userError, fun x _ => x⟩
+./scripts/runLinter.lean:14:  liftExcept <| fromJson? <|← liftExcept <| Json.parse <|← IO.FS.readFile path
+./scripts/runLinter.lean:18:  IO.FS.writeFile path <| toJson a |>.pretty.push '\n'
+./scripts/runLinter.lean:41:def parseLinterArgs (args: List String) : Except String (Bool × Option Name) :=
+./scripts/runLinter.lean:57:Otherwise, resolve the default root modules from the Lake workspace.
+./scripts/runLinter.lean:71:unsafe def runLinterOnModule (update : Bool) (module : Name): IO Unit := do
+./scripts/runLinter.lean:74:  unless (← mFile.pathExists) do
+./scripts/runLinter.lean:83:  unless (← lintFile.pathExists) do
+./scripts/runLinter.lean:91:  let nolints ← if ← nolintsFile.pathExists then
+./scripts/runLinter.lean:95:  unsafe Lean.enableInitializersExecution
+./scripts/runLinter.lean:107:        decls.fold (fun res decl _ => res.push (linter.name, decl)) #[]
+./scripts/runLinter.lean:111:    let failed := results.any (!·.2.isEmpty)
+./scripts/runLinter.lean:116:      IO.print (← fmtResults.toString)
+./scripts/runLinter.lean:119:      IO.println s!"-- Linting passed for {module}."
+./scripts/runLinter.lean:128:unsafe def main (args : List String) : IO Unit := do
+./ConjointSD/TargetEquivalence.lean:4:If two score functions are equal ν_pop-a.e., then their attribute-distribution mean/second-moment/variance/SD
+./ConjointSD/TargetEquivalence.lean:15:noncomputable section
+./ConjointSD/TargetEquivalence.lean:24:/-- If s = t ν_pop-a.e., then their attribute-distribution means are equal. -/
+./ConjointSD/TargetEquivalence.lean:29:  simpa [attrMean] using this
+./ConjointSD/TargetEquivalence.lean:31:/-- If s = t ν_pop-a.e., then their attribute-distribution second moments are equal. -/
+./ConjointSD/TargetEquivalence.lean:37:    simp [ha]
+./ConjointSD/TargetEquivalence.lean:40:  simpa [attrM2] using this
+./ConjointSD/TargetEquivalence.lean:42:/-- If s = t ν_pop-a.e., then their attribute-distribution variances are equal. -/
+./ConjointSD/TargetEquivalence.lean:49:  simp [attrVar, hm, hm2]
+./ConjointSD/TargetEquivalence.lean:51:/-- If s = t ν_pop-a.e., then their attribute-distribution SDs are equal. -/
+./ConjointSD/TargetEquivalence.lean:56:  simp [attrSD, hv]
+./ConjointSD/ApproxTargetEquivalence.lean:9:noncomputable section
+./ConjointSD/ApproxTargetEquivalence.lean:32:    simpa using abs_sub_le (s x) (t x) (u x)
+./ConjointSD/ApproxTargetEquivalence.lean:33:  nlinarith [htriangle, h1x, h2x]
+./ConjointSD/ApproxTargetEquivalence.lean:49:    simp [attrMean, integral_sub, hs, ht]
+./ConjointSD/ApproxTargetEquivalence.lean:52:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:59:      rw [Real.holderConjugate_iff]
+./ConjointSD/ApproxTargetEquivalence.lean:73:      simpa using (memLp_const (μ := ν_pop) (p := ENNReal.ofReal 2) (c := (1 : ℝ)))
+./ConjointSD/ApproxTargetEquivalence.lean:82:      simpa using h
+./ConjointSD/ApproxTargetEquivalence.lean:83:    simpa [Real.sqrt_eq_rpow] using h1
+./ConjointSD/ApproxTargetEquivalence.lean:86:    exact le_trans (by simpa [hdiff] using habs) hcs
+./ConjointSD/ApproxTargetEquivalence.lean:89:section L2Centering
+./ConjointSD/ApproxTargetEquivalence.lean:97:    simpa [mul_comm, mul_left_comm, mul_assoc] using hs.mul_const (2 * ηs)
+./ConjointSD/ApproxTargetEquivalence.lean:106:    ring
+./ConjointSD/ApproxTargetEquivalence.lean:115:    simpa [sub_eq_add_neg] using
+./ConjointSD/ApproxTargetEquivalence.lean:120:    simpa [mul_comm, mul_left_comm, mul_assoc] using
+./ConjointSD/ApproxTargetEquivalence.lean:127:    simpa [add_assoc] using
+./ConjointSD/ApproxTargetEquivalence.lean:132:    simp [ηs, attrMean]
+./ConjointSD/ApproxTargetEquivalence.lean:134:    simp
+./ConjointSD/ApproxTargetEquivalence.lean:135:  have hcalc :
+./ConjointSD/ApproxTargetEquivalence.lean:137:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:144:              simp [hconst_int, hsub]
+./ConjointSD/ApproxTargetEquivalence.lean:146:              simp [hmul_int]
+./ConjointSD/ApproxTargetEquivalence.lean:148:              ring
+./ConjointSD/ApproxTargetEquivalence.lean:150:              have hring :
+./ConjointSD/ApproxTargetEquivalence.lean:153:                ring
+./ConjointSD/ApproxTargetEquivalence.lean:154:              simpa [hmean] using hring
+./ConjointSD/ApproxTargetEquivalence.lean:156:    simp [ηs, attrMean]
+./ConjointSD/ApproxTargetEquivalence.lean:157:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:159:      simp [attrVar, attrM2, attrMean, hmean_sq, ηs]
+./ConjointSD/ApproxTargetEquivalence.lean:162:      exact hcalc
+./ConjointSD/ApproxTargetEquivalence.lean:171:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:173:      simp [attrSD, hvar]
+./ConjointSD/ApproxTargetEquivalence.lean:175:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:177:end L2Centering
+./ConjointSD/ApproxTargetEquivalence.lean:190:    simpa using (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := c))
+./ConjointSD/ApproxTargetEquivalence.lean:202:    simpa using h
+./ConjointSD/ApproxTargetEquivalence.lean:220:  have hrewrite :
+./ConjointSD/ApproxTargetEquivalence.lean:224:    simp [c, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+./ConjointSD/ApproxTargetEquivalence.lean:225:  simpa [hsum, hrewrite, c] using hmono
+./ConjointSD/ApproxTargetEquivalence.lean:239:  have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp
+./ConjointSD/ApproxTargetEquivalence.lean:244:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:257:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:260:              simp [hnorm]
+./ConjointSD/ApproxTargetEquivalence.lean:265:    simp [Real.sqrt_eq_rpow]
+./ConjointSD/ApproxTargetEquivalence.lean:266:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:270:          simp [Real.norm_eq_abs]
+./ConjointSD/ApproxTargetEquivalence.lean:292:    simpa using hs_mem'
+./ConjointSD/ApproxTargetEquivalence.lean:297:    simpa using ht_mem'
+./ConjointSD/ApproxTargetEquivalence.lean:299:    simpa using hs_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηs))
+./ConjointSD/ApproxTargetEquivalence.lean:301:    simpa using ht_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηt))
+./ConjointSD/ApproxTargetEquivalence.lean:303:    simpa using hcenter_s.sub hcenter_t
+./ConjointSD/ApproxTargetEquivalence.lean:311:      simpa [ηs] using hsd
+./ConjointSD/ApproxTargetEquivalence.lean:314:    simpa [ηs] using (hsd'.trans hbridge)
+./ConjointSD/ApproxTargetEquivalence.lean:322:      simpa [ηt] using hsd
+./ConjointSD/ApproxTargetEquivalence.lean:325:    simpa [ηt] using (hsd'.trans hbridge)
+./ConjointSD/ApproxTargetEquivalence.lean:358:    have hrewrite :
+./ConjointSD/ApproxTargetEquivalence.lean:361:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:362:    simpa [hsum, hrewrite] using hmono
+./ConjointSD/ApproxTargetEquivalence.lean:395:    have hrewrite :
+./ConjointSD/ApproxTargetEquivalence.lean:398:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:404:      simpa [hsum, hrewrite] using hmono
+./ConjointSD/ApproxTargetEquivalence.lean:409:      simpa [Pi.sub_apply] using
+./ConjointSD/ApproxTargetEquivalence.lean:412:    simpa [hswap] using htri2'
+./ConjointSD/ApproxTargetEquivalence.lean:420:      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri1
+./ConjointSD/ApproxTargetEquivalence.lean:425:      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri2
+./ConjointSD/ApproxTargetEquivalence.lean:428:      linarith
+./ConjointSD/ApproxTargetEquivalence.lean:431:      linarith
+./ConjointSD/ApproxTargetEquivalence.lean:439:      simpa using hL2.1
+./ConjointSD/ApproxTargetEquivalence.lean:440:    simpa [ηs, ηt] using
+./ConjointSD/ApproxTargetEquivalence.lean:445:    have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp
+./ConjointSD/ApproxTargetEquivalence.lean:447:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:450:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:453:              simp [hconst']
+./ConjointSD/ApproxTargetEquivalence.lean:455:              simp [hμ]
+./ConjointSD/ApproxTargetEquivalence.lean:457:              simp [Real.enorm_eq_ofReal_abs]
+./ConjointSD/ApproxTargetEquivalence.lean:464:      simpa using hL2.1
+./ConjointSD/ApproxTargetEquivalence.lean:470:      simpa [abs_sq] using hbridge
+./ConjointSD/ApproxTargetEquivalence.lean:472:      simpa [abs_sq] using hL2.2
+./ConjointSD/ApproxTargetEquivalence.lean:473:    simpa [hbridge'] using hL2'
+./ConjointSD/ApproxTargetEquivalence.lean:478:      simpa [hconst] using hmean
+./ConjointSD/ApproxTargetEquivalence.lean:479:    nlinarith [htri_centered, hnorm_st, hmean']
+./ConjointSD/ApproxTargetEquivalence.lean:487:    simpa using (abs_integral_le_integral_abs (f := s) (μ := ν_pop))
+./ConjointSD/ApproxTargetEquivalence.lean:493:    simp
+./ConjointSD/ApproxTargetEquivalence.lean:494:  simpa [attrMean, hconst] using (le_trans h1 h2)
+./ConjointSD/ApproxTargetEquivalence.lean:506:    simp [attrMean, integral_sub, hs, ht]
+./ConjointSD/ApproxTargetEquivalence.lean:508:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:515:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:516:    simpa [hconst] using hle
+./ConjointSD/ApproxTargetEquivalence.lean:517:  simpa [h1] using (le_trans h2 h3)
+./ConjointSD/ApproxTargetEquivalence.lean:523:    nlinarith [Real.sqrt_nonneg a, Real.sqrt_nonneg b]
+./ConjointSD/ApproxTargetEquivalence.lean:525:    simp [abs_of_nonneg hsum_nonneg]
+./ConjointSD/ApproxTargetEquivalence.lean:534:      calc
+./ConjointSD/ApproxTargetEquivalence.lean:537:                simp [Real.sq_sqrt ha, Real.sq_sqrt hb]
+./ConjointSD/ApproxTargetEquivalence.lean:539:                ring
+./ConjointSD/ApproxTargetEquivalence.lean:541:    simp only [abs_mul] at h'
+./ConjointSD/ApproxTargetEquivalence.lean:545:    simpa [sub_eq_add_neg, abs_neg, abs_of_nonneg (Real.sqrt_nonneg _)] using h
+./ConjointSD/ApproxTargetEquivalence.lean:558:      simp [hsum_abs]
+./ConjointSD/ApproxTargetEquivalence.lean:559:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:562:              simp [pow_two]
+./ConjointSD/ApproxTargetEquivalence.lean:565:      _   = |a - b| := by simp [hfactor]
+./ConjointSD/ApproxTargetEquivalence.lean:566:  calc
+./ConjointSD/ApproxTargetEquivalence.lean:569:            simpa [pow_two] using
+./ConjointSD/ApproxTargetEquivalence.lean:589:      simpa using (abs_add_le (s a) (t a))
+./ConjointSD/ApproxTargetEquivalence.lean:591:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:594:      simp [hfact, abs_mul]
+./ConjointSD/ApproxTargetEquivalence.lean:595:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:602:              have hsum_le : |s a| + |t a| ≤ C + C := by nlinarith
+./ConjointSD/ApproxTargetEquivalence.lean:604:      _   = 2 * C * ε := by ring
+./ConjointSD/ApproxTargetEquivalence.lean:612:    simp [attrM2, integral_sub, hs2, ht2]
+./ConjointSD/ApproxTargetEquivalence.lean:617:    simpa using
+./ConjointSD/ApproxTargetEquivalence.lean:627:      simp
+./ConjointSD/ApproxTargetEquivalence.lean:628:    simpa [hconst] using hle
+./ConjointSD/ApproxTargetEquivalence.lean:629:  simpa [h1] using (le_trans h2 h3)
+./ConjointSD/ApproxTargetEquivalence.lean:655:      simpa using (abs_add_le (attrMean ν_pop s) (attrMean ν_pop t))
+./ConjointSD/ApproxTargetEquivalence.lean:661:      ring
+./ConjointSD/ApproxTargetEquivalence.lean:667:      simp [hfact, abs_mul]
+./ConjointSD/ApproxTargetEquivalence.lean:668:    calc
+./ConjointSD/ApproxTargetEquivalence.lean:676:              have hsum_le : |attrMean ν_pop s| + |attrMean ν_pop t| ≤ C + C := by nlinarith
+./ConjointSD/ApproxTargetEquivalence.lean:678:      _   = 2 * C * ε := by ring
+./ConjointSD/ApproxTargetEquivalence.lean:688:    simp [attrVar, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+./ConjointSD/ApproxTargetEquivalence.lean:696:    simpa [hvar, sub_eq_add_neg, abs_neg, abs_sub_comm,
+./ConjointSD/ApproxTargetEquivalence.lean:703:      simpa [abs_sub_comm] using hmean_sq
+./ConjointSD/ApproxTargetEquivalence.lean:704:    nlinarith [hM2, hmean_sq']
+./ConjointSD/ApproxTargetEquivalence.lean:723:    simpa [attrSD] using
+./Scratch.lean:21:#print ConjointSD.plugInMomentAssumptions_of_theta_tendsto
+./Scratch.lean:22:#print ConjointSD.plugInMomentAssumptions_blocks_of_theta_tendsto
+./Scratch.lean:23:#print ConjointSD.paper_ols_gramInv_tendsto_of_design_ae
+./Scratch.lean:24:#print ConjointSD.paper_ols_theta0_eq_of_normal_eq
+./Scratch.lean:25:#print ConjointSD.paper_ols_normal_eq_of_wellSpecified
+./Scratch.lean:36:-- Sample splitting (evaluation stage).
+./Scratch.lean:39:-- Sequential consistency (train then eval).
+./Scratch.lean:74:#print ConjointSD.paperBlockSDs_apply
+./Scratch.lean:75:#print ConjointSD.paperTotalSD_def
+./Scratch.lean:78:#print ConjointSD.paper_identifies_potMean_from_condMean
+./Scratch.lean:79:#print ConjointSD.paper_identifies_amce_from_condMeans
+./Scratch.lean:80:#print ConjointSD.paper_identifies_potMean_from_condMean_status
+./Scratch.lean:81:#print ConjointSD.paper_sd_blocks_sequential_consistency_ae
+./Scratch.lean:82:#print ConjointSD.paper_sd_total_sequential_consistency_ae
+./Scratch.lean:83:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae
+./Scratch.lean:84:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae
+./Scratch.lean:85:#print ConjointSD.paper_sd_total_sequential_consistency_to_approx_target_ae
+./Scratch.lean:86:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae
+./Scratch.lean:87:#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
+./Scratch.lean:88:#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
+./Scratch.lean:89:#print ConjointSD.paper_ols_attr_moments_of_design_ae
+./Scratch.lean:90:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+./Scratch.lean:91:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+./Scratch.lean:100:#print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae
+./Scratch.lean:101:#print ConjointSD.paper_ols_lln_of_design_ae
+./Scratch.lean:102:#print ConjointSD.paper_ols_lln_of_score_assumptions_ae
+./Scratch.lean:103:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
+./ConjointSD/SampleSplitting.lean:19:noncomputable section
+./ConjointSD/SampleSplitting.lean:30:    to the population SD under weighted evaluation moments.
+./ConjointSD/SampleSplitting.lean:53:    evalWeightMatchesPopMoments_of_law_eq
+./ConjointSD/SampleSplitting.lean:56:    simpa [hW] using (measurable_const : Measurable (fun _ : Attr => (1 : ℝ)))
+./ConjointSD/SampleSplitting.lean:60:    simpa [hW] using (abs_le.2 ⟨by norm_num, by norm_num⟩)
+./ConjointSD/SampleSplitting.lean:63:    simpa [hW, designMeanZ, Zcomp] using (one_ne_zero : (1 : ℝ) ≠ 0)
+./ConjointSD/SampleSplitting.lean:88:        simpa [pow_two] using (h.hMeasG.mul h.hMeasG)
+./ConjointSD/SampleSplitting.lean:94:        simpa using
+./ConjointSD/SampleSplitting.lean:103:        simpa using
+./ConjointSD/SampleSplitting.lean:113:        simpa using
+./ConjointSD/SampleSplitting.lean:122:        simp [designMeanZW, hMeanW, hMeanWZ, hMom.mean_eq, attrMean]
+./ConjointSD/SampleSplitting.lean:128:        simpa [designM2ZW, hMeanW, hM2WZ, attrMean, attrM2] using hMom.m2_eq
+./ConjointSD/SampleSplitting.lean:129:      simp [designSDZW, designVarZW, attrSD, attrVar, hMean, hM2]
+./ConjointSD/SampleSplitting.lean:130:  simpa [hEq] using hSDZ
+./ConjointSD/IdentificationTheorems.lean:9:noncomputable section
+./ConjointSD/EvalSamplingSRS.lean:7:noncomputable section
+./ConjointSD/EvalSamplingSRS.lean:14:theorem evalWeightMatchesPopMoments_of_law_eq
+./ConjointSD/EvalSamplingSRS.lean:21:  haveI : IsProbabilityMeasure (kappaDesign (κ := ρ) (A := A)) :=
+./ConjointSD/EvalSamplingSRS.lean:24:    simpa [kappaDesign] using hLaw.map_eq
+./ConjointSD/EvalSamplingSRS.lean:25:  haveI : IsProbabilityMeasure ν_pop := by
+./ConjointSD/EvalSamplingSRS.lean:26:    simpa [hkappa] using
+./ConjointSD/EvalSamplingSRS.lean:32:  · simp [hW, attrMean, hkappa, div_eq_mul_inv, mul_comm]
+./ConjointSD/EvalSamplingSRS.lean:33:  · simp [hW, attrM2, hkappa, div_eq_mul_inv, mul_comm]
+./ConjointSD/DesignAttributeBridge.lean:5:- attribute-distribution functionals under the pushforward attribute law
+./ConjointSD/DesignAttributeBridge.lean:11:We work with the pushforward attribute law `kappaDesign (κ := κ) (A := A)` induced by the
+./ConjointSD/DesignAttributeBridge.lean:29:noncomputable section
+./ConjointSD/DesignAttributeBridge.lean:32:-- Pushforward of a probability measure is a probability measure when the map is measurable.
+./ConjointSD/DesignAttributeBridge.lean:33:instance probMeasureAssumptions_map_of_measurable
+./ConjointSD/DesignAttributeBridge.lean:50:equals the mean of `g` under the pushforward attribute distribution `kappaDesign`.
+./ConjointSD/DesignAttributeBridge.lean:63:    -- change-of-variables for pushforward measures
+./ConjointSD/DesignAttributeBridge.lean:64:    simpa using
+./ConjointSD/DesignAttributeBridge.lean:67:  calc
+./ConjointSD/DesignAttributeBridge.lean:70:            simp [designMeanZ, Zcomp]
+./ConjointSD/DesignAttributeBridge.lean:72:            simp [hmap]
+./ConjointSD/DesignAttributeBridge.lean:74:            simp [attrMean]
+./ConjointSD/ModelBridge.lean:7:noncomputable section
+./ConjointSD/ModelBridge.lean:21:    (β : Term → ℝ) (φ : Term → Attr → ℝ) : Prop :=
+./ConjointSD/ModelBridge.lean:29:We use an `if` formulation so the additivity proof is just sum-swapping + `simp`.
+./ConjointSD/ModelBridge.lean:34:    classical
+./ConjointSD/ModelBridge.lean:49:  classical
+./ConjointSD/ModelBridge.lean:56:    calc
+./ConjointSD/ModelBridge.lean:59:              simp [gTotal, gBlockTerm]
+./ConjointSD/ModelBridge.lean:62:              simpa using
+./ConjointSD/ModelBridge.lean:69:              refine Finset.sum_congr rfl ?_
+./ConjointSD/ModelBridge.lean:71:              -- `simp` knows how to evaluate `∑ b, if blk t = b then r else 0`
+./ConjointSD/ModelBridge.lean:72:              simp [eq_comm]
+./ConjointSD/ModelBridge.lean:74:              simp [gLin]
+./ConjointSD/ModelBridge.lean:75:  simpa using h.symm
+./ConjointSD/Defs.lean:6:noncomputable section
+./ConjointSD/Defs.lean:13:assumption packages. Assumption structures/props live in `ConjointSD.Assumptions`.
+./ConjointSD/Defs.lean:25:/-- Profiles are a product of all relevant attributes: `Attr := ∀ k, V k`. -/
+./ConjointSD/Defs.lean:72:/-- Design pushforward attribute distribution: the law of `A 0` under `κ`. -/
+./ConjointSD/Defs.lean:80:/-- Weights evaluated along a draw stream `A`. -/
+./ConjointSD/Defs.lean:143:/-- Attribute-distribution mean under `xiAttr` (generic attribute law). -/
+./ConjointSD/Defs.lean:166:/-- Plug-in (estimated) status function on attributes. -/
+./ConjointSD/Defs.lean:177:/-- Induced real-valued process from attribute records via a scoring function `g`. -/
+./ConjointSD/Defs.lean:187:/-- Θ ↦ attribute-distribution mean induced by `g` under `xiAttr`. -/
+./ConjointSD/Defs.lean:191:/-- Θ ↦ attribute-distribution second moment induced by `g` under `xiAttr`. -/
+./ConjointSD/Defs.lean:212:    classical
+./ConjointSD/Defs.lean:222:    classical
+./ConjointSD/Defs.lean:230:    classical
+./ConjointSD/Defs.lean:238:    classical
+./ConjointSD/Defs.lean:281:/-- Population-mean scoring function across persons. -/
+./ConjointSD/Transport.lean:3:noncomputable section
+./ConjointSD/Transport.lean:7:# Transport (attribute-distribution prediction) layer
+./ConjointSD/EstimatedG.lean:6:We assume the attribute-distribution moments on attributes (attrMean/attrM2/attrVar/attrSD)
+./ConjointSD/EstimatedG.lean:8:attribute-distribution *mean* and *second moment* under ν_pop when we replace oracle `g θ0`
+./ConjointSD/EstimatedG.lean:18:noncomputable section
+./ConjointSD/EstimatedG.lean:29:/-- Derived: attribute-distribution variance convergence under ν_pop for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:52:    simpa [pow_two] using (hmean.mul hmean)
+./ConjointSD/EstimatedG.lean:59:  simpa [attrVar] using hvar
+./ConjointSD/EstimatedG.lean:61:/-- Derived: attribute-distribution SD convergence under ν_pop for the plug-in score. -/
+./ConjointSD/EstimatedG.lean:87:  simpa [attrSD] using (hsqrt.comp hvar)
+./ConjointSD/RegressionConsistencyBridge.lean:4:Route 2 bridge: derive attribute-distribution moment convergence from
+./ConjointSD/RegressionConsistencyBridge.lean:17:noncomputable section
+./ConjointSD/RegressionConsistencyBridge.lean:33:  simpa [gHat, attrMeanΘ] using (hcont.cont_mean.tendsto.comp hθ)
+./ConjointSD/RegressionConsistencyBridge.lean:46:  simpa [gHat, attrM2Θ] using (hcont.cont_m2.tendsto.comp hθ)
+./ConjointSD/RegressionConsistencyBridge.lean:71:          simp [attrMeanΘ, hEqθ]
+./ConjointSD/RegressionConsistencyBridge.lean:72:    simpa [hmean] using h.cont_mean
+./ConjointSD/RegressionConsistencyBridge.lean:80:          simp [attrM2Θ, hEqθ]
+./ConjointSD/RegressionConsistencyBridge.lean:81:    simpa [hm2] using h.cont_m2
+./ConjointSD/RegressionConsistencyBridge.lean:96:  simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:107:  classical
+./ConjointSD/RegressionConsistencyBridge.lean:120:      simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:127:  calc
+./ConjointSD/RegressionConsistencyBridge.lean:130:            simp [attrMean, gLin]
+./ConjointSD/RegressionConsistencyBridge.lean:132:          simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:139:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:143:            simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:145:          simpa [attrMean] using hInt
+./ConjointSD/RegressionConsistencyBridge.lean:156:  classical
+./ConjointSD/RegressionConsistencyBridge.lean:171:      simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:178:      simpa [abs_mul] using hmul
+./ConjointSD/RegressionConsistencyBridge.lean:200:  calc
+./ConjointSD/RegressionConsistencyBridge.lean:203:            simp [attrM2, gLin, pow_two]
+./ConjointSD/RegressionConsistencyBridge.lean:205:          simp [Fintype.sum_mul_sum]
+./ConjointSD/RegressionConsistencyBridge.lean:207:          simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:214:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:216:          simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:223:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:225:          refine Finset.sum_congr rfl ?_
+./ConjointSD/RegressionConsistencyBridge.lean:232:            ring
+./ConjointSD/RegressionConsistencyBridge.lean:237:            simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:244:            simpa [hmul] using hInt
+./ConjointSD/RegressionConsistencyBridge.lean:245:          simpa [attrMean] using hInt'
+./ConjointSD/RegressionConsistencyBridge.lean:255:  classical
+./ConjointSD/RegressionConsistencyBridge.lean:280:      simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:284:      simpa [hMeanEq] using hMeanContAt
+./ConjointSD/RegressionConsistencyBridge.lean:285:    simpa [attrMeanΘ] using hMeanContAt'
+./ConjointSD/RegressionConsistencyBridge.lean:297:      simpa using
+./ConjointSD/RegressionConsistencyBridge.lean:301:      simpa [hM2Eq] using hM2ContAt
+./ConjointSD/RegressionConsistencyBridge.lean:302:    simpa [attrM2Θ] using hM2ContAt'
+./ConjointSD/IdentificationAssumptions.lean:6:noncomputable section
+./ConjointSD/IdentificationAssumptions.lean:16:structure ConjointIdRandomized
+./ConjointSD/IdentificationAssumptions.lean:18:    [ProbMeasureAssumptions μexp] : Prop where
+./ConjointSD/PaperCoreEstimand.lean:15:noncomputable section
+./ConjointSD/PaperCoreEstimand.lean:38:  classical
+./ConjointSD/PaperCoreEstimand.lean:68:    paperBlockSDs (ν_pop := ν_pop) blk β0 φ b = paperBlockSD (ν_pop := ν_pop) blk β0 φ b := rfl
+./ConjointSD/PaperCoreEstimand.lean:75:    attrSD ν_pop (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
+./ConjointSD/RegressionEstimator.lean:14:noncomputable section
+./ConjointSD/RegressionEstimator.lean:24:of `G n` inverse and `c n` to their attribute-distribution counterparts.
+./ConjointSD/RegressionEstimator.lean:43:  classical
+./ConjointSD/RegressionEstimator.lean:64:    simpa [Matrix.mulVec] using hsum
+./ConjointSD/RegressionEstimator.lean:74:    simpa using hpoint i
+./ConjointSD/RegressionEstimator.lean:75:  simpa [olsThetaHat] using hfun
+./ConjointSD/RegressionEstimator.lean:86:  simpa [hId] using
+./ConjointSD/RegressionEstimator.lean:92:/-- Convert attribute-distribution moment assumptions to sample-path moment assumptions. -/
+./ConjointSD/PaperWrappers.lean:38:noncomputable section
+./ConjointSD/PaperWrappers.lean:213:variable (Aeval : ℕ → Ω → Profile K V)
+./ConjointSD/PaperWrappers.lean:222:set_option linter.style.longLine false
+./ConjointSD/PaperWrappers.lean:228:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
+./ConjointSD/PaperWrappers.lean:233:          (ρ := ρ) (A := Aeval) (w := w)
+./ConjointSD/PaperWrappers.lean:275:                  totalErr ρ Aeval (ν_pop) w
+./ConjointSD/PaperWrappers.lean:359:      classical
+./ConjointSD/PaperWrappers.lean:383:        simpa using congrArg (fun f => f x) hLinBlocks.symm
+./ConjointSD/PaperWrappers.lean:384:      calc
+./ConjointSD/PaperWrappers.lean:396:            simpa [WellSpecified] using hspec x
+./ConjointSD/PaperWrappers.lean:399:    simpa using congrArg (fun f => f x) hBlocks
+./ConjointSD/PaperWrappers.lean:466:    rfl
+./ConjointSD/PaperWrappers.lean:468:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w)
+./ConjointSD/PaperWrappers.lean:492:set_option linter.style.longLine true
+./ConjointSD/PaperWrappers.lean:494:set_option linter.style.longLine false
+./ConjointSD/PaperWrappers.lean:500:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop))
+./ConjointSD/PaperWrappers.lean:505:          (ρ := ρ) (A := Aeval) (w := w)
+./ConjointSD/PaperWrappers.lean:545:                totalErr ρ Aeval (ν_pop) w
+./ConjointSD/PaperWrappers.lean:647:      classical
+./ConjointSD/PaperWrappers.lean:671:        simpa using congrArg (fun f => f x) hLinBlocks.symm
+./ConjointSD/PaperWrappers.lean:672:      calc
+./ConjointSD/PaperWrappers.lean:684:            simpa [WellSpecified] using hspec x
+./ConjointSD/PaperWrappers.lean:695:      simpa using congrArg (fun f => f x) hBlocks
+./ConjointSD/PaperWrappers.lean:696:    calc
+./ConjointSD/PaperWrappers.lean:707:            simp [gTotalΘ, gTotal]
+./ConjointSD/PaperWrappers.lean:732:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w)
+./ConjointSD/PaperWrappers.lean:752:set_option linter.style.longLine true
+./ConjointSD/DecompositionSequentialConsistency.lean:20:noncomputable section
+./ConjointSD/DecompositionSequentialConsistency.lean:60:  classical
+./ConjointSD/DecompositionSequentialConsistency.lean:70:    simpa [gBlock] using
+./ConjointSD/DecompositionSequentialConsistency.lean:83:    have hb : b ∈ (Finset.univ : Finset B) := by simp
+./ConjointSD/DecompositionSequentialConsistency.lean:111:  simpa [gTotalΘ] using
+./ConjointSD/SubjectSamplingLLNFromIID.lean:7:noncomputable section
+./ConjointSD/SubjectSamplingLLNFromIID.lean:27:  classical
+./ConjointSD/SubjectSamplingLLNFromIID.lean:31:    simpa [hIID.identR 0] using hScore.integrable_gP x
+./ConjointSD/SubjectSamplingLLNFromIID.lean:33:    simpa [X] using hint_map.comp_measurable (hIID.measR 0)
+./ConjointSD/SubjectSamplingLLNFromIID.lean:34:  have hindep : Pairwise (fun i j => IndepFun (X i) (X j) μexp) := by
+./ConjointSD/SubjectSamplingLLNFromIID.lean:42:      simpa [hIID.identR i, hIID.identR 0]
+./ConjointSD/SubjectSamplingLLNFromIID.lean:60:      simpa using
+./ConjointSD/SubjectSamplingLLNFromIID.lean:65:    calc
+./ConjointSD/SubjectSamplingLLNFromIID.lean:68:        (∫ ω, gP (R 0 ω) x ∂μexp) := by rfl
+./ConjointSD/SubjectSamplingLLNFromIID.lean:72:        simpa [gPop, hmap]
+./ConjointSD/SubjectSamplingLLNFromIID.lean:78:    simpa [hmean] using hω
+./ConjointSD/SubjectSamplingLLNFromIID.lean:79:  simpa [gHatSubject, X, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hω'
+./ConjointSD/ApproxModelBridge.lean:6:noncomputable section
+./ConjointSD/ApproxModelBridge.lean:16:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxModelBridge.lean:19:/-- Approximate well-specification on target-population attribute support (ν_pop-a.e.). -/
+./ConjointSD/ApproxModelBridge.lean:23:    (β : Term → ℝ) (φ : Term → Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxModelBridge.lean:42:  classical
+./ConjointSD/ApproxModelBridge.lean:54:    simpa using congrArg (fun f => f x) hblocks
+./ConjointSD/ApproxModelBridge.lean:57:  simpa [hlin x, abs_sub_comm] using hx
+./ConjointSD/ApproxAssumptions.lean:8:noncomputable section
+./ConjointSD/ApproxAssumptions.lean:15:/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν_pop-a.e. -/
+./ConjointSD/ApproxAssumptions.lean:16:def ApproxInvarianceAE (ν_pop : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:31:    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:40:    (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
+./ConjointSD/ApproxAssumptions.lean:53:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) (ε : ℝ) : Prop :=
+./ConjointSD/ApproxPaperWrappers.lean:10:noncomputable section
+./ConjointSD/ApproxPaperWrappers.lean:223:    simpa [abs_sub_comm, hTotalModel x] using hx
+./ConjointSD/PredictedSD.lean:6:noncomputable section
+./ConjointSD/TrueBlockEstimand.lean:12:noncomputable section
+./ConjointSD/VarianceDecompositionFromBlocks.lean:7:noncomputable section
+./ConjointSD/SDDecompositionFromConjoint.lean:7:noncomputable section
+./ConjointSD/SDDecompositionFromConjoint.lean:29:  simpa [Real.norm_eq_abs] using hC'
+./ConjointSD/SDDecompositionFromConjoint.lean:42:  have hInd : Pairwise (fun i j => IndepFun (Z i) (Z j) μexp) := by
+./ConjointSD/SDDecompositionFromConjoint.lean:47:    simpa [Z, Zcomp, Function.comp] using this
+./ConjointSD/SDDecompositionFromConjoint.lean:53:    simpa [Z, Zcomp, Function.comp] using this
+./ConjointSD/SDDecompositionFromConjoint.lean:64:    simpa [Z, Zcomp] using hInt'
+./ConjointSD/SDDecompositionFromConjoint.lean:65:  simpa [meanHatZ, designMeanZ, Z] using
+./ConjointSD/SDDecompositionFromConjoint.lean:95:    simpa [abs_mul] using hmul
+./ConjointSD/SDDecompositionFromConjoint.lean:108:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:119:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:136:    simpa [nhds_prod_eq] using hWZω.prodMk hWω
+./ConjointSD/SDDecompositionFromConjoint.lean:145:  simpa [meanHatZW, designMeanZW] using hdiv
+./ConjointSD/SDDecompositionFromConjoint.lean:167:    simpa [pow_two] using (hMeasG.mul hMeasG)
+./ConjointSD/SDDecompositionFromConjoint.lean:174:    simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul
+./ConjointSD/SDDecompositionFromConjoint.lean:177:    refine ⟨Cw * Cg ^ 2, mul_nonneg hCw0 (by nlinarith), ?_⟩
+./ConjointSD/SDDecompositionFromConjoint.lean:181:    simpa [abs_mul] using hmul
+./ConjointSD/SDDecompositionFromConjoint.lean:194:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:205:    simpa [Wcomp, Zcomp] using
+./ConjointSD/SDDecompositionFromConjoint.lean:225:    simpa [nhds_prod_eq] using hWZ2ω.prodMk hWω
+./ConjointSD/SDDecompositionFromConjoint.lean:234:  simpa [m2HatZW, designM2ZW] using hdiv
+./ConjointSD/SDDecompositionFromConjoint.lean:273:    simpa [pow_two] using (hmeanω.mul hmeanω)
+./ConjointSD/SDDecompositionFromConjoint.lean:288:  simpa [varHatZW, designVarZW] using this
+./ConjointSD/SDDecompositionFromConjoint.lean:323:  simpa [sdHatZW, designSDZW] using (hsqrt.comp hω)
+./ConjointSD/TermModelBlocks.lean:13:noncomputable section
+./ConjointSD/PaperOLSConsistency.lean:19:noncomputable section
+./ConjointSD/PaperOLSConsistency.lean:42:  classical
+./ConjointSD/PaperOLSConsistency.lean:63:    simp [gTotal]
+./ConjointSD/PaperOLSConsistency.lean:64:  calc
+./ConjointSD/PaperOLSConsistency.lean:69:          simp [gPaper]
+./ConjointSD/PaperOLSConsistency.lean:103:      simp [φPaper]
+./ConjointSD/PaperOLSConsistency.lean:107:          simpa [φPaper] using hmeasMain m
+./ConjointSD/PaperOLSConsistency.lean:109:          simpa [φPaper] using hmeasInter i
+./ConjointSD/PaperOLSConsistency.lean:121:      simp [φPaper]
+./ConjointSD/PaperOLSConsistency.lean:125:          simpa [φPaper] using hboundMain m
+./ConjointSD/PaperOLSConsistency.lean:127:          simpa [φPaper] using hboundInter i
+./ConjointSD/PaperOLSConsistency.lean:158:    simpa [gPaper] using
+./ConjointSD/PaperOLSConsistency.lean:180:  simpa [gTotalΘ] using hEq'
+./ConjointSD/PaperOLSConsistency.lean:200:  by_cases htb : blk t = b
+./ConjointSD/PaperOLSConsistency.lean:206:        simp [φBlock, htb]
+./ConjointSD/PaperOLSConsistency.lean:207:    simpa [hEq] using
+./ConjointSD/PaperOLSConsistency.lean:215:        simp [φBlock, htb]
+./ConjointSD/PaperOLSConsistency.lean:216:    simp [hEq]
+./ConjointSD/PaperOLSConsistency.lean:228:  by_cases htb : blk t = b
+./ConjointSD/PaperOLSConsistency.lean:234:    simpa [φBlock, htb] using hC a
+./ConjointSD/PaperOLSConsistency.lean:237:    simp [φBlock, htb]
+./ConjointSD/PaperOLSConsistency.lean:248:  classical
+./ConjointSD/PaperOLSConsistency.lean:250:  simp [gBlockTerm, gLin, φBlock]
+./ConjointSD/PaperOLSConsistency.lean:323:  simpa using
+./ConjointSD/PaperOLSConsistency.lean:344:  simpa [abs_mul] using hmul
+./ConjointSD/PaperOLSConsistency.lean:366:  classical
+./ConjointSD/PaperOLSConsistency.lean:411:      simpa using (hspec a).symm
+./ConjointSD/PaperOLSConsistency.lean:421:      calc
+./ConjointSD/PaperOLSConsistency.lean:429:          simp [hspec']
+./ConjointSD/PaperOLSConsistency.lean:434:          rfl
+./ConjointSD/PaperOLSConsistency.lean:440:          simpa using
+./ConjointSD/PaperOLSConsistency.lean:450:          refine Finset.sum_congr rfl ?_
+./ConjointSD/PaperOLSConsistency.lean:452:          ring
+./ConjointSD/PaperOLSConsistency.lean:454:          rfl
+./ConjointSD/PaperOLSConsistency.lean:456:          rfl
+./ConjointSD/PaperOLSConsistency.lean:457:    calc
+./ConjointSD/PaperOLSConsistency.lean:465:  calc
+./ConjointSD/PaperOLSConsistency.lean:475:      simp [Matrix.mulVec, dotProduct, attrGram]
+./ConjointSD/PaperOLSConsistency.lean:481:      refine Finset.sum_congr rfl ?_
+./ConjointSD/PaperOLSConsistency.lean:483:      ring
+./ConjointSD/PaperOLSConsistency.lean:489:      simpa using hCrossEq.symm
+./ConjointSD/PaperOLSConsistency.lean:516:  classical
+./ConjointSD/PaperOLSConsistency.lean:530:    simpa using
+./ConjointSD/PaperOLSConsistency.lean:547:    calc
+./ConjointSD/PaperOLSConsistency.lean:559:          refine Finset.sum_congr rfl ?_
+./ConjointSD/PaperOLSConsistency.lean:561:          ring
+./ConjointSD/PaperOLSConsistency.lean:563:          simp [Finset.sum_add_distrib, gCross]
+./ConjointSD/PaperOLSConsistency.lean:564:  simp [crossVec, meanHatZ, Zcomp, gCross, smul_eq_mul, hsum_yobs, hsum_cross, mul_add]
+./ConjointSD/PaperOLSConsistency.lean:619:  classical
+./ConjointSD/PaperOLSConsistency.lean:662:      simpa [hpop] using hω
+./ConjointSD/PaperOLSConsistency.lean:677:        simpa using (Fin.sum_univ_eq_sum_range (n := n) (fun k => gGram (Aω k ω)))
+./ConjointSD/PaperOLSConsistency.lean:678:      simp [gramMatrix, gGram, hsum]
+./ConjointSD/PaperOLSConsistency.lean:679:    simpa [meanHatZ, Zcomp, gGram, attrGram, hgram_eq]
+./ConjointSD/PaperOLSConsistency.lean:737:      simpa [hpop] using hω
+./ConjointSD/PaperOLSConsistency.lean:753:      simpa [gCross] using
+./ConjointSD/PaperOLSConsistency.lean:782:      simpa using hsum_tendsto
+./ConjointSD/PaperOLSConsistency.lean:783:    simpa [attrCross, gCross, hcross_eq] using hsum_tendsto'
+./ConjointSD/PaperOLSConsistency.lean:886:    simpa [abs_mul] using hmul
+./ConjointSD/PaperOLSConsistency.lean:905:    simpa [abs_mul] using hmul
+./ConjointSD/PaperOLSConsistency.lean:967:    simpa [Ring.inverse] using (continuousAt_inv₀ hdet')
+./ConjointSD/PaperOLSConsistency.lean:993:    simpa using hgram i j
+./ConjointSD/PaperOLSConsistency.lean:1011:  simpa using hEntry
+./ConjointSD/PaperOLSConsistency.lean:1063:    simpa using hNormal.symm
+./ConjointSD/PaperOLSConsistency.lean:1076:  simpa using h.symm
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:5:  Bridge from “no interactions” (additive structure over attributes)
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:20:noncomputable section
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:38:/-- Terms: `none` is intercept, `some k` is the main effect for attribute `k`. -/
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:46:/-- Features: intercept feature is constant `1`; main-effect feature is `main k (x k)`. -/
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:69:  classical
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:74:  calc
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:78:        simpa using (hadd x).symm
+./ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean:8:noncomputable section
+./ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean:36:  calc
+./ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean:41:        simp [hlin, abs_sub_comm]
+./ConjointSD/SequentialConsistency.lean:8:(1) For any fixed training index m, as evaluation size n → ∞,
+./ConjointSD/SequentialConsistency.lean:27:noncomputable section
+./ConjointSD/SequentialConsistency.lean:36:/-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/
+./ConjointSD/SequentialConsistency.lean:70:Assumes the evaluation attribute law equals the target-population law `ν_pop`
+./ConjointSD/SequentialConsistency.lean:71:(so weights are effectively uniform for the evaluation stage).
+./ConjointSD/SequentialConsistency.lean:110:    simpa using hBase_map
+./ConjointSD/SequentialConsistency.lean:114:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
+./ConjointSD/SequentialConsistency.lean:124:  simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
+./ConjointSD/SequentialConsistency.lean:143:    simpa [c] using
+./ConjointSD/SequentialConsistency.lean:149:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
+./ConjointSD/SequentialConsistency.lean:157:  simpa [trainErr, sdOracle, c] using (h1.trans (by simp))
+./ConjointSD/SequentialConsistency.lean:163:- `hSplit : ∀ m, SplitEvalAssumptionsBounded ... m` gives evaluation-stage
+./ConjointSD/SequentialConsistency.lean:200:      nlinarith [hε.pos]
+./ConjointSD/SequentialConsistency.lean:207:    nlinarith [hε.pos]
+./ConjointSD/SequentialConsistency.lean:229:      nlinarith [hε.pos]
+./ConjointSD/Assumptions.lean:8:noncomputable section
+./ConjointSD/Assumptions.lean:14:All assumption structures/props are centralized here for easier auditing.
+./ConjointSD/Assumptions.lean:23:class ProbMeasureAssumptions (κ : Measure α) : Prop where
+./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb
+./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward)
+./ConjointSD/Assumptions.lean:37:for non-target attribute laws.
+./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
+./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+./ConjointSD/Assumptions.lean:42:    (s : Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:59:def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
+./ConjointSD/Assumptions.lean:67:structure EpsilonAssumptions (ε : ℝ) : Prop where
+./ConjointSD/Assumptions.lean:80:i.i.d.-type assumptions on the attribute-record process A under the experimental
+./ConjointSD/Assumptions.lean:83:structure DesignAttrIID (A : ℕ → Ω → Attr) : Prop where
+./ConjointSD/Assumptions.lean:85:  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
+./ConjointSD/Assumptions.lean:89:i.i.d.-type assumptions on the attribute-record process A under the evaluation
+./ConjointSD/Assumptions.lean:90:distribution. This is intentionally distinct from `DesignAttrIID` so evaluation
+./ConjointSD/Assumptions.lean:93:structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
+./ConjointSD/Assumptions.lean:95:  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
+./ConjointSD/Assumptions.lean:99:structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions κ] :
+./ConjointSD/Assumptions.lean:100:    Prop where
+./ConjointSD/Assumptions.lean:135:structure SplitEvalAssumptionsBounded
+./ConjointSD/Assumptions.lean:137:    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ) (m : ℕ) : Prop where
+./ConjointSD/Assumptions.lean:150:structure SubjectSamplingIID
+./ConjointSD/Assumptions.lean:151:    (μexp : Measure Ω) (μpop : Measure Person) (R : ℕ → Ω → Person) : Prop where
+./ConjointSD/Assumptions.lean:153:  indepR : Pairwise (fun i j => IndepFun (R i) (R j) μexp)
+./ConjointSD/Assumptions.lean:157:structure SubjectScoreAssumptions
+./ConjointSD/Assumptions.lean:158:    (μpop : Measure Person) (gP : Person → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:166:structure SubjectSamplingLLN
+./ConjointSD/Assumptions.lean:168:    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:185:structure SubjectSamplingLLNStar
+./ConjointSD/Assumptions.lean:187:    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:203:  classical
+./ConjointSD/Assumptions.lean:205:  by_contra hne
+./ConjointSD/Assumptions.lean:218:  have hfalse : ∀ᵐ _ω ∂μexp, False := by
+./ConjointSD/Assumptions.lean:223:    have hfalse' : μexp { ω | ¬False } = 0 := (MeasureTheory.ae_iff).1 hfalse
+./ConjointSD/Assumptions.lean:224:    simpa using hfalse'
+./ConjointSD/Assumptions.lean:247:Continuity assumptions for the induced attribute-distribution functionals at θ0.
+./ConjointSD/Assumptions.lean:249:Here `xiAttr` is whichever attribute distribution governs the target moments in the
+./ConjointSD/Assumptions.lean:254:structure FunctionalContinuityAssumptions
+./ConjointSD/Assumptions.lean:255:    (xiAttr : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : Prop where
+./ConjointSD/Assumptions.lean:264:structure PlugInMomentAssumptions
+./ConjointSD/Assumptions.lean:265:    (ν_pop : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
+./ConjointSD/Assumptions.lean:278:structure BlockFunctionalContinuityAssumptions
+./ConjointSD/Assumptions.lean:280:    (xiAttr : Measure Attr) (gB : B → Θ → Attr → ℝ) (θ0 : Θ) : Prop where
+./ConjointSD/Assumptions.lean:291:structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
+./ConjointSD/Assumptions.lean:313:Moment assumptions stated against the attribute-distribution Gram/cross moments.
+./ConjointSD/Assumptions.lean:314:Here `xiAttr` names the attribute distribution used in the limit (design-law for fitting,
+./ConjointSD/Assumptions.lean:318:structure OLSMomentAssumptionsOfAttr {Attr : Type u} {Term : Type v}
+./ConjointSD/Assumptions.lean:323:    (θ0 : Term → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:352:structure ObservationNoiseAssumptions
+./ConjointSD/Assumptions.lean:356:    (φ : Term → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:383:structure PaperOLSDesignAssumptions
+./ConjointSD/Assumptions.lean:386:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:403:structure PaperOLSFullRankAssumptions
+./ConjointSD/Assumptions.lean:405:    (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:419:Evaluation sample is an IID draw from the target population attribute law `ν_pop`:
+./ConjointSD/Assumptions.lean:420:the evaluation attribute distribution equals `ν_pop`.
+./ConjointSD/Assumptions.lean:422:structure EvalAttrLawEqPop
+./ConjointSD/Assumptions.lean:425:    (ν_pop : Measure Attr) : Prop where
+./ConjointSD/Assumptions.lean:430:Evaluation-weight moment matching: weighted moments of the evaluation draw
+./ConjointSD/Assumptions.lean:433:This is a transport-style assumption that links the evaluation sample
+./ConjointSD/Assumptions.lean:434:(`A 0` under the evaluation law `ρ`) to the population distribution `ν_pop`
+./ConjointSD/Assumptions.lean:435:without requiring full law equality.
+./ConjointSD/Assumptions.lean:437:structure EvalWeightMatchesPopMoments
+./ConjointSD/Assumptions.lean:440:    (ν_pop : Measure Attr) (w s : Attr → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:462:Randomization mechanism for an attribute stream `A i`.
+./ConjointSD/Assumptions.lean:468:structure ConjointRandomizationStream
+./ConjointSD/Assumptions.lean:469:    [MeasurableSpace Attr] (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) : Prop where
+./ConjointSD/Assumptions.lean:475:      Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧
+./ConjointSD/Assumptions.lean:498:    simpa [hAeq i] using hmeasf.comp (hmeasU i)
+./ConjointSD/Assumptions.lean:504:    simpa [hAeq i, hAeq j] using hA
+./ConjointSD/Assumptions.lean:509:    simpa [hAeq i, hAeq 0] using hA
+./ConjointSD/Assumptions.lean:530:    (φ : Term → Profile K V → ℝ) : Prop :=
+./ConjointSD/Assumptions.lean:540:    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
+./ConjointSD/StatusConjointDesign.lean:5:- profile space: the 8,500 feasible attribute combinations generated for the survey,
+./ConjointSD/StatusConjointDesign.lean:9:  potential outcomes supplied by the product structure.
+./ConjointSD/StatusConjointDesign.lean:19:noncomputable section
+./ConjointSD/StatusConjointDesign.lean:29:/-- Four rating tasks per respondent (two choice-sets of two personas). -/
+./ConjointSD/StatusConjointDesign.lean:37:instance : Nonempty StatusProfile := ⟨⟨0, by decide⟩⟩
+./ConjointSD/StatusConjointDesign.lean:38:instance : Nonempty TaskSlot := ⟨⟨0, by decide⟩⟩
+./ConjointSD/StatusConjointDesign.lean:41:noncomputable def νStatus : Measure StatusProfile :=
+./ConjointSD/StatusConjointDesign.lean:44:instance : IsProbabilityMeasure νStatus := by
+./ConjointSD/StatusConjointDesign.lean:45:  classical
+./ConjointSD/StatusConjointDesign.lean:46:  simpa [νStatus] using
+./ConjointSD/StatusConjointDesign.lean:49:instance : ProbMeasureAssumptions νStatus := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:52:noncomputable def μTask : Measure TaskSlot :=
+./ConjointSD/StatusConjointDesign.lean:55:instance : IsProbabilityMeasure μTask :=
+./ConjointSD/StatusConjointDesign.lean:57:    classical
+./ConjointSD/StatusConjointDesign.lean:58:    simpa [μTask] using
+./ConjointSD/StatusConjointDesign.lean:62:instance : ProbMeasureAssumptions μTask := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:68:noncomputable def μRT {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:70:  μResp.prod μTask
+./ConjointSD/StatusConjointDesign.lean:72:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:75:  classical
+./ConjointSD/StatusConjointDesign.lean:80:  have hprod := Measure.prod_prod (μ := μResp) (ν_pop := μTask) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:81:  calc
+./ConjointSD/StatusConjointDesign.lean:83:        = μResp.prod μTask (Set.univ ×ˢ (Set.univ : Set TaskSlot)) := by
+./ConjointSD/StatusConjointDesign.lean:84:          simp [μRT, Set.univ_prod_univ]
+./ConjointSD/StatusConjointDesign.lean:86:    _ = 1 := by simp [hμ, htask]
+./ConjointSD/StatusConjointDesign.lean:88:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:93:noncomputable def μStatus {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:95:  (μRT (μResp := μResp)).prod νStatus
+./ConjointSD/StatusConjointDesign.lean:97:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:100:  classical
+./ConjointSD/StatusConjointDesign.lean:105:    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) (Set.univ) (Set.univ)
+./ConjointSD/StatusConjointDesign.lean:106:  calc
+./ConjointSD/StatusConjointDesign.lean:108:        = (μRT (μResp := μResp)).prod νStatus
+./ConjointSD/StatusConjointDesign.lean:110:          simp [μStatus, Set.univ_prod_univ]
+./ConjointSD/StatusConjointDesign.lean:112:    _ = 1 := by simp [hrt, hν]
+./ConjointSD/StatusConjointDesign.lean:114:instance {Respondent : Type u} [MeasurableSpace Respondent]
+./ConjointSD/StatusConjointDesign.lean:151:  classical
+./ConjointSD/StatusConjointDesign.lean:156:    simpa [StatusΩ, statusX] using
+./ConjointSD/StatusConjointDesign.lean:187:      ext ω; simp [statusX]
+./ConjointSD/StatusConjointDesign.lean:192:      ext ω; simp [statusY]
+./ConjointSD/StatusConjointDesign.lean:193:    -- Combine the rectangles and evaluate with `prod_prod`.
+./ConjointSD/StatusConjointDesign.lean:194:    calc
+./ConjointSD/StatusConjointDesign.lean:210:                        simpa [statusY, statusX] using hy
+./ConjointSD/StatusConjointDesign.lean:211:                      simpa [statusX] using this
+./ConjointSD/StatusConjointDesign.lean:212:                    · have : ω.snd ∈ s := by simpa [statusX] using hx
+./ConjointSD/StatusConjointDesign.lean:213:                      simpa [statusX] using this
+./ConjointSD/StatusConjointDesign.lean:216:                    · simpa [statusX] using hs'
+./ConjointSD/StatusConjointDesign.lean:218:                        simpa using hrs
+./ConjointSD/StatusConjointDesign.lean:219:                      simpa [statusY] using this
+./ConjointSD/StatusConjointDesign.lean:222:                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
+./ConjointSD/StatusConjointDesign.lean:224:                simp [μexp, μStatus, μRT, hrect]
+./ConjointSD/StatusConjointDesign.lean:231:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
+./ConjointSD/StatusConjointDesign.lean:234:                  simp [μexp, μStatus, μRT, hpreX]
+./ConjointSD/StatusConjointDesign.lean:240:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus)
+./ConjointSD/StatusConjointDesign.lean:244:                  simp [μexp, μStatus, μRT, hpreY, hν]
+./ConjointSD/StatusConjointDesign.lean:245:                simp [hXmass, hYmass, mul_comm]
+./ConjointSD/StatusConjointDesign.lean:250:      consistency := by intro ω; rfl
+./ConjointSD/StatusConjointDesign.lean:259:  classical
+./ConjointSD/StatusConjointDesign.lean:262:    simpa [StatusΩ, statusX] using
+./ConjointSD/StatusConjointDesign.lean:267:    simp [μexp, μStatus, μRT, statusX]
+./ConjointSD/StatusConjointDesign.lean:276:      ext ω; simp [eventX]
+./ConjointSD/StatusConjointDesign.lean:277:    calc
+./ConjointSD/StatusConjointDesign.lean:281:      _ = μexp (eventX (X := statusX) p) := by simp [hpre]
+./ConjointSD/StatusConjointDesign.lean:284:    simpa [νStatus, hset] using
+./ConjointSD/StatusConjointDesign.lean:294:    calc
+./ConjointSD/StatusConjointDesign.lean:297:              simp [hmap_pre]
+./ConjointSD/StatusConjointDesign.lean:298:      _ = νStatus {p} := by simp [hlaw]
+./ConjointSD/StatusConjointDesign.lean:299:  set_option linter.unnecessarySimpa false in
+./ConjointSD/StatusConjointDesign.lean:301:    simpa [hmass] using hsupport
+./ConjointSD/StatusConjointDesign.lean:304:  calc
+./ConjointSD/ConjointIdentification.lean:10:noncomputable section
+./ConjointSD/ConjointIdentification.lean:24:  simp
+./ConjointSD/ConjointIdentification.lean:34:  classical
+./ConjointSD/ConjointIdentification.lean:41:    simpa [φ] using hconst.indicator (measurableSet_singleton x0)
+./ConjointSD/ConjointIdentification.lean:43:    simpa [s] using h.measX (measurableSet_singleton x0)
+./ConjointSD/ConjointIdentification.lean:51:    have _ : IsFiniteMeasure μexp := by infer_instance
+./ConjointSD/ConjointIdentification.lean:57:    simpa [Real.norm_eq_abs] using hCω
+./ConjointSD/ConjointIdentification.lean:63:      by_cases hX : X ω = x0
+./ConjointSD/ConjointIdentification.lean:64:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:65:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:66:    simpa [hident] using hconst.indicator hset
+./ConjointSD/ConjointIdentification.lean:72:    simpa using h'.symm
+./ConjointSD/ConjointIdentification.lean:78:      by_cases hX : X ω = x0
+./ConjointSD/ConjointIdentification.lean:79:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:80:      · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:81:    calc
+./ConjointSD/ConjointIdentification.lean:83:        simp [hident]
+./ConjointSD/ConjointIdentification.lean:87:        simp [integral_const, measureReal_def]
+./ConjointSD/ConjointIdentification.lean:88:  calc
+./ConjointSD/ConjointIdentification.lean:96:              by_cases hX : X ω = x0
+./ConjointSD/ConjointIdentification.lean:97:              · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:98:              · simp [ind, φ, s, hX]
+./ConjointSD/ConjointIdentification.lean:99:          simp [hident]
+./ConjointSD/ConjointIdentification.lean:101:          simpa using hprod
+./ConjointSD/ConjointIdentification.lean:104:            ext ω; simp [s, eventX]
+./ConjointSD/ConjointIdentification.lean:105:          have hs : μexp s = μexp (eventX (X := X) x0) := by simp [hsset]
+./ConjointSD/ConjointIdentification.lean:106:          calc
+./ConjointSD/ConjointIdentification.lean:109:              simp [hintInd']
+./ConjointSD/ConjointIdentification.lean:111:              simp [hs]
+./ConjointSD/ConjointIdentification.lean:124:  letI : IsFiniteMeasure μexp := by infer_instance
+./ConjointSD/ConjointIdentification.lean:127:  unfold condMean potMean
+./ConjointSD/ConjointIdentification.lean:130:  calc
+./ConjointSD/ConjointIdentification.lean:135:            simp [hrand]
+./ConjointSD/ConjointIdentification.lean:138:            ring
+./ConjointSD/ConjointIdentification.lean:139:    _ = ∫ ω, Y x ω ∂μexp := by field_simp [hμ]
+./ConjointSD/ConjointIdentification.lean:163:      simp [sub_eq_zero]
+./ConjointSD/ConjointIdentification.lean:167:    simpa [hset] using hpre
+./ConjointSD/ConjointIdentification.lean:180:  simp [hcons ω, hx]
+./ConjointSD/ConjointIdentification.lean:206:  calc
+./ConjointSD/ConjointIdentification.lean:210:              simp [condMean, hint]
+./ConjointSD/ConjointIdentification.lean:225:  unfold amce
+./ConjointSD/ConjointIdentification.lean:234:  simp [hx', hx]

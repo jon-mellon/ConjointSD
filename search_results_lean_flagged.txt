@@ -1,0 +1,461 @@
+# Filtered Lean search results (indicator-only)
+# Tags: strong / possible / context
+./ConjointSD/DeriveGEstimationAssumptions.lean:7:  (2) continuity-at-θ0 of the attribute-distribution functionals | attribute=>possible
+./ConjointSD/DeriveGEstimationAssumptions.lean:62:  simpa [gBlock] using hcont.cont b | simp=>possible
+./scripts/runLinter.lean:13:  let _ : MonadExceptOf String IO := ⟨throw ∘ IO.userError, fun x _ => x⟩ | ring=>possible
+./scripts/runLinter.lean:14:  liftExcept <| fromJson? <|← liftExcept <| Json.parse <|← IO.FS.readFile path | .p=>context
+./scripts/runLinter.lean:18:  IO.FS.writeFile path <| toJson a |>.pretty.push '\n' | .p=>context
+./scripts/runLinter.lean:41:def parseLinterArgs (args: List String) : Except String (Bool × Option Name) := | ring=>possible
+./scripts/runLinter.lean:71:unsafe def runLinterOnModule (update : Bool) (module : Name): IO Unit := do | unsafe def=>possible, unsafe=>possible
+./scripts/runLinter.lean:74:  unless (← mFile.pathExists) do | .p=>context
+./scripts/runLinter.lean:83:  unless (← lintFile.pathExists) do | .p=>context
+./scripts/runLinter.lean:91:  let nolints ← if ← nolintsFile.pathExists then | .p=>context
+./scripts/runLinter.lean:95:  unsafe Lean.enableInitializersExecution | unsafe=>possible
+./scripts/runLinter.lean:107:        decls.fold (fun res decl _ => res.push (linter.name, decl)) #[] | .p=>context
+./scripts/runLinter.lean:116:      IO.print (← fmtResults.toString) | ring=>possible, .p=>context
+./scripts/runLinter.lean:119:      IO.println s!"-- Linting passed for {module}." | .p=>context
+./scripts/runLinter.lean:128:unsafe def main (args : List String) : IO Unit := do | unsafe def=>possible, unsafe=>possible, ring=>possible
+./ConjointSD/TargetEquivalence.lean:4:If two score functions are equal ν_pop-a.e., then their attribute-distribution mean/second-moment/variance/SD | attribute=>possible
+./ConjointSD/TargetEquivalence.lean:24:/-- If s = t ν_pop-a.e., then their attribute-distribution means are equal. -/ | attribute=>possible
+./ConjointSD/TargetEquivalence.lean:29:  simpa [attrMean] using this | simp=>possible
+./ConjointSD/TargetEquivalence.lean:31:/-- If s = t ν_pop-a.e., then their attribute-distribution second moments are equal. -/ | attribute=>possible
+./ConjointSD/TargetEquivalence.lean:37:    simp [ha] | simp [=>possible, simp=>possible
+./ConjointSD/TargetEquivalence.lean:40:  simpa [attrM2] using this | simp=>possible
+./ConjointSD/TargetEquivalence.lean:42:/-- If s = t ν_pop-a.e., then their attribute-distribution variances are equal. -/ | attribute=>possible
+./ConjointSD/TargetEquivalence.lean:49:  simp [attrVar, hm, hm2] | simp [=>possible, simp=>possible
+./ConjointSD/TargetEquivalence.lean:51:/-- If s = t ν_pop-a.e., then their attribute-distribution SDs are equal. -/ | attribute=>possible
+./ConjointSD/TargetEquivalence.lean:56:  simp [attrSD, hv] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:32:    simpa using abs_sub_le (s x) (t x) (u x) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:33:  nlinarith [htriangle, h1x, h2x] | nlinarith=>possible, linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:49:    simp [attrMean, integral_sub, hs, ht] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:52:    simpa using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:73:      simpa using (memLp_const (μ := ν_pop) (p := ENNReal.ofReal 2) (c := (1 : ℝ))) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:82:      simpa using h | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:83:    simpa [Real.sqrt_eq_rpow] using h1 | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:86:    exact le_trans (by simpa [hdiff] using habs) hcs | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:89:section L2Centering | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:97:    simpa [mul_comm, mul_left_comm, mul_assoc] using hs.mul_const (2 * ηs) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:106:    ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:115:    simpa [sub_eq_add_neg] using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:120:    simpa [mul_comm, mul_left_comm, mul_assoc] using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:127:    simpa [add_assoc] using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:132:    simp [ηs, attrMean] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:134:    simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:144:              simp [hconst_int, hsub] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:146:              simp [hmul_int] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:148:              ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:150:              have hring : | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:153:                ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:154:              simpa [hmean] using hring | simp=>possible, ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:156:    simp [ηs, attrMean] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:159:      simp [attrVar, attrM2, attrMean, hmean_sq, ηs] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:173:      simp [attrSD, hvar] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:175:      simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:177:end L2Centering | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:190:    simpa using (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := c)) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:202:    simpa using h | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:224:    simp [c, sub_eq_add_neg, add_comm, add_left_comm, add_assoc] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:225:  simpa [hsum, hrewrite, c] using hmono | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:239:  have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:244:    simpa using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:260:              simp [hnorm] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:265:    simp [Real.sqrt_eq_rpow] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:270:          simp [Real.norm_eq_abs] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:292:    simpa using hs_mem' | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:297:    simpa using ht_mem' | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:299:    simpa using hs_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηs)) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:301:    simpa using ht_mem.sub (memLp_const (μ := ν_pop) (p := (2 : ENNReal)) (c := ηt)) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:303:    simpa using hcenter_s.sub hcenter_t | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:311:      simpa [ηs] using hsd | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:314:    simpa [ηs] using (hsd'.trans hbridge) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:322:      simpa [ηt] using hsd | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:325:    simpa [ηt] using (hsd'.trans hbridge) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:361:      ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:362:    simpa [hsum, hrewrite] using hmono | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:398:      ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:404:      simpa [hsum, hrewrite] using hmono | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:409:      simpa [Pi.sub_apply] using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:412:    simpa [hswap] using htri2' | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:420:      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri1 | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:425:      simpa [hs_center, ht_center, add_comm, add_left_comm, add_assoc] using htri2 | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:428:      linarith | linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:431:      linarith | linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:439:      simpa using hL2.1 | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:440:    simpa [ηs, ηt] using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:445:    have htop : (2 : ENNReal) ≠ (⊤ : ENNReal) := by simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:447:      simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:453:              simp [hconst'] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:455:              simp [hμ] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:457:              simp [Real.enorm_eq_ofReal_abs] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:464:      simpa using hL2.1 | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:470:      simpa [abs_sq] using hbridge | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:472:      simpa [abs_sq] using hL2.2 | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:473:    simpa [hbridge'] using hL2' | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:478:      simpa [hconst] using hmean | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:479:    nlinarith [htri_centered, hnorm_st, hmean'] | nlinarith=>possible, linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:487:    simpa using (abs_integral_le_integral_abs (f := s) (μ := ν_pop)) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:493:    simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:494:  simpa [attrMean, hconst] using (le_trans h1 h2) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:506:    simp [attrMean, integral_sub, hs, ht] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:508:    simpa using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:515:      simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:516:    simpa [hconst] using hle | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:517:  simpa [h1] using (le_trans h2 h3) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:523:    nlinarith [Real.sqrt_nonneg a, Real.sqrt_nonneg b] | nlinarith=>possible, linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:525:    simp [abs_of_nonneg hsum_nonneg] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:537:                simp [Real.sq_sqrt ha, Real.sq_sqrt hb] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:539:                ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:541:    simp only [abs_mul] at h' | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:545:    simpa [sub_eq_add_neg, abs_neg, abs_of_nonneg (Real.sqrt_nonneg _)] using h | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:558:      simp [hsum_abs] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:562:              simp [pow_two] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:565:      _   = |a - b| := by simp [hfactor] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:569:            simpa [pow_two] using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:589:      simpa using (abs_add_le (s a) (t a)) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:591:      ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:594:      simp [hfact, abs_mul] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:602:              have hsum_le : |s a| + |t a| ≤ C + C := by nlinarith | nlinarith=>possible, linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:604:      _   = 2 * C * ε := by ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:612:    simp [attrM2, integral_sub, hs2, ht2] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:617:    simpa using | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:627:      simp | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:628:    simpa [hconst] using hle | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:629:  simpa [h1] using (le_trans h2 h3) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:655:      simpa using (abs_add_le (attrMean ν_pop s) (attrMean ν_pop t)) | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:661:      ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:667:      simp [hfact, abs_mul] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:676:              have hsum_le : |attrMean ν_pop s| + |attrMean ν_pop t| ≤ C + C := by nlinarith | nlinarith=>possible, linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:678:      _   = 2 * C * ε := by ring | ring=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:688:    simp [attrVar, sub_eq_add_neg, add_comm, add_left_comm, add_assoc] | simp [=>possible, simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:696:    simpa [hvar, sub_eq_add_neg, abs_neg, abs_sub_comm, | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:703:      simpa [abs_sub_comm] using hmean_sq | simp=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:704:    nlinarith [hM2, hmean_sq'] | nlinarith=>possible, linarith=>possible
+./ConjointSD/ApproxTargetEquivalence.lean:723:    simpa [attrSD] using | simp=>possible
+./Scratch.lean:21:#print ConjointSD.plugInMomentAssumptions_of_theta_tendsto | .p=>context
+./Scratch.lean:22:#print ConjointSD.plugInMomentAssumptions_blocks_of_theta_tendsto | .p=>context
+./Scratch.lean:23:#print ConjointSD.paper_ols_gramInv_tendsto_of_design_ae | .p=>context
+./Scratch.lean:24:#print ConjointSD.paper_ols_theta0_eq_of_normal_eq | .p=>context
+./Scratch.lean:25:#print ConjointSD.paper_ols_normal_eq_of_wellSpecified | .p=>context
+./Scratch.lean:36:-- Sample splitting (evaluation stage). | eval=>context
+./Scratch.lean:39:-- Sequential consistency (train then eval). | eval=>context
+./Scratch.lean:74:#print ConjointSD.paperBlockSDs_apply | .p=>context
+./Scratch.lean:75:#print ConjointSD.paperTotalSD_def | .p=>context
+./Scratch.lean:78:#print ConjointSD.paper_identifies_potMean_from_condMean | .p=>context
+./Scratch.lean:79:#print ConjointSD.paper_identifies_amce_from_condMeans | .p=>context
+./Scratch.lean:80:#print ConjointSD.paper_identifies_potMean_from_condMean_status | .p=>context
+./Scratch.lean:81:#print ConjointSD.paper_sd_blocks_sequential_consistency_ae | .p=>context
+./Scratch.lean:82:#print ConjointSD.paper_sd_total_sequential_consistency_ae | .p=>context
+./Scratch.lean:83:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae | .p=>context
+./Scratch.lean:84:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae | .p=>context
+./Scratch.lean:85:#print ConjointSD.paper_sd_total_sequential_consistency_to_approx_target_ae | .p=>context
+./Scratch.lean:86:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae | .p=>context
+./Scratch.lean:87:#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE | .p=>context
+./Scratch.lean:88:#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE | .p=>context
+./Scratch.lean:89:#print ConjointSD.paper_ols_attr_moments_of_design_ae | .p=>context
+./Scratch.lean:90:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization | .p=>context
+./Scratch.lean:91:#print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization | .p=>context
+./Scratch.lean:100:#print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae | .p=>context
+./Scratch.lean:101:#print ConjointSD.paper_ols_lln_of_design_ae | .p=>context
+./Scratch.lean:102:#print ConjointSD.paper_ols_lln_of_score_assumptions_ae | .p=>context
+./Scratch.lean:103:#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization | .p=>context
+./ConjointSD/SampleSplitting.lean:30:    to the population SD under weighted evaluation moments. | eval=>context
+./ConjointSD/SampleSplitting.lean:53:    evalWeightMatchesPopMoments_of_law_eq | eval=>context
+./ConjointSD/SampleSplitting.lean:56:    simpa [hW] using (measurable_const : Measurable (fun _ : Attr => (1 : ℝ))) | simp=>possible
+./ConjointSD/SampleSplitting.lean:60:    simpa [hW] using (abs_le.2 ⟨by norm_num, by norm_num⟩) | simp=>possible
+./ConjointSD/SampleSplitting.lean:63:    simpa [hW, designMeanZ, Zcomp] using (one_ne_zero : (1 : ℝ) ≠ 0) | simp=>possible
+./ConjointSD/SampleSplitting.lean:88:        simpa [pow_two] using (h.hMeasG.mul h.hMeasG) | simp=>possible
+./ConjointSD/SampleSplitting.lean:94:        simpa using | simp=>possible
+./ConjointSD/SampleSplitting.lean:103:        simpa using | simp=>possible
+./ConjointSD/SampleSplitting.lean:113:        simpa using | simp=>possible
+./ConjointSD/SampleSplitting.lean:122:        simp [designMeanZW, hMeanW, hMeanWZ, hMom.mean_eq, attrMean] | simp [=>possible, simp=>possible
+./ConjointSD/SampleSplitting.lean:128:        simpa [designM2ZW, hMeanW, hM2WZ, attrMean, attrM2] using hMom.m2_eq | simp=>possible
+./ConjointSD/SampleSplitting.lean:129:      simp [designSDZW, designVarZW, attrSD, attrVar, hMean, hM2] | simp [=>possible, simp=>possible
+./ConjointSD/SampleSplitting.lean:130:  simpa [hEq] using hSDZ | simp=>possible
+./ConjointSD/EvalSamplingSRS.lean:14:theorem evalWeightMatchesPopMoments_of_law_eq | eval=>context
+./ConjointSD/EvalSamplingSRS.lean:24:    simpa [kappaDesign] using hLaw.map_eq | simp=>possible
+./ConjointSD/EvalSamplingSRS.lean:26:    simpa [hkappa] using | simp=>possible
+./ConjointSD/EvalSamplingSRS.lean:32:  · simp [hW, attrMean, hkappa, div_eq_mul_inv, mul_comm] | simp [=>possible, simp=>possible
+./ConjointSD/EvalSamplingSRS.lean:33:  · simp [hW, attrM2, hkappa, div_eq_mul_inv, mul_comm] | simp [=>possible, simp=>possible
+./ConjointSD/DesignAttributeBridge.lean:5:- attribute-distribution functionals under the pushforward attribute law | attribute=>possible
+./ConjointSD/DesignAttributeBridge.lean:11:We work with the pushforward attribute law `kappaDesign (κ := κ) (A := A)` induced by the | attribute=>possible
+./ConjointSD/DesignAttributeBridge.lean:50:equals the mean of `g` under the pushforward attribute distribution `kappaDesign`. | attribute=>possible
+./ConjointSD/DesignAttributeBridge.lean:64:    simpa using | simp=>possible
+./ConjointSD/DesignAttributeBridge.lean:70:            simp [designMeanZ, Zcomp] | simp [=>possible, simp=>possible
+./ConjointSD/DesignAttributeBridge.lean:72:            simp [hmap] | simp [=>possible, simp=>possible
+./ConjointSD/DesignAttributeBridge.lean:74:            simp [attrMean] | simp [=>possible, simp=>possible
+./ConjointSD/ModelBridge.lean:29:We use an `if` formulation so the additivity proof is just sum-swapping + `simp`. | simp=>possible
+./ConjointSD/ModelBridge.lean:59:              simp [gTotal, gBlockTerm] | simp [=>possible, simp=>possible
+./ConjointSD/ModelBridge.lean:62:              simpa using | simp=>possible
+./ConjointSD/ModelBridge.lean:71:              -- `simp` knows how to evaluate `∑ b, if blk t = b then r else 0` | eval=>context, simp=>possible
+./ConjointSD/ModelBridge.lean:72:              simp [eq_comm] | simp [=>possible, simp=>possible
+./ConjointSD/ModelBridge.lean:74:              simp [gLin] | simp [=>possible, simp=>possible
+./ConjointSD/ModelBridge.lean:75:  simpa using h.symm | simp=>possible
+./ConjointSD/Defs.lean:25:/-- Profiles are a product of all relevant attributes: `Attr := ∀ k, V k`. -/ | attribute=>possible
+./ConjointSD/Defs.lean:72:/-- Design pushforward attribute distribution: the law of `A 0` under `κ`. -/ | attribute=>possible
+./ConjointSD/Defs.lean:80:/-- Weights evaluated along a draw stream `A`. -/ | eval=>context
+./ConjointSD/Defs.lean:143:/-- Attribute-distribution mean under `xiAttr` (generic attribute law). -/ | attribute=>possible
+./ConjointSD/Defs.lean:166:/-- Plug-in (estimated) status function on attributes. -/ | attribute=>possible
+./ConjointSD/Defs.lean:177:/-- Induced real-valued process from attribute records via a scoring function `g`. -/ | attribute=>possible, ring=>possible
+./ConjointSD/Defs.lean:187:/-- Θ ↦ attribute-distribution mean induced by `g` under `xiAttr`. -/ | attribute=>possible
+./ConjointSD/Defs.lean:191:/-- Θ ↦ attribute-distribution second moment induced by `g` under `xiAttr`. -/ | attribute=>possible
+./ConjointSD/Defs.lean:281:/-- Population-mean scoring function across persons. -/ | ring=>possible
+./ConjointSD/Transport.lean:7:# Transport (attribute-distribution prediction) layer | attribute=>possible
+./ConjointSD/EstimatedG.lean:6:We assume the attribute-distribution moments on attributes (attrMean/attrM2/attrVar/attrSD) | attribute=>possible
+./ConjointSD/EstimatedG.lean:8:attribute-distribution *mean* and *second moment* under ν_pop when we replace oracle `g θ0` | attribute=>possible
+./ConjointSD/EstimatedG.lean:29:/-- Derived: attribute-distribution variance convergence under ν_pop for the plug-in score. -/ | attribute=>possible
+./ConjointSD/EstimatedG.lean:52:    simpa [pow_two] using (hmean.mul hmean) | simp=>possible
+./ConjointSD/EstimatedG.lean:59:  simpa [attrVar] using hvar | simp=>possible
+./ConjointSD/EstimatedG.lean:61:/-- Derived: attribute-distribution SD convergence under ν_pop for the plug-in score. -/ | attribute=>possible
+./ConjointSD/EstimatedG.lean:87:  simpa [attrSD] using (hsqrt.comp hvar) | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:4:Route 2 bridge: derive attribute-distribution moment convergence from | attribute=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:33:  simpa [gHat, attrMeanΘ] using (hcont.cont_mean.tendsto.comp hθ) | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:46:  simpa [gHat, attrM2Θ] using (hcont.cont_m2.tendsto.comp hθ) | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:71:          simp [attrMeanΘ, hEqθ] | simp [=>possible, simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:72:    simpa [hmean] using h.cont_mean | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:80:          simp [attrM2Θ, hEqθ] | simp [=>possible, simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:81:    simpa [hm2] using h.cont_m2 | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:96:  simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:120:      simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:130:            simp [attrMean, gLin] | simp [=>possible, simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:132:          simpa using | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:143:            simpa using | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:145:          simpa [attrMean] using hInt | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:171:      simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:178:      simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:203:            simp [attrM2, gLin, pow_two] | simp [=>possible, simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:205:          simp [Fintype.sum_mul_sum] | simp [=>possible, simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:207:          simpa using | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:216:          simpa using | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:232:            ring | ring=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:237:            simpa using | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:244:            simpa [hmul] using hInt | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:245:          simpa [attrMean] using hInt' | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:280:      simpa using | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:284:      simpa [hMeanEq] using hMeanContAt | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:285:    simpa [attrMeanΘ] using hMeanContAt' | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:297:      simpa using | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:301:      simpa [hM2Eq] using hM2ContAt | simp=>possible
+./ConjointSD/RegressionConsistencyBridge.lean:302:    simpa [attrM2Θ] using hM2ContAt' | simp=>possible
+./ConjointSD/RegressionEstimator.lean:24:of `G n` inverse and `c n` to their attribute-distribution counterparts. | attribute=>possible
+./ConjointSD/RegressionEstimator.lean:64:    simpa [Matrix.mulVec] using hsum | simp=>possible
+./ConjointSD/RegressionEstimator.lean:74:    simpa using hpoint i | simp=>possible
+./ConjointSD/RegressionEstimator.lean:75:  simpa [olsThetaHat] using hfun | simp=>possible
+./ConjointSD/RegressionEstimator.lean:86:  simpa [hId] using | simp=>possible
+./ConjointSD/RegressionEstimator.lean:92:/-- Convert attribute-distribution moment assumptions to sample-path moment assumptions. -/ | attribute=>possible
+./ConjointSD/PaperWrappers.lean:213:variable (Aeval : ℕ → Ω → Profile K V) | eval=>context
+./ConjointSD/PaperWrappers.lean:222:set_option linter.style.longLine false | set_option=>context
+./ConjointSD/PaperWrappers.lean:228:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop)) | eval=>context
+./ConjointSD/PaperWrappers.lean:233:          (ρ := ρ) (A := Aeval) (w := w) | eval=>context
+./ConjointSD/PaperWrappers.lean:275:                  totalErr ρ Aeval (ν_pop) w | eval=>context
+./ConjointSD/PaperWrappers.lean:383:        simpa using congrArg (fun f => f x) hLinBlocks.symm | simp=>possible
+./ConjointSD/PaperWrappers.lean:396:            simpa [WellSpecified] using hspec x | simp=>possible
+./ConjointSD/PaperWrappers.lean:399:    simpa using congrArg (fun f => f x) hBlocks | simp=>possible
+./ConjointSD/PaperWrappers.lean:468:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w) | eval=>context
+./ConjointSD/PaperWrappers.lean:492:set_option linter.style.longLine true | set_option=>context
+./ConjointSD/PaperWrappers.lean:494:set_option linter.style.longLine false | set_option=>context
+./ConjointSD/PaperWrappers.lean:500:    (hLawEval : EvalAttrLawEqPop (ρ := ρ) (A := Aeval) (ν_pop := ν_pop)) | eval=>context
+./ConjointSD/PaperWrappers.lean:505:          (ρ := ρ) (A := Aeval) (w := w) | eval=>context
+./ConjointSD/PaperWrappers.lean:545:                totalErr ρ Aeval (ν_pop) w | eval=>context
+./ConjointSD/PaperWrappers.lean:671:        simpa using congrArg (fun f => f x) hLinBlocks.symm | simp=>possible
+./ConjointSD/PaperWrappers.lean:684:            simpa [WellSpecified] using hspec x | simp=>possible
+./ConjointSD/PaperWrappers.lean:695:      simpa using congrArg (fun f => f x) hBlocks | simp=>possible
+./ConjointSD/PaperWrappers.lean:707:            simp [gTotalΘ, gTotal] | simp [=>possible, simp=>possible
+./ConjointSD/PaperWrappers.lean:732:      (ρ := ρ) (A := Aeval) (ν_pop := ν_pop) (w := w) | eval=>context
+./ConjointSD/PaperWrappers.lean:752:set_option linter.style.longLine true | set_option=>context
+./ConjointSD/DecompositionSequentialConsistency.lean:70:    simpa [gBlock] using | simp=>possible
+./ConjointSD/DecompositionSequentialConsistency.lean:83:    have hb : b ∈ (Finset.univ : Finset B) := by simp | simp=>possible
+./ConjointSD/DecompositionSequentialConsistency.lean:111:  simpa [gTotalΘ] using | simp=>possible
+./ConjointSD/SubjectSamplingLLNFromIID.lean:31:    simpa [hIID.identR 0] using hScore.integrable_gP x | simp=>possible
+./ConjointSD/SubjectSamplingLLNFromIID.lean:33:    simpa [X] using hint_map.comp_measurable (hIID.measR 0) | simp=>possible
+./ConjointSD/SubjectSamplingLLNFromIID.lean:42:      simpa [hIID.identR i, hIID.identR 0] | simp=>possible
+./ConjointSD/SubjectSamplingLLNFromIID.lean:60:      simpa using | simp=>possible
+./ConjointSD/SubjectSamplingLLNFromIID.lean:72:        simpa [gPop, hmap] | simp=>possible
+./ConjointSD/SubjectSamplingLLNFromIID.lean:78:    simpa [hmean] using hω | simp=>possible
+./ConjointSD/SubjectSamplingLLNFromIID.lean:79:  simpa [gHatSubject, X, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hω' | simp=>possible
+./ConjointSD/ApproxModelBridge.lean:19:/-- Approximate well-specification on target-population attribute support (ν_pop-a.e.). -/ | attribute=>possible
+./ConjointSD/ApproxModelBridge.lean:54:    simpa using congrArg (fun f => f x) hblocks | simp=>possible
+./ConjointSD/ApproxModelBridge.lean:57:  simpa [hlin x, abs_sub_comm] using hx | simp=>possible
+./ConjointSD/ApproxAssumptions.lean:15:/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν_pop-a.e. -/ | attribute=>possible
+./ConjointSD/ApproxPaperWrappers.lean:223:    simpa [abs_sub_comm, hTotalModel x] using hx | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:29:  simpa [Real.norm_eq_abs] using hC' | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:47:    simpa [Z, Zcomp, Function.comp] using this | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:53:    simpa [Z, Zcomp, Function.comp] using this | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:64:    simpa [Z, Zcomp] using hInt' | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:65:  simpa [meanHatZ, designMeanZ, Z] using | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:95:    simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:108:    simpa [Wcomp, Zcomp] using | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:119:    simpa [Wcomp, Zcomp] using | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:136:    simpa [nhds_prod_eq] using hWZω.prodMk hWω | simp=>possible, .p=>context
+./ConjointSD/SDDecompositionFromConjoint.lean:145:  simpa [meanHatZW, designMeanZW] using hdiv | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:167:    simpa [pow_two] using (hMeasG.mul hMeasG) | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:174:    simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:177:    refine ⟨Cw * Cg ^ 2, mul_nonneg hCw0 (by nlinarith), ?_⟩ | nlinarith=>possible, linarith=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:181:    simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:194:    simpa [Wcomp, Zcomp] using | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:205:    simpa [Wcomp, Zcomp] using | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:225:    simpa [nhds_prod_eq] using hWZ2ω.prodMk hWω | simp=>possible, .p=>context
+./ConjointSD/SDDecompositionFromConjoint.lean:234:  simpa [m2HatZW, designM2ZW] using hdiv | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:273:    simpa [pow_two] using (hmeanω.mul hmeanω) | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:288:  simpa [varHatZW, designVarZW] using this | simp=>possible
+./ConjointSD/SDDecompositionFromConjoint.lean:323:  simpa [sdHatZW, designSDZW] using (hsqrt.comp hω) | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:63:    simp [gTotal] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:69:          simp [gPaper] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:103:      simp [φPaper] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:107:          simpa [φPaper] using hmeasMain m | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:109:          simpa [φPaper] using hmeasInter i | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:121:      simp [φPaper] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:125:          simpa [φPaper] using hboundMain m | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:127:          simpa [φPaper] using hboundInter i | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:158:    simpa [gPaper] using | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:180:  simpa [gTotalΘ] using hEq' | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:200:  by_cases htb : blk t = b | by_cases=>possible
+./ConjointSD/PaperOLSConsistency.lean:206:        simp [φBlock, htb] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:207:    simpa [hEq] using | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:215:        simp [φBlock, htb] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:216:    simp [hEq] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:228:  by_cases htb : blk t = b | by_cases=>possible
+./ConjointSD/PaperOLSConsistency.lean:234:    simpa [φBlock, htb] using hC a | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:237:    simp [φBlock, htb] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:250:  simp [gBlockTerm, gLin, φBlock] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:323:  simpa using | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:344:  simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:411:      simpa using (hspec a).symm | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:429:          simp [hspec'] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:440:          simpa using | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:452:          ring | ring=>possible
+./ConjointSD/PaperOLSConsistency.lean:475:      simp [Matrix.mulVec, dotProduct, attrGram] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:483:      ring | ring=>possible
+./ConjointSD/PaperOLSConsistency.lean:489:      simpa using hCrossEq.symm | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:530:    simpa using | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:561:          ring | ring=>possible
+./ConjointSD/PaperOLSConsistency.lean:563:          simp [Finset.sum_add_distrib, gCross] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:564:  simp [crossVec, meanHatZ, Zcomp, gCross, smul_eq_mul, hsum_yobs, hsum_cross, mul_add] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:662:      simpa [hpop] using hω | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:677:        simpa using (Fin.sum_univ_eq_sum_range (n := n) (fun k => gGram (Aω k ω))) | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:678:      simp [gramMatrix, gGram, hsum] | simp [=>possible, simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:679:    simpa [meanHatZ, Zcomp, gGram, attrGram, hgram_eq] | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:737:      simpa [hpop] using hω | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:753:      simpa [gCross] using | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:782:      simpa using hsum_tendsto | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:783:    simpa [attrCross, gCross, hcross_eq] using hsum_tendsto' | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:886:    simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:905:    simpa [abs_mul] using hmul | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:967:    simpa [Ring.inverse] using (continuousAt_inv₀ hdet') | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:993:    simpa using hgram i j | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:1011:  simpa using hEntry | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:1063:    simpa using hNormal.symm | simp=>possible
+./ConjointSD/PaperOLSConsistency.lean:1076:  simpa using h.symm | simp=>possible
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:5:  Bridge from “no interactions” (additive structure over attributes) | attribute=>possible
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:38:/-- Terms: `none` is intercept, `some k` is the main effect for attribute `k`. -/ | attribute=>possible
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:46:/-- Features: intercept feature is constant `1`; main-effect feature is `main k (x k)`. -/ | constant=>context
+./ConjointSD/WellSpecifiedFromNoInteractions.lean:78:        simpa using (hadd x).symm | simp=>possible
+./ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean:41:        simp [hlin, abs_sub_comm] | simp [=>possible, simp=>possible
+./ConjointSD/SequentialConsistency.lean:8:(1) For any fixed training index m, as evaluation size n → ∞, | eval=>context
+./ConjointSD/SequentialConsistency.lean:36:/-- Evaluation-stage SD estimator using training index `m` and evaluation size `n`. -/ | eval=>context
+./ConjointSD/SequentialConsistency.lean:70:Assumes the evaluation attribute law equals the target-population law `ν_pop` | attribute=>possible, eval=>context
+./ConjointSD/SequentialConsistency.lean:71:(so weights are effectively uniform for the evaluation stage). | eval=>context
+./ConjointSD/SequentialConsistency.lean:110:    simpa using hBase_map | simp=>possible
+./ConjointSD/SequentialConsistency.lean:114:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const)) | simp=>possible
+./ConjointSD/SequentialConsistency.lean:124:  simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω) | simp=>possible
+./ConjointSD/SequentialConsistency.lean:143:    simpa [c] using | simp=>possible
+./ConjointSD/SequentialConsistency.lean:149:    simpa using (continuous_abs.comp (continuous_id.sub continuous_const)) | simp=>possible
+./ConjointSD/SequentialConsistency.lean:157:  simpa [trainErr, sdOracle, c] using (h1.trans (by simp)) | simp=>possible
+./ConjointSD/SequentialConsistency.lean:163:- `hSplit : ∀ m, SplitEvalAssumptionsBounded ... m` gives evaluation-stage | eval=>context
+./ConjointSD/SequentialConsistency.lean:200:      nlinarith [hε.pos] | nlinarith=>possible, linarith=>possible, .p=>context
+./ConjointSD/SequentialConsistency.lean:207:    nlinarith [hε.pos] | nlinarith=>possible, linarith=>possible, .p=>context
+./ConjointSD/SequentialConsistency.lean:229:      nlinarith [hε.pos] | nlinarith=>possible, linarith=>possible, .p=>context
+./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb | attribute=>possible
+./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward) | attribute=>possible
+./ConjointSD/Assumptions.lean:37:for non-target attribute laws. | attribute=>possible
+./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/ | attribute=>possible
+./ConjointSD/Assumptions.lean:80:i.i.d.-type assumptions on the attribute-record process A under the experimental | attribute=>possible
+./ConjointSD/Assumptions.lean:89:i.i.d.-type assumptions on the attribute-record process A under the evaluation | attribute=>possible, eval=>context
+./ConjointSD/Assumptions.lean:90:distribution. This is intentionally distinct from `DesignAttrIID` so evaluation | eval=>context
+./ConjointSD/Assumptions.lean:205:  by_contra hne | by_contra h=>possible, by_contra=>possible
+./ConjointSD/Assumptions.lean:224:    simpa using hfalse' | simp=>possible
+./ConjointSD/Assumptions.lean:247:Continuity assumptions for the induced attribute-distribution functionals at θ0. | attribute=>possible
+./ConjointSD/Assumptions.lean:249:Here `xiAttr` is whichever attribute distribution governs the target moments in the | attribute=>possible
+./ConjointSD/Assumptions.lean:313:Moment assumptions stated against the attribute-distribution Gram/cross moments. | attribute=>possible
+./ConjointSD/Assumptions.lean:314:Here `xiAttr` names the attribute distribution used in the limit (design-law for fitting, | attribute=>possible
+./ConjointSD/Assumptions.lean:419:Evaluation sample is an IID draw from the target population attribute law `ν_pop`: | attribute=>possible
+./ConjointSD/Assumptions.lean:420:the evaluation attribute distribution equals `ν_pop`. | attribute=>possible, eval=>context
+./ConjointSD/Assumptions.lean:430:Evaluation-weight moment matching: weighted moments of the evaluation draw | eval=>context
+./ConjointSD/Assumptions.lean:433:This is a transport-style assumption that links the evaluation sample | eval=>context
+./ConjointSD/Assumptions.lean:434:(`A 0` under the evaluation law `ρ`) to the population distribution `ν_pop` | eval=>context
+./ConjointSD/Assumptions.lean:435:without requiring full law equality. | ring=>possible
+./ConjointSD/Assumptions.lean:462:Randomization mechanism for an attribute stream `A i`. | attribute=>possible
+./ConjointSD/Assumptions.lean:498:    simpa [hAeq i] using hmeasf.comp (hmeasU i) | simp=>possible
+./ConjointSD/Assumptions.lean:504:    simpa [hAeq i, hAeq j] using hA | simp=>possible
+./ConjointSD/Assumptions.lean:509:    simpa [hAeq i, hAeq 0] using hA | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:5:- profile space: the 8,500 feasible attribute combinations generated for the survey, | attribute=>possible
+./ConjointSD/StatusConjointDesign.lean:29:/-- Four rating tasks per respondent (two choice-sets of two personas). -/ | choice=>context
+./ConjointSD/StatusConjointDesign.lean:46:  simpa [νStatus] using | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:58:    simpa [μTask] using | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:70:  μResp.prod μTask | .p=>context
+./ConjointSD/StatusConjointDesign.lean:80:  have hprod := Measure.prod_prod (μ := μResp) (ν_pop := μTask) (Set.univ) (Set.univ) | .p=>context
+./ConjointSD/StatusConjointDesign.lean:83:        = μResp.prod μTask (Set.univ ×ˢ (Set.univ : Set TaskSlot)) := by | .p=>context
+./ConjointSD/StatusConjointDesign.lean:84:          simp [μRT, Set.univ_prod_univ] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:86:    _ = 1 := by simp [hμ, htask] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:95:  (μRT (μResp := μResp)).prod νStatus | .p=>context
+./ConjointSD/StatusConjointDesign.lean:105:    Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) (Set.univ) (Set.univ) | .p=>context
+./ConjointSD/StatusConjointDesign.lean:108:        = (μRT (μResp := μResp)).prod νStatus | .p=>context
+./ConjointSD/StatusConjointDesign.lean:110:          simp [μStatus, Set.univ_prod_univ] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:112:    _ = 1 := by simp [hrt, hν] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:156:    simpa [StatusΩ, statusX] using | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:187:      ext ω; simp [statusX] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:192:      ext ω; simp [statusY] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:193:    -- Combine the rectangles and evaluate with `prod_prod`. | eval=>context
+./ConjointSD/StatusConjointDesign.lean:210:                        simpa [statusY, statusX] using hy | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:211:                      simpa [statusX] using this | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:212:                    · have : ω.snd ∈ s := by simpa [statusX] using hx | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:213:                      simpa [statusX] using this | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:216:                    · simpa [statusX] using hs' | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:218:                        simpa using hrs | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:219:                      simpa [statusY] using this | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:222:                  (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) | .p=>context
+./ConjointSD/StatusConjointDesign.lean:224:                simp [μexp, μStatus, μRT, hrect] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:231:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) | .p=>context
+./ConjointSD/StatusConjointDesign.lean:234:                  simp [μexp, μStatus, μRT, hpreX] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:240:                    (Measure.prod_prod (μ := μRT (μResp := μResp)) (ν_pop := νStatus) | .p=>context
+./ConjointSD/StatusConjointDesign.lean:244:                  simp [μexp, μStatus, μRT, hpreY, hν] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:245:                simp [hXmass, hYmass, mul_comm] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:262:    simpa [StatusΩ, statusX] using | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:267:    simp [μexp, μStatus, μRT, statusX] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:276:      ext ω; simp [eventX] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:281:      _ = μexp (eventX (X := statusX) p) := by simp [hpre] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:284:    simpa [νStatus, hset] using | simp=>possible
+./ConjointSD/StatusConjointDesign.lean:297:              simp [hmap_pre] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:298:      _ = νStatus {p} := by simp [hlaw] | simp [=>possible, simp=>possible
+./ConjointSD/StatusConjointDesign.lean:299:  set_option linter.unnecessarySimpa false in | set_option=>context
+./ConjointSD/StatusConjointDesign.lean:301:    simpa [hmass] using hsupport | simp=>possible
+./ConjointSD/ConjointIdentification.lean:24:  simp | simp=>possible
+./ConjointSD/ConjointIdentification.lean:41:    simpa [φ] using hconst.indicator (measurableSet_singleton x0) | simp=>possible
+./ConjointSD/ConjointIdentification.lean:43:    simpa [s] using h.measX (measurableSet_singleton x0) | simp=>possible
+./ConjointSD/ConjointIdentification.lean:57:    simpa [Real.norm_eq_abs] using hCω | simp=>possible
+./ConjointSD/ConjointIdentification.lean:63:      by_cases hX : X ω = x0 | by_cases=>possible
+./ConjointSD/ConjointIdentification.lean:64:      · simp [ind, φ, s, hX] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:65:      · simp [ind, φ, s, hX] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:66:    simpa [hident] using hconst.indicator hset | simp=>possible
+./ConjointSD/ConjointIdentification.lean:72:    simpa using h'.symm | simp=>possible
+./ConjointSD/ConjointIdentification.lean:78:      by_cases hX : X ω = x0 | by_cases=>possible
+./ConjointSD/ConjointIdentification.lean:79:      · simp [ind, φ, s, hX] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:80:      · simp [ind, φ, s, hX] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:83:        simp [hident] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:87:        simp [integral_const, measureReal_def] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:96:              by_cases hX : X ω = x0 | by_cases=>possible
+./ConjointSD/ConjointIdentification.lean:97:              · simp [ind, φ, s, hX] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:98:              · simp [ind, φ, s, hX] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:99:          simp [hident] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:101:          simpa using hprod | simp=>possible
+./ConjointSD/ConjointIdentification.lean:104:            ext ω; simp [s, eventX] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:105:          have hs : μexp s = μexp (eventX (X := X) x0) := by simp [hsset] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:109:              simp [hintInd'] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:111:              simp [hs] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:135:            simp [hrand] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:138:            ring | ring=>possible
+./ConjointSD/ConjointIdentification.lean:139:    _ = ∫ ω, Y x ω ∂μexp := by field_simp [hμ] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:163:      simp [sub_eq_zero] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:167:    simpa [hset] using hpre | simp=>possible
+./ConjointSD/ConjointIdentification.lean:180:  simp [hcons ω, hx] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:210:              simp [condMean, hint] | simp [=>possible, simp=>possible
+./ConjointSD/ConjointIdentification.lean:234:  simp [hx', hx] | simp [=>possible, simp=>possible

@@ -14,6 +14,6 @@ Main results:
 - `meanHatZ_tendsto_ae_of_score` applies the [LLN](jargon_lln.md) to score processes from `DesignAttrIID` plus boundedness/measurability.
 - Convergence results for derived RMSE/variance estimators are handled by combining the mean and second-moment limits rather than standalone lemmas.
 - Bounded-score `ScoreAssumptions` are assembled directly in proofs instead of via a dedicated helper lemma.
-- `meanHatZW_tendsto_ae_of_score`, `m2HatZW_tendsto_ae_of_score`, and `sdHatZW_tendsto_ae_of_score` provide weighted analogues using bounded scores and weights.
+- `m2HatZ_tendsto_ae_of_score` and `sdHatZ_tendsto_ae_of_score` extend the LLN results to second moments and standard deviations for bounded scores.
 
 This file is the [bridge](jargon_bridge.md) from design-based attribute IID to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) for scores and blocks.

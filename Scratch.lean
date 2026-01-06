@@ -4,6 +4,7 @@ import ConjointSD
 
 #print ConjointSD.ScoreAssumptions.int_g0
 #print ConjointSD.EvalAttrIID
+#print ConjointSD.EvalAttrLawEqPop
 #print ConjointSD.PlugInMomentAssumptions
 #print ConjointSD.SplitEvalAssumptions
 #print ConjointSD.FunctionalContinuityAssumptions
@@ -26,9 +27,11 @@ import ConjointSD
 #print ConjointSD.ConjointIdRandomized
 #print ConjointSD.ConjointRandomizationStream
 #print ConjointSD.DesignAttrIID.of_randomization_stream
+#print ConjointSD.subject_lln_gPop_of_iid
+#print ConjointSD.subjectSamplingLLN_of_iid_of_lln_gStar
 -- Core SD and decomposition.
 #print ConjointSD.meanHatZ_tendsto_ae_of_score
-#print ConjointSD.sdHatZW_tendsto_ae_of_score
+#print ConjointSD.sdHatZ_tendsto_ae_of_score
 
 -- Sample splitting (evaluation stage).
 #print ConjointSD.sdHat_fixed_m_tendsto_ae_attrSD

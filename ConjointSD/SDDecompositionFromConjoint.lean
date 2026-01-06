@@ -65,261 +65,104 @@ lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
   simpa [meanHatZ, designMeanZ, Z] using
     (ProbabilityTheory.strong_law_ae (μ := μexp) (X := Z) hInt hInd hId)
 
-lemma meanHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
+lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
+    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
-    (hMeasW : Measurable w)
-    (hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C)
     (hMeasG : Measurable g)
-    (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C)
-    (hW0 : designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := w)) ≠ 0) :
+    (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μexp,
       Tendsto
-        (fun n : ℕ =>
-          meanHatZW (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)) n ω)
+        (fun n : ℕ => m2HatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
-        (nhds
-          (designMeanZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)))) := by
-  obtain ⟨Cw, hCw0, hCw⟩ := hBoundW
-  obtain ⟨Cg, hCg0, hCg⟩ := hBoundG
-  have hMeasWG : Measurable (fun a => w a * g a) :=
-    hMeasW.mul hMeasG
-  have hBoundWG :
-      ∃ C, 0 ≤ C ∧ ∀ a, |w a * g a| ≤ C := by
-    refine ⟨Cw * Cg, mul_nonneg hCw0 hCg0, ?_⟩
-    intro a
-    have hmul : |w a| * |g a| ≤ Cw * Cg :=
-      mul_le_mul (hCw a) (hCg a) (abs_nonneg _) hCw0
-    simpa [abs_mul] using hmul
-  have hmeanWZ :
-      ∀ᵐ ω ∂μexp,
-        Tendsto
-          (fun n : ℕ =>
-            meanHatZ
-                (Z := fun i ω =>
-                  Wcomp (A := A) (w := w) i ω * Zcomp (A := A) (g := g) i ω) n ω)
-          atTop
-          (nhds
-            (designMeanZ (κ := μexp)
-              (Z := fun i ω =>
-                Wcomp (A := A) (w := w) i ω * Zcomp (A := A) (g := g) i ω))) := by
-    simpa [Wcomp, Zcomp] using
-      meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := A) (g := fun a => w a * g a) hIID hMeasWG hBoundWG
-  have hBoundW' : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C :=
-    ⟨Cw, hCw0, hCw⟩
-  have hmeanW :
-      ∀ᵐ ω ∂μexp,
-        Tendsto
-          (fun n : ℕ => meanHatZ (Z := Wcomp (A := A) (w := w)) n ω)
-          atTop
-          (nhds (designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w)))) := by
-    simpa [Wcomp, Zcomp] using
-      meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := A) (g := w)
-        (hIID := hIID) (hMeas := hMeasW) (hBound := hBoundW')
-  refine (hmeanWZ.and hmeanW).mono ?_
-  intro ω hω
-  rcases hω with ⟨hWZω, hWω⟩
-  have hpair :
-      Tendsto
-        (fun n : ℕ =>
-          (meanHatZ (Z := fun i ω => Wcomp (A := A) (w := w) i ω * Zcomp (A := A) (g := g) i ω) n ω,
-            meanHatZ (Z := Wcomp (A := A) (w := w)) n ω))
-        atTop
-        (nhds
-          (designMeanZ (κ := μexp)
-            (Z := fun i ω => Wcomp (A := A) (w := w) i ω * Zcomp (A := A) (g := g) i ω),
-           designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w)))) := by
-    simpa [nhds_prod_eq] using hWZω.prodMk hWω
-  have hcont :
-      ContinuousAt (fun p : ℝ × ℝ => p.1 / p.2)
-        (designMeanZ (κ := μexp)
-            (Z := fun i ω =>
-              Wcomp (A := A) (w := w) i ω * Zcomp (A := A) (g := g) i ω),
-          designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w))) :=
-    (ContinuousAt.div continuousAt_fst continuousAt_snd hW0)
-  have hdiv := hcont.tendsto.comp hpair
-  simpa [meanHatZW, designMeanZW] using hdiv
-
-lemma m2HatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
-    (hMeasW : Measurable w)
-    (hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C)
-    (hMeasG : Measurable g)
-    (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C)
-    (hW0 : designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := w)) ≠ 0) :
-    ∀ᵐ ω ∂μexp,
-      Tendsto
-        (fun n : ℕ =>
-          m2HatZW (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)) n ω)
-        atTop
-        (nhds
-          (designM2ZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)))) := by
-  obtain ⟨Cw, hCw0, hCw⟩ := hBoundW
-  obtain ⟨Cg, hCg0, hCg⟩ := hBoundG
+        (nhds (designM2Z (κ := μexp) (Z := Zcomp (A := A) (g := g)))) := by
+  obtain ⟨C, hC0, hC⟩ := hBoundG
   have hMeasSq : Measurable (fun a => (g a) ^ 2) := by
     simpa [pow_two] using (hMeasG.mul hMeasG)
-  have hMeasWG2 : Measurable (fun a => w a * (g a) ^ 2) :=
-    hMeasW.mul hMeasSq
-  have hBoundSq : ∀ a, |(g a) ^ 2| ≤ Cg ^ 2 := by
+  have hBoundSq : ∃ C', 0 ≤ C' ∧ ∀ a, |(g a) ^ 2| ≤ C' := by
+    refine ⟨C ^ 2, by nlinarith, ?_⟩
     intro a
-    have hmul : |g a| * |g a| ≤ Cg * Cg :=
-      mul_le_mul (hCg a) (hCg a) (abs_nonneg _) hCg0
+    have hmul : |g a| * |g a| ≤ C * C :=
+      mul_le_mul (hC a) (hC a) (abs_nonneg _) hC0
     simpa [pow_two, abs_mul, mul_comm, mul_left_comm, mul_assoc] using hmul
-  have hBoundWG2 :
-      ∃ C, 0 ≤ C ∧ ∀ a, |w a * (g a) ^ 2| ≤ C := by
-    refine ⟨Cw * Cg ^ 2, mul_nonneg hCw0 (by nlinarith), ?_⟩
-    intro a
-    have hmul : |w a| * |(g a) ^ 2| ≤ Cw * Cg ^ 2 :=
-      mul_le_mul (hCw a) (hBoundSq a) (abs_nonneg _) hCw0
-    simpa [abs_mul] using hmul
-  have hmeanWZ2 :
+  have hmeanSq :
       ∀ᵐ ω ∂μexp,
         Tendsto
           (fun n : ℕ =>
-            meanHatZ
-              (Z := fun i ω =>
-                Wcomp (A := A) (w := w) i ω * (Zcomp (A := A) (g := g) i ω) ^ 2) n ω)
+            meanHatZ (Z := Zcomp (A := A) (g := fun a => (g a) ^ 2)) n ω)
           atTop
           (nhds
             (designMeanZ (κ := μexp)
-              (Z := fun i ω =>
-                Wcomp (A := A) (w := w) i ω * (Zcomp (A := A) (g := g) i ω) ^ 2))) := by
-    simpa [Wcomp, Zcomp] using
+              (Z := Zcomp (A := A) (g := fun a => (g a) ^ 2)))) := by
+    simpa [Zcomp] using
       meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := A) (g := fun a => w a * (g a) ^ 2) hIID hMeasWG2 hBoundWG2
-  have hBoundW' : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C :=
-    ⟨Cw, hCw0, hCw⟩
-  have hmeanW :
-      ∀ᵐ ω ∂μexp,
-        Tendsto
-          (fun n : ℕ => meanHatZ (Z := Wcomp (A := A) (w := w)) n ω)
-          atTop
-          (nhds (designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w)))) := by
-    simpa [Wcomp, Zcomp] using
-      meanHatZ_tendsto_ae_of_score
-        (μexp := μexp) (A := A) (g := w)
-        (hIID := hIID) (hMeas := hMeasW) (hBound := hBoundW')
-  refine (hmeanWZ2.and hmeanW).mono ?_
+        (μexp := μexp) (A := A) (g := fun a => (g a) ^ 2)
+        hIID hMeasSq hBoundSq
+  refine hmeanSq.mono ?_
   intro ω hω
-  rcases hω with ⟨hWZ2ω, hWω⟩
-  have hpair :
-      Tendsto
-        (fun n : ℕ =>
-          (meanHatZ
-              (Z := fun i ω =>
-                Wcomp (A := A) (w := w) i ω * (Zcomp (A := A) (g := g) i ω) ^ 2) n ω,
-            meanHatZ (Z := Wcomp (A := A) (w := w)) n ω))
-        atTop
-        (nhds
-          (designMeanZ (κ := μexp)
-              (Z := fun i ω =>
-                Wcomp (A := A) (w := w) i ω * (Zcomp (A := A) (g := g) i ω) ^ 2),
-            designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w)))) := by
-    simpa [nhds_prod_eq] using hWZ2ω.prodMk hWω
-  have hcont :
-      ContinuousAt (fun p : ℝ × ℝ => p.1 / p.2)
-        (designMeanZ (κ := μexp)
-            (Z := fun i ω =>
-              Wcomp (A := A) (w := w) i ω * (Zcomp (A := A) (g := g) i ω) ^ 2),
-          designMeanZ (κ := μexp) (Z := Wcomp (A := A) (w := w))) :=
-    (ContinuousAt.div continuousAt_fst continuousAt_snd hW0)
-  have hdiv := hcont.tendsto.comp hpair
-  simpa [m2HatZW, designM2ZW] using hdiv
+  simpa [m2HatZ, designM2Z, Zcomp] using hω
 
-lemma varHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
+lemma varHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
+    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
-    (hMeasW : Measurable w)
-    (hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C)
     (hMeasG : Measurable g)
-    (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C)
-    (hW0 : designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := w)) ≠ 0) :
+    (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μexp,
       Tendsto
-        (fun n : ℕ =>
-          varHatZW (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)) n ω)
+        (fun n : ℕ => varHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
-        (nhds
-          (designVarZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)))) := by
+        (nhds (designVarZ (κ := μexp) (Z := Zcomp (A := A) (g := g)))) := by
   have hmean :=
-    meanHatZW_tendsto_ae_of_score
-      (μexp := μexp) (A := A) (w := w) (g := g)
-      hIID hMeasW hBoundW hMeasG hBoundG hW0
+    meanHatZ_tendsto_ae_of_score
+      (μexp := μexp) (A := A) (g := g) hIID hMeasG hBoundG
   have hm2 :=
-    m2HatZW_tendsto_ae_of_score
-      (μexp := μexp) (A := A) (w := w) (g := g)
-      hIID hMeasW hBoundW hMeasG hBoundG hW0
+    m2HatZ_tendsto_ae_of_score
+      (μexp := μexp) (A := A) (g := g) hIID hMeasG hBoundG
   refine (hmean.and hm2).mono ?_
   intro ω hω
   rcases hω with ⟨hmeanω, hm2ω⟩
   have hmean2 :
       Tendsto
         (fun n : ℕ =>
-          (meanHatZW (Z := Zcomp (A := A) (g := g))
-              (W := Wcomp (A := A) (w := w)) n ω) ^ 2)
+          (meanHatZ (Z := Zcomp (A := A) (g := g)) n ω) ^ 2)
         atTop
         (nhds
-          ((designMeanZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-              (W := Wcomp (A := A) (w := w))) ^ 2)) := by
+          ((designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := g))) ^ 2)) := by
     simpa [pow_two] using (hmeanω.mul hmeanω)
   have :
       Tendsto
         (fun n : ℕ =>
-          m2HatZW (Z := Zcomp (A := A) (g := g))
-              (W := Wcomp (A := A) (w := w)) n ω
-            - (meanHatZW (Z := Zcomp (A := A) (g := g))
-                (W := Wcomp (A := A) (w := w)) n ω) ^ 2)
+          m2HatZ (Z := Zcomp (A := A) (g := g)) n ω
+            - (meanHatZ (Z := Zcomp (A := A) (g := g)) n ω) ^ 2)
         atTop
         (nhds
-          (designM2ZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-              (W := Wcomp (A := A) (w := w))
-            - (designMeanZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-                (W := Wcomp (A := A) (w := w))) ^ 2)) :=
+          (designM2Z (κ := μexp) (Z := Zcomp (A := A) (g := g))
+            - (designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := g))) ^ 2)) :=
     hm2ω.sub hmean2
-  simpa [varHatZW, designVarZW] using this
+  simpa [varHatZ, designVarZ] using this
 
-theorem sdHatZW_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
-    (A : ℕ → Ω → Attr) (w g : Attr → ℝ)
+theorem sdHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
+    (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
-    (hMeasW : Measurable w)
-    (hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C)
     (hMeasG : Measurable g)
-    (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C)
-    (hW0 : designMeanZ (κ := μexp) (Z := Zcomp (A := A) (g := w)) ≠ 0) :
+    (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μexp,
       Tendsto
         (fun n : ℕ =>
-          sdHatZW (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)) n ω)
+          sdHatZ (Z := Zcomp (A := A) (g := g)) n ω)
         atTop
         (nhds
-          (designSDZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w)))) := by
+          (designSDZ (κ := μexp) (Z := Zcomp (A := A) (g := g)))) := by
   have hvar :=
-    varHatZW_tendsto_ae_of_score
-      (μexp := μexp) (A := A) (w := w) (g := g)
-      hIID hMeasW hBoundW hMeasG hBoundG hW0
+    varHatZ_tendsto_ae_of_score
+      (μexp := μexp) (A := A) (g := g) hIID hMeasG hBoundG
   refine hvar.mono ?_
   intro ω hω
   have hsqrt :
       Tendsto Real.sqrt
-        (nhds
-          (designVarZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-            (W := Wcomp (A := A) (w := w))))
-        (nhds
-          (Real.sqrt
-            (designVarZW (κ := μexp) (Z := Zcomp (A := A) (g := g))
-              (W := Wcomp (A := A) (w := w))))) :=
+        (nhds (designVarZ (κ := μexp) (Z := Zcomp (A := A) (g := g))))
+        (nhds (Real.sqrt
+          (designVarZ (κ := μexp) (Z := Zcomp (A := A) (g := g))))) :=
     (Real.continuous_sqrt.continuousAt).tendsto
-  simpa [sdHatZW, designSDZW] using (hsqrt.comp hω)
+  simpa [sdHatZ, designSDZ] using (hsqrt.comp hω)
 
 end ConjointSD

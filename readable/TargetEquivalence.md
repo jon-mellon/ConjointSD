@@ -2,23 +2,15 @@
 
 Lean file: [ConjointSD/TargetEquivalence.lean](../ConjointSD/TargetEquivalence.lean)
 
-This file provides two related tools and now uses `ProbMeasureAssumptions` instead of standalone probability-measure hypotheses:
+This file provides the exact-equality tools and now uses `ProbMeasureAssumptions` instead of standalone probability-measure hypotheses:
 1) Exact equality of targets when two score functions match [almost everywhere](jargon_almost_everywhere.md).
-2) Approximate bounds when two score functions are close [almost everywhere](jargon_almost_everywhere.md).
 
 Exact equality section:
 - If two score functions are equal almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)), then their target human [population](jargon_population.md) [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), and [standard deviation](jargon_standard_deviation.md) (under the attribute distribution) are equal.
 - The file proves this step by step: [mean](jargon_mean.md) -> [second moment](jargon_second_moment.md) -> [variance](jargon_variance.md) -> [standard deviation](jargon_standard_deviation.md).
 
-Approximate section:
-- Uses `ApproxInvarianceAE` from `Assumptions.lean`: two score functions differ by at most epsilon almost everywhere (see [almost everywhere](jargon_almost_everywhere.md)).
-- Uses `BoundedAE` from `Assumptions.lean`: a uniform bound on a score function [almost everywhere](jargon_almost_everywhere.md).
-- Adds a triangle-inequality lemma to combine two [almost everywhere](jargon_almost_everywhere.md) approximation bounds into a single bound.
-- Adds [L2](jargon_l2.md)/[RMSE](jargon_rmse.md)-style lemmas: an `L2Approx` bound controls the difference in target human population means and SDs (via centered L2 norms).
-- Uses these to show that the difference in [means](jargon_mean.md) is at most epsilon.
-- Uses bounds to control the difference in [second moments](jargon_second_moment.md) and [variances](jargon_variance.md).
-- Uses a square-root inequality to control the difference in [standard deviations](jargon_standard_deviation.md).
+Approximate bounds are now documented in `readable/ApproxTargetEquivalence.md`.
 
-The main idea: if two scores are the same (or nearly the same) on the attribute-distribution support, then their target human population dispersion targets are the same (or nearly the same).
+The main idea: if two scores are the same on the attribute-distribution support, then their target human population dispersion targets are the same.
 
-Recent changes: added the triangle-inequality lemma for combining approximate targets.
+Recent changes: moved approximate bounds to `ConjointSD/ApproxTargetEquivalence.lean`.

@@ -18,6 +18,8 @@ What is defined:
 
 Main theorem:
 - `wellSpecified_of_noInteractions_of_fullMainEffects` derives well-specification for any term basis `φ` that satisfies `FullMainEffectsTerms`, using `NoInteractions`.
-- `approxWellSpecified_of_approxNoInteractions_of_fullMainEffects` derives approximate well-specification for any term basis `φ` that satisfies `FullMainEffectsTerms`, using `ApproxNoInteractions`.
+
+Approximate variant:
+- The approximate well-specification result lives in `ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean` and uses `ApproxNoInteractions`.
 
 So the file [bridges](jargon_bridge.md) an intuitive causal assumption (additivity) to the formal [well-specified](jargon_well_specified.md) condition used later.

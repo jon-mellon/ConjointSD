@@ -21,7 +21,7 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - EvalAttrIID measA
 - EvalWeightMatchesPopMoments measA0
 - FullMainEffectsTerms
-- InvarianceAE
+- SubjectSamplingLLN
 - NoInteractions
 - ObservationNoiseAssumptions condMean_zero
 - ObservationNoiseAssumptions noise_lln

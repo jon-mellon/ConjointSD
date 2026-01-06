@@ -32,44 +32,32 @@ section Transport
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /-!
-Notation: throughout this file, `ν` always denotes the target human population
+Notation: throughout this file, `ν_pop` always denotes the target human population
 attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward)
 for non-target attribute laws.
 -/
 
-/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν`. -/
-structure AttrMomentAssumptions (ν : Measure Attr) [ProbMeasureAssumptions ν]
+/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
+structure AttrMomentAssumptions (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (s : Attr → ℝ) : Prop where
-  aemeas : AEMeasurable s ν
-  int2 : Integrable (fun a => (s a) ^ 2) ν
+  aemeas : AEMeasurable s ν_pop
+  int2 : Integrable (fun a => (s a) ^ 2) ν_pop
 
 namespace AttrMomentAssumptions
 
-theorem int1 {ν : Measure Attr} [ProbMeasureAssumptions ν] {s : Attr → ℝ}
-    (hs : AttrMomentAssumptions (ν := ν) s) : Integrable s ν := by
-  have hs_meas : AEStronglyMeasurable s ν := hs.aemeas.aestronglyMeasurable
-  have hs_mem2 : MemLp s (2 : ENNReal) ν :=
+theorem int1 {ν_pop : Measure Attr} [ProbMeasureAssumptions ν_pop] {s : Attr → ℝ}
+    (hs : AttrMomentAssumptions (ν_pop := ν_pop) s) : Integrable s ν_pop := by
+  have hs_meas : AEStronglyMeasurable s ν_pop := hs.aemeas.aestronglyMeasurable
+  have hs_mem2 : MemLp s (2 : ENNReal) ν_pop :=
     (memLp_two_iff_integrable_sq hs_meas).2 hs.int2
-  have hs_mem1 : MemLp s (1 : ENNReal) ν := hs_mem2.mono_exponent (by norm_num)
+  have hs_mem1 : MemLp s (1 : ENNReal) ν_pop := hs_mem2.mono_exponent (by norm_num)
   exact (memLp_one_iff_integrable).1 hs_mem1
 
 end AttrMomentAssumptions
 
-/--
-Invariance only on target-population attribute support (AE under `ν`): the experimental
-score agrees with the target-population score `gPop` `ν`-almost everywhere.
-This is the minimal transport condition used to link experiment to population.
--/
-def InvarianceAE (ν : Measure Attr) (gExp gPop : Attr → ℝ) : Prop :=
-  ∀ᵐ x ∂ν, gExp x = gPop x
-
-/-- Approximate invariance on attribute-distribution support: `|s - t| ≤ ε` ν-a.e. -/
-def ApproxInvarianceAE (ν : Measure Attr) (s t : Attr → ℝ) (ε : ℝ) : Prop :=
-  ∀ᵐ a ∂ν, |s a - t a| ≤ ε
-
-/-- Uniform bound on a score function, ν-a.e. -/
-def BoundedAE (ν : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
-  ∀ᵐ a ∂ν, |s a| ≤ C
+/-- Uniform bound on a score function, ν_pop-a.e. -/
+def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
+  ∀ᵐ a ∂ν_pop, |s a| ≤ C
 
 end Transport
 
@@ -141,22 +129,114 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
 
 /--
-Weighted-evaluation assumptions under boundedness, for a fixed training index `m`.
-These let us derive score-level integrability assumptions for `gHat`, `w`, and
-their weighted combinations.
+Evaluation assumptions under boundedness, for a fixed training index `m`.
 -/
-structure SplitEvalWeightAssumptionsBounded
+structure SplitEvalAssumptionsBounded
     (ρ : Measure Ω) (A : ℕ → Ω → Attr)
-    (w : Attr → ℝ) (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)
-    (m : ℕ) : Prop where
+    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ) (m : ℕ) : Prop where
   hIID : EvalAttrIID (κ := ρ) A
   hMeasG : Measurable (gHat g θhat m)
   hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |gHat g θhat m a| ≤ C
-  hMeasW : Measurable w
-  hBoundW : ∃ C, 0 ≤ C ∧ ∀ a, |w a| ≤ C
-  hW0 : designMeanZ (κ := ρ) (Z := Zcomp (A := A) (g := w)) ≠ 0
 
 end SampleSplitting
+
+section SubjectSampling
+
+variable {Ω Person Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Person]
+variable [MeasurableSpace Attr]
+
+/-- IID experiment-subject sampling from the population law. -/
+structure SubjectSamplingIID
+    (μexp : Measure Ω) (μpop : Measure Person) (R : ℕ → Ω → Person) : Prop where
+  measR : ∀ i, Measurable (R i)
+  indepR : Pairwise (fun i j => IndepFun (R i) (R j) μexp)
+  identR : ∀ i, Measure.map (R i) μexp = μpop
+
+/-- Measurability/boundedness conditions for subject-level scores under `μpop`. -/
+structure SubjectScoreAssumptions
+    (μpop : Measure Person) (gP : Person → Attr → ℝ) : Prop where
+  meas_gP : ∀ x, Measurable (fun p => gP p x)
+  bound_gP : ∀ x, ∃ C, 0 ≤ C ∧ ∀ p, |gP p x| ≤ C
+
+/--
+Pointwise LLN for experiment-subject scores, with an explicit transport target
+`gPop` and a link to the experimental estimand `gStar`.
+-/
+structure SubjectSamplingLLN
+    (μexp : Measure Ω) (ν_pop : Measure Attr) (μpop : Measure Person)
+    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+  lln_gStar :
+    ∀ x,
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n => gHatSubject (R := R) (gP := gP) n x ω)
+          atTop
+          (nhds (gStar (μexp := μexp) (Y := Y) x))
+  lln_gPop :
+    ∀ x,
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n => gHatSubject (R := R) (gP := gP) n x ω)
+          atTop
+          (nhds (gPop (μpop := μpop) gP x))
+
+/-- LLN assumption for experiment-subject averages converging to `gStar`. -/
+structure SubjectSamplingLLNStar
+    (μexp : Measure Ω) (ν_pop : Measure Attr) (μpop : Measure Person)
+    (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ) (Y : Attr → Ω → ℝ) : Prop where
+  lln_gStar :
+    ∀ x,
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+          (fun n => gHatSubject (R := R) (gP := gP) n x ω)
+          atTop
+          (nhds (gStar (μexp := μexp) (Y := Y) x))
+
+theorem subject_lln_pointwise_eq
+    {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
+    {ν_pop : Measure Attr} {μpop : Measure Person}
+    {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
+    (h : SubjectSamplingLLN
+      (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
+    ∀ x, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
+  classical
+  intro x
+  by_contra hne
+  have hboth :
+      ∀ᵐ ω ∂μexp,
+        Tendsto
+            (fun n => gHatSubject (R := R) (gP := gP) n x ω)
+            atTop
+            (nhds (gStar (μexp := μexp) (Y := Y) x))
+          ∧
+        Tendsto
+            (fun n => gHatSubject (R := R) (gP := gP) n x ω)
+            atTop
+            (nhds (gPop (μpop := μpop) gP x)) :=
+    (h.lln_gStar x).and (h.lln_gPop x)
+  have hfalse : ∀ᵐ _ω ∂μexp, False := by
+    refine hboth.mono ?_
+    intro ω hω
+    exact hne (tendsto_nhds_unique hω.1 hω.2)
+  have hzero_univ : μexp Set.univ = 0 := by
+    have hfalse' : μexp { ω | ¬False } = 0 := (MeasureTheory.ae_iff).1 hfalse
+    simpa using hfalse'
+  have hone : μexp Set.univ = 1 := by
+    exact measure_univ
+  exact zero_ne_one (hzero_univ.symm.trans hone)
+
+theorem subject_lln_ae_eq
+    {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
+    {ν_pop : Measure Attr} {μpop : Measure Person}
+    {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
+    (h : SubjectSamplingLLN
+      (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
+    ∀ᵐ x ∂ν_pop, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
+  refine ae_of_all _ ?_
+  intro x
+  exact subject_lln_pointwise_eq (h := h) x
+
+end SubjectSampling
 
 section RegressionConsistencyBridge
 
@@ -176,22 +256,22 @@ structure FunctionalContinuityAssumptions
   cont_m2   : ContinuousAt (attrM2Θ   (xiAttr := xiAttr) g) θ0
 
 /--
-Direct plug-in moment convergence assumptions for a score `g θhat n` under `ν`.
+Direct plug-in moment convergence assumptions for a score `g θhat n` under `ν_pop`.
 This is the Route-1 input for sequential consistency: mean and second moment converge
 without invoking parameter continuity.
 -/
 structure PlugInMomentAssumptions
-    (ν : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
+    (ν_pop : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
   mean_tendsto :
     Tendsto
-      (fun n => attrMean ν (gHat g θhat n))
+      (fun n => attrMean ν_pop (gHat g θhat n))
       atTop
-      (nhds (attrMean ν (g θ0)))
+      (nhds (attrMean ν_pop (g θ0)))
   m2_tendsto :
     Tendsto
-      (fun n => attrM2 ν (gHat g θhat n))
+      (fun n => attrM2 ν_pop (gHat g θhat n))
       atTop
-      (nhds (attrM2 ν (g θ0)))
+      (nhds (attrM2 ν_pop (g θ0)))
 
 /-- Continuity assumptions for each block score at `θ0`. -/
 structure BlockFunctionalContinuityAssumptions
@@ -330,35 +410,23 @@ structure PaperOLSFullRankAssumptions
 
 end PaperOLSDesign
 
-section SurveyWeights
+section EvaluationSampling
 
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /--
-Evaluation-weight moment matching: weighted moments of the evaluation draw
-match target human population moments under `ν`.
-
-This is a transport-style assumption that links the evaluation sample
-(`A 0` under the evaluation law `ρ`) to the population distribution `ν`
-without requiring full law equality.
+Evaluation sample is an IID draw from the target population attribute law `ν_pop`:
+the evaluation attribute distribution equals `ν_pop`.
 -/
-structure EvalWeightMatchesPopMoments
+structure EvalAttrLawEqPop
     {Ω : Type*} [MeasurableSpace Ω]
     (ρ : Measure Ω) (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) (w s : Attr → ℝ) : Prop where
-  measA0 : Measurable (A 0)
-  mean_eq :
-    (∫ a, w a * s a ∂kappaDesign (κ := ρ) (A := A)) /
-      (∫ a, w a ∂kappaDesign (κ := ρ) (A := A))
-      =
-    attrMean ν s
-  m2_eq :
-    (∫ a, w a * (s a) ^ 2 ∂kappaDesign (κ := ρ) (A := A)) /
-      (∫ a, w a ∂kappaDesign (κ := ρ) (A := A))
-      =
-    attrM2 ν s
+    (ν_pop : Measure Attr) : Prop where
+  measA : ∀ i, Measurable (A i)
+  indepA : Pairwise (fun i j => IndepFun (A i) (A j) ρ)
+  identA : ∀ i, Measure.map (A i) ρ = ν_pop
 
-end SurveyWeights
+end EvaluationSampling
 
 section ConjointIdentification
 
@@ -383,18 +451,6 @@ structure ConjointRandomizationStream
       Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧
       (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
       ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
-
-/-- Randomized-assignment assumptions that imply the `rand` factorization. -/
-structure ConjointIdRandomized
-    [MeasurableSpace Attr] (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
-    [ProbMeasureAssumptions μexp] : Prop where
-  measX : Measurable X
-  measYobs : Measurable Yobs
-  measY : ∀ x, Measurable (Y x)
-  consistency : ∀ ω, Yobs ω = Y (X ω) ω
-  bounded :
-    ∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C
-  ignorability : ∀ x, (fun ω => X ω) ⟂ᵢ[μexp] (fun ω => Y x ω)
 
 end ConjointIdentification
 
@@ -430,30 +486,6 @@ lemma DesignAttrIID.of_randomization_stream
 
 end ConjointIdentificationLemmas
 
-section ApproximateOracle
-
-variable {Attr : Type*} [MeasurableSpace Attr]
-
-/--
-Two-stage approximation: a flexible score `gFlex` approximates the experimental
-causal score `gStar`, and the model score `gModel` approximates `gFlex`, both ν-a.e.
--/
-def ApproxOracleAE
-    (ν : Measure Attr)
-    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
-  (∀ᵐ x ∂ν, |gModel x - gFlex x| ≤ δModel) ∧
-  (∀ᵐ x ∂ν, |gFlex x - gStar x| ≤ δOracle)
-
-/--
-L2-style approximation: the model score differs from the target by at most delta in mean-square.
--/
-def L2Approx
-    (ν : Measure Attr)
-    (gModel gTarget : Attr → ℝ) (δ : ℝ) : Prop :=
-  MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
-  Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ
-
-end ApproximateOracle
 
 section WellSpecifiedFromNoInteractions
 
@@ -484,13 +516,6 @@ def NoInteractions
     (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) : Prop :=
   ∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
     ∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)
-
-/-- Approximate additivity: `gStar` is within ε of an additive main-effects surface. -/
-def ApproxNoInteractions
-    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ) (ε : ℝ) : Prop :=
-  ∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
-    ∀ x : Profile K V,
-      |gStar (μexp := μexp) (Y := Y) x - (α0 + ∑ k : K, main k (x k))| ≤ ε
 
 end WellSpecifiedFromNoInteractions
 

@@ -39,25 +39,22 @@ def gTotalΘ (gB : B → Θ → Attr → ℝ) : Θ → Attr → ℝ :=
 theorem sequential_consistency_blocks_ae
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (w : Attr → ℝ)
+    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
-      SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+      SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hMom : ∀ m b,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gBlock (gB := gB) b) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν := ν)
+      PlugInMomentAssumptions (ν_pop := ν_pop)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         ∀ b : B,
-          (∀ᵐ ω ∂ρ,
+              (∀ᵐ ω ∂ρ,
             ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A ν w (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
+              totalErr ρ A ν_pop (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
   classical
   have hEach :
       ∀ b : B,
@@ -65,15 +62,15 @@ theorem sequential_consistency_blocks_ae
           ∀ m ≥ Mb,
             (∀ᵐ ω ∂ρ,
               ∀ᶠ n : ℕ in atTop,
-                totalErr ρ A ν w
+                totalErr ρ A ν_pop
                   (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
     intro b
     simpa [gBlock] using
       (sequential_consistency_ae
-        (ρ := ρ) (A := A) (ν := ν) (w := w)
+        (ρ := ρ) (A := A) (ν_pop := ν_pop)
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
-        (hMom := fun m => hMom m b)
+        (hLaw := hLaw)
         (hPlug := hPlug b)
         (ε := ε) (hε := hε))
   choose Mb hMb using hEach
@@ -91,31 +88,28 @@ theorem sequential_consistency_blocks_ae
 theorem sequential_consistency_total_ae
     (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
     (A : ℕ → Ω → Attr)
-    (ν : Measure Attr) [ProbMeasureAssumptions ν]
-    (w : Attr → ℝ)
+    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
-        SplitEvalWeightAssumptionsBounded (ρ := ρ) (A := A) (w := w)
+        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hMom : ∀ m,
-      EvalWeightMatchesPopMoments (ρ := ρ) (A := A) (ν := ν)
-        (w := w) (s := gHat (gTotalΘ (gB := gB)) θhat m))
+    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (hPlugTotal :
-      PlugInMomentAssumptions (ν := ν)
+      PlugInMomentAssumptions (ν_pop := ν_pop)
         (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
         (∀ᵐ ω ∂ρ,
           ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A ν w (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
+            totalErr ρ A ν_pop (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
   simpa [gTotalΘ] using
     (sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν := ν) (w := w)
+      (ρ := ρ) (A := A) (ν_pop := ν_pop)
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
-      (hMom := hMom)
+      (hLaw := hLaw)
       (hPlug := hPlugTotal)
       (ε := ε) (hε := hε))
 

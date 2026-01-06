@@ -19,28 +19,28 @@ Recent changes: [probability-measure](jargon_probability_measure.md) requirement
 ## Notation and scope
 
 Notation:
-- `ν` is reserved for the target attribute [distribution](jargon_distribution.md) of the target human
+- `ν_pop` is reserved for the target attribute [distribution](jargon_distribution.md) of the target human
   [population](jargon_population.md). Non-target attribute laws must be written as `xiAttr` (generic)
   or `kappaDesign` (design/evaluation pushforward).
 - `xiAttr` is a generic attribute distribution used in continuity/moment lemmas; in the
   first-stage OLS setting it is instantiated as `kappaDesign`. In transport statements,
-  we write `ν` directly (no `xiAttr`).
+  we write `ν_pop` directly (no `xiAttr`).
 - `kappaDesign := Measure.map (A 0) μexp` is the [pushforward](jargon_pushforward.md) attribute law for
   the experimental design distribution.
 - `kappaDesign := Measure.map (A 0) ρ` is the pushforward attribute law for
   the evaluation sample used in transport.
 - `μexp` is the experimental design distribution used to fit/identify the score.
-- `ρ` is the evaluation-sample law used in the SD/transport stage (the sample you reweight).
+- `ρ` is the evaluation-sample law used in the SD/transport stage.
 Scope: “population” always means the target human
 [population](jargon_population.md). When we say “[population](jargon_population.md)
-mean/variance/SD,” we mean those quantities computed with respect to `ν`.
+mean/variance/SD,” we mean those quantities computed with respect to `ν_pop`.
 
 ## Structural assumptions (by model choice)
 
 These are not formalized as Lean assumption bundles; they arise from how the model is set up.
 
 - Single-shot abstraction: each observation is treated as a standalone profile draw. This
-  sidesteps any task-indexing or within-respondent carryover structure. (Hainmueller Assumption 1, by omission)
+  sidesteps any task-indexing or within-subject carryover structure. (Hainmueller Assumption 1, by omission)
   Intuition: the model abstracts away repeated choices by treating each profile as a fresh draw.
   Formal: not represented as a Lean predicate; this is a modeling choice in the definition of the data structure.
 - No task-order effects: because there is no task index in the core model, the formalization
@@ -55,77 +55,59 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 ## Transport
 
 - `AttrMomentAssumptions`: target [population](jargon_population.md) moments for
-  a score function `s` under the attribute distribution `ν` on `Attr`
+  a score function `s` under the attribute distribution `ν_pop` on `Attr`
   (the attribute distribution representing the target human
   [population](jargon_population.md)). It requires
   [almost-everywhere measurability](jargon_measurable.md) of `s` and
   [integrability](jargon_integrable.md) of `s^2`. The `s` integrability needed
   for [mean](jargon_mean.md) and [variance](jargon_variance.md) targets is
-  derived from these conditions using `ν univ = 1`.
-  - `AttrMomentAssumptions.aemeas`: `s` is a.e. measurable under `ν`,
+  derived from these conditions using `ν_pop univ = 1`.
+  - `AttrMomentAssumptions.aemeas`: `s` is a.e. measurable under `ν_pop`,
     so `s` can be integrated and is compatible with almost-everywhere
     statements used later in transport proofs. Intuition: we only need `s` to
-    be well-defined except on a `ν`-null set, because target population targets
-    under `ν` ignore
-    measure-zero deviations. Formal: `AEMeasurable s ν`.
+    be well-defined except on a `ν_pop`-null set, because target population targets
+    under `ν_pop` ignore
+    measure-zero deviations. Formal: `AEMeasurable s ν_pop`.
   - `AttrMomentAssumptions.int2`: `s^2` is integrable under the attribute
-    distribution `ν` (the target population attribute distribution). This
+    distribution `ν_pop` (the target population attribute distribution). This
     supplies finite second moments, which are the input for target population
     [variance](jargon_variance.md) and [standard deviation](jargon_standard_deviation.md).
     Intuition: finite energy rules out heavy tails that would make SD undefined
-    or unstable. Formal: `Integrable (fun a => (s a) ^ 2) ν`.
-- `EvalWeightMatchesPopMoments`: weighted transport assumption for a specific score `s`.
-  It asserts that the evaluation draw’s *weighted* [mean](jargon_mean.md) and
-  [second moment](jargon_second_moment.md) (under weights `w`) match the target
-  [population](jargon_population.md) moments under `ν` (the target distribution).
-  Here `ρ` is the evaluation law, so `kappaDesign` is the evaluation attribute
-  distribution. This supports SD targets without full law equality, but requires
-  the weighting step explicitly.
-  - `EvalWeightMatchesPopMoments.measA0`: `A 0` is measurable.
-    Intuition: the evaluation draw is a well-defined [random variable](jargon_random_variable.md).
-    Formal: `Measurable (A 0)`.
-- `EvalWeightMatchesPopMoments.mean_eq`: weighted evaluation mean equals target mean.
-    Intuition: reweighted evaluation averages match the target population mean under `ν`.
-    Formal: `(∫ w a * s a)/(∫ w a) = attrMean ν s` under `kappaDesign`.
-- `EvalWeightMatchesPopMoments.m2_eq`: weighted evaluation second moment equals target second moment.
-    Intuition: reweighted evaluation scale matches the target population second moment under `ν`.
-    Formal: `(∫ w a * s a^2)/(∫ w a) = attrM2 ν s` under `kappaDesign`.
-- `InvarianceAE`: almost-everywhere equality under the attribute distribution
-  `ν`, i.e., the experimental and target [population](jargon_population.md) scores
-  agree on the [population support](jargon_population_support.md) (support of
-  `ν`). This is the transport/external-validity step that links the experiment to
-  target-population moments; it is not part of first-stage randomized identification
-  on the design distribution.
-  Intuitively, they may
-  differ only on a set with zero probability under `ν`; this is the external
-  validity/transport assumption that lets target [population](jargon_population.md)
-  targets be read off from
-  the experimental score. Formally: `gExp = gPop` nu-a.e. (under `ν`). It does
-  not by itself guarantee the fitted model
-  matches that score; misspecification or estimation error can still break
-  transfer. It also fails if the experimental setup elicits a different scoring
-  rule than the real-world target [population](jargon_population.md) process
-  (beyond a `ν`-null set). Intuition: the experiment and target human
-  [population](jargon_population.md) differ only on events that never occur in
-  the target [population](jargon_population.md). Formal:
-  `∀ᵐ x ∂ν, gExp x = gPop x`.
-- `ApproxInvarianceAE`: the approximate transport condition that allows bounded
-  deviations on the target [population](jargon_population.md) support.
-  Intuition: the experiment score may differ from the target score by at most
-  `ε` on a set of probability one under `ν`, so target moments are only
-  perturbed by a controlled amount. Formal:
-  `∀ᵐ x ∂ν, |s x - t x| ≤ ε`.
+    or unstable. Formal: `Integrable (fun a => (s a) ^ 2) ν_pop`.
+- `EvalAttrLawEqPop`: evaluation attributes are sampled IID from the target population law `ν_pop`.
+  It states each evaluation draw has law `ν_pop` under `ρ`.
+  - `EvalAttrLawEqPop.measA`: each `A i` is measurable.
+  - `EvalAttrLawEqPop.indepA`: evaluation draws are pairwise independent under `ρ`.
+  - `EvalAttrLawEqPop.identA`: each evaluation draw has law `ν_pop`.
+  Intuition: the evaluation sample is a simple random sample from the population.
+- `SubjectSamplingIID`: IID experiment-subject sampling from the population law `μpop`.
+  It separates the subject draw from the profile randomization.
+  - `SubjectSamplingIID.measR`: subject draws are measurable.
+  - `SubjectSamplingIID.indepR`: subject draws are pairwise independent under `μexp`.
+  - `SubjectSamplingIID.identR`: the subject draws' distribution equals `μpop`.
+  Intuition: the experiment subjects are a random sample of the target population.
+- `SubjectScoreAssumptions`: measurability/boundedness of the subject-level score under `μpop`.
+  - `SubjectScoreAssumptions.meas_gP`: each fixed-profile score `gP(·,x)` is measurable.
+  - `SubjectScoreAssumptions.bound_gP`: each fixed-profile score `gP(·,x)` is uniformly bounded.
+  Intuition: subject-level scores are well-defined and have finite means under the population law.
+- `SubjectSamplingLLNStar`: pointwise LLN for subject-level scores to the experimental estimand.
+  - `SubjectSamplingLLNStar.lln_gStar`: the subject-average score converges to `gStar`.
+  Intuition: averaging subject scores in the experiment recovers the experiment’s causal score.
+The LLN to `gPop` is derived from `SubjectSamplingIID` + `SubjectScoreAssumptions` via the strong LLN
+and boundedness-driven integrability.
+  The ν_pop-a.e. equality `gStar = gPop` is then *derived* by uniqueness of limits.
+- `SubjectSamplingLLN`: bundles both LLN statements (`gStar` and `gPop`) in one structure.
 - `BoundedAE`: uniform boundedness on the target [population](jargon_population.md)
-  support. Intuition: scores stay within `C` almost everywhere under `ν`, so
+  support. Intuition: scores stay within `C` almost everywhere under `ν_pop`, so
   moment bounds and approximation lemmas can use a global envelope. Formal:
-  `∀ᵐ x ∂ν, |s x| ≤ C`.
+  `∀ᵐ x ∂ν_pop, |s x| ≤ C`.
 ## BasicMeasure
 
 - `ProbMeasureAssumptions` (trivial): bundles `IsProbabilityMeasure κ` as an explicit
   assumption package so theorems can avoid standalone [probability-measure](jargon_probability_measure.md)
   hypotheses. Intuition: we are working with a genuine probability law, not
   just a finite measure; the same wrapper is used for the target distribution
-  `ν` and the experimental design distribution `μexp` as needed. Formal:
+  `ν_pop` and the experimental design distribution `μexp` as needed. Formal:
   `IsProbabilityMeasure κ`.
 
 ## Positivity
@@ -181,15 +163,12 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Formal: `Integrable (fun ω => (g (A 0 ω)) ^ 2) μexp`.
 ## SampleSplitting
 
-- `SplitEvalWeightAssumptionsBounded`: boundedness-based weighted evaluation assumptions.
+- `SplitEvalAssumptionsBounded`: boundedness-based evaluation assumptions.
   This replaces score/integrability conditions with explicit bounds on the estimated score
-  and on the weights, and then derives the needed moment conditions.
-  - `SplitEvalWeightAssumptionsBounded.hIID`: i.i.d. assumptions for the evaluation draws.
-  - `SplitEvalWeightAssumptionsBounded.hMeasG` / `hBoundG`: measurability and boundedness of
+  and then derives the needed moment conditions.
+  - `SplitEvalAssumptionsBounded.hIID`: i.i.d. assumptions for the evaluation draws.
+  - `SplitEvalAssumptionsBounded.hMeasG` / `hBoundG`: measurability and boundedness of
     `gHat g θhat m`.
-  - `SplitEvalWeightAssumptionsBounded.hMeasW` / `hBoundW`: measurability and boundedness of
-    the weights `w`.
-  - `SplitEvalWeightAssumptionsBounded.hW0`: the weight mean is nonzero.
 
 ## RegressionConsistencyBridge
 
@@ -200,7 +179,7 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   [regression](jargon_regression.md) [consistency](jargon_consistency.md)
   translate estimator [convergence](jargon_convergence.md) into moment
   [convergence](jargon_convergence.md). In the first-stage OLS setting, take
-  `xiAttr := kappaDesign`; in the transport stage, use the target population `ν`.
+  `xiAttr := kappaDesign`; in the transport stage, use the target population `ν_pop`.
   - `FunctionalContinuityAssumptions.cont_mean`: mean functional is continuous at `θ0`.
     Intuition: small parameter perturbations do not change the mean much.
     Formal: `ContinuousAt (attrMeanΘ (xiAttr := xiAttr) g) θ0`.
@@ -208,12 +187,12 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
     Intuition: the scale of the score changes smoothly with parameters.
     Formal: `ContinuousAt (attrM2Θ (xiAttr := xiAttr) g) θ0`.
 - `PlugInMomentAssumptions`: direct plug-in convergence of the attribute-distribution
-  mean and second moment under `ν` for `gHat g θhat n`. This is the Route‑1 input:
+  mean and second moment under `ν_pop` for `gHat g θhat n`. This is the Route‑1 input:
   we assume moment convergence outright, without relying on parameter continuity.
   - `PlugInMomentAssumptions.mean_tendsto`: mean convergence to the oracle mean.
-    Formal: `Tendsto (fun n => attrMean ν (gHat g θhat n)) atTop (nhds (attrMean ν (g θ0)))`.
+    Formal: `Tendsto (fun n => attrMean ν_pop (gHat g θhat n)) atTop (nhds (attrMean ν_pop (g θ0)))`.
   - `PlugInMomentAssumptions.m2_tendsto`: second-moment convergence to the oracle second moment.
-    Formal: `Tendsto (fun n => attrM2 ν (gHat g θhat n)) atTop (nhds (attrM2 ν (g θ0)))`.
+    Formal: `Tendsto (fun n => attrM2 ν_pop (gHat g θhat n)) atTop (nhds (attrM2 ν_pop (g θ0)))`.
 - `BlockFunctionalContinuityAssumptions`: the blockwise version of functional
   continuity, requiring the above assumptions for each block score under the
   attribute distribution `xiAttr`.
@@ -284,8 +263,8 @@ Reader mapping to standard OLS assumptions:
   distribution `xiAttr`. Identification of `θ0` from these limits is handled separately
   (e.g., via [normal equations](jargon_normal_equations.md) and [full‑rank](jargon_full_rank.md) assumptions).
   Core‑idea note: for design‑side OLS, take `xiAttr := kappaDesign (κ := μexp)`
-  and use that in `OLSMomentAssumptionsOfAttr`; the target population `ν` enters
-  only at the transport stage via evaluation weights.
+  and use that in `OLSMomentAssumptionsOfAttr`; the target population `ν_pop` enters
+  only at the transport stage via the evaluation sampling law.
   - `OLSMomentAssumptionsOfAttr.gramInv_tendsto`: entries of the inverse sample
     [Gram matrix](jargon_gram_matrix.md) converge to the inverse
     attribute‑distribution Gram, giving the stable
@@ -297,7 +276,7 @@ Reader mapping to standard OLS assumptions:
     converges to the cross moment under the chosen attribute distribution `xiAttr`, so the
     [normal equations](jargon_normal_equations.md) converge. Intuition: the empirical correlation between
     regressors and outcomes settles to its `xiAttr`-based value (target population if
-    `xiAttr = ν`, design-law if `xiAttr = kappaDesign`).
+    `xiAttr = ν_pop`, design-law if `xiAttr = kappaDesign`).
     Formal:
     `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
       (nhds (attrCross (xiAttr := xiAttr) (g := g) (φ := φ) i))`.
@@ -370,24 +349,18 @@ Reader mapping to standard OLS assumptions:
   The [normal equations](jargon_normal_equations.md) are now derived from
   [well-specification](jargon_well_specified.md) and bounded/measurable paper
   features in `ConjointSD/PaperOLSConsistency.lean`.
-## EvaluationWeights
-- `EvalWeightMatchesPopMoments`: evaluation-weight transport assumption. It
-  says the weighted mean/second moment of the evaluation draw `A 0` under `ρ`
-  (i.e., under `kappaDesign`) match the target human
-  [population](jargon_population.md) moments under `ν` (the target distribution).
-  This is the explicit bridge from an evaluation sample to target population
-  targets without assuming full law equality.
-  - `EvalWeightMatchesPopMoments.measA0`: `A 0` is measurable.
-    Intuition: the evaluation draw is a well-defined random variable.
-    Formal: `Measurable (A 0)`.
-  - `EvalWeightMatchesPopMoments.mean_eq`: weighted evaluation mean equals
-    the target [population](jargon_population.md) mean under `ν`.
-    Intuition: reweighting fixes the target population mean under `ν`.
-    Formal: `(∫ a, w a * s a ∂kappaDesign) / (∫ a, w a ∂kappaDesign) = attrMean ν s`.
-  - `EvalWeightMatchesPopMoments.m2_eq`: weighted evaluation second moment
-    equals the target [population](jargon_population.md) second moment under `ν`.
-    Intuition: reweighting fixes the target population second moment under `ν`.
-    Formal: `(∫ a, w a * (s a) ^ 2 ∂kappaDesign) / (∫ a, w a ∂kappaDesign) = attrM2 ν s`.
+## EvaluationSampling
+- `EvalAttrLawEqPop`: evaluation attributes are sampled IID from the target population law `ν_pop`.
+  This is the SRS-style representativeness assumption used in the main theorem chain.
+  - `EvalAttrLawEqPop.measA`: each `A i` is measurable.
+    Intuition: each evaluation draw is a well-defined random variable.
+    Formal: `∀ i, Measurable (A i)`.
+  - `EvalAttrLawEqPop.indepA`: evaluation draws are pairwise independent under `ρ`.
+    Intuition: draws are independent across indices.
+    Formal: `Pairwise (fun i j => IndepFun (A i) (A j) ρ)`.
+  - `EvalAttrLawEqPop.identA`: each evaluation draw has law `ν_pop`.
+    Intuition: the evaluation sample is an IID draw from the population.
+    Formal: `∀ i, Measure.map (A i) ρ = ν_pop`.
 
 ## ConjointIdentification
 
@@ -397,51 +370,17 @@ Reader mapping to standard OLS assumptions:
   [independent](jargon_independent.md) of every [potential outcome](jargon_potential_outcome.md).
   This makes the profile assignments random in the experimental design.
   Intuition: assignment uses a clean randomization device (e.g., survey randomizer)
-  that is independent of respondents’ potential outcomes, so there is no selection bias.
+  that is independent of subjects’ potential outcomes, so there is no selection bias.
   Formal:
   `∃ R U f, (∀ i, Measurable (U i)) ∧ Measurable f ∧ (∀ i, A i = fun ω => f (U i ω)) ∧
     Pairwise (fun i j => IndepFun (U i) (U j) μexp) ∧ (∀ i, IdentDistrib (U i) (U 0) μexp μexp) ∧
     ∀ i x, (fun ω => U i ω) ⟂ᵢ[μexp] (fun ω => Y x ω)`.
-- `ConjointIdRandomized`: a randomized-design variant under a probability
-  measure `μexp` (experimental design distribution). It assumes
-  [measurable](jargon_measurable.md) assignment,
-  uniformly bounded [potential outcomes](jargon_potential_outcome.md), and
-  [independence](jargon_independent.md) between `X` and each `Y x`. Integrability
-  of outcomes is derived from boundedness. (Hainmueller Assumption 3)
-  - `ConjointIdRandomized.measX`: assignment is measurable.
-    Intuition: treatment is a well-defined [random variable](jargon_random_variable.md).
-    Formal: `Measurable X`.
-  - `ConjointIdRandomized.measYobs`: observed outcomes are measurable.
-    Intuition: outcomes are observable [random variables](jargon_random_variable.md).
-    Formal: `Measurable Yobs`.
-  - `ConjointIdRandomized.measY`: potential outcomes are measurable.
-    Intuition: counterfactual outcomes are integrable.
-    Formal: `∀ x, Measurable (Y x)`.
-  - `ConjointIdRandomized.consistency`: observed equals realized potential outcome.
-    Intuition: no measurement distortion.
-    Formal: `∀ ω, Yobs ω = Y (X ω) ω`.
-  - `ConjointIdRandomized.bounded`: uniform boundedness of potential outcomes.
-    Intuition: outcomes have finite moments by design.
-    Formal: `∀ x, ∃ C : ℝ, 0 ≤ C ∧ ∀ ω, |Y x ω| ≤ C`.
-  - `ConjointIdRandomized.ignorability`: assignment is independent of each `Y x`.
-    Intuition: randomization breaks confounding.
-    Formal: `∀ x, (fun ω => X ω) ⟂ᵢ[μexp] (fun ω => Y x ω)`.
+Identification-specific randomized-design assumptions now live in
+`readable/IdentificationAssumptions.md`.
 
-## ModelBridge
+## Approximation-only assumptions
 
-- `ApproxOracleAE` (not used for consistency or identification): a two-stage approximation assumption: a flexible score
-  approximates the experimental causal score `gStar`, and the model score approximates the
-  flexible score, both [almost everywhere](jargon_almost_everywhere.md) under
-  the attribute distribution `ν`.
-  Intuition: use a rich intermediate score to bridge to the target.
-  Formal:
-  `(∀ᵐ x ∂ν, |gModel x - gFlex x| ≤ δModel) ∧ (∀ᵐ x ∂ν, |gFlex x - gStar x| ≤ δOracle)`.
-- `L2Approx`: an [L2](jargon_l2.md)/[RMSE](jargon_rmse.md)-style approximation assumption: the model score differs
-  from the target by at most `δ` in mean-square (uses the [L2](jargon_l2.md) norm under `ν`).
-  Intuition: the average squared error is bounded by `δ^2`.
-  Formal:
-  `MemLp (fun a => gModel a - gTarget a) (ENNReal.ofReal 2) ν ∧
-    Real.sqrt (∫ a, |gModel a - gTarget a| ^ 2 ∂ν) ≤ δ`.
+Approximation-specific assumptions now live in `readable/ApproxAssumptions.md`.
 
 ## WellSpecifiedFromNoInteractions
 
@@ -460,11 +399,3 @@ Reader mapping to standard OLS assumptions:
   Formal:
   `∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
     ∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)`.
-- `ApproxNoInteractions`: approximate additivity of `gStar` within `ε` of a
-  main-effects surface.
-  Intuition: interactions are small enough that an additive model is uniformly
-  close to the causal target.
-  Formal:
-  `∃ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
-    ∀ x : Profile K V,
-      |gStar (μexp := μexp) (Y := Y) x - (α0 + ∑ k : K, main k (x k))| ≤ ε`.

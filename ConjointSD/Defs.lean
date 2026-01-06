@@ -77,27 +77,17 @@ def kappaDesign {Attr : Type*} [MeasurableSpace Attr] (A : ℕ → Ω → Attr) 
 def meanHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   ((n : ℝ)⁻¹) • (Finset.sum (Finset.range n) fun i => Z i ω)
 
-/-- Weights evaluated along a draw stream `A`. -/
-def Wcomp {Attr : Type*} (A : ℕ → Ω → Attr) (w : Attr → ℝ) : ℕ → Ω → ℝ :=
-  fun i ω => w (A i ω)
+/-- Empirical second moment: (1/n) • ∑_{i<n} (Z i ω)^2. -/
+def m2HatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  meanHatZ (Z := fun i ω => (Z i ω) ^ 2) n ω
 
-/-- Weighted empirical mean: (∑ w_i Z_i) / (∑ w_i). -/
-def meanHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  (meanHatZ (Z := fun i ω => W i ω * Z i ω) n ω)
-    / (meanHatZ (Z := W) n ω)
+/-- Plug-in variance proxy. -/
+def varHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  m2HatZ (Z := Z) n ω - (meanHatZ (Z := Z) n ω) ^ 2
 
-/-- Weighted empirical second moment: (∑ w_i Z_i^2) / (∑ w_i). -/
-def m2HatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  (meanHatZ (Z := fun i ω => W i ω * (Z i ω) ^ 2) n ω)
-    / (meanHatZ (Z := W) n ω)
-
-/-- Plug-in weighted variance proxy. -/
-def varHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  m2HatZW (Z := Z) (W := W) n ω - (meanHatZW (Z := Z) (W := W) n ω) ^ 2
-
-/-- Plug-in weighted SD proxy. -/
-def sdHatZW (Z W : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
-  Real.sqrt (varHatZW (Z := Z) (W := W) n ω)
+/-- Plug-in SD proxy. -/
+def sdHatZ (Z : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  Real.sqrt (varHatZ (Z := Z) n ω)
 
 /-- Experimental design distribution mean: ∫ Z 0 dκ. -/
 def designMeanZ (Z : ℕ → Ω → ℝ) : ℝ :=
@@ -115,24 +105,6 @@ def designVarZ (Z : ℕ → Ω → ℝ) : ℝ :=
 def designSDZ (Z : ℕ → Ω → ℝ) : ℝ :=
   Real.sqrt (designVarZ (κ := κ) Z)
 
-/-- Weighted design mean: (∫ W0 Z0)/(∫ W0). -/
-def designMeanZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  (designMeanZ (κ := κ) (Z := fun i ω => W i ω * Z i ω))
-    / (designMeanZ (κ := κ) (Z := W))
-
-/-- Weighted design second moment: (∫ W0 Z0^2)/(∫ W0). -/
-def designM2ZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  (designMeanZ (κ := κ) (Z := fun i ω => W i ω * (Z i ω) ^ 2))
-    / (designMeanZ (κ := κ) (Z := W))
-
-/-- Weighted design variance proxy. -/
-def designVarZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  designM2ZW (κ := κ) (Z := Z) (W := W)
-    - (designMeanZW (κ := κ) (Z := Z) (W := W)) ^ 2
-
-/-- Weighted design SD proxy. -/
-def designSDZW (Z W : ℕ → Ω → ℝ) : ℝ :=
-  Real.sqrt (designVarZW (κ := κ) (Z := Z) (W := W))
 
 end PredictedSD
 
@@ -272,5 +244,21 @@ def gStar (μexp : Measure Ω) (Y : Attr → Ω → ℝ) : Attr → ℝ :=
   fun x => potMean (κ := μexp) Y x
 
 end ConjointEstimand
+
+section SubjectPopulation
+
+variable {Person Attr Ω : Type*} [MeasurableSpace Person] [MeasurableSpace Attr]
+variable [MeasurableSpace Ω]
+
+/-- Population-mean scoring function across persons. -/
+def gPop (μpop : Measure Person) (gP : Person → Attr → ℝ) : Attr → ℝ :=
+  fun x => ∫ p, gP p x ∂μpop
+
+/-- Experiment-subject sample average of the person-level score at a fixed profile. -/
+def gHatSubject (R : ℕ → Ω → Person) (gP : Person → Attr → ℝ)
+    (n : ℕ) (x : Attr) (ω : Ω) : ℝ :=
+  (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, gP (R i ω) x
+
+end SubjectPopulation
 
 end ConjointSD
