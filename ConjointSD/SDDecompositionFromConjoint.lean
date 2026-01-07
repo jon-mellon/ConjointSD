@@ -28,7 +28,7 @@ lemma integrable_of_bounded
   have hC' := hC ω
   simpa [Real.norm_eq_abs] using hC'
 
-lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
+lemma meanHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
     (hMeas : Measurable g)
@@ -65,7 +65,7 @@ lemma meanHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
   simpa [meanHatZ, designMeanZ, Z] using
     (ProbabilityTheory.strong_law_ae (μ := μexp) (X := Z) hInt hInd hId)
 
-lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
+lemma m2HatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
     (hMeasG : Measurable g)
@@ -101,7 +101,7 @@ lemma m2HatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
   intro ω hω
   simpa [m2HatZ, designM2Z, Zcomp] using hω
 
-lemma varHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
+lemma varHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
     (hMeasG : Measurable g)
@@ -140,7 +140,7 @@ lemma varHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
     hm2ω.sub hmean2
   simpa [varHatZ, designVarZ] using this
 
-theorem sdHatZ_tendsto_ae_of_score [ProbMeasureAssumptions μexp]
+theorem sdHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
     (hIID : DesignAttrIID (κ := μexp) A)
     (hMeasG : Measurable g)

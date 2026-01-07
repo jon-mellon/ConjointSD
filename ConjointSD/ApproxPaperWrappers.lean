@@ -17,9 +17,9 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
 variable {B : Type*} [Fintype B]
 
-variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+variable (ρ : Measure Ω) [IsProbabilityMeasure ρ]
 variable (A : ℕ → Ω → Attr)
-variable (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+variable (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
@@ -35,9 +35,12 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
     (hSplitBounded : ∀ m b,
       SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
+    (hMean : ∀ b : B,
+      Tendsto (fun m => attrMean ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrMean ν_pop (gBlock (gB := gB) b θ0))))
+    (hM2 : ∀ b : B,
+      Tendsto (fun m => attrM2 ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gBlock (gB := gB) b θ0))))
     (gTrueB : B → Attr → ℝ)
     (C δ : ℝ)
     (hApprox :
@@ -73,7 +76,7 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
   rcases paper_sd_blocks_sequential_consistency_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitBounded := hSplitBounded) (hPlug := hPlug)
+      (hSplitBounded := hSplitBounded) (hMean := hMean) (hM2 := hM2)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
@@ -99,9 +102,12 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hMeanTotal :
+      Tendsto (fun m => attrMean ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrMean ν_pop (gTotalΘ (gB := gB) θ0))))
+    (hM2Total :
+      Tendsto (fun m => attrM2 ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gTotalΘ (gB := gB) θ0))))
     (gTrue : Attr → ℝ)
     (C δ : ℝ)
     (hApprox :
@@ -129,7 +135,8 @@ theorem paper_sd_total_sequential_consistency_to_approx_target_ae
   rcases paper_sd_total_sequential_consistency_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
+      (hSplitTotalBounded := hSplitTotalBounded)
+      (hMeanTotal := hMeanTotal) (hM2Total := hM2Total)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
@@ -158,7 +165,7 @@ error relative to `gStar`.
 
 theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
     {Term : Type*} [Fintype Term] [DecidableEq B]
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (μexp : Measure Ω) [IsProbabilityMeasure μexp]
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (Y : Attr → Ω → ℝ)
     (blk : Term → B) (β : Term → ℝ) (φ : Term → Attr → ℝ)
@@ -173,9 +180,12 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hMeanTotal :
+      Tendsto (fun m => attrMean ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrMean ν_pop (gTotalΘ (gB := gB) θ0))))
+    (hM2Total :
+      Tendsto (fun m => attrM2 ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gTotalΘ (gB := gB) θ0))))
     (C : ℝ)
     (hBoundS :
       BoundedAE (ν_pop := ν_pop) (s := gTotalΘ (gB := gB) θ0) C)
@@ -220,7 +230,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSp
     paper_sd_total_sequential_consistency_to_approx_target_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
+      (hSplitTotalBounded := hSplitTotalBounded)
+      (hMeanTotal := hMeanTotal) (hM2Total := hM2Total)
       (gTrue := gStar (μexp := μexp) (Y := Y))
       (C := C) (δ := δ) (hApprox := hApprox)
       (hBoundS := hBoundS) (hBoundT := hBoundT)
@@ -237,7 +248,7 @@ Two-stage approximate link: a flexible oracle score approximates `gStar`, and th
 approximates the oracle. The SD target error is bounded by the combined approximation.
 -/
 theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (μexp : Measure Ω) [IsProbabilityMeasure μexp]
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
     (Y : Attr → Ω → ℝ)
     (gFlex : Attr → ℝ)
@@ -250,9 +261,12 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hMeanTotal :
+      Tendsto (fun m => attrMean ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrMean ν_pop (gTotalΘ (gB := gB) θ0))))
+    (hM2Total :
+      Tendsto (fun m => attrM2 ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gTotalΘ (gB := gB) θ0))))
     (C : ℝ)
     (hBoundS :
       BoundedAE (ν_pop := ν_pop) (s := gTotalΘ (gB := gB) θ0) C)
@@ -295,7 +309,8 @@ theorem paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracle
     paper_sd_total_sequential_consistency_to_approx_target_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
+      (hSplitTotalBounded := hSplitTotalBounded)
+      (hMeanTotal := hMeanTotal) (hM2Total := hM2Total)
       (gTrue := gStar (μexp := μexp) (Y := Y))
       (C := C) (δ := δModel + δOracle) (hApprox := hApproxCombined)
       (hBoundS := hBoundS) (hBoundT := hBoundT)

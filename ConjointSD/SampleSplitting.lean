@@ -29,7 +29,7 @@ For fixed training index `m`, the empirical SD of `gHat g θhat m (A i)` converg
     to the population SD.
 -/
 theorem sdHat_fixed_m_tendsto_ae_attrSD
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+    (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     (A : ℕ → Ω → Attr)
     (ν_pop : Measure Attr)
     (g : Θ → Attr → ℝ) (θhat : ℕ → Θ)

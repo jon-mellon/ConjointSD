@@ -37,17 +37,20 @@ def gTotalΘ (gB : B → Θ → Attr → ℝ) : Θ → Attr → ℝ :=
 
 /-- Per-block sequential consistency with a single `M` working for all `b : B` (finite B). -/
 theorem sequential_consistency_blocks_ae
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+    (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     (A : ℕ → Ω → Attr)
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m b,
       SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
-    (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
+    (hMean : ∀ b : B,
+      Tendsto (fun m => attrMean ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrMean ν_pop (gBlock (gB := gB) b θ0))))
+    (hM2 : ∀ b : B,
+      Tendsto (fun m => attrM2 ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gBlock (gB := gB) b θ0))))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -71,7 +74,8 @@ theorem sequential_consistency_blocks_ae
         (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat)
         (hSplit := fun m => hSplit m b)
         (hLaw := hLaw)
-        (hPlug := hPlug b)
+        (hMean := hMean b)
+        (hM2 := hM2 b)
         (ε := ε) (hε := hε))
   choose Mb hMb using hEach
   let M : ℕ := (Finset.univ : Finset B).sup Mb
@@ -86,18 +90,21 @@ theorem sequential_consistency_blocks_ae
 
 /-- Total-score sequential consistency for the summed score `gTotalΘ`. -/
 theorem sequential_consistency_total_ae
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+    (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     (A : ℕ → Ω → Attr)
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplitTotal :
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hMean :
+      Tendsto (fun m => attrMean ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrMean ν_pop (gTotalΘ (gB := gB) θ0))))
+    (hM2 :
+      Tendsto (fun m => attrM2 ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gTotalΘ (gB := gB) θ0))))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -110,7 +117,8 @@ theorem sequential_consistency_total_ae
       (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
       (hSplit := hSplitTotal)
       (hLaw := hLaw)
-      (hPlug := hPlugTotal)
+      (hMean := hMean)
+      (hM2 := hM2)
       (ε := ε) (hε := hε))
 
 end

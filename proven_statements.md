@@ -94,7 +94,7 @@ Formalization (Lean name): `sequential consistency ae`
 
 Formalization (math):
 `sdEst w m n -> attrSD nu (g theta0)` sequentially, under
-`SplitEvalAssumptionsBounded` and `PlugInMomentAssumptions`.
+`SplitEvalAssumptionsBounded` and direct mean/second‑moment convergence of the plug‑in score.
 
 ## paper identifies potMean from condMean (PaperWrappers)
 
@@ -349,7 +349,7 @@ File: `ConjointSD/PaperOLSConsistency.lean`
 
 Statement: Under design IID (`DesignAttrIID`), the paper’s design-side bundle
 (`PaperOLSDesignAssumptions`, including observation-noise LLN) and full‑rank,
-the OLS moment assumptions (`OLSMomentAssumptionsOfAttr`) hold almost everywhere
+the inverse‑Gram and cross‑moment convergence statements hold almost everywhere
 for the paper’s term set and causal estimand `gStar`.
 
 Intuition: bounded/measurable features and a design‑IID attribute stream give the
@@ -358,7 +358,7 @@ Gram/cross LLNs, and full‑rank provides inverse‑Gram stability.
 Formalization (Lean name): `paper_ols_attr_moments_of_design_ae`
 
 Formalization (math):
-`OLSMomentAssumptionsOfAttr` holds a.e. given design LLN and inverse Gram convergence.
+Inverse‑Gram convergence and cross‑moment convergence hold a.e. given the design LLN and full‑rank.
 
 ## paper sd total sequential consistency to true target ae of paper ols design ae of NoInteractions of randomization (PaperWrappers)
 

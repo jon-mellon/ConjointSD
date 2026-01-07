@@ -28,7 +28,6 @@ import ConjointSD.DecompositionSequentialConsistency
 import ConjointSD.SampleSplitting
 import ConjointSD.TargetEquivalence
 import ConjointSD.PaperOLSConsistency
-import ConjointSD.DeriveGEstimationAssumptions
 import ConjointSD.WellSpecifiedFromNoInteractions
 import ConjointSD.SubjectSamplingLLNFromIID
 
@@ -49,9 +48,9 @@ variable {Attr : Type*} [MeasurableSpace Attr]
 variable {Θ : Type*}
 variable {B : Type*} [Fintype B]
 
-variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+variable (ρ : Measure Ω) [IsProbabilityMeasure ρ]
 variable (A : ℕ → Ω → Attr)
-variable (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+variable (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
@@ -61,9 +60,12 @@ theorem paper_sd_blocks_sequential_consistency_ae
     (hSplitBounded : ∀ m b,
       SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
+    (hMean : ∀ b : B,
+      Tendsto (fun m => attrMean ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrMean ν_pop (gBlock (gB := gB) b θ0))))
+    (hM2 : ∀ b : B,
+      Tendsto (fun m => attrM2 ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gBlock (gB := gB) b θ0))))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -76,7 +78,7 @@ theorem paper_sd_blocks_sequential_consistency_ae
     sequential_consistency_blocks_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplitBounded) (hLaw := hLaw) (hPlug := hPlug)
+      (hSplit := hSplitBounded) (hLaw := hLaw) (hMean := hMean) (hM2 := hM2)
       (ε := ε) (hε := hε)
 
 /-- Paper-facing: total-score SD is sequentially consistent. -/
@@ -86,9 +88,12 @@ theorem paper_sd_total_sequential_consistency_ae
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hMeanTotal :
+      Tendsto (fun m => attrMean ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrMean ν_pop (gTotalΘ (gB := gB) θ0))))
+    (hM2Total :
+      Tendsto (fun m => attrM2 ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gTotalΘ (gB := gB) θ0))))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -100,7 +105,8 @@ theorem paper_sd_total_sequential_consistency_ae
     sequential_consistency_total_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotal := hSplitTotalBounded) (hLaw := hLaw) (hPlugTotal := hPlugTotal)
+      (hSplitTotal := hSplitTotalBounded) (hLaw := hLaw)
+      (hMean := hMeanTotal) (hM2 := hM2Total)
       (ε := ε) (hε := hε)
 
 /-!
@@ -116,9 +122,12 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
     (hSplitBounded : ∀ m b,
       SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
         (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hPlug : ∀ b : B,
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gBlock (gB := gB) b) (θ0 := θ0) (θhat := θhat))
+    (hMean : ∀ b : B,
+      Tendsto (fun m => attrMean ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrMean ν_pop (gBlock (gB := gB) b θ0))))
+    (hM2 : ∀ b : B,
+      Tendsto (fun m => attrM2 ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gBlock (gB := gB) b θ0))))
     (gTrueB : B → Attr → ℝ)
     (hTrueB :
       ∀ b : B,
@@ -137,7 +146,8 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
   rcases paper_sd_blocks_sequential_consistency_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitBounded := hSplitBounded) (hPlug := hPlug) (ε := ε) (hε := hε)
+      (hSplitBounded := hSplitBounded) (hMean := hMean) (hM2 := hM2)
+      (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
   intro m hm b
@@ -159,9 +169,12 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
       ∀ m,
         SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
           (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hPlugTotal :
-      PlugInMomentAssumptions (ν_pop := ν_pop)
-        (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat))
+    (hMeanTotal :
+      Tendsto (fun m => attrMean ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrMean ν_pop (gTotalΘ (gB := gB) θ0))))
+    (hM2Total :
+      Tendsto (fun m => attrM2 ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
+        (nhds (attrM2 ν_pop (gTotalΘ (gB := gB) θ0))))
     (gTrue : Attr → ℝ)
     (hTrue :
       ∀ᵐ x ∂ν_pop, gTotalΘ (gB := gB) θ0 x = gTrue x)
@@ -178,7 +191,8 @@ theorem paper_sd_total_sequential_consistency_to_true_target_ae
   rcases paper_sd_total_sequential_consistency_ae
       (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitTotalBounded := hSplitTotalBounded) (hPlugTotal := hPlugTotal)
+      (hSplitTotalBounded := hSplitTotalBounded)
+      (hMeanTotal := hMeanTotal) (hM2Total := hM2Total)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
@@ -203,11 +217,11 @@ variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
 variable {B : Type*} [Fintype B] [DecidableEq B]
 variable [DecidableEq (PaperTerm Main Inter)]
 
-variable (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
-variable (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+variable (ρ : Measure Ω) [IsProbabilityMeasure ρ]
+variable (μexp : Measure Ω) [IsProbabilityMeasure μexp]
 variable (Aeval : ℕ → Ω → Profile K V)
 
-variable (ν_pop : Measure (Profile K V)) [ProbMeasureAssumptions ν_pop]
+variable (ν_pop : Measure (Profile K V)) [IsProbabilityMeasure ν_pop]
 
 variable (Y : Profile K V → Ω → ℝ)
 variable (fMain : Main → Profile K V → ℝ) (fInter : Inter → Profile K V → ℝ)
@@ -246,7 +260,7 @@ theorem
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
     {Person : Type*} [MeasurableSpace Person]
-    (μpop : Measure Person) [ProbMeasureAssumptions μpop]
+    (μpop : Measure Person) [IsProbabilityMeasure μpop]
     (R : ℕ → Ω → Person)
     (gP : Person → Profile K V → ℝ)
     (hSubjectIID :
@@ -307,13 +321,29 @@ theorem
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
         (μexp := μexp) (Y := Y) hTerms hNoInt with
     ⟨θ0, hspec⟩
-  have hContBlocks :
-      BlockFunctionalContinuityAssumptions (xiAttr := ν_pop)
-        (gB := fun b θ a =>
-          gBlockTerm (blk := blk) (β := θ)
-            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
-        θ0 :=
-    blockFunctionalContinuity_gBlockTerm_of_bounded
+  have hContMeanBlocks :
+      ∀ b : B,
+        ContinuousAt
+          (attrMeanΘ (xiAttr := ν_pop)
+            (g := gBlock (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b))
+          θ0 :=
+    cont_mean_blocks_gBlockTerm_of_bounded
+      (Attr := Profile K V) (Main := Main) (Inter := Inter)
+      (fMain := fMain) (fInter := fInter)
+      (xiAttr := ν_pop) (blk := blk) (θ0 := θ0)
+      hDesign.meas_fMain hDesign.meas_fInter
+      hDesign.bound_fMain hDesign.bound_fInter
+  have hContM2Blocks :
+      ∀ b : B,
+        ContinuousAt
+          (attrM2Θ (xiAttr := ν_pop)
+            (g := gBlock (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a) b))
+          θ0 :=
+    cont_m2_blocks_gBlockTerm_of_bounded
       (Attr := Profile K V) (Main := Main) (Inter := Inter)
       (fMain := fMain) (fInter := fInter)
       (xiAttr := ν_pop) (blk := blk) (θ0 := θ0)
@@ -414,34 +444,92 @@ theorem
   refine ⟨θ0, ?_⟩
   refine ⟨?_, hPopBlocks⟩
   filter_upwards [hTheta] with ω hThetaω
-  have hPlugBlocks' :
+  have hMeanBlocks' :
       ∀ b : B,
-        PlugInMomentAssumptions
-          (ν_pop := ν_pop)
-          (g := gBlock
-            (gB := fun b θ a =>
-              gBlockTerm (blk := blk) (β := θ)
-                (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
-            b)
-          (θ0 := θ0)
-          (θhat := fun n =>
-            olsThetaHat
-              (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
-              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
-              n) :=
-    plugInMomentAssumptions_blocks_of_theta_tendsto
-      (xiAttr := ν_pop)
-      (gB := fun b θ a =>
-        gBlockTerm (blk := blk) (β := θ)
-          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
-      (θ0 := θ0)
-      (θhat := fun n =>
-        olsThetaHat
-          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
-          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
-          n)
-      hThetaω
-      hContBlocks
+        Tendsto
+          (fun m =>
+            attrMean ν_pop
+              (gHat
+                (gBlock
+                  (gB := fun b θ a =>
+                    gBlockTerm (blk := blk) (β := θ)
+                      (φ :=
+                        φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                  b)
+                (fun n =>
+                  olsThetaHat
+                    (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                    n)
+                m))
+          atTop
+          (nhds
+            (attrMean ν_pop
+              (gBlock
+                (gB := fun b θ a =>
+                  gBlockTerm (blk := blk) (β := θ)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                b θ0))) := by
+    intro b
+    simpa [gBlock] using
+      attrMean_tendsto_of_theta_tendsto
+        (xiAttr := ν_pop)
+        (g := gBlock
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+          b)
+        (θ0 := θ0)
+        (θhat := fun n =>
+          olsThetaHat
+            (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+            n)
+        hThetaω
+        (hContMeanBlocks b)
+  have hM2Blocks' :
+      ∀ b : B,
+        Tendsto
+          (fun m =>
+            attrM2 ν_pop
+              (gHat
+                (gBlock
+                  (gB := fun b θ a =>
+                    gBlockTerm (blk := blk) (β := θ)
+                      (φ :=
+                        φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                  b)
+                (fun n =>
+                  olsThetaHat
+                    (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                    n)
+                m))
+          atTop
+          (nhds
+            (attrM2 ν_pop
+              (gBlock
+                (gB := fun b θ a =>
+                  gBlockTerm (blk := blk) (β := θ)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+                b θ0))) := by
+    intro b
+    simpa [gBlock] using
+      attrM2_tendsto_of_theta_tendsto
+        (xiAttr := ν_pop)
+        (g := gBlock
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+          b)
+        (θ0 := θ0)
+        (θhat := fun n =>
+          olsThetaHat
+            (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+            n)
+        hThetaω
+        (hContM2Blocks b)
   have hTrueB :
       ∀ b : B,
         ∀ᵐ x ∂ν_pop,
@@ -470,7 +558,8 @@ theorem
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
           n)
       (hSplitBounded := hSplitBlocks ω)
-      (hPlug := fun b => hPlugBlocks' b)
+      (hMean := fun b => hMeanBlocks' b)
+      (hM2 := fun b => hM2Blocks' b)
       (gTrueB := fun b =>
         gBlockTerm (blk := blk) (β := θ0)
           (φ :=
@@ -516,7 +605,7 @@ theorem
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
     {Person : Type*} [MeasurableSpace Person]
-    (μpop : Measure Person) [ProbMeasureAssumptions μpop]
+    (μpop : Measure Person) [IsProbabilityMeasure μpop]
     (R : ℕ → Ω → Person)
     (gP : Person → Profile K V → ℝ)
     (hSubjectIID :
@@ -563,15 +652,31 @@ theorem
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
         (μexp := μexp) (Y := Y) hTerms hNoInt with
     ⟨θ0, hspec⟩
-  have hContTotal :
-      FunctionalContinuityAssumptions (xiAttr := ν_pop)
-        (g := gTotalΘ
-          (gB := fun b θ a =>
-            gBlockTerm (blk := blk) (β := θ)
-              (φ :=
-                φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+  have hContMeanTotal :
+      ContinuousAt
+        (attrMeanΘ (xiAttr := ν_pop)
+          (g := gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ :=
+                  φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)))
         θ0 :=
-    functionalContinuity_gTotalΘ_of_bounded
+    cont_mean_gTotalΘ_of_bounded
+      (Attr := Profile K V) (Main := Main) (Inter := Inter)
+      (fMain := fMain) (fInter := fInter)
+      (xiAttr := ν_pop) (blk := blk) (θ0 := θ0)
+      hDesign.meas_fMain hDesign.meas_fInter
+      hDesign.bound_fMain hDesign.bound_fInter
+  have hContM2Total :
+      ContinuousAt
+        (attrM2Θ (xiAttr := ν_pop)
+          (g := gTotalΘ
+            (gB := fun b θ a =>
+              gBlockTerm (blk := blk) (β := θ)
+                (φ :=
+                  φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)))
+        θ0 :=
+    cont_m2_gTotalΘ_of_bounded
       (Attr := Profile K V) (Main := Main) (Inter := Inter)
       (fMain := fMain) (fInter := fInter)
       (xiAttr := ν_pop) (blk := blk) (θ0 := θ0)
@@ -593,9 +698,32 @@ theorem
       hRand hDesign hFull hspec
   refine ⟨θ0, ?_⟩
   filter_upwards [hTheta] with ω hThetaω
-  have hPlugTotal' :
-      PlugInMomentAssumptions
-        (ν_pop := ν_pop)
+  have hMeanTotal' :
+      Tendsto
+        (fun m =>
+          attrMean ν_pop
+            (gHat
+              (gTotalΘ
+                (gB := fun b θ a =>
+                  gBlockTerm (blk := blk) (β := θ)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+              (fun n =>
+                olsThetaHat
+                  (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                  (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                  n)
+              m))
+        atTop
+        (nhds
+          (attrMean ν_pop
+            (gTotalΘ
+              (gB := fun b θ a =>
+                gBlockTerm (blk := blk) (β := θ)
+                  (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+              θ0))) := by
+    simpa [gTotalΘ] using
+      attrMean_tendsto_of_theta_tendsto
+        (xiAttr := ν_pop)
         (g := gTotalΘ
           (gB := fun b θ a =>
             gBlockTerm (blk := blk) (β := θ)
@@ -605,21 +733,47 @@ theorem
           olsThetaHat
             (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
             (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
-            n) :=
-    plugInMomentAssumptions_of_theta_tendsto
-      (xiAttr := ν_pop)
-      (g := gTotalΘ
-        (gB := fun b θ a =>
-          gBlockTerm (blk := blk) (β := θ)
-            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
-      (θ0 := θ0)
-      (θhat := fun n =>
-        olsThetaHat
-          (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
-          (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
-          n)
-      hThetaω
-      hContTotal
+            n)
+        hThetaω
+        hContMeanTotal
+  have hM2Total' :
+      Tendsto
+        (fun m =>
+          attrM2 ν_pop
+            (gHat
+              (gTotalΘ
+                (gB := fun b θ a =>
+                  gBlockTerm (blk := blk) (β := θ)
+                    (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+              (fun n =>
+                olsThetaHat
+                  (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+                  (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+                  n)
+              m))
+        atTop
+        (nhds
+          (attrM2 ν_pop
+            (gTotalΘ
+              (gB := fun b θ a =>
+                gBlockTerm (blk := blk) (β := θ)
+                  (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a)
+              θ0))) := by
+    simpa [gTotalΘ] using
+      attrM2_tendsto_of_theta_tendsto
+        (xiAttr := ν_pop)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)) b a))
+        (θ0 := θ0)
+        (θhat := fun n =>
+          olsThetaHat
+            (A := fun k => Atrain k ω) (Y := fun k => Yobs k ω)
+            (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
+            n)
+        hThetaω
+        hContM2Total
   have hStarEq :
       ∀ᵐ x ∂ν_pop,
         gTotalΘ
@@ -733,7 +887,8 @@ theorem
           (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
           n)
       (hSplitTotalBounded := hSplitTotal ω)
-      (hPlugTotal := hPlugTotal')
+      (hMeanTotal := hMeanTotal')
+      (hM2Total := hM2Total')
       (gTrue := gPop (μpop := μpop) gP) (hTrue := hTrue)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩

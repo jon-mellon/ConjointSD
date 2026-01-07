@@ -34,7 +34,7 @@ theorem approxInvarianceAE_triangle
 
 section ApproximateMoments
 
-variable [ProbMeasureAssumptions ν_pop]
+variable [IsProbabilityMeasure ν_pop]
 
 theorem attrMean_diff_le_of_L2Approx
     (hs : Integrable s ν_pop)
@@ -276,7 +276,7 @@ end L2IntegralBridge
 
 section ApproximateMoments
 
-variable [ProbMeasureAssumptions ν_pop]
+variable [IsProbabilityMeasure ν_pop]
 
 theorem attrSD_diff_le_of_L2Approx
     (hs : AttrMomentAssumptions (ν_pop := ν_pop) s)

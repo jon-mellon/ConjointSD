@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/TargetEquivalence.lean](../ConjointSD/TargetEquivalence.lean)
 
-This file provides the exact-equality tools and now uses `ProbMeasureAssumptions` instead of standalone probability-measure hypotheses:
+This file provides the exact-equality tools and now uses `IsProbabilityMeasure` instead of standalone probability-measure hypotheses:
 1) Exact equality of targets when two score functions match [almost everywhere](jargon_almost_everywhere.md).
 
 Exact equality section:

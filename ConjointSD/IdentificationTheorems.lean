@@ -16,7 +16,7 @@ namespace ConjointSD
 section Identification
 
 variable {Ω : Type*} [MeasurableSpace Ω]
-variable (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+variable (μexp : Measure Ω) [IsProbabilityMeasure μexp]
 variable {Attr : Type*} [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
 variable (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
 
@@ -48,7 +48,7 @@ end Identification
 section StatusIdentification
 
 variable {Respondent : Type u} [MeasurableSpace Respondent]
-variable (μResp : Measure Respondent) [ProbMeasureAssumptions μResp]
+variable (μResp : Measure Respondent) [IsProbabilityMeasure μResp]
 variable (Yresp : StatusProfile → Respondent → TaskSlot → ℝ)
 
 /-- Identification for the concrete status conjoint: conditional mean equals potential mean. -/

@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/SequentialConsistency.lean](../ConjointSD/SequentialConsistency.lean)
 
-This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν_pop`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν_pop`. The evaluation assumptions are boundedness-based (`SplitEvalAssumptionsBounded`), which derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
+This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `IsProbabilityMeasure` and `EpsilonAssumptions`, and takes direct mean/second‑moment convergence of the plug‑in score as input. The target is the attribute-distribution SD under `ν_pop`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν_pop`. The evaluation assumptions are boundedness-based (`SplitEvalAssumptionsBounded`), which derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
 It uses the notion of [sequential [consistency](jargon_consistency.md)](jargon_sequential_consistency.md).
 
 Definitions:

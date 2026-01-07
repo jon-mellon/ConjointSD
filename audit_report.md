@@ -25,19 +25,13 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - NoInteractions
 - ObservationNoiseAssumptions condMean_zero
 - ObservationNoiseAssumptions noise_lln
-- OLSMomentAssumptions cross_tendsto
-- OLSMomentAssumptions crossLimit
-- OLSMomentAssumptions gramInv_tendsto
-- OLSMomentAssumptions gramInvLimit
-- OLSMomentAssumptionsOfAttr cross_tendsto
-- OLSMomentAssumptionsOfAttr gramInv_tendsto
 - PaperOLSDesignAssumptions bound_fInter
 - PaperOLSDesignAssumptions bound_fMain
 - PaperOLSDesignAssumptions meas_fInter
 - PaperOLSDesignAssumptions meas_fMain
 - PaperOLSFullRankAssumptions gram_isUnit
-- PlugInMomentAssumptions m2_tendsto
-- PlugInMomentAssumptions mean_tendsto
+- Plug-in moment m2 tendsto
+- Plug-in moment mean tendsto
 - ScoreAssumptions int_g0_sq
 - ScoreAssumptions meas_g
 

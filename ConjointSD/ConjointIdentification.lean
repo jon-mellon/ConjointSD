@@ -25,7 +25,7 @@ lemma toReal_ne_zero_of_ne_zero (μexp : Measure Ω) [IsFiniteMeasure μexp]
 
 /-- Derive the `rand` factorization from randomized strong ignorability. -/
 lemma rand_from_randomized
-    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [IsProbabilityMeasure μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
     (x x0 : Attr) :
@@ -113,7 +113,7 @@ lemma rand_from_randomized
 section
 /-- If the factorization holds, the event-conditional mean equals the unconditional mean. -/
 theorem condMean_eq_potMean_of_rand
-    [ProbMeasureAssumptions μexp]
+    [IsProbabilityMeasure μexp]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ)
     (x x0 : Attr)
     (hpos : μexp (eventX (X := X) x0) ≠ 0)
@@ -183,7 +183,7 @@ end
 
 /-- Identification: observed conditional mean among `X=x0` equals `E[Y(x0)]`. -/
 theorem identified_potMean_from_condMean
-    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [IsProbabilityMeasure μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
     (x0 : Attr)
@@ -213,7 +213,7 @@ theorem identified_potMean_from_condMean
 
 /-- Identification of AMCE as a difference of observed conditional means. -/
 theorem identified_amce_from_condMeans
-    [ProbMeasureAssumptions μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
+    [IsProbabilityMeasure μexp] [MeasurableSpace Attr] [MeasurableSingletonClass Attr]
     (X : Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : Ω → ℝ)
     (h : ConjointIdRandomized (μexp := μexp) (X := X) (Y := Y) (Yobs := Yobs))
     (hpos : ∀ x, μexp (eventX (X := X) x) ≠ 0)

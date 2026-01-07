@@ -27,7 +27,7 @@ variable {Term : Type*} [Fintype Term]
 
 variable (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ)
 
-variable (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+variable (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
 
 /-- Paper’s “true block score”: the block contribution `Attr → ℝ` for block `b`. -/
 def paperTrueBlockScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : Attr → ℝ :=
@@ -40,7 +40,7 @@ def paperTrueTotalScore (blk : Term → B) (β0 : Term → ℝ) (φ : Term → A
 
 /-- Target human population SD of the true block score for block `b` under `ν_pop`. -/
 def paperBlockSD
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) : ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν_pop)
@@ -48,7 +48,7 @@ def paperBlockSD
 
 /-- Target human population SD of the true total score under `ν_pop`. -/
 def paperTotalSD
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν_pop)
@@ -56,19 +56,19 @@ def paperTotalSD
 
 /-- Vector of paper block-SD targets. -/
 def paperBlockSDs
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) : B → ℝ :=
   by
     let _ := (inferInstance : IsProbabilityMeasure ν_pop)
     exact fun b => paperBlockSD (ν_pop := ν_pop) blk β0 φ b
 
 theorem paperBlockSDs_apply
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) :
     paperBlockSDs (ν_pop := ν_pop) blk β0 φ b = paperBlockSD (ν_pop := ν_pop) blk β0 φ b := rfl
 
 theorem paperTotalSD_def
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) :
     paperTotalSD (ν_pop := ν_pop) blk β0 φ
       =

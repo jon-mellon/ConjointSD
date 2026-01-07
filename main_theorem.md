@@ -196,7 +196,7 @@ arguments are legitimate.
 **Formal statement (Lean)**:
 ```lean
 structure ObservationNoiseAssumptions
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (μexp : Measure Ω) [IsProbabilityMeasure μexp]
     {Term : Type*}
     (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
     (φ : Term → Attr → ℝ) : Prop where
@@ -219,7 +219,7 @@ structure ObservationNoiseAssumptions
           (nhds 0)
 
 structure PaperOLSDesignAssumptions
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (μexp : Measure Ω) [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
     (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
   obs_noise :
@@ -478,12 +478,13 @@ Key steps (theorem nodes in order):
 - `paper_ols_gramInv_tendsto_of_design_ae`: [Gram matrix](readable/jargon_gram_matrix.md) inverse
   converges [a.e.](readable/jargon_almost_everywhere.md) along training paths.
 - `paper_ols_attr_moments_of_design_ae`: packages Gram/[cross moment](readable/jargon_cross_moment.md)
-  limits as `OLSMomentAssumptionsOfAttr`.
+  limits and inverse‑Gram convergence a.e. under `kappaDesign`.
 - `paper_ols_normal_eq_of_wellSpecified`: [well‑specification](readable/jargon_well_specified.md)
   gives the population [normal equations](readable/jargon_normal_equations.md).
 - `paper_ols_theta0_eq_of_normal_eq`: solves the normal equations for `theta0`.
-- `olsThetaHat_tendsto_of_moment_assumptions` and `olsThetaHat_tendsto_of_moment_assumptions_id`:
-  [consistency](readable/jargon_consistency.md) of the OLS [estimator](readable/jargon_estimator.md).
+- `olsThetaHat_tendsto_of_attr_moments`:
+  [consistency](readable/jargon_consistency.md) of the OLS [estimator](readable/jargon_estimator.md)
+  from attribute‑distribution moments plus identification.
 - `theta_tendsto_of_paper_ols_design_ae`: assembles the chain to give `thetaHat → theta0`
   [a.e.](readable/jargon_almost_everywhere.md).
 
@@ -502,10 +503,10 @@ under `ν_pop`) from:
   (gives functional [continuity](readable/jargon_continuity.md) under `ν_pop`).
 
 Formally:
-- `functionalContinuity_gBlockTerm_of_bounded` and
-  `blockFunctionalContinuity_gBlockTerm_of_bounded` give continuity of block scores at `θ0`,
-- `plugInMomentAssumptions_blocks_of_theta_tendsto` converts `θhat → θ0` into
-  `PlugInMomentAssumptions` for each block score.
+- `cont_mean_blocks_gBlockTerm_of_bounded` and
+  `cont_m2_blocks_gBlockTerm_of_bounded` give continuity of block scores at `θ0`,
+- `attrMean_tendsto_of_theta_tendsto` / `attrM2_tendsto_of_theta_tendsto` convert
+  `θhat → θ0` into mean/second‑moment convergence for each block score.
 
 ## 6) Evaluation representativeness (block SD targets)
 
@@ -564,7 +565,7 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
     {Person : Type*} [MeasurableSpace Person]
-    (μpop : Measure Person) [ProbMeasureAssumptions μpop]
+    (μpop : Measure Person) [IsProbabilityMeasure μpop]
     (R : ℕ → Ω → Person)
     (gP : Person → Profile K V → ℝ)
     (hSubjectIID :

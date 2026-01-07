@@ -2,22 +2,21 @@ import ConjointSD
 
 -- Scratchpad to inspect SD-consistency assumptions.
 
-#print ConjointSD.ScoreAssumptions.int_g0
 #print ConjointSD.EvalAttrIID
 #print ConjointSD.EvalAttrLawEqPop
-#print ConjointSD.PlugInMomentAssumptions
 #print ConjointSD.SplitEvalAssumptions
-#print ConjointSD.FunctionalContinuityAssumptions
 #print ConjointSD.attrMean_tendsto_of_theta_tendsto
 #print ConjointSD.attrM2_tendsto_of_theta_tendsto
 #print ConjointSD.attrSD_tendsto_of_mean_m2_tendsto
-#print ConjointSD.olsThetaHat_tendsto_of_moment_assumptions
-#print ConjointSD.olsThetaHat_tendsto_of_moment_assumptions_id
 #print ConjointSD.olsThetaHat_tendsto_of_attr_moments
-#print ConjointSD.functionalContinuity_gLin_of_bounded
-#print ConjointSD.functionalContinuity_gTotalΘ_of_bounded
-#print ConjointSD.functionalContinuity_gBlockTerm_of_bounded
-#print ConjointSD.blockFunctionalContinuity_gBlockTerm_of_bounded
+#print ConjointSD.cont_mean_gLin_of_bounded
+#print ConjointSD.cont_m2_gLin_of_bounded
+#print ConjointSD.cont_mean_gTotalΘ_of_bounded
+#print ConjointSD.cont_m2_gTotalΘ_of_bounded
+#print ConjointSD.cont_mean_gBlockTerm_of_bounded
+#print ConjointSD.cont_m2_gBlockTerm_of_bounded
+#print ConjointSD.cont_mean_blocks_gBlockTerm_of_bounded
+#print ConjointSD.cont_m2_blocks_gBlockTerm_of_bounded
 #print ConjointSD.plugInMomentAssumptions_of_theta_tendsto
 #print ConjointSD.plugInMomentAssumptions_blocks_of_theta_tendsto
 #print ConjointSD.paper_ols_gramInv_tendsto_of_design_ae

@@ -2,7 +2,7 @@
 
 Lean file: [ConjointSD/ConjointIdentification.lean](../ConjointSD/ConjointIdentification.lean)
 
-This file formalizes identification in a conjoint experiment: observed [conditional means](jargon_conditional_mean.md) recover causal [potential outcomes](jargon_potential_outcome.md) on average. It now takes `ProbMeasureAssumptions` in place of standalone probability-measure hypotheses.
+This file formalizes identification in a conjoint experiment: observed [conditional means](jargon_conditional_mean.md) recover causal [potential outcomes](jargon_potential_outcome.md) on average. It now takes `IsProbabilityMeasure` in place of standalone probability-measure hypotheses.
 
 Core definitions:
 - `eventX x`: the set of units whose assigned [profile](jargon_profile.md) equals `x`.
@@ -27,4 +27,4 @@ Bridge note: identification results in this file take `ConjointIdRandomized` dir
 
 Note: attribute-level AMCE identification and estimation assumptions (e.g., conditional or componentwise randomization) are not formalized here; we defer to Hainmueller–Hopkins–Yamamoto for those results.
 
-Recent changes: drop explicit integrability assumptions for potential outcomes; boundedness plus `ProbMeasureAssumptions` now supplies integrability when needed.
+Recent changes: drop explicit integrability assumptions for potential outcomes; boundedness plus `IsProbabilityMeasure` now supplies integrability when needed.

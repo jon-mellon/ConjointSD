@@ -22,28 +22,28 @@ namespace ConjointSD
 /-- Mean convergence under θhat → θ0 and continuity of the mean functional. -/
 theorem attrMean_tendsto_of_theta_tendsto
     {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hθ : Tendsto θhat atTop (nhds θ0))
-    (hcont : FunctionalContinuityAssumptions (xiAttr := xiAttr) g θ0) :
+    (hcont_mean : ContinuousAt (attrMeanΘ (xiAttr := xiAttr) g) θ0) :
     Tendsto
       (fun n => attrMean xiAttr (gHat g θhat n))
       atTop
       (nhds (attrMean xiAttr (g θ0))) := by
-  simpa [gHat, attrMeanΘ] using (hcont.cont_mean.tendsto.comp hθ)
+  simpa [gHat, attrMeanΘ] using (hcont_mean.tendsto.comp hθ)
 
 /- Second-moment convergence under θhat → θ0 and continuity of the m2 functional. -/
 theorem attrM2_tendsto_of_theta_tendsto
     {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hθ : Tendsto θhat atTop (nhds θ0))
-    (hcont : FunctionalContinuityAssumptions (xiAttr := xiAttr) g θ0) :
+    (hcont_m2 : ContinuousAt (attrM2Θ (xiAttr := xiAttr) g) θ0) :
     Tendsto
       (fun n => attrM2 xiAttr (gHat g θhat n))
       atTop
       (nhds (attrM2 xiAttr (g θ0))) := by
-  simpa [gHat, attrM2Θ] using (hcont.cont_m2.tendsto.comp hθ)
+  simpa [gHat, attrM2Θ] using (hcont_m2.tendsto.comp hθ)
 
 /-!
 ## Deriving functional continuity for linear models
@@ -53,32 +53,39 @@ section LinearContinuity
 
 variable {Attr Term : Type*} [MeasurableSpace Attr] [Fintype Term]
 
-lemma functionalContinuity_of_eq
+lemma cont_mean_of_eq
     {Θ : Type*} [TopologicalSpace Θ]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     {g g' : Θ → Attr → ℝ} {θ0 : Θ}
     (hEq : ∀ θ a, g θ a = g' θ a)
-    (h : FunctionalContinuityAssumptions (xiAttr := xiAttr) g θ0) :
-    FunctionalContinuityAssumptions (xiAttr := xiAttr) g' θ0 := by
-  refine ⟨?_, ?_⟩
-  · have hmean :
-        attrMeanΘ (xiAttr := xiAttr) g' = attrMeanΘ (xiAttr := xiAttr) g := by
-          funext θ
-          have hEqθ : g' θ = g θ := by
-            funext a
-            symm
-            exact hEq θ a
-          simp [attrMeanΘ, hEqθ]
-    simpa [hmean] using h.cont_mean
-  · have hm2 :
-        attrM2Θ (xiAttr := xiAttr) g' = attrM2Θ (xiAttr := xiAttr) g := by
-          funext θ
-          have hEqθ : g' θ = g θ := by
-            funext a
-            symm
-            exact hEq θ a
-          simp [attrM2Θ, hEqθ]
-    simpa [hm2] using h.cont_m2
+    (hcont_mean : ContinuousAt (attrMeanΘ (xiAttr := xiAttr) g) θ0) :
+    ContinuousAt (attrMeanΘ (xiAttr := xiAttr) g') θ0 := by
+  have hmean :
+      attrMeanΘ (xiAttr := xiAttr) g' = attrMeanΘ (xiAttr := xiAttr) g := by
+    funext θ
+    have hEqθ : g' θ = g θ := by
+      funext a
+      symm
+      exact hEq θ a
+    simp [attrMeanΘ, hEqθ]
+  simpa [hmean] using hcont_mean
+
+lemma cont_m2_of_eq
+    {Θ : Type*} [TopologicalSpace Θ]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
+    {g g' : Θ → Attr → ℝ} {θ0 : Θ}
+    (hEq : ∀ θ a, g θ a = g' θ a)
+    (hcont_m2 : ContinuousAt (attrM2Θ (xiAttr := xiAttr) g) θ0) :
+    ContinuousAt (attrM2Θ (xiAttr := xiAttr) g') θ0 := by
+  have hm2 :
+      attrM2Θ (xiAttr := xiAttr) g' = attrM2Θ (xiAttr := xiAttr) g := by
+    funext θ
+    have hEqθ : g' θ = g θ := by
+      funext a
+      symm
+      exact hEq θ a
+    simp [attrM2Θ, hEqθ]
+  simpa [hm2] using hcont_m2
 
 omit [MeasurableSpace Attr] in
 lemma bounded_mul_of_bounded
@@ -96,7 +103,7 @@ lemma bounded_mul_of_bounded
   simpa [abs_mul] using hmul
 
 lemma attrMean_gLin_eq_sum
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (φ : Term → Attr → ℝ)
     (hMeas : ∀ t, Measurable (φ t))
     (hBound : ∀ t, ∃ C, 0 ≤ C ∧ ∀ a, |φ t a| ≤ C)
@@ -145,7 +152,7 @@ lemma attrMean_gLin_eq_sum
           simpa [attrMean] using hInt
 
 lemma attrM2_gLin_eq_sum
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (φ : Term → Attr → ℝ)
     (hMeas : ∀ t, Measurable (φ t))
     (hBound : ∀ t, ∃ C, 0 ≤ C ∧ ∀ a, |φ t a| ≤ C)
@@ -244,20 +251,46 @@ lemma attrM2_gLin_eq_sum
             simpa [hmul] using hInt
           simpa [attrMean] using hInt'
 
-lemma functionalContinuity_gLin_of_bounded
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+lemma cont_mean_gLin_of_bounded
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (φ : Term → Attr → ℝ)
     (hMeas : ∀ t, Measurable (φ t))
     (hBound : ∀ t, ∃ C, 0 ≤ C ∧ ∀ a, |φ t a| ≤ C)
     (θ0 : Term → ℝ) :
-    FunctionalContinuityAssumptions (xiAttr := xiAttr)
-      (g := fun θ => gLin (β := θ) (φ := φ)) θ0 := by
+    ContinuousAt
+      (attrMeanΘ (xiAttr := xiAttr) (fun θ => gLin (β := θ) (φ := φ)))
+      θ0 := by
   classical
   have hMeanCont :
       Continuous (fun θ : Term → ℝ => ∑ t, θ t * attrMean xiAttr (φ t)) := by
     refine continuous_finset_sum _ ?_
     intro t ht
     exact (continuous_apply t).mul continuous_const
+  have hMeanContAt :
+      ContinuousAt (fun θ : Term → ℝ => ∑ t, θ t * attrMean xiAttr (φ t)) θ0 :=
+    hMeanCont.continuousAt
+  have hMeanEq :
+      (fun θ : Term → ℝ => attrMean xiAttr (gLin (β := θ) (φ := φ)))
+        =
+      (fun θ : Term → ℝ => ∑ t, θ t * attrMean xiAttr (φ t)) := by
+    funext θ
+    simpa using
+      (attrMean_gLin_eq_sum (xiAttr := xiAttr) (φ := φ) hMeas hBound θ)
+  have hMeanContAt' :
+      ContinuousAt (fun θ : Term → ℝ => attrMean xiAttr (gLin (β := θ) (φ := φ))) θ0 := by
+    simpa [hMeanEq] using hMeanContAt
+  simpa [attrMeanΘ] using hMeanContAt'
+
+lemma cont_m2_gLin_of_bounded
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
+    (φ : Term → Attr → ℝ)
+    (hMeas : ∀ t, Measurable (φ t))
+    (hBound : ∀ t, ∃ C, 0 ≤ C ∧ ∀ a, |φ t a| ≤ C)
+    (θ0 : Term → ℝ) :
+    ContinuousAt
+      (attrM2Θ (xiAttr := xiAttr) (fun θ => gLin (β := θ) (φ := φ)))
+      θ0 := by
+  classical
   have hM2Cont :
       Continuous (fun θ : Term → ℝ =>
         ∑ i, ∑ j, θ i * θ j * attrMean xiAttr (fun a => φ i a * φ j a)) := by
@@ -268,38 +301,23 @@ lemma functionalContinuity_gLin_of_bounded
     have hθ : Continuous (fun θ : Term → ℝ => θ i * θ j) :=
       (continuous_apply i).mul (continuous_apply j)
     exact hθ.mul continuous_const
-  refine ⟨?_, ?_⟩
-  · have hMeanContAt :
-        ContinuousAt (fun θ : Term → ℝ => ∑ t, θ t * attrMean xiAttr (φ t)) θ0 :=
-      hMeanCont.continuousAt
-    have hMeanEq :
-        (fun θ : Term → ℝ => attrMean xiAttr (gLin (β := θ) (φ := φ)))
-          =
-        (fun θ : Term → ℝ => ∑ t, θ t * attrMean xiAttr (φ t)) := by
-      funext θ
-      simpa using
-        (attrMean_gLin_eq_sum (xiAttr := xiAttr) (φ := φ) hMeas hBound θ)
-    have hMeanContAt' :
-        ContinuousAt (fun θ : Term → ℝ => attrMean xiAttr (gLin (β := θ) (φ := φ))) θ0 := by
-      simpa [hMeanEq] using hMeanContAt
-    simpa [attrMeanΘ] using hMeanContAt'
-  · have hM2ContAt :
-        ContinuousAt
-          (fun θ : Term → ℝ =>
-            ∑ i, ∑ j, θ i * θ j * attrMean xiAttr (fun a => φ i a * φ j a)) θ0 :=
-      hM2Cont.continuousAt
-    have hM2Eq :
-        (fun θ : Term → ℝ => attrM2 xiAttr (gLin (β := θ) (φ := φ)))
-          =
+  have hM2ContAt :
+      ContinuousAt
         (fun θ : Term → ℝ =>
-          ∑ i, ∑ j, θ i * θ j * attrMean xiAttr (fun a => φ i a * φ j a)) := by
-      funext θ
-      simpa using
-        (attrM2_gLin_eq_sum (xiAttr := xiAttr) (φ := φ) hMeas hBound θ)
-    have hM2ContAt' :
-        ContinuousAt (fun θ : Term → ℝ => attrM2 xiAttr (gLin (β := θ) (φ := φ))) θ0 := by
-      simpa [hM2Eq] using hM2ContAt
-    simpa [attrM2Θ] using hM2ContAt'
+          ∑ i, ∑ j, θ i * θ j * attrMean xiAttr (fun a => φ i a * φ j a)) θ0 :=
+    hM2Cont.continuousAt
+  have hM2Eq :
+      (fun θ : Term → ℝ => attrM2 xiAttr (gLin (β := θ) (φ := φ)))
+        =
+      (fun θ : Term → ℝ =>
+        ∑ i, ∑ j, θ i * θ j * attrMean xiAttr (fun a => φ i a * φ j a)) := by
+    funext θ
+    simpa using
+      (attrM2_gLin_eq_sum (xiAttr := xiAttr) (φ := φ) hMeas hBound θ)
+  have hM2ContAt' :
+      ContinuousAt (fun θ : Term → ℝ => attrM2 xiAttr (gLin (β := θ) (φ := φ))) θ0 := by
+    simpa [hM2Eq] using hM2ContAt
+  simpa [attrM2Θ] using hM2ContAt'
 
 end LinearContinuity
 

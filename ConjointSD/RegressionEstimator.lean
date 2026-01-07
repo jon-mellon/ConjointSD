@@ -28,18 +28,32 @@ def olsThetaHat {Attr : Type u} {Term : Type v} [Fintype Term] [DecidableEq Term
   (gramMatrix (A := A) (φ := φ) n)⁻¹.mulVec (crossVec (A := A) (Y := Y) (φ := φ) n)
 
 
-/--
-Consistency of the normal-equation estimator from entrywise convergence of the inverse
-Gram matrix and cross moments.
--/
-theorem olsThetaHat_tendsto_of_moment_assumptions
-    {Attr : Type u} {Term : Type v} [Fintype Term] [DecidableEq Term]
-    (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ) (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptions (A := A) (Y := Y) (φ := φ) θ0) :
+theorem olsThetaHat_tendsto_of_attr_moments
+    {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
+    (xiAttr : Measure Attr)
+    (A : ℕ → Attr) (Y : ℕ → ℝ)
+    (g : Attr → ℝ) (φ : Term → Attr → ℝ)
+    (θ0 : Term → ℝ)
+    (hGramInv :
+      ∀ i j,
+        Tendsto
+          (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j)
+          atTop
+          (nhds ((attrGram (xiAttr := xiAttr) (φ := φ))⁻¹ i j)))
+    (hCross :
+      ∀ i,
+        Tendsto
+          (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i)
+          atTop
+          (nhds (attrCross (xiAttr := xiAttr) (g := g) (φ := φ) i)))
+    (hId :
+      θ0 =
+        (attrGram (xiAttr := xiAttr) (φ := φ))⁻¹.mulVec
+          (attrCross (xiAttr := xiAttr) (g := g) (φ := φ))) :
     Tendsto
       (fun n => olsThetaHat (A := A) (Y := Y) (φ := φ) n)
       atTop
-      (nhds (h.gramInvLimit.mulVec h.crossLimit)) := by
+      (nhds θ0) := by
   classical
   have hpoint :
       ∀ i,
@@ -48,7 +62,9 @@ theorem olsThetaHat_tendsto_of_moment_assumptions
             (gramMatrix (A := A) (φ := φ) n)⁻¹.mulVec
               (crossVec (A := A) (Y := Y) (φ := φ) n) i)
           atTop
-          (nhds (h.gramInvLimit.mulVec h.crossLimit i)) := by
+          (nhds
+            (((attrGram (xiAttr := xiAttr) (φ := φ))⁻¹.mulVec
+              (attrCross (xiAttr := xiAttr) (g := g) (φ := φ))) i)) := by
     intro i
     have hsum :
         Tendsto
@@ -57,10 +73,13 @@ theorem olsThetaHat_tendsto_of_moment_assumptions
               (gramMatrix (A := A) (φ := φ) n)⁻¹ i j
                 * crossVec (A := A) (Y := Y) (φ := φ) n j)
           atTop
-          (nhds (∑ j : Term, h.gramInvLimit i j * h.crossLimit j)) := by
+          (nhds
+            (∑ j : Term,
+              ((attrGram (xiAttr := xiAttr) (φ := φ))⁻¹ i j)
+                * (attrCross (xiAttr := xiAttr) (g := g) (φ := φ) j))) := by
       refine tendsto_finset_sum (s := (Finset.univ : Finset Term)) ?_
       intro j hj
-      exact (h.gramInv_tendsto i j).mul (h.cross_tendsto j)
+      exact (hGramInv i j).mul (hCross j)
     simpa [Matrix.mulVec] using hsum
   have hfun :
       Tendsto
@@ -68,60 +87,12 @@ theorem olsThetaHat_tendsto_of_moment_assumptions
           (gramMatrix (A := A) (φ := φ) n)⁻¹.mulVec
             (crossVec (A := A) (Y := Y) (φ := φ) n))
         atTop
-        (nhds (h.gramInvLimit.mulVec h.crossLimit)) := by
+        (nhds
+          ((attrGram (xiAttr := xiAttr) (φ := φ))⁻¹.mulVec
+            (attrCross (xiAttr := xiAttr) (g := g) (φ := φ)))) := by
     refine tendsto_pi_nhds.2 ?_
     intro i
     simpa using hpoint i
-  simpa [olsThetaHat] using hfun
-
-theorem olsThetaHat_tendsto_of_moment_assumptions_id
-    {Attr : Type u} {Term : Type v} [Fintype Term] [DecidableEq Term]
-    (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ) (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptions (A := A) (Y := Y) (φ := φ) θ0)
-    (hId : θ0 = h.gramInvLimit.mulVec h.crossLimit) :
-    Tendsto
-      (fun n => olsThetaHat (A := A) (Y := Y) (φ := φ) n)
-      atTop
-      (nhds θ0) := by
-  simpa [hId] using
-    (olsThetaHat_tendsto_of_moment_assumptions
-      (A := A) (Y := Y) (φ := φ) (θ0 := θ0) h)
-
-/- Definitions and assumption packages live in ConjointSD.Defs / ConjointSD.Assumptions. -/
-
-/-- Convert attribute-distribution moment assumptions to sample-path moment assumptions. -/
-def OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions
-    {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
-    (xiAttr : Measure Attr)
-    (A : ℕ → Attr) (Y : ℕ → ℝ)
-    (g : Attr → ℝ) (φ : Term → Attr → ℝ)
-    (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptionsOfAttr (xiAttr := xiAttr) (A := A) (Y := Y) (g := g) (φ := φ) θ0) :
-    OLSMomentAssumptions (A := A) (Y := Y) (φ := φ) θ0 :=
-  { gramInvLimit := (attrGram (xiAttr := xiAttr) (φ := φ))⁻¹
-    crossLimit := attrCross (xiAttr := xiAttr) (g := g) (φ := φ)
-    gramInv_tendsto := h.gramInv_tendsto
-    cross_tendsto := h.cross_tendsto }
-
-theorem olsThetaHat_tendsto_of_attr_moments
-    {Attr : Type u} {Term : Type v} [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
-    (xiAttr : Measure Attr)
-    (A : ℕ → Attr) (Y : ℕ → ℝ)
-    (g : Attr → ℝ) (φ : Term → Attr → ℝ)
-    (θ0 : Term → ℝ)
-    (h : OLSMomentAssumptionsOfAttr (xiAttr := xiAttr) (A := A) (Y := Y) (g := g) (φ := φ) θ0)
-    (hId :
-      θ0 =
-        (attrGram (xiAttr := xiAttr) (φ := φ))⁻¹.mulVec
-          (attrCross (xiAttr := xiAttr) (g := g) (φ := φ))) :
-    Tendsto
-      (fun n => olsThetaHat (A := A) (Y := Y) (φ := φ) n)
-      atTop
-      (nhds θ0) :=
-  olsThetaHat_tendsto_of_moment_assumptions_id
-    (A := A) (Y := Y) (φ := φ) (θ0 := θ0)
-    (h := OLSMomentAssumptionsOfAttr.to_OLSMomentAssumptions
-      (xiAttr := xiAttr) (A := A) (Y := Y) (g := g) (φ := φ) (θ0 := θ0) h)
-    (hId := hId)
+  simpa [olsThetaHat, hId] using hfun
 
 end ConjointSD

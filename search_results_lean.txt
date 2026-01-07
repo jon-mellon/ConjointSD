@@ -292,7 +292,7 @@
 ./ConjointSD/RegressionConsistencyBridge.lean:302:    simpa [attrM2Θ] using hM2ContAt'
 ./ConjointSD/IdentificationAssumptions.lean:6:noncomputable section
 ./ConjointSD/IdentificationAssumptions.lean:16:structure ConjointIdRandomized
-./ConjointSD/IdentificationAssumptions.lean:18:    [ProbMeasureAssumptions μexp] : Prop where
+./ConjointSD/IdentificationAssumptions.lean:18:    [IsProbabilityMeasure μexp] : Prop where
 ./ConjointSD/PaperCoreEstimand.lean:15:noncomputable section
 ./ConjointSD/PaperCoreEstimand.lean:38:  classical
 ./ConjointSD/PaperCoreEstimand.lean:68:    paperBlockSDs (ν_pop := ν_pop) blk β0 φ b = paperBlockSD (ν_pop := ν_pop) blk β0 φ b := rfl
@@ -482,12 +482,12 @@
 ./ConjointSD/SequentialConsistency.lean:229:      nlinarith [hε.pos]
 ./ConjointSD/Assumptions.lean:8:noncomputable section
 ./ConjointSD/Assumptions.lean:14:All assumption structures/props are centralized here for easier auditing.
-./ConjointSD/Assumptions.lean:23:class ProbMeasureAssumptions (κ : Measure α) : Prop where
-./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb
+./ConjointSD/Assumptions.lean:23:class IsProbabilityMeasure (κ : Measure α) : Prop where
+./ConjointSD/Assumptions.lean:26:attribute [instance] IsProbabilityMeasure.isProb
 ./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward)
 ./ConjointSD/Assumptions.lean:37:for non-target attribute laws.
 ./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
-./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
 ./ConjointSD/Assumptions.lean:42:    (s : Attr → ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:59:def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
 ./ConjointSD/Assumptions.lean:67:structure EpsilonAssumptions (ε : ℝ) : Prop where
@@ -498,7 +498,7 @@
 ./ConjointSD/Assumptions.lean:90:distribution. This is intentionally distinct from `DesignAttrIID` so evaluation
 ./ConjointSD/Assumptions.lean:93:structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
 ./ConjointSD/Assumptions.lean:95:  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
-./ConjointSD/Assumptions.lean:99:structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions κ] :
+./ConjointSD/Assumptions.lean:99:structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [IsProbabilityMeasure κ] :
 ./ConjointSD/Assumptions.lean:100:    Prop where
 ./ConjointSD/Assumptions.lean:135:structure SplitEvalAssumptionsBounded
 ./ConjointSD/Assumptions.lean:137:    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ) (m : ℕ) : Prop where
@@ -564,12 +564,12 @@
 ./ConjointSD/StatusConjointDesign.lean:44:instance : IsProbabilityMeasure νStatus := by
 ./ConjointSD/StatusConjointDesign.lean:45:  classical
 ./ConjointSD/StatusConjointDesign.lean:46:  simpa [νStatus] using
-./ConjointSD/StatusConjointDesign.lean:49:instance : ProbMeasureAssumptions νStatus := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:49:instance : IsProbabilityMeasure νStatus := ⟨inferInstance⟩
 ./ConjointSD/StatusConjointDesign.lean:52:noncomputable def μTask : Measure TaskSlot :=
 ./ConjointSD/StatusConjointDesign.lean:55:instance : IsProbabilityMeasure μTask :=
 ./ConjointSD/StatusConjointDesign.lean:57:    classical
 ./ConjointSD/StatusConjointDesign.lean:58:    simpa [μTask] using
-./ConjointSD/StatusConjointDesign.lean:62:instance : ProbMeasureAssumptions μTask := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:62:instance : IsProbabilityMeasure μTask := ⟨inferInstance⟩
 ./ConjointSD/StatusConjointDesign.lean:68:noncomputable def μRT {Respondent : Type u} [MeasurableSpace Respondent]
 ./ConjointSD/StatusConjointDesign.lean:70:  μResp.prod μTask
 ./ConjointSD/StatusConjointDesign.lean:72:instance {Respondent : Type u} [MeasurableSpace Respondent]

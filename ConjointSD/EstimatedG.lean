@@ -28,7 +28,7 @@ variable {Θ : Type v}
 
 /-- Derived: attribute-distribution variance convergence under ν_pop for the plug-in score. -/
 theorem attrVar_tendsto_of_mean_m2_tendsto
-    {ν_pop : Measure Attr} [ProbMeasureAssumptions ν_pop]
+    {ν_pop : Measure Attr} [IsProbabilityMeasure ν_pop]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
     (hmean :
       Tendsto
@@ -60,7 +60,7 @@ theorem attrVar_tendsto_of_mean_m2_tendsto
 
 /-- Derived: attribute-distribution SD convergence under ν_pop for the plug-in score. -/
 theorem attrSD_tendsto_of_mean_m2_tendsto
-    {ν_pop : Measure Attr} [ProbMeasureAssumptions ν_pop]
+    {ν_pop : Measure Attr} [IsProbabilityMeasure ν_pop]
     {g : Θ → Attr → ℝ} {θ0 : Θ} {θhat : ℕ → Θ}
     (hmean :
       Tendsto

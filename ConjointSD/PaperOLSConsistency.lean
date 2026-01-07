@@ -84,8 +84,8 @@ variable {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]
 variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
 variable [DecidableEq (PaperTerm Main Inter)]
 
-variable (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
-variable (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+variable (μexp : Measure Ω) [IsProbabilityMeasure μexp]
+variable (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
 
 variable (Y : Attr → Ω → ℝ)
 variable (A : ℕ → Attr) (Yobs : ℕ → ℝ)
@@ -127,20 +127,21 @@ lemma bounded_phiPaper
           simpa [φPaper] using hboundInter i
 
 omit [DecidableEq (PaperTerm Main Inter)] in
-theorem functionalContinuity_gTotalΘ_of_bounded
+theorem cont_mean_gTotalΘ_of_bounded
     {B : Type*} [Fintype B] [DecidableEq B]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (blk : PaperTerm Main Inter → B)
     (θ0 : PaperTerm Main Inter → ℝ)
     (hmeasMain : ∀ m, Measurable (fMain m))
     (hmeasInter : ∀ i, Measurable (fInter i))
     (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
     (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
-    FunctionalContinuityAssumptions (xiAttr := xiAttr)
-      (g := gTotalΘ
-        (gB := fun b θ a =>
-          gBlockTerm (blk := blk) (β := θ)
-            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+    ContinuousAt
+      (attrMeanΘ (xiAttr := xiAttr)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)))
       θ0 := by
   have hmeasφ :
       ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
@@ -151,17 +152,19 @@ theorem functionalContinuity_gTotalΘ_of_bounded
         ∀ a, |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a| ≤ C :=
     bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
       hboundMain hboundInter
-  have hContPaper :
-      FunctionalContinuityAssumptions (xiAttr := xiAttr)
-        (g := fun θ =>
-          gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ) θ0 := by
+  have hContPaperMean :
+      ContinuousAt
+        (attrMeanΘ (xiAttr := xiAttr)
+          (g := fun θ =>
+            gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ))
+        θ0 := by
     simpa [gPaper] using
-      (functionalContinuity_gLin_of_bounded
+      (cont_mean_gLin_of_bounded
         (xiAttr := xiAttr)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
         hmeasφ hboundφ θ0)
   refine
-    functionalContinuity_of_eq
+    cont_mean_of_eq
       (xiAttr := xiAttr)
       (g := fun θ =>
         gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ)
@@ -171,7 +174,63 @@ theorem functionalContinuity_gTotalΘ_of_bounded
             (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
       (θ0 := θ0)
       ?_
-      hContPaper
+      hContPaperMean
+  intro θ a
+  have hEq :=
+    gPaper_eq_gTotalΘ_blocks
+      (Attr := Attr) (fMain := fMain) (fInter := fInter) (B := B) (blk := blk)
+  have hEq' := congrArg (fun f => f θ a) hEq
+  simpa [gTotalΘ] using hEq'
+
+omit [DecidableEq (PaperTerm Main Inter)] in
+theorem cont_m2_gTotalΘ_of_bounded
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
+    (blk : PaperTerm Main Inter → B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
+    ContinuousAt
+      (attrM2Θ (xiAttr := xiAttr)
+        (g := gTotalΘ
+          (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)))
+      θ0 := by
+  have hmeasφ :
+      ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
+    measurable_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      hmeasMain hmeasInter
+  have hboundφ :
+      ∀ t, ∃ C, 0 ≤ C ∧
+        ∀ a, |φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t a| ≤ C :=
+    bounded_phiPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      hboundMain hboundInter
+  have hContPaperM2 :
+      ContinuousAt
+        (attrM2Θ (xiAttr := xiAttr)
+          (g := fun θ =>
+            gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ))
+        θ0 := by
+    simpa [gPaper] using
+      (cont_m2_gLin_of_bounded
+        (xiAttr := xiAttr)
+        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+        hmeasφ hboundφ θ0)
+  refine
+    cont_m2_of_eq
+      (xiAttr := xiAttr)
+      (g := fun θ =>
+        gPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) θ)
+      (g' := gTotalΘ
+        (gB := fun b θ a =>
+          gBlockTerm (blk := blk) (β := θ)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a))
+      (θ0 := θ0)
+      ?_
+      hContPaperM2
   intro θ a
   have hEq :=
     gPaper_eq_gTotalΘ_blocks
@@ -250,19 +309,20 @@ lemma gBlockTerm_eq_gLin_φBlock
   simp [gBlockTerm, gLin, φBlock]
 
 omit [DecidableEq (PaperTerm Main Inter)] in
-theorem functionalContinuity_gBlockTerm_of_bounded
+theorem cont_mean_gBlockTerm_of_bounded
     {B : Type*} [Fintype B] [DecidableEq B]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (blk : PaperTerm Main Inter → B) (b : B)
     (θ0 : PaperTerm Main Inter → ℝ)
     (hmeasMain : ∀ m, Measurable (fMain m))
     (hmeasInter : ∀ i, Measurable (fInter i))
     (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
     (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
-    FunctionalContinuityAssumptions (xiAttr := xiAttr)
-      (g := fun θ =>
-        gBlockTerm (blk := blk) (β := θ)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b)
+    ContinuousAt
+      (attrMeanΘ (xiAttr := xiAttr)
+        (g := fun θ =>
+          gBlockTerm (blk := blk) (β := θ)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b))
       θ0 := by
   have hmeasφ :
       ∀ t,
@@ -275,18 +335,19 @@ theorem functionalContinuity_gBlockTerm_of_bounded
         ∀ a, |φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t a| ≤ C :=
     bounded_φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter)
       (blk := blk) (b := b) hboundMain hboundInter
-  have hContLin :
-      FunctionalContinuityAssumptions (xiAttr := xiAttr)
-        (g := fun θ =>
-          gLin (β := θ)
-            (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b))
+  have hContLinMean :
+      ContinuousAt
+        (attrMeanΘ (xiAttr := xiAttr)
+          (g := fun θ =>
+            gLin (β := θ)
+              (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b)))
         θ0 :=
-    functionalContinuity_gLin_of_bounded
+    cont_mean_gLin_of_bounded
       (xiAttr := xiAttr)
       (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b)
       hmeasφ hboundφ θ0
   refine
-    functionalContinuity_of_eq
+    cont_mean_of_eq
       (xiAttr := xiAttr)
       (g := fun θ =>
         gLin (β := θ)
@@ -296,7 +357,7 @@ theorem functionalContinuity_gBlockTerm_of_bounded
           (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b)
       (θ0 := θ0)
       ?_
-      hContLin
+      hContLinMean
   intro θ a
   have hEq :=
     gBlockTerm_eq_gLin_φBlock
@@ -304,24 +365,106 @@ theorem functionalContinuity_gBlockTerm_of_bounded
   exact (congrArg (fun f => f a) hEq).symm
 
 omit [DecidableEq (PaperTerm Main Inter)] in
-theorem blockFunctionalContinuity_gBlockTerm_of_bounded
+theorem cont_m2_gBlockTerm_of_bounded
     {B : Type*} [Fintype B] [DecidableEq B]
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
+    (blk : PaperTerm Main Inter → B) (b : B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
+    ContinuousAt
+      (attrM2Θ (xiAttr := xiAttr)
+        (g := fun θ =>
+          gBlockTerm (blk := blk) (β := θ)
+            (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b))
+      θ0 := by
+  have hmeasφ :
+      ∀ t,
+        Measurable
+          (φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t) :=
+    measurable_φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      (blk := blk) (b := b) hmeasMain hmeasInter
+  have hboundφ :
+      ∀ t, ∃ C, 0 ≤ C ∧
+        ∀ a, |φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b t a| ≤ C :=
+    bounded_φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter)
+      (blk := blk) (b := b) hboundMain hboundInter
+  have hContLinM2 :
+      ContinuousAt
+        (attrM2Θ (xiAttr := xiAttr)
+          (g := fun θ =>
+            gLin (β := θ)
+              (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b)))
+        θ0 :=
+    cont_m2_gLin_of_bounded
+      (xiAttr := xiAttr)
+      (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b)
+      hmeasφ hboundφ θ0
+  refine
+    cont_m2_of_eq
+      (xiAttr := xiAttr)
+      (g := fun θ =>
+        gLin (β := θ)
+          (φ := φBlock (Attr := Attr) (fMain := fMain) (fInter := fInter) blk b))
+      (g' := fun θ =>
+        gBlockTerm (blk := blk) (β := θ)
+          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b)
+      (θ0 := θ0)
+      ?_
+      hContLinM2
+  intro θ a
+  have hEq :=
+    gBlockTerm_eq_gLin_φBlock
+      (Attr := Attr) (fMain := fMain) (fInter := fInter) (blk := blk) (b := b) (θ := θ)
+  exact (congrArg (fun f => f a) hEq).symm
+
+omit [DecidableEq (PaperTerm Main Inter)] in
+theorem cont_mean_blocks_gBlockTerm_of_bounded
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (blk : PaperTerm Main Inter → B)
     (θ0 : PaperTerm Main Inter → ℝ)
     (hmeasMain : ∀ m, Measurable (fMain m))
     (hmeasInter : ∀ i, Measurable (fInter i))
     (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
     (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
-    BlockFunctionalContinuityAssumptions (xiAttr := xiAttr)
-      (gB := fun b θ a =>
-        gBlockTerm (blk := blk) (β := θ)
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a)
-      θ0 := by
-  refine ⟨?_⟩
+    ∀ b : B,
+      ContinuousAt
+        (attrMeanΘ (xiAttr := xiAttr)
+          (g := gBlock (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b))
+        θ0 := by
   intro b
-  simpa using
-    functionalContinuity_gBlockTerm_of_bounded
+  simpa [gBlock] using
+    cont_mean_gBlockTerm_of_bounded
+      (Attr := Attr) (Main := Main) (Inter := Inter)
+      (fMain := fMain) (fInter := fInter)
+      (xiAttr := xiAttr) (blk := blk) (b := b) (θ0 := θ0)
+      hmeasMain hmeasInter hboundMain hboundInter
+
+omit [DecidableEq (PaperTerm Main Inter)] in
+theorem cont_m2_blocks_gBlockTerm_of_bounded
+    {B : Type*} [Fintype B] [DecidableEq B]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
+    (blk : PaperTerm Main Inter → B)
+    (θ0 : PaperTerm Main Inter → ℝ)
+    (hmeasMain : ∀ m, Measurable (fMain m))
+    (hmeasInter : ∀ i, Measurable (fInter i))
+    (hboundMain : ∀ m, ∃ C, 0 ≤ C ∧ ∀ a, |fMain m a| ≤ C)
+    (hboundInter : ∀ i, ∃ C, 0 ≤ C ∧ ∀ a, |fInter i a| ≤ C) :
+    ∀ b : B,
+      ContinuousAt
+        (attrM2Θ (xiAttr := xiAttr)
+          (g := gBlock (gB := fun b θ a =>
+            gBlockTerm (blk := blk) (β := θ)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) b a) b))
+        θ0 := by
+  intro b
+  simpa [gBlock] using
+    cont_m2_gBlockTerm_of_bounded
       (Attr := Attr) (Main := Main) (Inter := Inter)
       (fMain := fMain) (fInter := fInter)
       (xiAttr := xiAttr) (blk := blk) (b := b) (θ0 := θ0)
@@ -343,9 +486,9 @@ lemma bounded_mul
     mul_le_mul hf' hg' (abs_nonneg _) hCf0
   simpa [abs_mul] using hmul
 
-omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions μexp] in
+omit [DecidableEq (PaperTerm Main Inter)] [IsProbabilityMeasure μexp] in
 theorem paper_ols_normal_eq_of_wellSpecified
-    (xiAttr : Measure Attr) [ProbMeasureAssumptions xiAttr]
+    (xiAttr : Measure Attr) [IsProbabilityMeasure xiAttr]
     (θ0 : PaperTerm Main Inter → ℝ)
     (hmeasMain : ∀ m, Measurable (fMain m))
     (hmeasInter : ∀ i, Measurable (fInter i))
@@ -488,8 +631,8 @@ theorem paper_ols_normal_eq_of_wellSpecified
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i := by
       simpa using hCrossEq.symm
 
-omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions xiAttr]
-  [MeasurableSpace Attr] [ProbMeasureAssumptions μexp] in
+omit [DecidableEq (PaperTerm Main Inter)] [IsProbabilityMeasure xiAttr]
+  [MeasurableSpace Attr] [IsProbabilityMeasure μexp] in
 lemma crossVec_eq_meanHatZ_add_noise
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (ω : Ω) (i : PaperTerm Main Inter) :
@@ -563,7 +706,7 @@ lemma crossVec_eq_meanHatZ_add_noise
           simp [Finset.sum_add_distrib, gCross]
   simp [crossVec, meanHatZ, Zcomp, gCross, smul_eq_mul, hsum_yobs, hsum_cross, mul_add]
 
-omit [DecidableEq (PaperTerm Main Inter)] [ProbMeasureAssumptions xiAttr] in
+omit [DecidableEq (PaperTerm Main Inter)] [IsProbabilityMeasure xiAttr] in
 theorem paper_ols_lln_of_score_assumptions_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
     (hNoise :
@@ -1010,7 +1153,7 @@ theorem paper_ols_gramInv_tendsto_of_design_ae
   have hEntry := (tendsto_pi_nhds.1 hRow) j
   simpa using hEntry
 
-omit [ProbMeasureAssumptions μexp] [ProbMeasureAssumptions xiAttr] in
+omit [IsProbabilityMeasure μexp] [IsProbabilityMeasure xiAttr] in
 theorem paper_ols_theta0_eq_of_normal_eq
     (θ0 : PaperTerm Main Inter → ℝ)
     (hFull :
@@ -1077,9 +1220,8 @@ theorem paper_ols_theta0_eq_of_normal_eq
 
 variable {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
 
-omit [ProbMeasureAssumptions μexp] [ProbMeasureAssumptions xiAttr] in
+omit [IsProbabilityMeasure μexp] [IsProbabilityMeasure xiAttr] in
 theorem paper_ols_attr_moments_of_lln_fullrank_ae
-    (θ0 : PaperTerm Main Inter → ℝ)
     (hLLN :
       ∀ᵐ ω ∂μexp,
         (∀ i j,
@@ -1123,22 +1265,39 @@ theorem paper_ols_attr_moments_of_lln_fullrank_ae
                 (xiAttr := xiAttr)
                 (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j))) :
     ∀ᵐ ω ∂μexp,
-      OLSMomentAssumptionsOfAttr
-        (xiAttr := xiAttr)
-        (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
-        (g := gStar (μexp := μexp) (Y := Y))
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-        θ0 := by
+      (∀ i j,
+        Tendsto
+          (fun n =>
+            (gramMatrix
+              (A := fun k => Aω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n)⁻¹ i j)
+          atTop
+          (nhds
+            ((attrGram
+              (xiAttr := xiAttr)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
+      ∧
+      (∀ i,
+        Tendsto
+          (fun n =>
+            crossVec
+              (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n i)
+          atTop
+          (nhds
+            (attrCross
+              (xiAttr := xiAttr)
+              (g := gStar (μexp := μexp) (Y := Y))
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
   refine (hLLN.and hInv).mono ?_
   intro ω hω
   rcases hω with ⟨hLLNω, hInvω⟩
-  refine
-    { gramInv_tendsto := hInvω
-      cross_tendsto := hLLNω.2 }
+  exact ⟨hInvω, hLLNω.2⟩
 
 theorem paper_ols_attr_moments_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (θ0 : PaperTerm Main Inter → ℝ)
     (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Aω) (Y := Y))
     (hDesign :
@@ -1149,17 +1308,37 @@ theorem paper_ols_attr_moments_of_design_ae
       PaperOLSFullRankAssumptions
         (xiAttr := kappaDesign (κ := μexp) (A := Aω)) (fMain := fMain) (fInter := fInter)) :
     ∀ᵐ ω ∂μexp,
-      OLSMomentAssumptionsOfAttr
-        (xiAttr := kappaDesign (κ := μexp) (A := Aω))
-        (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
-        (g := gStar (μexp := μexp) (Y := Y))
-        (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-        θ0 := by
+      (∀ i j,
+        Tendsto
+          (fun n =>
+            (gramMatrix
+              (A := fun k => Aω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n)⁻¹ i j)
+          atTop
+          (nhds
+            ((attrGram
+              (xiAttr := kappaDesign (κ := μexp) (A := Aω))
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
+      ∧
+      (∀ i,
+        Tendsto
+          (fun n =>
+            crossVec
+              (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+              n i)
+          atTop
+          (nhds
+            (attrCross
+              (xiAttr := kappaDesign (κ := μexp) (A := Aω))
+              (g := gStar (μexp := μexp) (Y := Y))
+              (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
   have hPop : DesignAttrIID (κ := μexp) Aω :=
     DesignAttrIID.of_randomization_stream
       (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hA0 : Measurable (Aω 0) := hPop.measA 0
-  letI : ProbMeasureAssumptions (kappaDesign (κ := μexp) (A := Aω)) :=
+  letI : IsProbabilityMeasure (kappaDesign (κ := μexp) (A := Aω)) :=
     probMeasureAssumptions_map_of_measurable
       (κ := μexp) (A := Aω) (hA0 := hA0)
   have hLLN :
@@ -1215,7 +1394,7 @@ theorem paper_ols_attr_moments_of_design_ae
       (μexp := μexp)
       (xiAttr := kappaDesign (κ := μexp) (A := Aω))
       (Y := Y) (fMain := fMain) (fInter := fInter)
-      (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
+      (Aω := Aω) (Yobsω := Yobsω)
       hLLN hInv
 
 theorem theta_tendsto_of_paper_ols_design_ae
@@ -1247,20 +1426,40 @@ theorem theta_tendsto_of_paper_ols_design_ae
     DesignAttrIID.of_randomization_stream
       (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hA0 : Measurable (Aω 0) := hPop.measA 0
-  letI : ProbMeasureAssumptions (kappaDesign (κ := μexp) (A := Aω)) :=
+  letI : IsProbabilityMeasure (kappaDesign (κ := μexp) (A := Aω)) :=
     probMeasureAssumptions_map_of_measurable
       (κ := μexp) (A := Aω) (hA0 := hA0)
   have hMom :
       ∀ᵐ ω ∂μexp,
-        OLSMomentAssumptionsOfAttr
-          (xiAttr := kappaDesign (κ := μexp) (A := Aω))
-          (A := fun n => Aω n ω) (Y := fun n => Yobsω n ω)
-          (g := gStar (μexp := μexp) (Y := Y))
-          (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-          θ0 :=
+        (∀ i j,
+          Tendsto
+            (fun n =>
+              (gramMatrix
+                (A := fun k => Aω k ω)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                n)⁻¹ i j)
+            atTop
+            (nhds
+              ((attrGram
+                (xiAttr := kappaDesign (κ := μexp) (A := Aω))
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))⁻¹ i j)))
+        ∧
+        (∀ i,
+          Tendsto
+            (fun n =>
+              crossVec
+                (A := fun k => Aω k ω) (Y := fun k => Yobsω k ω)
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
+                n i)
+            atTop
+            (nhds
+              (attrCross
+                (xiAttr := kappaDesign (κ := μexp) (A := Aω))
+                (g := gStar (μexp := μexp) (Y := Y))
+                (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) :=
     paper_ols_attr_moments_of_design_ae
       (μexp := μexp) (Y := Y) (fMain := fMain) (fInter := fInter)
-      (θ0 := θ0) (Aω := Aω) (Yobsω := Yobsω)
+      (Aω := Aω) (Yobsω := Yobsω)
       hRand hDesign hFull
   have hId :
       θ0 =
@@ -1292,7 +1491,8 @@ theorem theta_tendsto_of_paper_ols_design_ae
       (g := gStar (μexp := μexp) (Y := Y))
       (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
       (θ0 := θ0)
-      (h := hMomω)
+      (hGramInv := hMomω.1)
+      (hCross := hMomω.2)
       (hId := hId)
 end PaperOLS
 

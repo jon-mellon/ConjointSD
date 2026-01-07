@@ -32,10 +32,11 @@ namespace ConjointSD
 -- Pushforward of a probability measure is a probability measure when the map is measurable.
 instance probMeasureAssumptions_map_of_measurable
     {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]
-    (κ : Measure Ω) [ProbMeasureAssumptions κ]
+    (κ : Measure Ω) [IsProbabilityMeasure κ]
     {A : ℕ → Ω → Attr} {hA0 : Measurable (A 0)} :
-    ProbMeasureAssumptions (kappaDesign (κ := κ) (A := A)) :=
-  ⟨Measure.isProbabilityMeasure_map hA0.aemeasurable⟩
+    IsProbabilityMeasure (kappaDesign (κ := κ) (A := A)) :=
+  by
+    simpa [kappaDesign] using Measure.isProbabilityMeasure_map hA0.aemeasurable
 
 section
 

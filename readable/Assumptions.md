@@ -101,15 +101,6 @@ and boundedness-driven integrability.
   support. Intuition: scores stay within `C` almost everywhere under `ν_pop`, so
   moment bounds and approximation lemmas can use a global envelope. Formal:
   `∀ᵐ x ∂ν_pop, |s x| ≤ C`.
-## BasicMeasure
-
-- `ProbMeasureAssumptions` (trivial): bundles `IsProbabilityMeasure κ` as an explicit
-  assumption package so theorems can avoid standalone [probability-measure](jargon_probability_measure.md)
-  hypotheses. Intuition: we are working with a genuine probability law, not
-  just a finite measure; the same wrapper is used for the target distribution
-  `ν_pop` and the experimental design distribution `μexp` as needed. Formal:
-  `IsProbabilityMeasure κ`.
-
 ## Positivity
 
 - `EpsilonAssumptions` (trivial): bundles the positivity requirement `0 < ε` that appears
@@ -144,23 +135,9 @@ and boundedness-driven integrability.
   i.i.d. across profile draws, not a claim about independence of components
   within a single profile. It is intentionally distinct from `DesignAttrIID` so
   evaluation sampling can be assumed independently of design randomization.
-- `ScoreAssumptions`: score-level [measurability](jargon_measurable.md) of
-  the score function `g` plus [integrability](jargon_integrable.md) of
-  `g(A 0)^2` under the experimental design distribution `μexp`. Integrability of
-  `g(A 0)` is derived from the second-moment condition. [i.i.d.](jargon_iid.md)
-  properties of the attribute stream are now tracked separately in
-  `DesignAttrIID` (design) or `EvalAttrIID` (evaluation), and are typically
-  derived from `ConjointRandomizationStream` on the design side.
-  The score-based [standard deviation](jargon_standard_deviation.md) [LLN](jargon_lln.md)
-  lemmas (e.g., `meanHatZ_tendsto_ae_of_score`) require both `DesignAttrIID` and
-  `ScoreAssumptions`.
-  - `ScoreAssumptions.meas_g`: the score `g` is measurable, so `g(A i)` is
-    measurable when composed with each `A i`. Intuition: the score must be a
-    well-defined observable function of attributes. Formal: `Measurable g`.
-  - `ScoreAssumptions.int_g0_sq`: square-integrability of `g(A 0)`, which yields
-    finite variance and supports LLN steps for SD consistency. Intuition: the
-    score cannot have explosive tails if we want stable dispersion estimates.
-    Formal: `Integrable (fun ω => (g (A 0 ω)) ^ 2) μexp`.
+The score-based [standard deviation](jargon_standard_deviation.md) [LLN](jargon_lln.md)
+lemmas (e.g., `meanHatZ_tendsto_ae_of_score`) now take measurability + boundedness
+directly and derive integrability internally under a probability measure.
 ## SampleSplitting
 
 - `SplitEvalAssumptionsBounded`: boundedness-based evaluation assumptions.
@@ -170,116 +147,6 @@ and boundedness-driven integrability.
   - `SplitEvalAssumptionsBounded.hMeasG` / `hBoundG`: measurability and boundedness of
     `gHat g θhat m`.
 
-## RegressionConsistencyBridge
-
-- `FunctionalContinuityAssumptions`: [continuity](jargon_continuity.md) at `θ0`
-  of the attribute-distribution [mean](jargon_mean.md) and
-  [second moment](jargon_second_moment.md)
-  functionals under `xiAttr`. These are the continuity inputs that let
-  [regression](jargon_regression.md) [consistency](jargon_consistency.md)
-  translate estimator [convergence](jargon_convergence.md) into moment
-  [convergence](jargon_convergence.md). In the first-stage OLS setting, take
-  `xiAttr := kappaDesign`; in the transport stage, use the target population `ν_pop`.
-  - `FunctionalContinuityAssumptions.cont_mean`: mean functional is continuous at `θ0`.
-    Intuition: small parameter perturbations do not change the mean much.
-    Formal: `ContinuousAt (attrMeanΘ (xiAttr := xiAttr) g) θ0`.
-  - `FunctionalContinuityAssumptions.cont_m2`: second-moment functional is continuous at `θ0`.
-    Intuition: the scale of the score changes smoothly with parameters.
-    Formal: `ContinuousAt (attrM2Θ (xiAttr := xiAttr) g) θ0`.
-- `PlugInMomentAssumptions`: direct plug-in convergence of the attribute-distribution
-  mean and second moment under `ν_pop` for `gHat g θhat n`. This is the Route‑1 input:
-  we assume moment convergence outright, without relying on parameter continuity.
-  - `PlugInMomentAssumptions.mean_tendsto`: mean convergence to the oracle mean.
-    Formal: `Tendsto (fun n => attrMean ν_pop (gHat g θhat n)) atTop (nhds (attrMean ν_pop (g θ0)))`.
-  - `PlugInMomentAssumptions.m2_tendsto`: second-moment convergence to the oracle second moment.
-    Formal: `Tendsto (fun n => attrM2 ν_pop (gHat g θhat n)) atTop (nhds (attrM2 ν_pop (g θ0)))`.
-- `BlockFunctionalContinuityAssumptions`: the blockwise version of functional
-  continuity, requiring the above assumptions for each block score under the
-  attribute distribution `xiAttr`.
-  - `BlockFunctionalContinuityAssumptions.cont`: each block score satisfies
-    `FunctionalContinuityAssumptions` at `θ0`.
-    Intuition: every block mean/second moment is stable under small parameter changes.
-    Formal: `∀ b, FunctionalContinuityAssumptions (xiAttr := xiAttr) (blockScoreΘ (gB := gB) b) θ0`.
-
-## RegressionEstimator
-
-Reader mapping to standard OLS assumptions:
-- `OLSMomentAssumptions` / `OLSMomentAssumptionsOfAttr` correspond to [LLN](jargon_lln.md) for
-  the [Gram matrix](jargon_gram_matrix.md) `X'X/n` and [cross moments](jargon_cross_moment.md) `X'Y/n`,
-  plus invertibility/[full‑rank](jargon_full_rank.md) of the limiting Gram.
-  [Identification](jargon_identification.md) via the [normal equations](jargon_normal_equations.md) is handled
-  separately.
-- `OLSMomentAssumptions`: a deterministic moment-limit package. It posits limits
-  for the inverse [Gram matrix](jargon_gram_matrix.md) and [cross-product](jargon_cross_moment.md) vector. This is the generic,
-  non-target [population](jargon_population.md) formulation (purely sample-side limits
-  under the experimental design distribution `μexp`).
-  - `OLSMomentAssumptions.gramInvLimit`: limit of inverse Gram entries.
-    Intuition: the design stabilizes to a fixed geometry.
-    Social‑science intuition: if attributes are independently randomized and feature
-    coding is stable, then regressor correlations settle down, the [Gram matrix](jargon_gram_matrix.md) stays
-    well‑conditioned, and its inverse converges. This becomes implausible with sparse
-    cells, near‑collinearity, or designs where some features are effectively deterministic
-    functions of others.
-    Formal: `gramInvLimit : Matrix Term Term ℝ`.
-  - `OLSMomentAssumptions.crossLimit`: limit of cross moments.
-    Intuition: empirical regressor-outcome correlations stabilize.
-    Social‑science intuition: with randomized features and stable outcome
-    measurement, average feature–outcome associations settle to a fixed target.
-    This is less plausible when outcomes drift over time, when measurement
-    error is correlated with certain attributes, or when the design makes some
-    feature–outcome cells too rare for stable averages.
-    Scope note: this assumption only says the limit exists; it does not identify
-    the limit with any population moment unless additional assumptions are added
-    (e.g., `OLSMomentAssumptionsOfAttr`).
-    Formal: `crossLimit : Term → ℝ`.
-  - `OLSMomentAssumptions.gramInv_tendsto`: convergence of inverse Gram entries.
-    Intuition: the sample inverse Gram converges entrywise.
-    Social‑science intuition: repeated randomized designs produce a stable
-    regressor geometry, so the inverse of the empirical feature covariance
-    matrix settles down rather than exploding. This is less plausible with
-    multicollinearity, sparse feature cells, or drifting feature coding.
-    Scope note: this is a pure convergence claim; it does not say what the
-    limit equals beyond the named object `gramInvLimit`.
-    Formal:
-    `∀ i j, Tendsto (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j) atTop
-      (nhds (gramInvLimit i j))`.
-  - `OLSMomentAssumptions.cross_tendsto`: convergence of cross-moment entries.
-    Intuition: empirical cross moments converge to their limits.
-    Social‑science intuition: with stable measurement and randomized attributes,
-    feature–outcome correlations average out to a steady association as sample
-    size grows. This is less plausible with time trends, outcome drift, or
-    rare feature levels that make cross moments noisy. Scope note: this only
-    asserts convergence to `crossLimit`, not that the limit equals any
-    population cross moment unless additional assumptions are imposed.
-    Formal:
-    `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
-      (nhds (crossLimit i))`.
-  - Identification note: `OLSMomentAssumptions` only fixes the limiting moments.
-    Turning those limits into a specific coefficient target `θ0` requires a
-    separate [identification](jargon_identification.md) step (e.g., [normal equations](jargon_normal_equations.md)
-    derived from [well‑specification](jargon_well_specified.md) plus [full‑rank](jargon_full_rank.md)).
-- `OLSMomentAssumptionsOfAttr`: the attribute‑distribution version of the above,
-  with the limits pinned to the Gram and cross moments under a chosen attribute
-  distribution `xiAttr`. Identification of `θ0` from these limits is handled separately
-  (e.g., via [normal equations](jargon_normal_equations.md) and [full‑rank](jargon_full_rank.md) assumptions).
-  Core‑idea note: for design‑side OLS, take `xiAttr := kappaDesign (κ := μexp)`
-  and use that in `OLSMomentAssumptionsOfAttr`; the target population `ν_pop` enters
-  only at the transport stage via the evaluation sampling law.
-  - `OLSMomentAssumptionsOfAttr.gramInv_tendsto`: entries of the inverse sample
-    [Gram matrix](jargon_gram_matrix.md) converge to the inverse
-    attribute‑distribution Gram, giving the stable
-    design condition needed for OLS consistency. Intuition: the regressor
-    geometry stabilizes, so the estimator does not amplify noise. Formal:
-    `∀ i j, Tendsto (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j) atTop
-      (nhds ((attrGram (xiAttr := xiAttr) (φ := φ))⁻¹ i j))`.
-  - `OLSMomentAssumptionsOfAttr.cross_tendsto`: the sample [cross-moment](jargon_cross_moment.md) vector
-    converges to the cross moment under the chosen attribute distribution `xiAttr`, so the
-    [normal equations](jargon_normal_equations.md) converge. Intuition: the empirical correlation between
-    regressors and outcomes settles to its `xiAttr`-based value (target population if
-    `xiAttr = ν_pop`, design-law if `xiAttr = kappaDesign`).
-    Formal:
-    `∀ i, Tendsto (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i) atTop
-      (nhds (attrCross (xiAttr := xiAttr) (g := g) (φ := φ) i))`.
 - `ObservationNoiseAssumptions`: a paper-facing noise bundle that asserts the
   feature-weighted outcome noise averages to 0 along sample paths, relative to
   the causal score `gStar`. It also records a conditional-mean formulation

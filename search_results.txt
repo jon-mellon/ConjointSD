@@ -17,7 +17,7 @@
 ./AGENTS.md:40:- `gaps.md`: update if your changes add/close proof gaps or alter the state of assumptions called out there.
 ./AGENTS.md:41:- `README.md`: update if build instructions or repo layout change.
 ./readable/jargon_profile.md:5:A profile is a full description of an individual or item in the conjoint study. It assigns a value to each attribute.
-./readable/SequentialConsistency.md:5:This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `ProbMeasureAssumptions` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν_pop`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν_pop` (uniform weights). The evaluation assumptions are now boundedness-based (`SplitEvalAssumptionsBounded`), which then derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
+./readable/SequentialConsistency.md:5:This file proves a two-stage [convergence](jargon_convergence.md) statement for [standard deviation](jargon_standard_deviation.md) estimation with sample splitting. It uses `IsProbabilityMeasure` and `EpsilonAssumptions`, and takes direct plug‑in moment convergence (`PlugInMomentAssumptions`) as input. The target is the attribute-distribution SD under `ν_pop`, with `EvalAttrLawEqPop` asserting that the evaluation attribute law equals `ν_pop` (uniform weights). The evaluation assumptions are now boundedness-based (`SplitEvalAssumptionsBounded`), which then derive the score/integrability conditions internally. The training distribution that produces `θhat` is left abstract.
 ./readable/SequentialConsistency.md:9:- `sdEst`: the evaluation-stage [standard deviation](jargon_standard_deviation.md) [estimator](jargon_estimator.md) using a fixed training index `m`, evaluation size `n`, and a weight function `w`.
 ./readable/SequentialConsistency.md:12:- `totalErr`: the gap between the evaluation estimator (uniform weights) and the oracle [standard deviation](jargon_standard_deviation.md).
 ./readable/SequentialConsistency.md:17:3) Combine the two to show: for any epsilon, there is an `M` so that for all `m >= M`, the evaluation error becomes less than epsilon for large enough `n` ([almost everywhere](jargon_almost_everywhere.md)).
@@ -32,11 +32,11 @@
 ./readable/jargon_pushforward.md:1:# Pushforward
 ./readable/jargon_pushforward.md:5:The pushforward of a measure by a measurable function is the induced distribution of the function’s output. If `A 0` is a random draw under `μexp` (experiment) or `ρ` (evaluation), then `Measure.map (A 0) μexp` or `Measure.map (A 0) ρ` is the pushforward law of attributes.
 ./readable/RegressionEstimator.md:16:- `attrGram` and `attrCross` define the Gram and cross moments under a generic attribute distribution `xiAttr` (use `kappaDesign` in the first-stage OLS setting).
-./readable/PaperOLSConsistency.md:5:This file specializes the regression [consistency](jargon_consistency.md) machinery to the paper's OLS [estimator](jargon_estimator.md) and [term](jargon_term.md) set. It uses bundled `ProbMeasureAssumptions` where probability assumptions are required, and the LLN statements target the experimental pushforward attribute law `kappaDesign := Measure.map (A 0) μexp` (the experiment data used to fit the model). In the code, this distribution is denoted `xiAttr`; the target population distribution `ν_pop` is not used in this first-stage OLS file.
+./readable/PaperOLSConsistency.md:5:This file specializes the regression [consistency](jargon_consistency.md) machinery to the paper's OLS [estimator](jargon_estimator.md) and [term](jargon_term.md) set. It uses bundled `IsProbabilityMeasure` where probability assumptions are required, and the LLN statements target the experimental pushforward attribute law `kappaDesign := Measure.map (A 0) μexp` (the experiment data used to fit the model). In the code, this distribution is denoted `xiAttr`; the target population distribution `ν_pop` is not used in this first-stage OLS file.
 ./readable/PaperOLSConsistency.md:11:- The core package is `OLSMomentAssumptionsOfAttr` from the generic regression section, specialized to `φPaper` and `gStar`. It says the empirical Gram and cross moments converge to their attribute‑distribution targets under `xiAttr`. In the core‑idea flow, those targets are the design pushforward law `kappaDesign`, with population transport handled separately.
 ./readable/PaperOLSConsistency.md:14:  - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the design pushforward law `kappaDesign`.
 ./readable/PaperOLSConsistency.md:28:- `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. moment package from [LLN](jargon_lln.md)-style and inverse-stability assumptions plus the normal equations (derived from well‑specification when needed) under the attribute distribution in use.
-./readable/SDDecompositionFromConjoint.md:5:This file connects a sequence of attribute draws to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) results for any score function, and then extends that to a family of [block](jargon_block.md) scores. It now uses `ProbMeasureAssumptions` instead of standalone probability-measure hypotheses.
+./readable/SDDecompositionFromConjoint.md:5:This file connects a sequence of attribute draws to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) results for any score function, and then extends that to a family of [block](jargon_block.md) scores. It now uses `IsProbabilityMeasure` instead of standalone probability-measure hypotheses.
 ./readable/SDDecompositionFromConjoint.md:8:- `DesignAttrIID` packages IID assumptions for the attribute process `A` (see [iid](jargon_iid.md)).
 ./readable/SDDecompositionFromConjoint.md:9:- `Zcomp` composes attributes with a score function: `Z i = g (A i)`.
 ./readable/SDDecompositionFromConjoint.md:19:This file is the [bridge](jargon_bridge.md) from design-based attribute IID to [standard deviation](jargon_standard_deviation.md) [consistency](jargon_consistency.md) for scores and blocks.
@@ -68,7 +68,7 @@
 ./readable/DeriveGEstimationAssumptions.md:9:- Assumes the attribute-distribution [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) (under `xiAttr`) as functions of the [parameter](jargon_parameter.md) are [continuous](jargon_continuity.md) at `theta0`.
 ./readable/RegressionConsistencyBridge.md:8:- `attrMeanΘ` and `attrM2Θ` treat the attribute-distribution [mean](jargon_mean.md) and [second moment](jargon_second_moment.md) (under `xiAttr`) as functions of the [parameter](jargon_parameter.md).
 ./readable/jargon_integral.md:5:An integral is a weighted [average](jargon_mean.md) of a function under a [distribution](jargon_distribution.md). In this project, integrals are used to define target human [population](jargon_population.md) averages under the attribute distribution, like the [mean](jargon_mean.md), [second moment](jargon_second_moment.md), [variance](jargon_variance.md), and [standard deviation](jargon_standard_deviation.md).
-./readable/SampleSplitting.md:5:This file handles the evaluation stage in a sample-splitting setup. It uses `ProbMeasureAssumptions` for the target attribute distribution `ν_pop` and assumes `EvalAttrLawEqPop` so the evaluation draw `A 0` under the evaluation law `ρ` has the target attribute law `ν_pop` (weights are uniform). The training data that produced `θhat` is not modeled here.
+./readable/SampleSplitting.md:5:This file handles the evaluation stage in a sample-splitting setup. It uses `IsProbabilityMeasure` for the target attribute distribution `ν_pop` and assumes `EvalAttrLawEqPop` so the evaluation draw `A 0` under the evaluation law `ρ` has the target attribute law `ν_pop` (weights are uniform). The training data that produced `θhat` is not modeled here.
 ./readable/SampleSplitting.md:8:- `SplitEvalAssumptionsBounded` bundles the evaluation-stage assumptions needed to
 ./readable/SampleSplitting.md:11:  evaluation draws, boundedness and measurability for `w` and `gHat`, plus a nonzero weight
 ./readable/SampleSplitting.md:14:- `sdHat_fixed_m_tendsto_ae_attrSD` says: for fixed `m`, the evaluation-stage
@@ -302,7 +302,7 @@
 ./scripts/runLinter.lean:128:unsafe def main (args : List String) : IO Unit := do
 ./readable/ConjointIdentification.md:26:Bridge note: identification results in this file take `ConjointIdRandomized` directly; stream-level SD consistency uses separate attribute-stream assumptions.
 ./readable/ConjointIdentification.md:28:Note: attribute-level AMCE identification and estimation assumptions (e.g., conditional or componentwise randomization) are not formalized here; we defer to Hainmueller–Hopkins–Yamamoto for those results.
-./readable/ConjointIdentification.md:30:Recent changes: drop explicit integrability assumptions for potential outcomes; boundedness plus `ProbMeasureAssumptions` now supplies integrability when needed.
+./readable/ConjointIdentification.md:30:Recent changes: drop explicit integrability assumptions for potential outcomes; boundedness plus `IsProbabilityMeasure` now supplies integrability when needed.
 ./readable/jargon_continuity.md:5:Continuity means small changes in an input lead to small changes in the output. In these files, continuity lets you pass from [parameter](jargon_parameter.md) [convergence](jargon_convergence.md) to convergence of target human [population](jargon_population.md) [averages](jargon_mean.md) computed under the attribute distribution.
 ./scripts/check_r.R:3:source("plot_proof_structure.R")
 ./paper_highlights.md:6:cultural (leisure activities and supermarket choice), and ascribed (gender and ethnicity) factors as
@@ -382,12 +382,12 @@
 ./readable/jargon_rmse.md:5:average is taken over the attribute distribution for the target human population.
 ./ConjointSD/Assumptions.lean:8:noncomputable section
 ./ConjointSD/Assumptions.lean:14:All assumption structures/props are centralized here for easier auditing.
-./ConjointSD/Assumptions.lean:23:class ProbMeasureAssumptions (κ : Measure α) : Prop where
-./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb
+./ConjointSD/Assumptions.lean:23:class IsProbabilityMeasure (κ : Measure α) : Prop where
+./ConjointSD/Assumptions.lean:26:attribute [instance] IsProbabilityMeasure.isProb
 ./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward)
 ./ConjointSD/Assumptions.lean:37:for non-target attribute laws.
 ./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
-./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+./ConjointSD/Assumptions.lean:41:structure AttrMomentAssumptions (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
 ./ConjointSD/Assumptions.lean:42:    (s : Attr → ℝ) : Prop where
 ./ConjointSD/Assumptions.lean:59:def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
 ./ConjointSD/Assumptions.lean:67:structure EpsilonAssumptions (ε : ℝ) : Prop where
@@ -398,7 +398,7 @@
 ./ConjointSD/Assumptions.lean:90:distribution. This is intentionally distinct from `DesignAttrIID` so evaluation
 ./ConjointSD/Assumptions.lean:93:structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
 ./ConjointSD/Assumptions.lean:95:  indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
-./ConjointSD/Assumptions.lean:99:structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions κ] :
+./ConjointSD/Assumptions.lean:99:structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [IsProbabilityMeasure κ] :
 ./ConjointSD/Assumptions.lean:100:    Prop where
 ./ConjointSD/Assumptions.lean:135:structure SplitEvalAssumptionsBounded
 ./ConjointSD/Assumptions.lean:137:    (g : Θ → Attr → ℝ) (θhat : ℕ → Θ) (m : ℕ) : Prop where
@@ -658,7 +658,7 @@
 ./ConjointSD/ApproxPaperWrappers.lean:223:    simpa [abs_sub_comm, hTotalModel x] using hx
 ./ConjointSD/IdentificationAssumptions.lean:6:noncomputable section
 ./ConjointSD/IdentificationAssumptions.lean:16:structure ConjointIdRandomized
-./ConjointSD/IdentificationAssumptions.lean:18:    [ProbMeasureAssumptions μexp] : Prop where
+./ConjointSD/IdentificationAssumptions.lean:18:    [IsProbabilityMeasure μexp] : Prop where
 ./ConjointSD/TermModelBlocks.lean:13:noncomputable section
 ./ConjointSD/DecompositionSequentialConsistency.lean:20:noncomputable section
 ./ConjointSD/DecompositionSequentialConsistency.lean:60:  classical
@@ -812,12 +812,12 @@
 ./ConjointSD/StatusConjointDesign.lean:44:instance : IsProbabilityMeasure νStatus := by
 ./ConjointSD/StatusConjointDesign.lean:45:  classical
 ./ConjointSD/StatusConjointDesign.lean:46:  simpa [νStatus] using
-./ConjointSD/StatusConjointDesign.lean:49:instance : ProbMeasureAssumptions νStatus := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:49:instance : IsProbabilityMeasure νStatus := ⟨inferInstance⟩
 ./ConjointSD/StatusConjointDesign.lean:52:noncomputable def μTask : Measure TaskSlot :=
 ./ConjointSD/StatusConjointDesign.lean:55:instance : IsProbabilityMeasure μTask :=
 ./ConjointSD/StatusConjointDesign.lean:57:    classical
 ./ConjointSD/StatusConjointDesign.lean:58:    simpa [μTask] using
-./ConjointSD/StatusConjointDesign.lean:62:instance : ProbMeasureAssumptions μTask := ⟨inferInstance⟩
+./ConjointSD/StatusConjointDesign.lean:62:instance : IsProbabilityMeasure μTask := ⟨inferInstance⟩
 ./ConjointSD/StatusConjointDesign.lean:68:noncomputable def μRT {Respondent : Type u} [MeasurableSpace Respondent]
 ./ConjointSD/StatusConjointDesign.lean:70:  μResp.prod μTask
 ./ConjointSD/StatusConjointDesign.lean:72:instance {Respondent : Type u} [MeasurableSpace Respondent]

@@ -15,7 +15,7 @@ variable [MeasurableSpace Attr]
 
 theorem subject_lln_gPop_of_iid
     {μexp : Measure Ω} {μpop : Measure Person}
-    [ProbMeasureAssumptions μpop]
+    [IsProbabilityMeasure μpop]
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ}
     (hIID : SubjectSamplingIID (μexp := μexp) (μpop := μpop) (R := R))
     (hScore : SubjectScoreAssumptions (μpop := μpop) (gP := gP)) :
@@ -84,8 +84,8 @@ theorem subject_lln_gPop_of_iid
   simpa [gHatSubject, X, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hω'
 
 theorem subjectSamplingLLN_of_iid_of_lln_gStar
-    {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
-    {ν_pop : Measure Attr} {μpop : Measure Person} [ProbMeasureAssumptions μpop]
+    {μexp : Measure Ω} [IsProbabilityMeasure μexp]
+    {ν_pop : Measure Attr} {μpop : Measure Person} [IsProbabilityMeasure μpop]
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
     (hIID : SubjectSamplingIID (μexp := μexp) (μpop := μpop) (R := R))
     (hScore : SubjectScoreAssumptions (μpop := μpop) (gP := gP))

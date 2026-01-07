@@ -364,7 +364,7 @@
 ./ConjointSD/SequentialConsistency.lean:200:      nlinarith [hε.pos] | nlinarith=>possible, linarith=>possible, .p=>context
 ./ConjointSD/SequentialConsistency.lean:207:    nlinarith [hε.pos] | nlinarith=>possible, linarith=>possible, .p=>context
 ./ConjointSD/SequentialConsistency.lean:229:      nlinarith [hε.pos] | nlinarith=>possible, linarith=>possible, .p=>context
-./ConjointSD/Assumptions.lean:26:attribute [instance] ProbMeasureAssumptions.isProb | attribute=>possible
+./ConjointSD/Assumptions.lean:26:attribute [instance] IsProbabilityMeasure.isProb | attribute=>possible
 ./ConjointSD/Assumptions.lean:36:attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforward) | attribute=>possible
 ./ConjointSD/Assumptions.lean:37:for non-target attribute laws. | attribute=>possible
 ./ConjointSD/Assumptions.lean:40:/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/ | attribute=>possible

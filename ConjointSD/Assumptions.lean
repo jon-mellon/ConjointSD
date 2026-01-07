@@ -15,18 +15,6 @@ All assumption structures/props are centralized here for easier auditing.
 Core definitions they depend on live in `ConjointSD.Defs`.
 -/
 
-section BasicMeasure
-
-variable {α : Type*} [MeasurableSpace α]
-
-/-- Bundled probability-measure assumption (used to avoid standalone `IsProbabilityMeasure`). -/
-class ProbMeasureAssumptions (κ : Measure α) : Prop where
-  isProb : IsProbabilityMeasure κ
-
-attribute [instance] ProbMeasureAssumptions.isProb
-
-end BasicMeasure
-
 section Transport
 
 variable {Attr : Type*} [MeasurableSpace Attr]
@@ -38,14 +26,14 @@ for non-target attribute laws.
 -/
 
 /-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
-structure AttrMomentAssumptions (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+structure AttrMomentAssumptions (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (s : Attr → ℝ) : Prop where
   aemeas : AEMeasurable s ν_pop
   int2 : Integrable (fun a => (s a) ^ 2) ν_pop
 
 namespace AttrMomentAssumptions
 
-theorem int1 {ν_pop : Measure Attr} [ProbMeasureAssumptions ν_pop] {s : Attr → ℝ}
+theorem int1 {ν_pop : Measure Attr} [IsProbabilityMeasure ν_pop] {s : Attr → ℝ}
     (hs : AttrMomentAssumptions (ν_pop := ν_pop) s) : Integrable s ν_pop := by
   have hs_meas : AEStronglyMeasurable s ν_pop := hs.aemeas.aestronglyMeasurable
   have hs_mem2 : MemLp s (2 : ENNReal) ν_pop :=
@@ -94,29 +82,6 @@ structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
   measA : ∀ i, Measurable (A i)
   indepA : Pairwise (fun i j => IndepFun (A i) (A j) κ)
   identA : ∀ i, IdentDistrib (A i) (A 0) κ κ
-
-/-- Score-level measurability and second-moment conditions under the design law. -/
-structure ScoreAssumptions (A : ℕ → Ω → Attr) (g : Attr → ℝ) [ProbMeasureAssumptions κ] :
-    Prop where
-  meas_g : Measurable g
-  int_g0_sq : Integrable (fun ω => (g (A 0 ω)) ^ 2) κ
-
-namespace ScoreAssumptions
-
-theorem int_g0 {κ : Measure Ω} [ProbMeasureAssumptions κ] {Attr : Type*} [MeasurableSpace Attr]
-    {A : ℕ → Ω → Attr} {g : Attr → ℝ}
-    (hIID : DesignAttrIID (κ := κ) A)
-    (h : ScoreAssumptions (κ := κ) (A := A) g) :
-    Integrable (fun ω => g (A 0 ω)) κ := by
-  have hmeasA0 : Measurable (A 0) := hIID.measA 0
-  have hmeas : AEStronglyMeasurable (fun ω => g (A 0 ω)) κ :=
-    (h.meas_g.comp hmeasA0).aestronglyMeasurable
-  have hmem2 : MemLp (fun ω => g (A 0 ω)) (2 : ENNReal) κ :=
-    (memLp_two_iff_integrable_sq hmeas).2 h.int_g0_sq
-  have hmem1 : MemLp (fun ω => g (A 0 ω)) (1 : ENNReal) κ := hmem2.mono_exponent (by norm_num)
-  exact (memLp_one_iff_integrable).1 hmem1
-
-end ScoreAssumptions
 
 variable {B : Type*}
 
@@ -193,7 +158,7 @@ structure SubjectSamplingLLNStar
           (nhds (gStar (μexp := μexp) (Y := Y) x))
 
 theorem subject_lln_pointwise_eq
-    {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
+    {μexp : Measure Ω} [IsProbabilityMeasure μexp]
     {ν_pop : Measure Attr} {μpop : Measure Person}
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
     (h : SubjectSamplingLLN
@@ -226,7 +191,7 @@ theorem subject_lln_pointwise_eq
   exact zero_ne_one (hzero_univ.symm.trans hone)
 
 theorem subject_lln_ae_eq
-    {μexp : Measure Ω} [ProbMeasureAssumptions μexp]
+    {μexp : Measure Ω} [IsProbabilityMeasure μexp]
     {ν_pop : Measure Attr} {μpop : Measure Person}
     {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
     (h : SubjectSamplingLLN
@@ -237,103 +202,6 @@ theorem subject_lln_ae_eq
   exact subject_lln_pointwise_eq (h := h) x
 
 end SubjectSampling
-
-section RegressionConsistencyBridge
-
-variable {Attr Θ : Type*} [MeasurableSpace Attr] [TopologicalSpace Θ]
-
-/--
-Continuity assumptions for the induced attribute-distribution functionals at θ0.
-
-Here `xiAttr` is whichever attribute distribution governs the target moments in the
-surrounding result (design-law when estimating, population-law when transporting).
-These are the “plug point” for regression theory: later you discharge them using
-dominated convergence / continuity of link / bounded features / etc.
--/
-structure FunctionalContinuityAssumptions
-    (xiAttr : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) : Prop where
-  cont_mean : ContinuousAt (attrMeanΘ (xiAttr := xiAttr) g) θ0
-  cont_m2   : ContinuousAt (attrM2Θ   (xiAttr := xiAttr) g) θ0
-
-/--
-Direct plug-in moment convergence assumptions for a score `g θhat n` under `ν_pop`.
-This is the Route-1 input for sequential consistency: mean and second moment converge
-without invoking parameter continuity.
--/
-structure PlugInMomentAssumptions
-    (ν_pop : Measure Attr) (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ) : Prop where
-  mean_tendsto :
-    Tendsto
-      (fun n => attrMean ν_pop (gHat g θhat n))
-      atTop
-      (nhds (attrMean ν_pop (g θ0)))
-  m2_tendsto :
-    Tendsto
-      (fun n => attrM2 ν_pop (gHat g θhat n))
-      atTop
-      (nhds (attrM2 ν_pop (g θ0)))
-
-/-- Continuity assumptions for each block score at `θ0`. -/
-structure BlockFunctionalContinuityAssumptions
-    {B : Type*}
-    (xiAttr : Measure Attr) (gB : B → Θ → Attr → ℝ) (θ0 : Θ) : Prop where
-  cont : ∀ b : B,
-    FunctionalContinuityAssumptions (xiAttr := xiAttr) (blockScoreΘ (gB := gB) b) θ0
-
-end RegressionConsistencyBridge
-
-section RegressionEstimator
-
-universe u v
-
-/-- OLS moment assumptions with explicit limits for the inverse Gram and cross moments. -/
-structure OLSMomentAssumptions {Attr : Type u} {Term : Type v}
-    [Fintype Term] [DecidableEq Term]
-    (A : ℕ → Attr) (Y : ℕ → ℝ) (φ : Term → Attr → ℝ)
-    (θ0 : Term → ℝ) : Type (max u v) where
-  /-- Limit of the inverse Gram matrix entries. -/
-  gramInvLimit : Matrix Term Term ℝ
-  /-- Limit of the cross-moment vector entries. -/
-  crossLimit : Term → ℝ
-  gramInv_tendsto :
-    ∀ i j,
-      Tendsto
-        (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j)
-        atTop
-        (nhds (gramInvLimit i j))
-  cross_tendsto :
-    ∀ i,
-      Tendsto
-        (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i)
-        atTop
-        (nhds (crossLimit i))
-
-/--
-Moment assumptions stated against the attribute-distribution Gram/cross moments.
-Here `xiAttr` names the attribute distribution used in the limit (design-law for fitting,
-population-law for transported targets). These encode the LLN and identifiability
-conditions typically used for OLS consistency.
--/
-structure OLSMomentAssumptionsOfAttr {Attr : Type u} {Term : Type v}
-    [MeasurableSpace Attr] [Fintype Term] [DecidableEq Term]
-    (xiAttr : Measure Attr)
-    (A : ℕ → Attr) (Y : ℕ → ℝ)
-    (g : Attr → ℝ) (φ : Term → Attr → ℝ)
-    (θ0 : Term → ℝ) : Prop where
-  gramInv_tendsto :
-    ∀ i j,
-      Tendsto
-        (fun n => (gramMatrix (A := A) (φ := φ) n)⁻¹ i j)
-        atTop
-        (nhds ((attrGram (xiAttr := xiAttr) (φ := φ))⁻¹ i j))
-  cross_tendsto :
-    ∀ i,
-      Tendsto
-        (fun n => crossVec (A := A) (Y := Y) (φ := φ) n i)
-        atTop
-        (nhds (attrCross (xiAttr := xiAttr) (g := g) (φ := φ) i))
-
-end RegressionEstimator
 
 section PaperOLSDesign
 
@@ -349,7 +217,7 @@ This is a mean-zero/noise-LLN condition relative to the true score `gStar`,
 stated directly in terms of the empirical cross term.
 -/
 structure ObservationNoiseAssumptions
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (μexp : Measure Ω) [IsProbabilityMeasure μexp]
     {Term : Type*}
     (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
     (φ : Term → Attr → ℝ) : Prop where
@@ -380,7 +248,7 @@ of the conjoint causal estimand `gStar`. The design IID assumption is kept
 separate (as `DesignAttrIID`) and passed explicitly to lemmas that need it.
 -/
 structure PaperOLSDesignAssumptions
-    (μexp : Measure Ω) [ProbMeasureAssumptions μexp]
+    (μexp : Measure Ω) [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (Y : Attr → Ω → ℝ) (Yobs : ℕ → Ω → ℝ)
     (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ) : Prop where
   obs_noise :

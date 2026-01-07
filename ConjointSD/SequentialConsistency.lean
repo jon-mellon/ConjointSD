@@ -68,7 +68,7 @@ Step (1): for fixed `m`, as `n → ∞`, total error → training error (a.e.).
 Assumes the evaluation attribute law equals the target-population law `ν_pop`.
 -/
 theorem totalErr_tendsto_trainErr_fixed_m
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+    (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     (A : ℕ → Ω → Attr)
     (ν_pop : Measure Attr)
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
@@ -117,12 +117,15 @@ theorem totalErr_tendsto_trainErr_fixed_m
   simpa [totalErr, trainErr, sdOracle, sdEst] using (ht.comp hω)
 
 /--
-Step (2): training error → 0 as `m → ∞` under direct plug-in moment convergence.
+Step (2): training error → 0 as `m → ∞` under direct mean/m2 convergence.
 -/
 theorem trainErr_tendsto_zero
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hPlug : PlugInMomentAssumptions (ν_pop := ν_pop) (g := g) (θ0 := θ0) (θhat := θhat)) :
+    (hMean : Tendsto (fun m => attrMean ν_pop (gHat g θhat m)) atTop
+      (nhds (attrMean ν_pop (g θ0))))
+    (hM2 : Tendsto (fun m => attrM2 ν_pop (gHat g θhat m)) atTop
+      (nhds (attrM2 ν_pop (g θ0)))) :
     Tendsto
       (fun m : ℕ => trainErr ν_pop g θ0 θhat m)
       atTop
@@ -136,7 +139,7 @@ theorem trainErr_tendsto_zero
     simpa [c] using
       (attrSD_tendsto_of_mean_m2_tendsto
         (ν_pop := ν_pop) (g := g) (θ0 := θ0) (θhat := θhat)
-        hPlug.mean_tendsto hPlug.m2_tendsto)
+        hMean hM2)
   have hcont :
       Continuous (fun x : ℝ => abs (x - c)) := by
     simpa using (continuous_abs.comp (continuous_id.sub continuous_const))
@@ -155,21 +158,24 @@ Step (3): sequential ε–M–eventually-in-n consistency (a.e. over ω).
 Assumptions:
 - `hSplit : ∀ m, SplitEvalAssumptionsBounded ... m` gives evaluation-stage
   conditions for each m.
-- `hPlug` gives direct plug-in mean and second-moment convergence under `ν_pop`.
+- `hMean` / `hM2` give direct mean and second-moment convergence under `ν_pop`.
 
 Conclusion:
 For any ε>0, ∃ M, ∀ m≥M, (∀ᵐ ω, ∀ᶠ n, totalErr ... m n ω < ε).
 -/
 theorem sequential_consistency_ae
-    (ρ : Measure Ω) [ProbMeasureAssumptions ρ]
+    (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     (A : ℕ → Ω → Attr)
-    (ν_pop : Measure Attr) [ProbMeasureAssumptions ν_pop]
+    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (g : Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
     (hSplit : ∀ m,
       SplitEvalAssumptionsBounded
         (ρ := ρ) (A := A) (g := g) (θhat := θhat) m)
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
-    (hPlug : PlugInMomentAssumptions (ν_pop := ν_pop) (g := g) (θ0 := θ0) (θhat := θhat))
+    (hMean : Tendsto (fun m => attrMean ν_pop (gHat g θhat m)) atTop
+      (nhds (attrMean ν_pop (g θ0))))
+    (hM2 : Tendsto (fun m => attrM2 ν_pop (gHat g θhat m)) atTop
+      (nhds (attrM2 ν_pop (g θ0))))
     (ε : ℝ) (hε : EpsilonAssumptions ε) :
     ∃ M : ℕ,
       ∀ m ≥ M,
@@ -181,7 +187,7 @@ theorem sequential_consistency_ae
       Tendsto (fun m : ℕ => trainErr ν_pop g θ0 θhat m)
         atTop (nhds 0) :=
     trainErr_tendsto_zero
-      (ν_pop := ν_pop) (g := g) (θ0 := θ0) (θhat := θhat) hPlug
+      (ν_pop := ν_pop) (g := g) (θ0 := θ0) (θhat := θhat) hMean hM2
   -- pick M so that for all m≥M, trainErr m < ε/2
   have hEv :
       ∀ᶠ m : ℕ in atTop,
