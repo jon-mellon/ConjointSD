@@ -2,26 +2,22 @@
 
 Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
 
-- Theorems in chain: 38
-- Theorems not in chain: 51
-- Assumptions required: 30
-- Assumptions not required: 16
-- Theorems not used by any other theorem: 24
+- Theorems in chain: 35
+- Theorems not in chain: 1
+- Assumptions required: 22
+- Assumptions not required: 0
+- Theorems not used by any other theorem: 2
 
 ## Assumptions required
 
-- BlockFunctionalContinuityAssumptions cont
-- BoundedAE
 - ConjointRandomizationStream exists_randomization
-- DesignAttrIID identA
-- DesignAttrIID indepA
-- DesignAttrIID measA
 - EvalAttrIID identA
 - EvalAttrIID indepA
 - EvalAttrIID measA
-- EvalWeightMatchesPopMoments measA0
+- EvalAttrLawEqPop identA
+- EvalAttrLawEqPop indepA
+- EvalAttrLawEqPop measA
 - FullMainEffectsTerms
-- SubjectSamplingLLN
 - NoInteractions
 - ObservationNoiseAssumptions condMean_zero
 - ObservationNoiseAssumptions noise_lln
@@ -30,84 +26,21 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - PaperOLSDesignAssumptions meas_fInter
 - PaperOLSDesignAssumptions meas_fMain
 - PaperOLSFullRankAssumptions gram_isUnit
-- Plug-in moment m2 tendsto
-- Plug-in moment mean tendsto
-- ScoreAssumptions int_g0_sq
-- ScoreAssumptions meas_g
+- SubjectSamplingIID identR
+- SubjectSamplingIID indepR
+- SubjectSamplingIID measR
+- SubjectSamplingLLNStar lln_gStar
+- SubjectScoreAssumptions bound_gP
+- SubjectScoreAssumptions meas_gP
 
 ## Assumptions not required
 
-- ApproxInvarianceAE
-- ApproxNoInteractions
-- ApproxOracleAE
-- AttrMomentAssumptions aemeas
-- AttrMomentAssumptions int2
-- ConjointIdRandomized bounded
-- ConjointIdRandomized consistency
-- ConjointIdRandomized ignorability
-- ConjointIdRandomized measX
-- ConjointIdRandomized measY
-- ConjointIdRandomized measYobs
-- L2Approx
 
 ## Theorems not in chain
 
-- functionalContinuity_gTotalΘ_of_bounded
-- sequential_consistency_total_ae
-- sequential_consistency_blocks_ae_of_bounded
-- sequential_consistency_total_ae_of_bounded
-- condMean_eq_potMean_of_rand
-- ae_restrict_consistency
-- identified_potMean_from_condMean
-- identified_amce_from_condMeans
-- approxInvarianceAE_triangle
-- attrMean_diff_le_of_L2Approx
-- attrSD_diff_le_of_L2Approx
-- attrMean_abs_le_of_bounded_ae
-- attrMean_diff_le_of_approx_ae
-- attrM2_diff_le_of_approx_ae
-- attrVar_diff_le_of_approx_ae
-- attrSD_diff_le_of_approx_ae
-- gLin_eq_gTotal_blocks
-- gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
-- approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
-- paper_identifies_potMean_from_condMean
-- paper_identifies_amce_from_condMeans
-- paper_identifies_potMean_from_condMean_status
-- paper_sd_blocks_sequential_consistency_ae_of_bounded
-- paper_sd_total_sequential_consistency_ae
-- paper_sd_total_sequential_consistency_ae_of_bounded
-- paper_sd_blocks_sequential_consistency_to_approx_target_ae
-- paper_sd_total_sequential_consistency_to_approx_target_ae
-- paper_sd_total_sequential_consistency_to_true_target_ae
-- paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
-- paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
-- paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
-- derive_m2_tendsto
-- derive_m2_tendsto_blocks
-- derive_mean_tendsto
-- derive_mean_tendsto_blocks
-- functionalContinuity_gPaper_of_bounded
-- sd_block_consistent
-- status_event_pos
-- status_id_randomized
+- subject_lln_gPop_of_iid
 
 ## Theorems not used by any other theorem
 
-- attrSD_diff_le_of_L2Approx
-- approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
-- paper_identifies_amce_from_condMeans
-- paper_identifies_potMean_from_condMean_status
-- paper_sd_blocks_sequential_consistency_ae_of_bounded
-- paper_sd_total_sequential_consistency_ae_of_bounded
-- paper_sd_blocks_sequential_consistency_to_approx_target_ae
-- paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
-- paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
-- paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
 - paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
-- derive_m2_tendsto
-- derive_m2_tendsto_blocks
-- derive_mean_tendsto
-- derive_mean_tendsto_blocks
-- functionalContinuity_gPaper_of_bounded
-- sd_block_consistent
+- subject_lln_gPop_of_iid

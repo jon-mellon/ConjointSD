@@ -319,15 +319,10 @@ theorem
     refine ae_of_all _ ?_
     intro x
     simpa using congrArg (fun f => f x) hBlocks
-  have hSubjectLLN :
-      SubjectSamplingLLN
-        (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop)
-        (R := R) (gP := gP) (Y := Y) :=
-    subjectSamplingLLN_of_iid_of_lln_gStar
-      (hIID := hSubjectIID) (hScore := hSubjectScore) (hStar := hSubjectLLNStar)
   have hPopEq :
       ∀ᵐ x ∂ν_pop, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x :=
-    subject_lln_ae_eq (h := hSubjectLLN)
+    subject_lln_ae_eq_of_iid
+      (hIID := hSubjectIID) (hScore := hSubjectScore) (hStar := hSubjectLLNStar)
   have hPopBlocks :
       ∀ᵐ x ∂ν_pop,
         gPop (μpop := μpop) gP x

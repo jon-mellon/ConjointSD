@@ -13,7 +13,7 @@ import ConjointSD.DesignAttributeBridge
 import ConjointSD.Assumptions
 import ConjointSD.RegressionConsistencyBridge
 
-open Filter MeasureTheory
+open Filter MeasureTheory ProbabilityTheory
 open scoped BigOperators
 
 noncomputable section
@@ -66,6 +66,31 @@ lemma bounded_phiPaper
           simpa [φPaper] using hboundMain m
       | inr i =>
           simpa [φPaper] using hboundInter i
+
+lemma evalAttrIID_of_randomization_stream
+    {A : ℕ → Ω → Attr} {Y : Attr → Ω → ℝ}
+    (h : ConjointRandomizationStream (μexp := μexp) (A := A) (Y := Y)) :
+    EvalAttrIID (κ := μexp) A := by
+  rcases h.exists_randomization with
+    ⟨R, instR, U, f, hmeasU, hmeasf, hAeq, hindep, hident, _⟩
+  letI : MeasurableSpace R := instR
+  refine
+    { measA := ?_
+      indepA := ?_
+      identA := ?_ }
+  · intro i
+    simpa [hAeq i] using hmeasf.comp (hmeasU i)
+  · intro i j hij
+    have hU : IndepFun (U i) (U j) μexp := hindep hij
+    have hA :
+        IndepFun (fun ω => f (U i ω)) (fun ω => f (U j ω)) μexp :=
+      hU.comp hmeasf hmeasf
+    simpa [hAeq i, hAeq j] using hA
+  · intro i
+    have hU : IdentDistrib (U i) (U 0) μexp μexp := hident i
+    have hA : IdentDistrib (fun ω => f (U i ω)) (fun ω => f (U 0 ω)) μexp μexp :=
+      hU.comp hmeasf
+    simpa [hAeq i, hAeq 0] using hA
 
 omit [DecidableEq (PaperTerm Main Inter)] in
 def φBlock
@@ -542,7 +567,7 @@ theorem paper_ols_lln_of_score_assumptions_ae
       ObservationNoiseAssumptions
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)))
-    (hIID : DesignAttrIID (κ := μexp) Aω)
+    (hIID : EvalAttrIID (κ := μexp) Aω)
     (hMeasGram :
       ∀ i j,
         Measurable (fun a =>
@@ -792,9 +817,9 @@ theorem paper_ols_lln_of_score_assumptions_ae
 omit [DecidableEq (PaperTerm Main Inter)] in
 theorem paper_ols_lln_of_design_ae
     {Aω : ℕ → Ω → Attr} {Yobsω : ℕ → Ω → ℝ}
-    (hRand :
+  (hRand :
       ConjointRandomizationStream (μexp := μexp) (A := Aω) (Y := Y))
-    (hDesign :
+  (hDesign :
       PaperOLSDesignAssumptions
         (μexp := μexp) (A := Aω) (Y := Y) (Yobs := Yobsω)
         (fMain := fMain) (fInter := fInter)) :
@@ -825,8 +850,8 @@ theorem paper_ols_lln_of_design_ae
               (xiAttr := kappaDesign (κ := μexp) (A := Aω))
               (g := gStar (μexp := μexp) (Y := Y))
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
-  have hPop : DesignAttrIID (κ := μexp) Aω :=
-    DesignAttrIID.of_randomization_stream
+  have hPop : EvalAttrIID (κ := μexp) Aω :=
+    evalAttrIID_of_randomization_stream
       (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hmeasφ :
       ∀ t, Measurable (φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter) t) :=
@@ -1163,8 +1188,8 @@ theorem paper_ols_attr_moments_of_design_ae
               (xiAttr := kappaDesign (κ := μexp) (A := Aω))
               (g := gStar (μexp := μexp) (Y := Y))
               (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter)) i))) := by
-  have hPop : DesignAttrIID (κ := μexp) Aω :=
-    DesignAttrIID.of_randomization_stream
+  have hPop : EvalAttrIID (κ := μexp) Aω :=
+    evalAttrIID_of_randomization_stream
       (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hA0 : Measurable (Aω 0) := hPop.measA 0
   letI : IsProbabilityMeasure (kappaDesign (κ := μexp) (A := Aω)) :=
@@ -1251,8 +1276,8 @@ theorem theta_tendsto_of_paper_ols_design_ae
             n)
         atTop
         (nhds θ0) := by
-  have hPop : DesignAttrIID (κ := μexp) Aω :=
-    DesignAttrIID.of_randomization_stream
+  have hPop : EvalAttrIID (κ := μexp) Aω :=
+    evalAttrIID_of_randomization_stream
       (μexp := μexp) (A := Aω) (Y := Y) hRand
   have hA0 : Measurable (Aω 0) := hPop.measA 0
   letI : IsProbabilityMeasure (kappaDesign (κ := μexp) (A := Aω)) :=

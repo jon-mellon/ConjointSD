@@ -6,8 +6,8 @@ This file specializes the regression [consistency](jargon_consistency.md) machin
 
 Moment convergence facts:
 - The core moment statement is that the inverse Gram and cross moments converge entrywise to their attribute‑distribution targets under `xiAttr`. In the core‑idea flow, those targets are the design pushforward law `kappaDesign`, with population transport handled separately.
-- `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from `DesignAttrIID`, bounded/measurable features, bounded `gStar`, and an `ObservationNoiseAssumptions` bundle that makes the feature-weighted noise term converge to 0, so the cross moment still targets `gStar` under `kappaDesign`. The algebraic split of the cross moment is factored into `crossVec_eq_meanHatZ_add_noise`.
-- `PaperOLSDesignAssumptions` packages bounded/measurable features, bounded `gStar`, and the observation-noise LLN. For the design-based wrappers, `DesignAttrIID` is derived from `ConjointRandomizationStream`.
+- `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from `EvalAttrIID`, bounded/measurable features, bounded `gStar`, and an `ObservationNoiseAssumptions` bundle that makes the feature-weighted noise term converge to 0, so the cross moment still targets `gStar` under `kappaDesign`. The algebraic split of the cross moment is factored into `crossVec_eq_meanHatZ_add_noise`.
+- `PaperOLSDesignAssumptions` packages bounded/measurable features, bounded `gStar`, and the observation-noise LLN. For the design-based wrappers, the IID conditions are derived from `ConjointRandomizationStream`.
   - `paper_ols_lln_of_design_ae` derives the LLN statement with limits expressed under the design pushforward law `kappaDesign`.
   - `paper_ols_attr_moments_of_design_ae` combines that LLN with inverse‑Gram stability to yield the inverse‑Gram and cross‑moment convergence a.e. under the design law.
 - `PaperOLSFullRankAssumptions` is the explicit full‑rank premise that feeds the derivation of inverse‑Gram stability and identification (`hInv`/`hId`) from the design; the normal equations are now derived from well‑specification plus bounded/measurable features.
@@ -15,7 +15,7 @@ Moment convergence facts:
 - `paper_ols_theta0_eq_of_normal_eq` derives the identification equation `θ0 = (attrGram)⁻¹ * attrCross` from the normal‑equation identity and full‑rank.
 - `paper_ols_normal_eq_of_wellSpecified` derives the normal‑equation identity from well‑specification plus bounded/measurable paper features.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` packages Gram/cross LLN and inverse‑Gram stability into the a.e. convergence statement used by later theorems.
-- In the Gram/cross convergence proofs, empirical means are routed through `meanHatZ_tendsto_ae_of_score`, which now takes `DesignAttrIID` plus boundedness/measurability.
+- In the Gram/cross convergence proofs, empirical means are routed through `meanHatZ_tendsto_ae_of_score`, which now takes `EvalAttrIID` plus boundedness/measurability.
 - Design-based score integrability for Gram/cross terms is derived inline from boundedness/measurability.
 
 Main results:

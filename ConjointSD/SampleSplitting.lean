@@ -51,11 +51,9 @@ theorem sdHat_fixed_m_tendsto_ae_attrSD
           atTop
           (nhds (designSDZ (κ := ρ)
             (Z := Zcomp (A := A) (g := gHat g θhat m)))) := by
-    have hPop : DesignAttrIID (κ := ρ) A :=
-      { measA := h.hIID.measA, indepA := h.hIID.indepA, identA := h.hIID.identA }
     exact sdHatZ_tendsto_ae_of_score
       (μexp := ρ) (A := A) (g := gHat g θhat m)
-      hPop h.hMeasG h.hBoundG
+      h.hIID h.hMeasG h.hBoundG
   have hMean :
       designMeanZ (κ := ρ)
         (Z := Zcomp (A := A) (g := gHat g θhat m)) =

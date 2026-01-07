@@ -10,3 +10,6 @@ Key pieces:
   score converges a.e. to `gPop` under `SubjectSamplingIID` and bounded `SubjectScoreAssumptions`.
 - `subjectSamplingLLN_of_iid_of_lln_gStar`: combines the derived `gPop` LLN with the assumed
   `SubjectSamplingLLNStar` (LLN to `gStar`) to produce `SubjectSamplingLLN`.
+- `subject_lln_pointwise_eq_of_iid` and `subject_lln_ae_eq_of_iid`: convert the IID + `gStar` LLN
+  assumptions into `gStar = gPop` pointwise and almost-everywhere statements, so downstream
+  wrappers no longer need to assume `SubjectSamplingLLN` directly.

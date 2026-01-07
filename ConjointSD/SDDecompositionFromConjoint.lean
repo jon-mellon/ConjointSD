@@ -30,7 +30,7 @@ lemma integrable_of_bounded
 
 lemma meanHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
+    (hIID : EvalAttrIID (κ := μexp) A)
     (hMeas : Measurable g)
     (hBound : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μexp,
@@ -67,7 +67,7 @@ lemma meanHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
 
 lemma m2HatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
+    (hIID : EvalAttrIID (κ := μexp) A)
     (hMeasG : Measurable g)
     (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μexp,
@@ -103,7 +103,7 @@ lemma m2HatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
 
 lemma varHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
+    (hIID : EvalAttrIID (κ := μexp) A)
     (hMeasG : Measurable g)
     (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μexp,
@@ -142,7 +142,7 @@ lemma varHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
 
 theorem sdHatZ_tendsto_ae_of_score [IsProbabilityMeasure μexp]
     (A : ℕ → Ω → Attr) (g : Attr → ℝ)
-    (hIID : DesignAttrIID (κ := μexp) A)
+    (hIID : EvalAttrIID (κ := μexp) A)
     (hMeasG : Measurable g)
     (hBoundG : ∃ C, 0 ≤ C ∧ ∀ a, |g a| ≤ C) :
     ∀ᵐ ω ∂μexp,

@@ -5,6 +5,7 @@ Readable summaries of the Lean development.
 - [ConjointIdentification.lean](ConjointIdentification.md)
 - [ConjointSD.lean](ConjointSD.md)
 - [Assumptions.lean](Assumptions.md)
+- [scripts/audit_hidden_assumptions.lean](AuditHiddenAssumptions.md)
 - [ApproxAssumptions.lean](ApproxAssumptions.md)
 - [IdentificationAssumptions.lean](IdentificationAssumptions.md)
 - [ApproxModelBridge.lean](ApproxModelBridge.md)

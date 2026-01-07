@@ -175,50 +175,6 @@ structure SubjectSamplingLLNStar
           atTop
           (nhds (gStar (μexp := μexp) (Y := Y) x))
 
-theorem subject_lln_pointwise_eq
-    {μexp : Measure Ω} [IsProbabilityMeasure μexp]
-    {ν_pop : Measure Attr} {μpop : Measure Person}
-    {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
-    (h : SubjectSamplingLLN
-      (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
-    ∀ x, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
-  classical
-  intro x
-  by_contra hne
-  have hboth :
-      ∀ᵐ ω ∂μexp,
-        Tendsto
-            (fun n => gHatSubject (R := R) (gP := gP) n x ω)
-            atTop
-            (nhds (gStar (μexp := μexp) (Y := Y) x))
-          ∧
-        Tendsto
-            (fun n => gHatSubject (R := R) (gP := gP) n x ω)
-            atTop
-            (nhds (gPop (μpop := μpop) gP x)) :=
-    (h.lln_gStar x).and (h.lln_gPop x)
-  have hfalse : ∀ᵐ _ω ∂μexp, False := by
-    refine hboth.mono ?_
-    intro ω hω
-    exact hne (tendsto_nhds_unique hω.1 hω.2)
-  have hzero_univ : μexp Set.univ = 0 := by
-    have hfalse' : μexp { ω | ¬False } = 0 := (MeasureTheory.ae_iff).1 hfalse
-    simpa using hfalse'
-  have hone : μexp Set.univ = 1 := by
-    exact measure_univ
-  exact zero_ne_one (hzero_univ.symm.trans hone)
-
-theorem subject_lln_ae_eq
-    {μexp : Measure Ω} [IsProbabilityMeasure μexp]
-    {ν_pop : Measure Attr} {μpop : Measure Person}
-    {R : ℕ → Ω → Person} {gP : Person → Attr → ℝ} {Y : Attr → Ω → ℝ}
-    (h : SubjectSamplingLLN
-      (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
-    ∀ᵐ x ∂ν_pop, gStar (μexp := μexp) (Y := Y) x = gPop (μpop := μpop) gP x := by
-  refine ae_of_all _ ?_
-  intro x
-  exact subject_lln_pointwise_eq (h := h) x
-
 end SubjectSampling
 
 section PaperOLSDesign

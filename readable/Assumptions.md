@@ -94,7 +94,8 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
 The LLN to `gPop` is derived from `SubjectSamplingIID` + `SubjectScoreAssumptions` via the strong LLN
 and boundedness-driven integrability.
   The ν_pop-a.e. equality `gStar = gPop` is then *derived* by uniqueness of limits.
-- `SubjectSamplingLLN`: bundles both LLN statements (`gStar` and `gPop`) in one structure.
+- `SubjectSamplingLLN`: bundles both LLN statements (`gStar` and `gPop`) in one structure, but the
+  main theorem chain now derives it from IID inputs rather than assuming it directly.
 - `BoundedAE`: uniform boundedness on the target [population](jargon_population.md)
   support. Intuition: scores stay within `C` almost everywhere under `ν_pop`, so
   moment bounds and approximation lemmas can use a global envelope. Formal:
@@ -171,7 +172,7 @@ directly and derive integrability internally under a probability measure.
 - `PaperOLSDesignAssumptions`: a paper-specific bundle that is strong enough to
   *derive* the OLS LLN hypotheses for the [Gram matrix](jargon_gram_matrix.md) and
   [cross moments](jargon_cross_moment.md) from the
-  experimental design once combined with a separate `DesignAttrIID` assumption.
+  experimental design once combined with IID conditions derived from randomization.
   It packages measurability and [boundedness](jargon_boundedness.md) of the paper feature map `φPaper`,
   boundedness of the conjoint causal estimand `gStar`, and the observation-noise
   LLN needed for the cross moment. Transport to a target population distribution

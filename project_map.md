@@ -22,7 +22,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 ## Population targets and transport
 
 - [ConjointSD/Transport.lean](readable/Transport.md) gathers attribute-distribution functionals/assumptions from `Defs.lean`/`Assumptions.lean`.
-- [ConjointSD/SubjectSamplingLLNFromIID.lean](readable/SubjectSamplingLLNFromIID.md) derives the subject-sampling LLN to `gPop` from IID subject sampling plus bounded score regularity, and builds `SubjectSamplingLLN` using the assumed `SubjectSamplingLLNStar`.
+- [ConjointSD/SubjectSamplingLLNFromIID.lean](readable/SubjectSamplingLLNFromIID.md) derives the subject-sampling LLN to `gPop` from IID subject sampling plus bounded score regularity, builds `SubjectSamplingLLN` using the assumed `SubjectSamplingLLNStar`, and derives `gStar = gPop` pointwise/a.e. from those inputs.
 - [ConjointSD/DesignAttributeBridge.lean](readable/DesignAttributeBridge.md) bridges moments under `μ` for `g(A0)` to moments under the pushforward attribute law `kappaDesign := Measure.map (A 0) μ` for `g`; uses `Transport` and `SDDecompositionFromConjoint`.
 - [ConjointSD/TargetEquivalence.lean](readable/TargetEquivalence.md) shows target human [population](readable/jargon_population.md) moments/[SDs](readable/jargon_standard_deviation.md) are equal when scores agree `ν_pop`-[a.e.](readable/jargon_almost_everywhere.md); uses `Transport`.
 - [ConjointSD/ApproxTargetEquivalence.lean](readable/ApproxTargetEquivalence.md) collects approximate/misspecification bounds (triangle inequality and moment/SD bounds) under `ApproxInvarianceAE`/`L2Approx` plus `BoundedAE`.
@@ -62,6 +62,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Tooling
 
+- [scripts/audit_hidden_assumptions.lean](readable/AuditHiddenAssumptions.md) audits whether a theorem's proof term depends on any assumption declarations not present in its statement.
 
 ## Scratchpad
 
