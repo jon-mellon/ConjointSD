@@ -74,7 +74,6 @@ import ConjointSD
 #print ConjointSD.paper_identifies_potMean_from_condMean
 #print ConjointSD.paper_identifies_amce_from_condMeans
 #print ConjointSD.paper_identifies_potMean_from_condMean_status
-#print ConjointSD.paper_sd_blocks_sequential_consistency_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae
 #print ConjointSD.paper_ols_attr_moments_of_design_ae

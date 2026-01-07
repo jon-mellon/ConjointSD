@@ -52,34 +52,6 @@ variable (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
 
 variable (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
 
-/-- Paper-facing: per-block SDs are sequentially consistent (single `M` works for all blocks). -/
-theorem paper_sd_blocks_sequential_consistency_ae
-    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
-    (hSplitBounded : ∀ m b,
-      SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
-        (g := gBlock (gB := gB) b) (θhat := θhat) m)
-    (hMean : ∀ b : B,
-      Tendsto (fun m => attrMean ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
-        (nhds (attrMean ν_pop (gBlock (gB := gB) b θ0))))
-    (hM2 : ∀ b : B,
-      Tendsto (fun m => attrM2 ν_pop (gHat (gBlock (gB := gB) b) θhat m)) atTop
-        (nhds (attrM2 ν_pop (gBlock (gB := gB) b θ0))))
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        ∀ b : B,
-          (∀ᵐ ω ∂ρ,
-            ∀ᶠ n : ℕ in atTop,
-              totalErr ρ A ν_pop
-                (gBlock (gB := gB) b) θ0 θhat m n ω < ε) := by
-  exact
-    sequential_consistency_blocks_ae
-      (ρ := ρ) (A := A) (ν_pop := ν_pop)
-      (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplitBounded) (hLaw := hLaw) (hMean := hMean) (hM2 := hM2)
-      (ε := ε) (hε := hε)
-
-
 /-!
 ## 4) Turn “converges to attrSD ν_pop (g θ0)” into “converges to the true SD target”
 by assuming ν_pop-a.e. equality to a declared true score function and using congruence lemmas.
@@ -114,10 +86,10 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
           ∧
           attrSD (ν_pop) (gBlock (gB := gB) b θ0)
             = attrSD (ν_pop) (gTrueB b) := by
-  rcases paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
+  rcases sequential_consistency_blocks_ae
+      (ρ := ρ) (A := A) (ν_pop := ν_pop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitBounded := hSplitBounded) (hMean := hMean) (hM2 := hM2)
+      (hSplit := hSplitBounded) (hLaw := hLaw) (hMean := hMean) (hM2 := hM2)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩

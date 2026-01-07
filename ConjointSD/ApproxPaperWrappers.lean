@@ -72,10 +72,10 @@ theorem paper_sd_blocks_sequential_consistency_to_approx_target_ae
           |attrSD (ν_pop) (gBlock (gB := gB) b θ0)
               - attrSD (ν_pop) (gTrueB b)|
             ≤ Real.sqrt (4 * C * δ) := by
-  rcases paper_sd_blocks_sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν_pop := ν_pop) (hLaw := hLaw)
+  rcases sequential_consistency_blocks_ae
+      (ρ := ρ) (A := A) (ν_pop := ν_pop)
       (gB := gB) (θ0 := θ0) (θhat := θhat)
-      (hSplitBounded := hSplitBounded) (hMean := hMean) (hM2 := hM2)
+      (hSplit := hSplitBounded) (hLaw := hLaw) (hMean := hMean) (hM2 := hM2)
       (ε := ε) (hε := hε)
       with ⟨M, hM⟩
   refine ⟨M, ?_⟩
