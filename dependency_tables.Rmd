@@ -528,131 +528,6 @@ if (is.null(edges) || nrow(edges) == 0) {
 }
 ```
 
-## OLS SD consistency DAG (direct assumptions)
-
-```{r ols-sd-consistency-dag, echo=FALSE, fig.width=10, fig.height=8}
-if (!requireNamespace("DiagrammeR", quietly = TRUE) ||
-    !requireNamespace("DiagrammeRsvg", quietly = TRUE) ||
-    !requireNamespace("rsvg", quietly = TRUE)) {
-  stop("Packages 'DiagrammeR', 'DiagrammeRsvg', and 'rsvg' are required to plot the dependency DAG.")
-}
-
-target_thm <- "paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization"
-if (!(target_thm %in% all_names)) target_thm <- theorems[[1]]
-chain_nodes <- unique(c(target_thm, all_deps[[target_thm]]))
-chain_nodes <- chain_nodes[chain_nodes %in% theorems]
-global_assumps <- names(which(assumption_all[[target_thm]]))
-global_assumps <- filter_derived_assumptions(global_assumps)
-
-dot_escape <- function(x) {
-  x <- gsub("\\\\", "\\\\\\\\", x)
-  gsub("\"", "\\\\\"", x)
-}
-
-edge_rows <- lapply(chain_nodes, function(thm) {
-  deps <- intersect(raw_deps[[thm]], chain_nodes)
-  if (length(deps) == 0) return(NULL)
-  data.frame(from = deps, to = thm, stringsAsFactors = FALSE)
-})
-edges <- do.call(rbind, edge_rows)
-
-assump_edges <- lapply(chain_nodes, function(thm) {
-  assumps <- assumptions_in_sig(theorem_sigs[[thm]])
-  assumps <- filter_derived_assumptions(assumps)
-  assumps <- intersect(assumps, global_assumps)
-  if (length(assumps) == 0) return(NULL)
-  data.frame(from = assumps, to = thm, stringsAsFactors = FALSE)
-})
-assump_edges <- do.call(rbind, assump_edges)
-
-assump_nodes <- character(0)
-if (!is.null(assump_edges) && nrow(assump_edges) > 0) {
-  assump_nodes <- sort(unique(assump_edges$from))
-}
-
-if ((is.null(edges) || nrow(edges) == 0) && length(assump_nodes) == 0) {
-  plot.new()
-  text(0.5, 0.5, "No OLS SD dependencies found.")
-} else {
-  pretty_core <- setNames(vapply(chain_nodes, pretty_name, character(1)), chain_nodes)
-  core_labels <- vapply(
-    chain_nodes,
-    function(nm) pretty_core[[nm]],
-    character(1)
-  )
-  core_nodes <- data.frame(
-    name = dot_escape(chain_nodes),
-    label = dot_escape(core_labels),
-    stringsAsFactors = FALSE
-  )
-
-  assump_labels <- vapply(
-    assump_nodes,
-    function(nm) nm,
-    character(1)
-  )
-  assump_nodes_df <- data.frame(
-    name = dot_escape(assump_nodes),
-    label = dot_escape(assump_labels),
-    stringsAsFactors = FALSE
-  )
-
-  final_node <- target_thm
-  node_lines <- c(
-    vapply(
-      seq_len(nrow(core_nodes)),
-      function(i) {
-        fill <- if (core_nodes$name[i] == dot_escape(final_node)) "#f2a5a5" else "#F7F7F7"
-        sprintf('"%s" [label="%s", fillcolor="%s"];', core_nodes$name[i], core_nodes$label[i], fill)
-      },
-      character(1)
-    ),
-    vapply(
-      seq_len(nrow(assump_nodes_df)),
-      function(i) {
-        sprintf('"%s" [label="%s", fillcolor="#8CC5FF"];', assump_nodes_df$name[i], assump_nodes_df$label[i])
-      },
-      character(1)
-    )
-  )
-
-  edge_lines <- character(0)
-  if (!is.null(edges) && nrow(edges) > 0) {
-    edge_lines <- c(
-      edge_lines,
-      sprintf('"%s" -> "%s";', dot_escape(edges$from), dot_escape(edges$to))
-    )
-  }
-  if (!is.null(assump_edges) && nrow(assump_edges) > 0) {
-    edge_lines <- c(
-      edge_lines,
-      sprintf('"%s" -> "%s";', dot_escape(assump_edges$from), dot_escape(assump_edges$to))
-    )
-  }
-
-  dot <- sprintf(
-    'digraph G {
-      graph [rankdir=LR, labelloc="t", fontsize=16, nodesep=0.15, ranksep=0.35];
-      node  [shape=box, style="rounded,filled", fillcolor="#F7F7F7", color="#444444", fontname="Helvetica", fontsize=10];
-      edge  [color="#666666", arrowsize=0.5];
-
-      %s
-
-      %s
-    }',
-    paste(node_lines, collapse = "\n"),
-    paste(edge_lines, collapse = "\n")
-  )
-  graph <- DiagrammeR::grViz(dot)
-  svg <- DiagrammeRsvg::export_svg(graph)
-  out_dir <- "dependency_tables_files"
-  if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
-  out_png <- file.path(out_dir, "ols_sd_consistency_dag.png")
-  rsvg::rsvg_png(charToRaw(svg), file = out_png)
-knitr::include_graphics(out_png)
-}
-```
-
 ## OLS SD block consistency DAG (direct assumptions)
 
 ```{r ols-sd-block-consistency-dag, echo=FALSE, fig.width=10, fig.height=8}
@@ -668,6 +543,11 @@ block_nodes <- unique(c(target_block, all_deps[[target_block]]))
 block_nodes <- block_nodes[block_nodes %in% theorems]
 global_assumps_block <- names(which(assumption_all[[target_block]]))
 global_assumps_block <- filter_derived_assumptions(global_assumps_block)
+
+dot_escape <- function(x) {
+  x <- gsub("\\\\", "\\\\\\\\", x)
+  gsub("\"", "\\\\\"", x)
+}
 
 edge_rows <- lapply(block_nodes, function(thm) {
   deps <- intersect(raw_deps[[thm]], block_nodes)

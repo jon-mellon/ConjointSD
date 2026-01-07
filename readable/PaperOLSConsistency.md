@@ -23,8 +23,7 @@ Moment convergence facts:
 
 Main results:
 - `theta_tendsto_of_paper_ols_design_ae` derives almost-everywhere [convergence](jargon_convergence.md) of the OLS coefficient estimates to `theta0` from `ConjointRandomizationStream`, `PaperOLSDesignAssumptions`, and the full‑rank condition, with normal equations derived from well‑specification.
-- `gPaper_eq_gTotalΘ_blocks` identifies the paper score with the block-sum total score (for any `blk`), so the OLS path can feed into the block/total [standard deviation](jargon_standard_deviation.md) chain.
-- `cont_mean_gTotalΘ_of_bounded` / `cont_m2_gTotalΘ_of_bounded` and `cont_mean_gBlockTerm_of_bounded` / `cont_m2_gBlockTerm_of_bounded` derive the required functional [continuity](jargon_continuity.md) for the total block score and individual block scores directly from bounded/measurable features. The blockwise variants `cont_mean_blocks_gBlockTerm_of_bounded` and `cont_m2_blocks_gBlockTerm_of_bounded` provide the per-block continuity facts for all blocks.
+- `cont_mean_gBlockTerm_of_bounded` / `cont_m2_gBlockTerm_of_bounded` derive the required functional [continuity](jargon_continuity.md) for individual block scores directly from bounded/measurable features. The blockwise variants `cont_mean_blocks_gBlockTerm_of_bounded` and `cont_m2_blocks_gBlockTerm_of_bounded` provide the per-block continuity facts for all blocks.
 - `paper_ols_attr_moments_of_lln_fullrank_ae` assembles the a.e. inverse‑Gram and cross‑moment convergence from [LLN](jargon_lln.md)-style and inverse-stability assumptions under the attribute distribution in use.
 
 This file is the link from [regression](jargon_regression.md) / [OLS](jargon_ols.md) [consistency](jargon_consistency.md) to the [plug-in](jargon_plug_in.md) moment assumptions used in the [standard deviation](jargon_standard_deviation.md) consistency proofs.

@@ -5,10 +5,6 @@ This document walks through the **[block](readable/jargon_block.md)‑level** en
 The target is the [block](readable/jargon_block.md) components of the total score, not the total
 score itself. The final wrapper is:
 `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`.
-Note: the total-score wrapper
-`paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization`
-uses the experiment-subject sampling LLN bridge (`SubjectSamplingLLN`) to target the
-population-mean score SD under `ν_pop` (denoted `ν_pop` below).
 The implied ν_pop-a.e. equality `gStar = gPop` is derived from the two LLN limits
 (uniqueness of limits), not assumed as a separate transport axiom.
 

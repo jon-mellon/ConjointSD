@@ -5,7 +5,6 @@ Route 1 (assumption-bundling) sequential consistency for an SD decomposition.
 
 Provides:
 1) Per-block sequential consistency with a single M working for all b : B (finite).
-2) Total-score sequential consistency for the summed score.
 -/
 
 import Mathlib
@@ -87,39 +86,6 @@ theorem sequential_consistency_blocks_ae
   have hMb_le_m : Mb b ≤ m := le_trans hMb_le_M hm
   -- Now apply the block-specific conclusion.
   exact hMb b m hMb_le_m
-
-/-- Total-score sequential consistency for the summed score `gTotalΘ`. -/
-theorem sequential_consistency_total_ae
-    (ρ : Measure Ω) [IsProbabilityMeasure ρ]
-    (A : ℕ → Ω → Attr)
-    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
-    (gB : B → Θ → Attr → ℝ) (θ0 : Θ) (θhat : ℕ → Θ)
-    (hSplitTotal :
-      ∀ m,
-        SplitEvalAssumptionsBounded (ρ := ρ) (A := A)
-          (g := gTotalΘ (gB := gB)) (θhat := θhat) m)
-    (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))
-    (hMean :
-      Tendsto (fun m => attrMean ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
-        (nhds (attrMean ν_pop (gTotalΘ (gB := gB) θ0))))
-    (hM2 :
-      Tendsto (fun m => attrM2 ν_pop (gHat (gTotalΘ (gB := gB)) θhat m)) atTop
-        (nhds (attrM2 ν_pop (gTotalΘ (gB := gB) θ0))))
-    (ε : ℝ) (hε : EpsilonAssumptions ε) :
-    ∃ M : ℕ,
-      ∀ m ≥ M,
-        (∀ᵐ ω ∂ρ,
-          ∀ᶠ n : ℕ in atTop,
-            totalErr ρ A ν_pop (gTotalΘ (gB := gB)) θ0 θhat m n ω < ε) := by
-  simpa [gTotalΘ] using
-    (sequential_consistency_ae
-      (ρ := ρ) (A := A) (ν_pop := ν_pop)
-      (g := gTotalΘ (gB := gB)) (θ0 := θ0) (θhat := θhat)
-      (hSplit := hSplitTotal)
-      (hLaw := hLaw)
-      (hMean := hMean)
-      (hM2 := hM2)
-      (ε := ε) (hε := hε))
 
 end
 

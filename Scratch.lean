@@ -11,8 +11,6 @@ import ConjointSD
 #print ConjointSD.olsThetaHat_tendsto_of_attr_moments
 #print ConjointSD.cont_mean_gLin_of_bounded
 #print ConjointSD.cont_m2_gLin_of_bounded
-#print ConjointSD.cont_mean_gTotalΘ_of_bounded
-#print ConjointSD.cont_m2_gTotalΘ_of_bounded
 #print ConjointSD.cont_mean_gBlockTerm_of_bounded
 #print ConjointSD.cont_m2_gBlockTerm_of_bounded
 #print ConjointSD.cont_mean_blocks_gBlockTerm_of_bounded
@@ -42,7 +40,6 @@ import ConjointSD
 
 -- Decomposition sequential consistency.
 #print ConjointSD.sequential_consistency_blocks_ae
-#print ConjointSD.sequential_consistency_total_ae
 
 -- Identification.
 #print ConjointSD.condMean_eq_potMean_of_rand
@@ -78,15 +75,9 @@ import ConjointSD
 #print ConjointSD.paper_identifies_amce_from_condMeans
 #print ConjointSD.paper_identifies_potMean_from_condMean_status
 #print ConjointSD.paper_sd_blocks_sequential_consistency_ae
-#print ConjointSD.paper_sd_total_sequential_consistency_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae
-#print ConjointSD.paper_sd_total_sequential_consistency_to_approx_target_ae
-#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae
-#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxWellSpecifiedAE
-#print ConjointSD.paper_sd_total_sequential_consistency_to_gStar_approx_ae_of_ApproxOracleAE
 #print ConjointSD.paper_ols_attr_moments_of_design_ae
-#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
 
 
@@ -99,7 +90,6 @@ import ConjointSD
 #print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae
 #print ConjointSD.paper_ols_lln_of_design_ae
 #print ConjointSD.paper_ols_lln_of_score_assumptions_ae
-#print ConjointSD.paper_sd_total_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
 #print ConjointSD.status_event_pos
 #print ConjointSD.status_id_randomized
 #print ConjointSD.wellSpecified_of_noInteractions_of_fullMainEffects
