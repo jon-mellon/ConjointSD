@@ -233,8 +233,4 @@ theorem identified_amce_from_condMeans
       x (hpos x)
   simp [hx', hx]
 
-/-- Design-identified score: observed conditional mean among units with `X = x`. -/
-def gExp (μexp : Measure Ω) (X : Ω → Attr) (Yobs : Ω → ℝ) : Attr → ℝ :=
-  fun x => condMean (κ := μexp) Yobs (eventX (X := X) x)
-
 end ConjointSD

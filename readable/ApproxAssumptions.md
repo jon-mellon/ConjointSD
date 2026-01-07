@@ -14,13 +14,6 @@ results. These do not feed the main theorem chain in `main_theorem.md`.
 
 ## ApproximateOracle
 
-- `ApproxOracleAE`: a two-stage approximation assumption: a flexible score
-  approximates the experimental causal score `gStar`, and the model score
-  approximates the flexible score, both [almost everywhere](jargon_almost_everywhere.md)
-  under the attribute distribution `ν_pop`.
-  Intuition: use a rich intermediate score to bridge to the target.
-  Formal:
-  `(∀ᵐ x ∂ν_pop, |gModel x - gFlex x| ≤ δModel) ∧ (∀ᵐ x ∂ν_pop, |gFlex x - gStar x| ≤ δOracle)`.
 - `L2Approx`: an [L2](jargon_l2.md)/[RMSE](jargon_rmse.md)-style approximation assumption: the model score differs
   from the target by at most `δ` in mean-square (uses the [L2](jargon_l2.md) norm under `ν_pop`).
   Intuition: the average squared error is bounded by `δ^2`.

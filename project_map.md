@@ -29,7 +29,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Identification and design
 
-- [ConjointSD/ConjointIdentification.lean](readable/ConjointIdentification.md) formalizes conjoint identification assumptions and derives observed-[mean](readable/jargon_mean.md) identification of [potential outcomes](readable/jargon_potential_outcome.md) and [AMCE](readable/jargon_amce.md); defines `gExp` for score-level identification statements.
+- [ConjointSD/ConjointIdentification.lean](readable/ConjointIdentification.md) formalizes conjoint identification assumptions and derives observed-[mean](readable/jargon_mean.md) identification of [potential outcomes](readable/jargon_potential_outcome.md) and [AMCE](readable/jargon_amce.md).
 - [ConjointSD/StatusConjointDesign.lean](readable/StatusConjointDesign.md) encodes the specific status-conjoint randomization (uniform over [profiles](readable/jargon_profile.md)/tasks) and proves it satisfies `ConjointIdRandomized`, plus an explicit positivity lemma for assignments.
 - [ConjointSD/IdentificationTheorems.lean](readable/IdentificationTheorems.md) packages the paper-facing identification wrappers for conditional means and the status conjoint; not used in the main SD theorem chain.
 
@@ -45,21 +45,19 @@ This map links to the readable summaries for each `.lean` file and how it connec
 - [ConjointSD/RegressionConsistencyBridge.lean](readable/RegressionConsistencyBridge.md) derives plug‑in mean/second‑moment convergence from `θhat -> θ0` and functional continuity assumptions; also derives continuity for linear-in-terms scores from bounded features and provides [block](readable/jargon_block.md) versions.
 - [ConjointSD/DeriveGEstimationAssumptions.lean](readable/DeriveGEstimationAssumptions.md) thin wrappers that produce plug‑in mean/second‑moment convergence (and block versions) from `θhat -> θ0` + continuity; depends on `RegressionConsistencyBridge`.
 - [ConjointSD/RegressionEstimator.lean](readable/RegressionEstimator.md) formalizes the [OLS](readable/jargon_ols.md)-style [estimator](readable/jargon_estimator.md) sequence and bridges [estimator](readable/jargon_estimator.md) [consistency](readable/jargon_consistency.md) to plug‑in moment convergence; assumption packages now live in `Assumptions.lean`.
-- [ConjointSD/PaperOLSConsistency.lean](readable/PaperOLSConsistency.md) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to plug‑in moment convergence, plus a bridge from `gPaper` to the block-sum total score (via `gTotalΘ`).
+- [ConjointSD/PaperOLSConsistency.lean](readable/PaperOLSConsistency.md) specializes the [OLS](readable/jargon_ols.md) [estimator](readable/jargon_estimator.md) to the paper [term](readable/jargon_term.md) set and causal target `gStar`, providing [a.e.](readable/jargon_almost_everywhere.md) and deterministic bridges to plug‑in moment convergence.
 
 ## Model/[term](readable/jargon_term.md)/[block](readable/jargon_block.md) bridges
 
 - [ConjointSD/ModelBridge.lean](readable/ModelBridge.md) defines [block](readable/jargon_block.md) allocation `gBlockTerm` and bridges well-specification to [block](readable/jargon_block.md) sums; core definitions (`gLin`, paper term set) are in `Defs.lean`, and well-specification definitions live in `ModelBridge.lean`.
 - [ConjointSD/ApproxModelBridge.lean](readable/ApproxModelBridge.md) provides approximate well-specification definitions and the ν_pop-a.e. approximation bridge to block sums.
 - [ConjointSD/WellSpecifiedFromNoInteractions.lean](readable/WellSpecifiedFromNoInteractions.md) shows an additive/no-interactions causal [estimand](readable/jargon_estimand.md) implies `WellSpecified` for a [linear model](readable/jargon_linear_model.md)-in-[terms](readable/jargon_term.md) model; depends on `ModelBridge`.
-- [ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean](readable/ApproxWellSpecifiedFromNoInteractions.md) derives approximate well-specification from `ApproxNoInteractions` and `FullMainEffectsTerms`.
 - [ConjointSD/TermModelBlocks.lean](readable/TermModelBlocks.md) is currently a placeholder for term-to-block model notes; depends on `PaperWrappers` (for the wrapper APIs).
 - [ConjointSD/TrueBlockEstimand.lean](readable/TrueBlockEstimand.md) defines the “true [block](readable/jargon_block.md) score” from a [term](readable/jargon_term.md) model and proves [convergence](readable/jargon_convergence.md) statements to those targets; depends on `TermModelBlocks` and [sequential consistency](readable/jargon_sequential_consistency.md) wrappers.
 
 ## Paper-facing wrappers and estimands
 
 - [ConjointSD/PaperWrappers.lean](readable/PaperWrappers.md) presents paper-friendly theorems: model-to-[block](readable/jargon_block.md) decomposition, route-2 [sequential consistency](readable/jargon_sequential_consistency.md), exact target-equivalence wrappers, and [OLS](readable/jargon_ols.md)-based links from paper regressions into the SD-consistency chain; now also depends on `SampleSplitting` to derive evaluation IID from randomization; central hub for exported statements.
-- [ConjointSD/ApproxPaperWrappers.lean](readable/ApproxPaperWrappers.md) hosts approximate/misspecified variants of the paper-facing SD wrappers (approximate targets, ApproxWellSpecifiedAE, and oracle bounds).
 - [ConjointSD/PaperCoreEstimand.lean](readable/PaperCoreEstimand.md) defines the paper’s core [estimands](readable/jargon_estimand.md) ([block](readable/jargon_block.md)/total [SDs](readable/jargon_standard_deviation.md)) and main [estimator](readable/jargon_estimator.md); combines `TrueBlockEstimand`, `PaperWrappers`, and [block](readable/jargon_block.md)-[term](readable/jargon_term.md) machinery.
 
 ## Tooling

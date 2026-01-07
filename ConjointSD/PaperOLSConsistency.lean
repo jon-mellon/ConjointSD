@@ -19,19 +19,6 @@ open scoped BigOperators
 noncomputable section
 namespace ConjointSD
 
-section PaperTermScore
-
-variable {Attr : Type*}
-variable {Main Inter : Type*} [Fintype Main] [Fintype Inter]
-
-variable (fMain : Main → Attr → ℝ) (fInter : Inter → Attr → ℝ)
-
-/-- Paper regression score with coefficients `θ` on the paper term set. -/
-def gPaper (θ : PaperTerm Main Inter → ℝ) : Attr → ℝ :=
-  gLin (β := θ) (φ := φPaper (Attr := Attr) (fMain := fMain) (fInter := fInter))
-
-end PaperTermScore
-
 section PaperOLS
 
 variable {Ω Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Attr]

@@ -41,24 +41,6 @@ Formalization (Lean name): `gStar eq sum blocks of WellSpecified`
 Formalization (math):
 `WellSpecified -> gStar = sum b gBlock b`.
 
-## approx wellSpecified of approx no interactions (ApproxWellSpecifiedFromNoInteractions)
-
-File: `ConjointSD/ApproxWellSpecifiedFromNoInteractions.lean`
-
-Statement: If the causal target is approximately additive and the term features
-can represent any additive main-effect surface, then the linear-in-terms model
-is approximately [well-specified](readable/jargon_well_specified.md) with the
-same uniform error bound.
-
-Intuition: Approximate additivity fixes the target up to ε, and the full
-main-effect term set lets the model match that additive surface exactly, leaving
-only the ε discrepancy.
-
-Formalization (Lean name): `approxWellSpecified_of_approxNoInteractions_of_fullMainEffects`
-
-Formalization (math):
-`ApproxNoInteractions ε ∧ FullMainEffectsTerms φ -> ∃ β, ApproxWellSpecified ε`.
-
 ## End-to-end block SD consistency (PaperWrappers)
 
 File: `ConjointSD/PaperWrappers.lean`
@@ -210,23 +192,6 @@ Formalization (Lean name): `paper sd blocks sequential consistency to true targe
 
 Formalization (math):
 `attrSD ν_pop (gBlock ...) = attrSD ν_pop gTrueB` for each block.
-
-## paper sd blocks sequential consistency to approx target ae (ApproxPaperWrappers)
-
-File: `ConjointSD/ApproxPaperWrappers.lean`
-
-Statement: If [blocks](readable/jargon_block.md) are approximately correct in
-[L2](readable/jargon_l2.md), the block
-[standard deviation](readable/jargon_standard_deviation.md) targets are within
-an explicit bound.
-
-Intuition: [L2](readable/jargon_l2.md) approximation bounds
-[standard deviation](readable/jargon_standard_deviation.md) error.
-
-Formalization (Lean name): `paper sd blocks sequential consistency to approx target ae`
-
-Formalization (math):
-`|attrSD ν_pop s - attrSD ν_pop t| ≤ bound` for each block.
 
 ## paper ols normal eq of wellSpecified (PaperOLSConsistency)
 

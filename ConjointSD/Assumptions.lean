@@ -25,13 +25,35 @@ attribute distribution. Use `xiAttr` (generic) or `kappaDesign` (design pushforw
 for non-target attribute laws.
 -/
 
-/-- Convenient moment conditions on `s` under the target-population attribute distribution `ν_pop`. -/
+/-- Uniform bound on a score function, ν_pop-a.e. -/
+def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
+  ∀ᵐ a ∂ν_pop, |s a| ≤ C
+
+/-- Convenient moment conditions on `s` under the target-population
+attribute distribution `ν_pop`. -/
 structure AttrMomentAssumptions (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
     (s : Attr → ℝ) : Prop where
   aemeas : AEMeasurable s ν_pop
-  int2 : Integrable (fun a => (s a) ^ 2) ν_pop
+  bound : ∃ C, 0 ≤ C ∧ BoundedAE ν_pop s C
 
 namespace AttrMomentAssumptions
+
+theorem int2 {ν_pop : Measure Attr} [IsProbabilityMeasure ν_pop] {s : Attr → ℝ}
+    (hs : AttrMomentAssumptions (ν_pop := ν_pop) s) :
+    Integrable (fun a => (s a) ^ 2) ν_pop := by
+  obtain ⟨C, hC0, hC⟩ := hs.bound
+  have hs_meas : AEStronglyMeasurable s ν_pop := hs.aemeas.aestronglyMeasurable
+  have hs_meas_sq : AEStronglyMeasurable (fun a => (s a) ^ 2) ν_pop := by
+    simpa [pow_two] using hs_meas.mul hs_meas
+  refine Integrable.of_bound (hf := hs_meas_sq) (C ^ 2) ?_
+  refine hC.mono ?_
+  intro a ha
+  have hmul : |s a| * |s a| ≤ C * C :=
+    mul_le_mul ha ha (abs_nonneg _) hC0
+  calc
+    ‖(s a) ^ 2‖ = |(s a) ^ 2| := rfl
+    _ = |s a| * |s a| := by simp [pow_two, abs_mul]
+    _ ≤ C ^ 2 := by simpa [pow_two] using hmul
 
 theorem int1 {ν_pop : Measure Attr} [IsProbabilityMeasure ν_pop] {s : Attr → ℝ}
     (hs : AttrMomentAssumptions (ν_pop := ν_pop) s) : Integrable s ν_pop := by
@@ -42,10 +64,6 @@ theorem int1 {ν_pop : Measure Attr} [IsProbabilityMeasure ν_pop] {s : Attr →
   exact (memLp_one_iff_integrable).1 hs_mem1
 
 end AttrMomentAssumptions
-
-/-- Uniform bound on a score function, ν_pop-a.e. -/
-def BoundedAE (ν_pop : Measure Attr) (s : Attr → ℝ) (C : ℝ) : Prop :=
-  ∀ᵐ a ∂ν_pop, |s a| ≤ C
 
 end Transport
 

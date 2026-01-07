@@ -23,16 +23,6 @@ section ApproximateOracle
 variable {Attr : Type*} [MeasurableSpace Attr]
 
 /--
-Two-stage approximation: a flexible score `gFlex` approximates the experimental
-causal score `gStar`, and the model score `gModel` approximates `gFlex`, both ν_pop-a.e.
--/
-def ApproxOracleAE
-    (ν_pop : Measure Attr)
-    (gModel gFlex gStar : Attr → ℝ) (δModel δOracle : ℝ) : Prop :=
-  (∀ᵐ x ∂ν_pop, |gModel x - gFlex x| ≤ δModel) ∧
-  (∀ᵐ x ∂ν_pop, |gFlex x - gStar x| ≤ δOracle)
-
-/--
 L2-style approximation: the model score differs from the target by at most delta in mean-square.
 -/
 def L2Approx

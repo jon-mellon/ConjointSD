@@ -14,7 +14,7 @@ not the classical Gauss–Markov/BLUE conditions.
 
 The file depends on shared definitions in `ConjointSD/Defs.lean`.
 
-Recent changes: [probability-measure](jargon_probability_measure.md) requirements were pushed into the moment bundles, and first-moment integrability is now derived from square-integrability where applicable.
+Recent changes: [probability-measure](jargon_probability_measure.md) requirements were pushed into the moment bundles, and moment integrability is now derived from boundedness where applicable.
 
 ## Notation and scope
 
@@ -58,22 +58,20 @@ These are not formalized as Lean assumption bundles; they arise from how the mod
   a score function `s` under the attribute distribution `ν_pop` on `Attr`
   (the attribute distribution representing the target human
   [population](jargon_population.md)). It requires
-  [almost-everywhere measurability](jargon_measurable.md) of `s` and
-  [integrability](jargon_integrable.md) of `s^2`. The `s` integrability needed
-  for [mean](jargon_mean.md) and [variance](jargon_variance.md) targets is
-  derived from these conditions using `ν_pop univ = 1`.
+  [almost-everywhere measurability](jargon_measurable.md) of `s` and a
+  uniform a.e. bound on `s`. The [integrability](jargon_integrable.md) of `s`
+  and `s^2` needed for [mean](jargon_mean.md) and [variance](jargon_variance.md)
+  targets is derived from these conditions using `ν_pop univ = 1`.
   - `AttrMomentAssumptions.aemeas`: `s` is a.e. measurable under `ν_pop`,
     so `s` can be integrated and is compatible with almost-everywhere
     statements used later in transport proofs. Intuition: we only need `s` to
     be well-defined except on a `ν_pop`-null set, because target population targets
     under `ν_pop` ignore
     measure-zero deviations. Formal: `AEMeasurable s ν_pop`.
-  - `AttrMomentAssumptions.int2`: `s^2` is integrable under the attribute
-    distribution `ν_pop` (the target population attribute distribution). This
-    supplies finite second moments, which are the input for target population
-    [variance](jargon_variance.md) and [standard deviation](jargon_standard_deviation.md).
-    Intuition: finite energy rules out heavy tails that would make SD undefined
-    or unstable. Formal: `Integrable (fun a => (s a) ^ 2) ν_pop`.
+  - `AttrMomentAssumptions.bound`: `s` is uniformly bounded `ν_pop`-a.e.,
+    which implies integrability of `s` and `s^2` under the target population
+    attribute law. Intuition: bounded scores rule out heavy tails and guarantee
+    finite second moments. Formal: `∃ C, 0 ≤ C ∧ ∀ᵐ a ∂ν_pop, |s a| ≤ C`.
 - `EvalAttrLawEqPop`: evaluation attributes are sampled IID from the target population law `ν_pop`.
   It states each evaluation draw has law `ν_pop` under `ρ`.
   - `EvalAttrLawEqPop.measA`: each `A i` is measurable.

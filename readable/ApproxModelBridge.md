@@ -9,4 +9,4 @@ What it defines:
 - `ApproxWellSpecifiedAE`: ν_pop-a.e. ε-approximation of `gStar` by the linear model.
 
 Approximation bridge:
-- `gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE`: the ν_pop-a.e. approximation transfers from the linear score to the induced block-sum score.
+- No additional bridge lemmas beyond the `ApproxWellSpecified` definitions.

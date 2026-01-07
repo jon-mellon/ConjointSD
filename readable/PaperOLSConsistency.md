@@ -4,9 +4,6 @@ Lean file: [ConjointSD/PaperOLSConsistency.lean](../ConjointSD/PaperOLSConsisten
 
 This file specializes the regression [consistency](jargon_consistency.md) machinery to the paper's OLS [estimator](jargon_estimator.md) and [term](jargon_term.md) set. It uses `IsProbabilityMeasure` where probability assumptions are required, and the LLN statements target the experimental pushforward attribute law `kappaDesign := Measure.map (A 0) μexp` (the experiment data used to fit the model). In the code, this distribution is denoted `xiAttr`; the target population distribution `ν_pop` is not used in this first-stage OLS file.
 
-Key definition:
-- `gPaper` is the score function defined by the paper's regression [terms](jargon_term.md) (intercept, main effects, [interactions](jargon_interaction.md)). It uses the [linear model](jargon_linear_model.md) setup.
-
 Moment convergence facts:
 - The core moment statement is that the inverse Gram and cross moments converge entrywise to their attribute‑distribution targets under `xiAttr`. In the core‑idea flow, those targets are the design pushforward law `kappaDesign`, with population transport handled separately.
 - `paper_ols_lln_of_score_assumptions_ae` derives the Gram/cross LLN part from `DesignAttrIID`, bounded/measurable features, bounded `gStar`, and an `ObservationNoiseAssumptions` bundle that makes the feature-weighted noise term converge to 0, so the cross moment still targets `gStar` under `kappaDesign`. The algebraic split of the cross moment is factored into `crossVec_eq_meanHatZ_add_noise`.

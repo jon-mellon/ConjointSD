@@ -62,18 +62,6 @@ def paperBlockSDs
     let _ := (inferInstance : IsProbabilityMeasure ν_pop)
     exact fun b => paperBlockSD (ν_pop := ν_pop) blk β0 φ b
 
-theorem paperBlockSDs_apply
-    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
-    (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) (b : B) :
-    paperBlockSDs (ν_pop := ν_pop) blk β0 φ b = paperBlockSD (ν_pop := ν_pop) blk β0 φ b := rfl
-
-theorem paperTotalSD_def
-    (ν_pop : Measure Attr) [IsProbabilityMeasure ν_pop]
-    (blk : Term → B) (β0 : Term → ℝ) (φ : Term → Attr → ℝ) :
-    paperTotalSD (ν_pop := ν_pop) blk β0 φ
-      =
-    attrSD ν_pop (paperTrueTotalScore (blk := blk) (β0 := β0) (φ := φ)) := rfl
-
 end CoreEstimand
 
 end ConjointSD

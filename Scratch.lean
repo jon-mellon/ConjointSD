@@ -52,9 +52,7 @@ import ConjointSD
 #print ConjointSD.attrM2_congr_ae
 #print ConjointSD.attrVar_congr_ae
 #print ConjointSD.attrSD_congr_ae
-#print ConjointSD.approxInvarianceAE_triangle
 #print ConjointSD.attrMean_diff_le_of_L2Approx
-#print ConjointSD.attrSD_diff_le_of_L2Approx
 #print ConjointSD.attrMean_abs_le_of_bounded_ae
 #print ConjointSD.attrMean_diff_le_of_approx_ae
 #print ConjointSD.attrM2_diff_le_of_approx_ae
@@ -63,19 +61,13 @@ import ConjointSD
 
 -- Model bridge.
 #print ConjointSD.gLin_eq_gTotal_blocks
-#print ConjointSD.gStar_approx_sum_blocks_of_ApproxWellSpecifiedAE
 #print ConjointSD.approxWellSpecified_of_approxNoInteractions_of_fullMainEffects
 
 -- Paper core estimands.
-#print ConjointSD.paperBlockSDs_apply
-#print ConjointSD.paperTotalSD_def
 
 -- Paper-facing wrappers.
 #print ConjointSD.paper_identifies_potMean_from_condMean
-#print ConjointSD.paper_identifies_amce_from_condMeans
-#print ConjointSD.paper_identifies_potMean_from_condMean_status
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae
-#print ConjointSD.paper_sd_blocks_sequential_consistency_to_approx_target_ae
 #print ConjointSD.paper_ols_attr_moments_of_design_ae
 #print ConjointSD.paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_design_ae_of_NoInteractions_of_randomization
 

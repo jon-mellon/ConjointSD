@@ -18,9 +18,6 @@ Main logical steps:
 2) Use that factorization to show the [conditional mean](jargon_conditional_mean.md) among `X = x0` equals the potential [mean](jargon_mean.md) for `x0`.
 3) Use consistency to replace `Yobs` with `Y x0` inside the conditional mean.
 4) Combine the above to identify `amce` as a difference of observed [conditional means](jargon_conditional_mean.md).
-Final result:
-- The file defines `gExp` (the observed [conditional mean](jargon_conditional_mean.md) score) for use in identification statements.
-
 In plain [terms](jargon_term.md): under random assignment and basic regularity conditions, the observed conditional averages identify the causal target function (given a separate positivity assumption for the conditioning events).
 
 Bridge note: identification results in this file take `ConjointIdRandomized` directly; stream-level SD consistency uses separate attribute-stream assumptions.
