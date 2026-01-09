@@ -53,7 +53,7 @@ def φMain (main : ∀ k : K, V k → ℝ) : Term K → Profile K V → ℝ
 -/
 
 /--
-If `gStar` is additive and the term basis can express any main-effects surface,
+If `gStar` is additive and the term basis can express that additive surface,
 then the model is well-specified for some coefficient vector.
 -/
 theorem wellSpecified_of_noInteractions_of_mainEffectsRepresentable
