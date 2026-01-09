@@ -62,4 +62,4 @@ import ConjointSD
 #print ConjointSD.paper_ols_attr_moments_of_lln_fullrank_ae
 #print ConjointSD.paper_ols_lln_of_design_ae
 #print ConjointSD.paper_ols_lln_of_score_assumptions_ae
-#print ConjointSD.wellSpecified_of_noInteractions_of_fullMainEffects
+#print ConjointSD.wellSpecified_of_noInteractions_of_mainEffectsRepresentable

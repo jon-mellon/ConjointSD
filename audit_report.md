@@ -17,7 +17,7 @@ Target theorem: `paper_sd_blocks_sequential_consistency_to_true_target_ae_of_pap
 - EvalAttrLawEqPop identA
 - EvalAttrLawEqPop indepA
 - EvalAttrLawEqPop measA
-- FullMainEffectsTerms
+- MainEffectsRepresentable
 - NoInteractions
 - ObservationNoiseAssumptions condMean_zero
 - ObservationNoiseAssumptions noise_lln

@@ -56,19 +56,20 @@ def φMain (main : ∀ k : K, V k → ℝ) : Term K → Profile K V → ℝ
 If `gStar` is additive and the term basis can express any main-effects surface,
 then the model is well-specified for some coefficient vector.
 -/
-theorem wellSpecified_of_noInteractions_of_fullMainEffects
+theorem wellSpecified_of_noInteractions_of_mainEffectsRepresentable
     {Term : Type*} [Fintype Term]
     (φ : Term → Profile K V → ℝ)
     (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ)
     (hTerms :
-      FullMainEffectsTerms (K := K) (V := V) (Term := Term) (φ := φ))
+      MainEffectsRepresentable
+        (K := K) (V := V) (Term := Term) (μexp := μexp) (Y := Y) (φ := φ))
     (h : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y)) :
     ∃ β : Term → ℝ,
       WellSpecified (Ω := Ω) (Attr := Profile K V) (Term := Term)
         (μexp := μexp) (Y := Y) (β := β) (φ := φ) := by
   classical
   rcases h with ⟨α0, main, hadd⟩
-  rcases hTerms α0 main with ⟨β, hβ⟩
+  rcases hTerms α0 main hadd with ⟨β, hβ⟩
   refine ⟨β, ?_⟩
   intro x
   calc

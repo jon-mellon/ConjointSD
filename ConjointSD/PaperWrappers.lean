@@ -155,7 +155,9 @@ theorem
       PaperOLSFullRankAssumptions
         (xiAttr := kappaDesign (κ := μexp) (A := Atrain)) (fMain := fMain) (fInter := fInter))
     (hTerms :
-      FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
+      MainEffectsRepresentable
+        (K := K) (V := V) (Term := PaperTerm Main Inter)
+        (μexp := μexp) (Y := Y)
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
     {Person : Type*} [MeasurableSpace Person]
@@ -215,7 +217,7 @@ theorem
             (φ :=
               φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))) x) := by
   rcases
-      wellSpecified_of_noInteractions_of_fullMainEffects
+      wellSpecified_of_noInteractions_of_mainEffectsRepresentable
         (K := K) (V := V) (Term := PaperTerm Main Inter)
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter))
         (μexp := μexp) (Y := Y) hTerms hNoInt with

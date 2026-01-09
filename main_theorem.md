@@ -79,11 +79,11 @@ structure ConjointRandomizationStream
 \[
 \begin{aligned}
 \exists (R,\mathcal{M}_R, U:\mathbb{N}\to\Omega\to R, f:R\to Attr),\;
-&(\forall i,\; U_i \text{ is measurable}) \land f \text{ is measurable} \\
-&\land (\forall i,\; A_i = f \circ U_i) \\
-&\land \text{Pairwise}(i \ne j \Rightarrow U_i \perp U_j \text{ under } \mu_{exp}) \\
-&\land (\forall i,\; U_i \stackrel{d}{=} U_0 \text{ under } \mu_{exp}) \\
-&\land (\forall i,x,\; U_i \perp Y_x \text{ under } \mu_{exp}).
+&(\forall i,\; U_i \text{ measurable}) \land f \text{ measurable} \\
+&\land (\forall i,\; A_i(\omega) = f(U_i(\omega))) \\
+&\land \text{Pairwise}\bigl((i\ne j)\Rightarrow \text{IndepFun}_{\mu_{exp}}(U_i,U_j)\bigr) \\
+&\land (\forall i,\; \text{IdentDistrib}_{\mu_{exp}}(U_i,U_0)) \\
+&\land (\forall i,x,\; \text{IndepFun}_{\mu_{exp}}(U_i, Y_x)).
 \end{aligned}
 \]
 ```
@@ -117,9 +117,9 @@ structure EvalAttrIID (A : ℕ → Ω → Attr) : Prop where
 ```tex
 \[
 \begin{aligned}
-&(\forall i,\; A_i \text{ is measurable}) \\
-&\land \text{Pairwise}(i \ne j \Rightarrow A_i \perp A_j \text{ under } \kappa) \\
-&\land (\forall i,\; A_i \stackrel{d}{=} A_0 \text{ under } \kappa).
+&(\forall i,\; A_i \text{ measurable}) \\
+&\land \text{Pairwise}\bigl((i\ne j)\Rightarrow \text{IndepFun}_{\kappa}(A_i,A_j)\bigr) \\
+&\land (\forall i,\; \text{IdentDistrib}_{\kappa}(A_i,A_0)).
 \end{aligned}
 \]
 ```
@@ -167,7 +167,8 @@ structure SubjectSamplingLLNStar
 ```tex
 \[
 \begin{aligned}
-&\text{IID subject sampling: } R_i \text{ are measurable, independent, and } R_i \sim \mu_{pop}. \\
+&\text{IID subject sampling: } R_i \text{ measurable, Pairwise}\bigl(\text{IndepFun}_{\mu_{exp}}(R_i,R_j)\bigr), \\
+&\qquad\qquad\qquad\qquad \text{and } \operatorname{Measure.map}(R_i,\mu_{exp}) = \mu_{pop}. \\
 &\text{Score regularity: } g_P(\cdot,x) \text{ is measurable and uniformly bounded under } \mu_{pop}. \\
 &\forall x,\; \text{a.e.}_{\mu_{exp}}\; \lim_{n\to\infty}
 \Big(\frac{1}{n}\sum_{i<n} g_P(R_i, x)\Big) = g^\star(x).
@@ -282,23 +283,23 @@ structure PaperOLSFullRankAssumptions
 **English version**: the [Gram matrix](readable/jargon_gram_matrix.md) of the paper feature map
 under the attribute law `xiAttr` is invertible.
 
-### 6) Full main‑effects basis
-**Assumption**: `FullMainEffectsTerms`.
+### 6) Main‑effects representable
+**Assumption**: `MainEffectsRepresentable`.
 
-**Meaning**: the paper [term](readable/jargon_term.md) basis can represent any additive
+**Meaning**: whenever the true causal score is additive, the paper
+[term](readable/jargon_term.md) basis can represent that specific additive
 main‑effects surface.
 
-Subassumptions (as encoded by `FullMainEffectsTerms`):
-- coverage of every main‑effects component by the term map,
-- compatibility with the `PaperTerm` basis used by `φPaper`.
-
-**Intuition**: if the world is additive, the model class is expressive enough to match it.
+**Intuition**: if the world is additive, the model class can match the true additive surface
+without needing to represent every possible additive surface.
 
 **Formal statement (Lean)**:
 ```lean
-def FullMainEffectsTerms
+def MainEffectsRepresentable
+    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ)
     (φ : Term → Profile K V → ℝ) : Prop :=
   ∀ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
+    (∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)) →
     ∃ β : Term → ℝ,
       ∀ x : Profile K V,
         gLin (Attr := Profile K V) (Term := Term) (β := β) (φ := φ) x
@@ -309,14 +310,16 @@ def FullMainEffectsTerms
 ```tex
 \[
 \forall \alpha_0,\; \forall \text{ main }(k,\cdot),\;
+\Bigl( g^{Star}(x) = \alpha_0 + \sum_{k\in K} \text{main}_k(x_k) \Bigr)
+\Rightarrow
 \exists \beta,\; \forall x,\;
 g^{Lin}_{\varphi,\beta}(x) = \alpha_0 + \sum_{k\in K} \text{main}_k(x_k).
 \]
 ```
-**English version**: for any intercept `α0` and any collection of per‑attribute main
-effects, there exist [parameters](readable/jargon_parameter.md) `β` so that the
-[linear‑in‑terms](readable/jargon_linear_in_terms.md) model `gLin` exactly reproduces the additive
-surface `α0 + Σ_k main k (x k)` for all [profiles](readable/jargon_profile.md) `x`.
+**English version**: if the true causal score equals an additive surface
+`α0 + Σ_k main k (x k)`, then there exist [parameters](readable/jargon_parameter.md) `β`
+so that the [linear‑in‑terms](readable/jargon_linear_in_terms.md) model `gLin` exactly
+reproduces that surface for all [profiles](readable/jargon_profile.md) `x`.
 
 ### 7) No [interactions](readable/jargon_interaction.md)
 **Assumption**: `NoInteractions`.
@@ -372,9 +375,9 @@ structure EvalAttrLawEqPop
 ```tex
 \[
 \begin{aligned}
-&(\forall i,\; A_i \text{ is measurable}) \\
-&\land \text{Pairwise}(i \ne j \Rightarrow A_i \perp A_j \text{ under } \rho) \\
-&\land (\forall i,\; \operatorname{Law}(A_i \mid \rho) = \nu).
+&(\forall i,\; A_i \text{ measurable}) \\
+&\land \text{Pairwise}\bigl((i\ne j)\Rightarrow \text{IndepFun}_{\rho}(A_i,A_j)\bigr) \\
+&\land (\forall i,\; \operatorname{Measure.map}(A_i,\rho) = \nu_{pop}).
 \end{aligned}
 \]
 ```
@@ -407,8 +410,9 @@ structure SplitEvalAssumptionsBounded
 ```tex
 \[
 \begin{aligned}
-&A \text{ is IID under } \rho, \\
-&g^{Hat}_m \text{ is measurable and uniformly bounded.}
+&\text{EvalAttrIID}_{\rho}(A), \\
+&g^{Hat}_m \text{ measurable and uniformly bounded: } \exists C,\; 0 \le C \land
+\forall a,\; |g^{Hat}_m(a)| \le C.
 \end{aligned}
 \]
 ```
@@ -457,14 +461,14 @@ We assume the paper OLS design bundle and full‑rank condition:
 These ensure the [normal equations](readable/jargon_normal_equations.md) are well behaved and
 identify coefficients.
 
-## 3) Add the no‑interactions structure and full main‑effects basis
+## 3) Add the no‑interactions structure and true‑surface representability
 
 We assume:
 - `NoInteractions`
-- `FullMainEffectsTerms`
+- `MainEffectsRepresentable`
 
 **Formal bridge**:
-- `wellSpecified_of_noInteractions_of_fullMainEffects` derives
+- `wellSpecified_of_noInteractions_of_mainEffectsRepresentable` derives
 [well‑specification](readable/jargon_well_specified.md) of the paper
 [linear model](readable/jargon_linear_model.md).
 
@@ -557,7 +561,9 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
       PaperOLSFullRankAssumptions
         (xiAttr := kappaDesign (κ := μexp) (A := Atrain)) (fMain := fMain) (fInter := fInter))
     (hTerms :
-      FullMainEffectsTerms (K := K) (V := V) (Term := PaperTerm Main Inter)
+      MainEffectsRepresentable
+        (K := K) (V := V) (Term := PaperTerm Main Inter)
+        (μexp := μexp) (Y := Y)
         (φ := φPaper (Attr := Profile K V) (fMain := fMain) (fInter := fInter)))
     (hNoInt : NoInteractions (K := K) (V := V) (μexp := μexp) (Y := Y))
     {Person : Type*} [MeasurableSpace Person]
@@ -618,16 +624,31 @@ theorem paper_sd_blocks_sequential_consistency_to_true_target_ae_of_paper_ols_de
 ```tex
 \[
 \begin{aligned}
-&\exists \theta_0,\; \forall^{\mu_{exp}\text{-a.e.}} \omega,\; \exists M,\;
+&\hat\theta_{\omega}(n) :=
+\operatorname{olsThetaHat}\!\bigl(A_k = A^{train}_k(\omega),\; Y_k = Y^{obs}_k(\omega),\; \varphi=\varphi_{Paper}\bigr), \\
+&g_{Block}^{b}(\theta)(a) :=
+g_{Block}\!\Bigl(g_B = (b,\theta,a)\mapsto
+g_{BlockTerm}(\text{blk},\theta,\varphi_{Paper})(b,a)\Bigr)(b,\theta,a), \\
+&g_{BlockTerm}^{b}(\theta)(a) :=
+g_{BlockTerm}(\text{blk},\theta,\varphi_{Paper})(b,a).
+\end{aligned}
+\]
+\[
+\begin{aligned}
+&\exists \theta_0:\text{PaperTerm}\to\mathbb{R},\;
+\forall^{\mu_{exp}\text{-a.e.}} \omega,\; \exists M,\;
 \forall m \ge M,\; \forall b, \\
 &\quad \Bigl(\forall^{\rho\text{-a.e.}} \omega',\;
 \forall^{\text{eventually}} n,\;
-\operatorname{totalErr}(\rho,A_{eval},\nu,g_{Block},\theta_0,\hat\theta,m,n,\omega') < \varepsilon\Bigr) \\
+\operatorname{totalErr}\!\Bigl(\rho,A_{eval},\nu_{pop},
+g_{Block}^{b},\theta_0,\hat\theta_{\omega},m,n,\omega'\Bigr) < \varepsilon\Bigr) \\
 &\quad \land\;
-\operatorname{attrSD}_\nu\!\bigl(g_{Block}(b,\theta_0)\bigr)
+\operatorname{attrSD}_{\nu_{pop}}\!\bigl(g_{Block}^{b}(\theta_0)\bigr)
 =
-\operatorname{attrSD}_\nu\!\bigl(g_{BlockTerm}(b,\theta_0)\bigr), \\
-&\quad \text{and } g_{pop}(x) = g_{Total}(x) \text{ for } \nu\text{-a.e. } x.
+\operatorname{attrSD}_{\nu_{pop}}\!\bigl(g_{BlockTerm}^{b}(\theta_0)\bigr), \\
+&\quad \text{and } \forall^{\nu_{pop}\text{-a.e.}} x,\;
+g_{Pop}(x) =
+g_{Total}\!\Bigl(g_{BlockTerm}(\theta_0)\Bigr)(x),
 \end{aligned}
 \]
 ```

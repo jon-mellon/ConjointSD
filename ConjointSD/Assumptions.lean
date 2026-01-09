@@ -341,12 +341,14 @@ variable {K : Type*} {V : K → Type*} [Fintype K]
 variable {Term : Type*} [Fintype Term]
 
 /--
-Full main-effect term set: any additive main-effect surface can be expressed by
-`gLin` with the given term features.
+Main-effect term representability: whenever the true conjoint estimand is additive,
+the term features can represent that specific additive surface.
 -/
-def FullMainEffectsTerms
+def MainEffectsRepresentable
+    (μexp : Measure Ω) (Y : Profile K V → Ω → ℝ)
     (φ : Term → Profile K V → ℝ) : Prop :=
   ∀ (α0 : ℝ) (main : ∀ k : K, V k → ℝ),
+    (∀ x : Profile K V, gStar (μexp := μexp) (Y := Y) x = α0 + ∑ k : K, main k (x k)) →
     ∃ β : Term → ℝ,
       ∀ x : Profile K V,
         gLin (Attr := Profile K V) (Term := Term) (β := β) (φ := φ) x

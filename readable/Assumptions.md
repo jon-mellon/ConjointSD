@@ -250,13 +250,13 @@ Approximation-specific assumptions now live in `readable/ApproxAssumptions.md`.
 
 ## WellSpecifiedFromNoInteractions
 
-- `FullMainEffectsTerms`: the term basis `φ` is rich enough to represent any
-  additive main-effect surface (intercept plus per-attribute effects). This is
-  the "full set of main-effect terms" condition used to derive
-  [well-specification](jargon_well_specified.md) from `NoInteractions`.
-  Intuition: the regression terms are expressive enough to match any additive
-  causal surface. Formal:
-  `∀ α0 main, ∃ β, ∀ x, gLin β φ x = α0 + ∑ k, main k (x k)`.
+- `MainEffectsRepresentable`: whenever the causal score is additive, the term
+  basis `φ` can represent that specific additive main-effect surface (intercept
+  plus per-attribute effects). This is the "true additive surface is covered"
+  condition used to derive [well-specification](jargon_well_specified.md) from
+  `NoInteractions`. Intuition: the regression terms only need to match the true
+  additive causal surface, not every possible one. Formal:
+  `∀ α0 main, (∀ x, gStar x = α0 + ∑ k, main k (x k)) → ∃ β, ∀ x, gLin β φ x = α0 + ∑ k, main k (x k)`.
 - `NoInteractions`: existence of an additive representation, formalizing the
   "no interactions" assumption used to justify
   [well-specification](jargon_well_specified.md).

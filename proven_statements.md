@@ -45,7 +45,7 @@ Formalization (math):
 
 File: `ConjointSD/PaperWrappers.lean`
 
-Statement: Under randomized assignment, OLS design assumptions, no-interactions/full-main-effects identification, and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop`, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν_pop`.
+Statement: Under randomized assignment, OLS design assumptions, no-interactions/true-surface representability (`MainEffectsRepresentable`), and subject-sampling LLN (with the `gPop` LLN derived from IID subject sampling plus score regularity and the `gStar` LLN assumed), the block components of the paper score have sequentially consistent SD estimates that target the block decomposition implied by the population-mean score `gPop`. IID and boundedness of the evaluation score are assumed, with evaluation representativeness supplied by `EvalAttrLawEqPop`, and plug‑in moment convergence is **derived** from OLS coefficient convergence plus functional continuity under `ν_pop`.
 
 Intuition: OLS consistency (`θhat → θ0`) and bounded/measurable features yield plug‑in moment convergence; subject sampling links the experiment to the population-mean score, and LLNs yield sequential consistency for each block score.
 
