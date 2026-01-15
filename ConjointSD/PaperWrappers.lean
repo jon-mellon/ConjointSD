@@ -58,7 +58,8 @@ by assuming ν_pop-a.e. equality to a declared true score function and using con
 -/
 
 /--
-Blocks: sequential consistency + ν_pop-a.e. target equality packages convergence to the true block SD.
+Blocks: sequential consistency + ν_pop-a.e. target equality packages
+convergence to the true block SD.
 -/
 theorem paper_sd_blocks_sequential_consistency_to_true_target_ae
     (hLaw : EvalAttrLawEqPop (ρ := ρ) (A := A) (ν_pop := ν_pop))

@@ -13,6 +13,7 @@ section SubjectSampling
 variable {Ω Person Attr : Type*} [MeasurableSpace Ω] [MeasurableSpace Person]
 variable [MeasurableSpace Attr]
 
+omit [MeasurableSpace Attr] in
 theorem subject_lln_gPop_of_iid
     {μexp : Measure Ω} {μpop : Measure Person}
     [IsProbabilityMeasure μpop]
@@ -44,7 +45,7 @@ theorem subject_lln_gPop_of_iid
     intro i
     have hmap :
         Measure.map (R i) μexp = Measure.map (R 0) μexp := by
-      simpa [hIID.identR i, hIID.identR 0]
+      simp [hIID.identR i, hIID.identR 0]
     have hIdentR : IdentDistrib (R i) (R 0) μexp μexp :=
       { aemeasurable_fst := (hIID.measR i).aemeasurable
         aemeasurable_snd := (hIID.measR 0).aemeasurable
@@ -74,7 +75,7 @@ theorem subject_lln_gPop_of_iid
       _ =
         (∫ p, gP p x ∂Measure.map (R 0) μexp) := hmap_integral.symm
       _ = gPop (μpop := μpop) gP x := by
-        simpa [gPop, hmap]
+        simp [gPop, hmap]
   filter_upwards [hstrong] with ω hω
   have hω' :
       Tendsto (fun n : ℕ => (∑ i ∈ Finset.range n, X i ω) / n)
@@ -91,7 +92,8 @@ theorem subjectSamplingLLN_of_iid_of_lln_gStar
     (hScore : SubjectScoreAssumptions (μpop := μpop) (gP := gP))
     (hStar : SubjectSamplingLLNStar
       (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y)) :
-    SubjectSamplingLLN (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y) := by
+    SubjectSamplingLLN
+      (μexp := μexp) (ν_pop := ν_pop) (μpop := μpop) (R := R) (gP := gP) (Y := Y) := by
   refine { lln_gStar := hStar.lln_gStar, lln_gPop := ?_ }
   exact subject_lln_gPop_of_iid (hIID := hIID) (hScore := hScore)
 
@@ -127,7 +129,7 @@ theorem subject_lln_pointwise_eq_of_iid
     exact hne (tendsto_nhds_unique hω.1 hω.2)
   have hzero_univ : μexp Set.univ = 0 := by
     have hfalse' : μexp { ω | ¬False } = 0 := (MeasureTheory.ae_iff).1 hfalse
-    simpa using hfalse'
+    convert hfalse' using 1; simp
   have hone : μexp Set.univ = 1 := by
     exact measure_univ
   exact zero_ne_one (hzero_univ.symm.trans hone)

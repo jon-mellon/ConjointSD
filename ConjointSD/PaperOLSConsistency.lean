@@ -67,6 +67,7 @@ lemma bounded_phiPaper
       | inr i =>
           simpa [φPaper] using hboundInter i
 
+omit [IsProbabilityMeasure μexp] in
 lemma evalAttrIID_of_randomization_stream
     {A : ℕ → Ω → Attr} {Y : Attr → Ω → ℝ}
     (h : ConjointRandomizationStream (μexp := μexp) (A := A) (Y := Y)) :
