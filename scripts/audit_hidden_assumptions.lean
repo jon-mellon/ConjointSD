@@ -60,6 +60,50 @@ private def constsInDecl (declName : Name) : CoreM (Std.HashSet Name × Std.Hash
     | none => ({} : Std.HashSet Name)
   return (typeConsts, valueConsts)
 
+private def hiddenAssumptionsForDecl (declName : Name) (assumptionNames : Std.HashSet Name) :
+    CoreM (Std.HashSet Name) := do
+  let (typeConsts, valueConsts) <- constsInDecl declName
+  let valueOnly := valueConsts.fold (init := ({} : Std.HashSet Name)) fun acc n =>
+    if typeConsts.contains n then acc else acc.insert n
+  let hidden := valueOnly.fold (init := ({} : Std.HashSet Name)) fun acc n =>
+    if assumptionNames.contains n then acc.insert n else acc
+  return hidden
+
+private def isConjointName (n : Name) : Bool :=
+  (`ConjointSD).isPrefixOf n
+
+partial def collectConjointValueDeps (declName : Name) : CoreM (Std.HashSet Name) := do
+  let rec go (pending : List Name) (visited : Std.HashSet Name) : CoreM (Std.HashSet Name) := do
+    match pending with
+    | [] => return visited
+    | n :: rest =>
+        if visited.contains n then
+          go rest visited
+        else
+          let visited := visited.insert n
+          let (_, valueConsts) <- constsInDecl n
+          let next := valueConsts.toList.foldl (fun acc c =>
+            if isConjointName c && !visited.contains c then c :: acc else acc) rest
+          go next visited
+  go [declName] {}
+
+private def hiddenAssumptionsByDecl (decls : List Name) (assumptionNames : Std.HashSet Name) :
+    CoreM (List (Name × Std.HashSet Name)) := do
+  let mut acc : List (Name × Std.HashSet Name) := []
+  for decl in decls do
+    if assumptionNames.contains decl then
+      continue
+    let hidden <- hiddenAssumptionsForDecl decl assumptionNames
+    if !hidden.isEmpty then
+      acc := (decl, hidden) :: acc
+  return acc.reverse
+
+private def containsPair (pairs : List (Name × Name)) (p : Name × Name) : Bool :=
+  pairs.any (fun q => q.1 == p.1 && q.2 == p.2)
+
+private def addPair (pairs : List (Name × Name)) (p : Name × Name) : List (Name × Name) :=
+  if containsPair pairs p then pairs else p :: pairs
+
 private def stripForall (e : Expr) : Expr :=
   match e with
   | .forallE _ _ b _ => stripForall b
@@ -79,6 +123,69 @@ private def headConst? (e : Expr) : Option Name :=
 
 private def headConstAfterForalls (e : Expr) : Option Name :=
   headConst? (stripForall e)
+
+private def structureFieldAssumptionPairs
+    (structName : Name) (assumptionNames : Std.HashSet Name) :
+    CoreM (List (Name × Name)) := do
+  let env <- getEnv
+  let some info := Lean.getStructureInfo? env structName
+    | return []
+  let mut pairs : List (Name × Name) := []
+  for i in List.range info.fieldNames.size do
+    let some proj := info.getProjFn? i
+      | continue
+    let some projInfo := env.find? proj
+      | continue
+    match headConstAfterForalls projInfo.type with
+    | some head =>
+        if assumptionNames.contains head then
+          pairs := addPair pairs (head, structName)
+    | none => pure ()
+  return pairs
+
+private partial def impliedAssumptionsFromFieldsGo
+    (pending : List Name) (closure : Std.HashSet Name) (pairs : List (Name × Name))
+    (assumptionNames : Std.HashSet Name) :
+    CoreM (Std.HashSet Name × List (Name × Name)) := do
+  match pending with
+  | [] => return (closure, pairs)
+  | n :: rest =>
+      let newPairs <- structureFieldAssumptionPairs n assumptionNames
+      let mut closure := closure
+      let mut rest := rest
+      let mut pairs := pairs
+      for (assump, src) in newPairs do
+        pairs := addPair pairs (assump, src)
+        if !closure.contains assump then
+          closure := closure.insert assump
+          rest := assump :: rest
+      impliedAssumptionsFromFieldsGo rest closure pairs assumptionNames
+
+private def impliedAssumptionsFromFields
+    (roots : Std.HashSet Name) (assumptionNames : Std.HashSet Name) :
+    CoreM (Std.HashSet Name × List (Name × Name)) :=
+  impliedAssumptionsFromFieldsGo roots.toList roots [] assumptionNames
+
+private def subsetOf (a b : Std.HashSet Name) : Bool :=
+  a.fold (init := true) fun ok n => ok && b.contains n
+
+private def insertDerivation
+    (pairs : List (Name × List Name)) (key val : Name) :
+    List (Name × List Name) :=
+  match pairs with
+  | [] => [(key, [val])]
+  | (k, vs) :: rest =>
+      if k == key then
+        let vs := if vs.contains val then vs else val :: vs
+        (k, vs) :: rest
+      else
+        (k, vs) :: insertDerivation rest key val
+
+private def lookupDerivations (pairs : List (Name × List Name)) (key : Name) : List Name :=
+  match pairs with
+  | [] => []
+  | (k, vs) :: rest =>
+      if k == key then vs else lookupDerivations rest key
 
 private def propHypothesisHeadConsts (declName : Name) :
     Lean.Meta.MetaM (Std.HashSet Name) := do
@@ -103,11 +210,56 @@ private def readAssumptionNames (path : System.FilePath) : IO (Std.HashSet Name)
     | none => pure ()
   return set
 
-private def isConjointName (n : Name) : Bool :=
-  (`ConjointSD).isPrefixOf n
-
 private def sortedNames (s : Std.HashSet Name) : List Name :=
   s.toList.mergeSort (fun a b => a.toString < b.toString)
+
+private def dedupNames (names : List Name) : List Name :=
+  let set := names.foldl (init := ({} : Std.HashSet Name)) fun acc n => acc.insert n
+  sortedNames set
+
+private def joinNames (names : List Name) : String :=
+  String.intercalate ", " (names.map Name.toString)
+
+private def sourcesForAssumption (pairs : List (Name × Name)) (assumption : Name) : List Name :=
+  pairs.foldl (init := []) fun acc p => if p.1 == assumption then p.2 :: acc else acc
+
+private def noteForAssumption
+    (fieldPairs : List (Name × Name)) (derivations : List (Name × List Name)) (assumption : Name) :
+    String :=
+  let sources := dedupNames (sourcesForAssumption fieldPairs assumption)
+  let derivs := dedupNames (lookupDerivations derivations assumption)
+  let parts :=
+    (if !sources.isEmpty then [s!"implied by {joinNames sources}"] else []) ++
+    (if !derivs.isEmpty then [s!"derivable via {joinNames derivs}"] else [])
+  if parts.isEmpty then
+    ""
+  else
+    " (" ++ String.intercalate "; " parts ++ ")"
+
+private def derivationsByAssumption
+    (decls : List Name) (assumptionNames : Std.HashSet Name) (allowed : Std.HashSet Name)
+    (env : Environment) (ctx : Core.Context) (state : Core.State) :
+    IO (List (Name × List Name)) := do
+  let mut acc : List (Name × List Name) := []
+  for decl in decls do
+    if env.isConstructor decl || env.isProjectionFn decl then
+      continue
+    let some info := env.find? decl
+      | continue
+    let some head := headConstAfterForalls info.type
+      | continue
+    if !assumptionNames.contains head then
+      continue
+    let (propHeads, _, _) <-
+      Lean.Meta.MetaM.toIO
+        (ctxCore := ctx)
+        (sCore := state)
+        (x := propHypothesisHeadConsts decl)
+    let conjPropHeads := propHeads.fold (init := ({} : Std.HashSet Name)) fun acc n =>
+      if isConjointName n then acc.insert n else acc
+    if subsetOf conjPropHeads allowed then
+      acc := insertDerivation acc head decl
+  return acc
 
 private def usage : String :=
   "Usage: lake env lean --run scripts/audit_hidden_assumptions.lean [DeclName]"
@@ -129,19 +281,6 @@ def main (args : List String) : IO Unit := do
       let env <- importModules #[`ConjointSD] {} (trustLevel := 1024) (loadExts := true)
       let ctx := { fileName := "", fileMap := default }
       let state := { env }
-      let (typeConsts, valueConsts) <-
-        (Prod.fst <$> (CoreM.toIO (ctx := ctx) (s := state) (constsInDecl declName)))
-      let valueOnly := valueConsts.fold (init := ({} : Std.HashSet Name)) fun acc n =>
-        if typeConsts.contains n then acc else acc.insert n
-      let assumptionNames <- readAssumptionNames "ConjointSD/Assumptions.lean"
-      let hidden := valueOnly.fold (init := ({} : Std.HashSet Name)) fun acc n =>
-        if assumptionNames.contains n then acc.insert n else acc
-      if hidden.isEmpty then
-        IO.println "No hidden assumptions from ConjointSD/Assumptions.lean."
-      else
-        IO.println "Hidden assumptions (appear in proof term only):"
-        for n in sortedNames hidden do
-          IO.println n.toString
       let (propHeadConsts, _, _) <-
         Lean.Meta.MetaM.toIO
           (ctxCore := ctx)
@@ -149,6 +288,45 @@ def main (args : List String) : IO Unit := do
           (x := propHypothesisHeadConsts declName)
       let conjointPropHeads := propHeadConsts.fold (init := ({} : Std.HashSet Name)) fun acc n =>
         if isConjointName n then acc.insert n else acc
+      let assumptionNames <- readAssumptionNames "ConjointSD/Assumptions.lean"
+      let (impliedAssumptions, fieldPairs) <-
+        (Prod.fst <$>
+          (CoreM.toIO (ctx := ctx) (s := state)
+            (impliedAssumptionsFromFields conjointPropHeads assumptionNames)))
+      let hidden <-
+        (Prod.fst <$>
+          (CoreM.toIO (ctx := ctx) (s := state)
+            (hiddenAssumptionsForDecl declName assumptionNames)))
+      if hidden.isEmpty then
+        IO.println "No hidden assumptions from ConjointSD/Assumptions.lean."
+      else
+        IO.println "Hidden assumptions (appear in proof term only):"
+        for n in sortedNames hidden do
+          IO.println n.toString
+      let transitiveDeps <-
+        (Prod.fst <$>
+          (CoreM.toIO (ctx := ctx) (s := state)
+            (collectConjointValueDeps declName)))
+      let transitiveDeps := transitiveDeps.erase declName
+      let hiddenDeps <-
+        (Prod.fst <$>
+          (CoreM.toIO (ctx := ctx) (s := state)
+            (hiddenAssumptionsByDecl (sortedNames transitiveDeps) assumptionNames)))
+      let derivations <-
+        derivationsByAssumption
+          (sortedNames transitiveDeps)
+          assumptionNames
+          impliedAssumptions
+          env ctx state
+      if hiddenDeps.isEmpty then
+        IO.println "No transitive hidden assumptions from ConjointSD/Assumptions.lean."
+      else
+        IO.println "Transitive hidden assumptions by declaration:"
+        for (decl, deps) in hiddenDeps do
+          IO.println decl.toString
+          for n in sortedNames deps do
+            let note := noteForAssumption fieldPairs derivations n
+            IO.println s!"  {n.toString}{note}"
       let unaccounted := conjointPropHeads.fold (init := ({} : Std.HashSet Name)) fun acc n =>
         if assumptionNames.contains n then acc else acc.insert n
       if conjointPropHeads.isEmpty then
