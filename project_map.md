@@ -62,7 +62,7 @@ This map links to the readable summaries for each `.lean` file and how it connec
 
 ## Tooling
 
-- [scripts/audit_hidden_assumptions.lean](readable/AuditHiddenAssumptions.md) audits whether a theorem's proof term depends on any assumption declarations not present in its statement.
+- [scripts/audit_hidden_assumptions.lean](readable/AuditHiddenAssumptions.md) audits whether a theorem's proof term depends on any assumption declarations not present in its statement, checks that Prop hypotheses in the theorem type are declared in `Assumptions.lean`, and reports `sorryAx`/axiom usage.
 
 ## Scratchpad
 
